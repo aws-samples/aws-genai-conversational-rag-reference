@@ -1,0 +1,198 @@
+{
+  "tasks": {
+    "build": {
+      "name": "build",
+      "description": "Full release build",
+      "steps": [
+        {
+          "spawn": "pre-compile"
+        },
+        {
+          "spawn": "compile"
+        },
+        {
+          "spawn": "post-compile"
+        },
+        {
+          "spawn": "test"
+        },
+        {
+          "spawn": "package"
+        }
+      ]
+    },
+    "bundle": {
+      "name": "bundle",
+      "description": "Prepare assets"
+    },
+    "compile": {
+      "name": "compile",
+      "description": "Only compile"
+    },
+    "default": {
+      "name": "default",
+      "description": "Synthesize project files"
+    },
+    "deploy": {
+      "name": "deploy",
+      "description": "Deploys your CDK app to the AWS cloud",
+      "steps": [
+        {
+          "exec": "cdk deploy",
+          "receiveArgs": true
+        }
+      ]
+    },
+    "destroy": {
+      "name": "destroy",
+      "description": "Destroys your cdk app in the AWS cloud",
+      "steps": [
+        {
+          "exec": "cdk destroy",
+          "receiveArgs": true
+        }
+      ]
+    },
+    "diff": {
+      "name": "diff",
+      "description": "Diffs the currently deployed app against your code",
+      "steps": [
+        {
+          "exec": "cdk diff"
+        }
+      ]
+    },
+    "eslint": {
+      "name": "eslint",
+      "description": "Runs eslint against the codebase",
+      "steps": [
+        {
+          "exec": "eslint --ext .ts,.tsx --fix --no-error-on-unmatched-pattern src test build-tools"
+        }
+      ]
+    },
+    "install": {
+      "name": "install",
+      "description": "Install project dependencies and update lockfile (non-frozen)",
+      "steps": [
+        {
+          "exec": "pnpm i --no-frozen-lockfile"
+        }
+      ]
+    },
+    "install:ci": {
+      "name": "install:ci",
+      "description": "Install project dependencies using frozen lockfile",
+      "steps": [
+        {
+          "exec": "pnpm i --frozen-lockfile"
+        }
+      ]
+    },
+    "package": {
+      "name": "package",
+      "description": "Creates the distribution package"
+    },
+    "post-compile": {
+      "name": "post-compile",
+      "description": "Runs after successful compilation",
+      "steps": [
+        {
+          "spawn": "synth:silent"
+        }
+      ]
+    },
+    "post-upgrade": {
+      "name": "post-upgrade",
+      "description": "Runs after upgrading dependencies"
+    },
+    "pre-compile": {
+      "name": "pre-compile",
+      "description": "Prepare the project for compilation"
+    },
+    "synth": {
+      "name": "synth",
+      "description": "Synthesizes your cdk app into cdk.out",
+      "steps": [
+        {
+          "exec": "cdk synth"
+        }
+      ]
+    },
+    "synth:silent": {
+      "name": "synth:silent",
+      "description": "Synthesizes your cdk app into cdk.out and suppresses the template in stdout (part of \"yarn build\")",
+      "steps": [
+        {
+          "exec": "cdk synth -q"
+        }
+      ]
+    },
+    "test": {
+      "name": "test",
+      "description": "Run tests",
+      "steps": [
+        {
+          "exec": "jest --passWithNoTests --updateSnapshot",
+          "receiveArgs": true
+        },
+        {
+          "spawn": "eslint"
+        }
+      ]
+    },
+    "test:watch": {
+      "name": "test:watch",
+      "description": "Run jest in watch mode",
+      "steps": [
+        {
+          "exec": "jest --watch"
+        }
+      ]
+    },
+    "upgrade": {
+      "name": "upgrade",
+      "description": "upgrade dependencies",
+      "env": {
+        "CI": "0"
+      },
+      "steps": [
+        {
+          "exec": "pnpm update npm-check-updates"
+        },
+        {
+          "exec": "npm-check-updates --upgrade --target=minor --filter=@types/aws-lambda,@types/jest,@types/node,@types/readline-sync,@types/uuid,@typescript-eslint/eslint-plugin,@typescript-eslint/parser,aws-cdk,aws-lambda,aws-sdk,esbuild,eslint-config-prettier,eslint-import-resolver-node,eslint-import-resolver-typescript,eslint-plugin-header,eslint-plugin-import,eslint-plugin-prettier,eslint,jest,jest-junit,npm-check-updates,prettier,projen,ts-jest,ts-node,typescript,@aws-cdk/aws-cognito-identitypool-alpha,@aws-cdk/aws-lambda-python-alpha,@aws-galileo/galileo-sdk,@aws-lambda-powertools/logger,@aws-lambda-powertools/metrics,@aws-lambda-powertools/parameters,@aws-prototyping-sdk/aws-arch,@aws-prototyping-sdk/cdk-graph-plugin-diagram,@aws-prototyping-sdk/cdk-graph,@aws-prototyping-sdk/identity,@aws-prototyping-sdk/pdk-nag,@aws-prototyping-sdk/pipeline,@aws-prototyping-sdk/static-website,@aws-prototyping-sdk/type-safe-api,@aws-sdk/client-codebuild,@aws-sdk/client-dynamodb,@aws-sdk/client-s3,@aws-sdk/client-sagemaker-runtime,@aws-sdk/client-secrets-manager,@aws-sdk/client-service-quotas,@aws-sdk/client-sfn,@aws-sdk/credential-providers,@aws-sdk/lib-dynamodb,@aws-sdk/protocol-http,@aws-sdk/querystring-parser,@aws-sdk/rds-signer,@aws-sdk/signature-v4,@middy/core,@middy/error-logger,@middy/http-router,@middy/input-output-logger,api-typescript-infra,api-typescript-interceptors,api-typescript-runtime,aws-cdk-lib,cdk-nag,constructs,corpus-logic,pretty-bytes,readline-sync,sample-dataset,shorthash2,uuid,website"
+        },
+        {
+          "exec": "pnpm i --no-frozen-lockfile"
+        },
+        {
+          "exec": "pnpm update @types/aws-lambda @types/jest @types/node @types/readline-sync @types/uuid @typescript-eslint/eslint-plugin @typescript-eslint/parser aws-cdk aws-lambda aws-sdk esbuild eslint-config-prettier eslint-import-resolver-node eslint-import-resolver-typescript eslint-plugin-header eslint-plugin-import eslint-plugin-prettier eslint jest jest-junit npm-check-updates prettier projen ts-jest ts-node typescript @aws-cdk/aws-cognito-identitypool-alpha @aws-cdk/aws-lambda-python-alpha @aws-galileo/galileo-sdk @aws-lambda-powertools/logger @aws-lambda-powertools/metrics @aws-lambda-powertools/parameters @aws-prototyping-sdk/aws-arch @aws-prototyping-sdk/cdk-graph-plugin-diagram @aws-prototyping-sdk/cdk-graph @aws-prototyping-sdk/identity @aws-prototyping-sdk/pdk-nag @aws-prototyping-sdk/pipeline @aws-prototyping-sdk/static-website @aws-prototyping-sdk/type-safe-api @aws-sdk/client-codebuild @aws-sdk/client-dynamodb @aws-sdk/client-s3 @aws-sdk/client-sagemaker-runtime @aws-sdk/client-secrets-manager @aws-sdk/client-service-quotas @aws-sdk/client-sfn @aws-sdk/credential-providers @aws-sdk/lib-dynamodb @aws-sdk/protocol-http @aws-sdk/querystring-parser @aws-sdk/rds-signer @aws-sdk/signature-v4 @middy/core @middy/error-logger @middy/http-router @middy/input-output-logger api-typescript-infra api-typescript-interceptors api-typescript-runtime aws-cdk-lib cdk-nag constructs corpus-logic pretty-bytes readline-sync sample-dataset shorthash2 uuid website"
+        },
+        {
+          "exec": "npx projen"
+        },
+        {
+          "spawn": "post-upgrade"
+        }
+      ]
+    },
+    "watch": {
+      "name": "watch",
+      "description": "Watches changes in your source code and rebuilds and deploys to the current account",
+      "steps": [
+        {
+          "exec": "cdk deploy --hotswap"
+        },
+        {
+          "exec": "cdk watch"
+        }
+      ]
+    }
+  },
+  "env": {
+    "PATH": "$(pnpm -c exec \"node --print process.env.PATH\")",
+    "NODE_NO_WARNINGS": "1"
+  },
+  "//": "~~ Generated by projen. To modify, edit .projenrc.js and run \"npx projen\"."
+}

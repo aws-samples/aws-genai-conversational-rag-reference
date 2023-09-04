@@ -1,0 +1,21 @@
+{
+  "version": "2.0",
+  "routeKey": "$default",
+  "rawPath": "/corpus/search/similarity",
+  "rawQueryString": "",
+  "headers": {},
+  "cookies": {},
+  "queryStringParameters": {},
+  "requestContext": {
+    "domainName": "localhost",
+    "http": {
+      "method": "POST",
+      "path": "/corpus/search/similarity",
+      "protocol": "HTTP/1.1"
+    }
+  },
+  "body": "{\"query\": \"Example query\", \"k\": 3}",
+  "pathParameters": null,
+  "isBase64Encoding": false,
+  "stageVariables": null
+}

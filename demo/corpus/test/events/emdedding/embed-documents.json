@@ -1,0 +1,21 @@
+{
+  "version": "2.0",
+  "routeKey": "$default",
+  "rawPath": "/corpus/embedding/embed-documents",
+  "rawQueryString": "",
+  "headers": {},
+  "cookies": {},
+  "queryStringParameters": {},
+  "requestContext": {
+    "domainName": "localhost",
+    "http": {
+      "method": "POST",
+      "path": "/corpus/embedding/embed-documents",
+      "protocol": "HTTP/1.1"
+    }
+  },
+  "body": "{\"texts\": [\"document 1\", \"document-2\"]}",
+  "pathParameters": null,
+  "isBase64Encoding": false,
+  "stageVariables": null
+}

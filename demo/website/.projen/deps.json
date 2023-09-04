@@ -1,0 +1,267 @@
+{
+  "dependencies": [
+    {
+      "name": "@faker-js/faker",
+      "type": "build"
+    },
+    {
+      "name": "@storybook/addon-essentials",
+      "type": "build"
+    },
+    {
+      "name": "@storybook/addon-interactions",
+      "type": "build"
+    },
+    {
+      "name": "@storybook/addon-links",
+      "type": "build"
+    },
+    {
+      "name": "@storybook/blocks",
+      "type": "build"
+    },
+    {
+      "name": "@storybook/preset-create-react-app",
+      "type": "build"
+    },
+    {
+      "name": "@storybook/react",
+      "type": "build"
+    },
+    {
+      "name": "@storybook/react-webpack5",
+      "type": "build"
+    },
+    {
+      "name": "@storybook/testing-library",
+      "type": "build"
+    },
+    {
+      "name": "@testing-library/jest-dom",
+      "type": "build"
+    },
+    {
+      "name": "@testing-library/react",
+      "type": "build"
+    },
+    {
+      "name": "@testing-library/react-hooks",
+      "type": "build"
+    },
+    {
+      "name": "@testing-library/user-event",
+      "type": "build"
+    },
+    {
+      "name": "@types/jest",
+      "type": "build"
+    },
+    {
+      "name": "@types/lodash",
+      "type": "build"
+    },
+    {
+      "name": "@types/node",
+      "version": "^16",
+      "type": "build"
+    },
+    {
+      "name": "@types/react",
+      "type": "build"
+    },
+    {
+      "name": "@types/react-dom",
+      "type": "build"
+    },
+    {
+      "name": "@typescript-eslint/eslint-plugin",
+      "version": "^5",
+      "type": "build"
+    },
+    {
+      "name": "@typescript-eslint/parser",
+      "version": "^5",
+      "type": "build"
+    },
+    {
+      "name": "babel-plugin-named-exports-order",
+      "type": "build"
+    },
+    {
+      "name": "eslint-config-prettier",
+      "type": "build"
+    },
+    {
+      "name": "eslint-import-resolver-node",
+      "type": "build"
+    },
+    {
+      "name": "eslint-import-resolver-typescript",
+      "type": "build"
+    },
+    {
+      "name": "eslint-plugin-header",
+      "type": "build"
+    },
+    {
+      "name": "eslint-plugin-import",
+      "type": "build"
+    },
+    {
+      "name": "eslint-plugin-prettier",
+      "type": "build"
+    },
+    {
+      "name": "eslint-plugin-storybook",
+      "type": "build"
+    },
+    {
+      "name": "eslint",
+      "version": "^8",
+      "type": "build"
+    },
+    {
+      "name": "msw",
+      "type": "build"
+    },
+    {
+      "name": "msw-storybook-addon",
+      "type": "build"
+    },
+    {
+      "name": "npm-check-updates",
+      "version": "^16",
+      "type": "build"
+    },
+    {
+      "name": "prettier",
+      "type": "build"
+    },
+    {
+      "name": "projen",
+      "type": "build"
+    },
+    {
+      "name": "prop-types",
+      "type": "build"
+    },
+    {
+      "name": "react-test-renderer",
+      "type": "build"
+    },
+    {
+      "name": "storybook",
+      "type": "build"
+    },
+    {
+      "name": "typescript",
+      "version": "^4.0.3",
+      "type": "build"
+    },
+    {
+      "name": "webpack",
+      "type": "build"
+    },
+    {
+      "name": "@types/express-serve-static-core",
+      "version": "4.17.30",
+      "type": "override"
+    },
+    {
+      "name": "@types/express",
+      "version": "4.17.13",
+      "type": "override"
+    },
+    {
+      "name": "@aws-galileo/galileo-sdk",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-northstar/ui",
+      "type": "runtime"
+    },
+    {
+      "name": "@cloudscape-design/collection-hooks",
+      "type": "runtime"
+    },
+    {
+      "name": "@cloudscape-design/components",
+      "type": "runtime"
+    },
+    {
+      "name": "@tanstack/react-query",
+      "type": "runtime"
+    },
+    {
+      "name": "@tanstack/react-query-devtools",
+      "type": "runtime"
+    },
+    {
+      "name": "@tanstack/react-virtual",
+      "version": "beta",
+      "type": "runtime"
+    },
+    {
+      "name": "ace-builds",
+      "type": "runtime"
+    },
+    {
+      "name": "api-typescript-react-query-hooks",
+      "type": "runtime"
+    },
+    {
+      "name": "immer",
+      "type": "runtime"
+    },
+    {
+      "name": "jwt-decode",
+      "type": "runtime"
+    },
+    {
+      "name": "lodash",
+      "type": "runtime"
+    },
+    {
+      "name": "react",
+      "type": "runtime"
+    },
+    {
+      "name": "react-collapsed",
+      "type": "runtime"
+    },
+    {
+      "name": "react-dom",
+      "type": "runtime"
+    },
+    {
+      "name": "react-intersection-observer",
+      "type": "runtime"
+    },
+    {
+      "name": "react-markdown",
+      "type": "runtime"
+    },
+    {
+      "name": "react-router-dom",
+      "type": "runtime"
+    },
+    {
+      "name": "react-scripts",
+      "version": "^5",
+      "type": "runtime"
+    },
+    {
+      "name": "use-immer",
+      "type": "runtime"
+    },
+    {
+      "name": "usehooks-ts",
+      "type": "runtime"
+    },
+    {
+      "name": "web-vitals",
+      "type": "runtime"
+    }
+  ],
+  "//": "~~ Generated by projen. To modify, edit .projenrc.js and run \"npx projen\"."
+}

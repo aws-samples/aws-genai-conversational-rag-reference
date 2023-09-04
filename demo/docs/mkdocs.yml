@@ -1,0 +1,67 @@
+site_name: Galileo Generative AI Prototyping Framework
+site_description: Galileo Generative AI Prototyping Framework
+repo_name: 
+repo_url: 
+site_url:
+copyright: Copyright &copy; 2023 Amazon Web Services, Inc.
+use_directory_urls: false
+docs_dir: content
+extra_css:
+  - assets/stylesheets/extra.css
+
+nav:
+  - ...
+
+extra:
+  social:
+    - icon: fontawesome/brands/aws
+      name: Amazon Web Services, Inc.
+      link: https://aws.amazon.com
+
+theme:
+  name: material
+  font: false
+  logo: assets/images/logo.png
+  icon:
+    logo: fontawesome/brands/aws
+    repo: fontawesome/brands/github
+  favicon: assets/images/favicon.png
+  palette:
+    scheme: default
+  features:
+    - toc.follow
+    - navigation.indexes
+    - navigation.instant
+    - navigation.tabs
+
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - attr_list
+  - admonition
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - tables
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      repo_url_shortener: true
+      provider: github
+      user: aws
+      repo: pdk
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      toc_depth: 3
+plugins:
+  - awesome-pages:
+      filename: .pages.yml
+  - git-revision-date
+  - search
+  - redirects:
+      redirect_maps:
+        "index.md": "overview/index.md"

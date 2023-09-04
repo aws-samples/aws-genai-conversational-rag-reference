@@ -1,0 +1,20 @@
+{
+  "outdir": "/tmp/synthesis/output/synth",
+  "sourceRepositoryName": "monorepo",
+  "betaRegion": "ap-southeast-2",
+  "betaEnvironment": {
+    "name": "Beta",
+    "environmentType": "DEVELOPMENT",
+    "accountConnection": {
+      "id": "780623879521",
+      "name": "Billing",
+      "deployRole": {
+        "arn": "arn:aws:iam::780623879521:role/service-role/CodeCatalystPreviewDevelopmentAdministrator-b5j1ql",
+        "name": "CodeCatalystPreviewDevelopmentAdministrator-b5j1ql",
+        "capabilities": [
+          "CDK Deploy"
+        ]
+      }
+    }
+  }
+}

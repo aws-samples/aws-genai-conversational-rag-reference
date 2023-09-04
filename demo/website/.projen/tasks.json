@@ -1,0 +1,154 @@
+{
+  "tasks": {
+    "build": {
+      "name": "build",
+      "description": "Full release build",
+      "steps": [
+        {
+          "spawn": "pre-compile"
+        },
+        {
+          "spawn": "compile"
+        },
+        {
+          "spawn": "post-compile"
+        },
+        {
+          "spawn": "test"
+        },
+        {
+          "spawn": "package"
+        }
+      ]
+    },
+    "compile": {
+      "name": "compile",
+      "description": "Only compile",
+      "steps": [
+        {
+          "exec": "react-scripts build"
+        }
+      ]
+    },
+    "default": {
+      "name": "default",
+      "description": "Synthesize project files"
+    },
+    "dev": {
+      "name": "dev",
+      "description": "Starts the react application",
+      "env": {
+        "ESLINT_NO_DEV_ERRORS": "true",
+        "TSC_COMPILE_ON_ERROR": "true"
+      },
+      "steps": [
+        {
+          "exec": "react-scripts start"
+        }
+      ]
+    },
+    "eslint": {
+      "name": "eslint",
+      "description": "Runs eslint against the codebase",
+      "steps": [
+        {
+          "exec": "eslint --ext .ts,.tsx --fix --no-error-on-unmatched-pattern src test build-tools"
+        }
+      ]
+    },
+    "install": {
+      "name": "install",
+      "description": "Install project dependencies and update lockfile (non-frozen)",
+      "steps": [
+        {
+          "exec": "pnpm i --no-frozen-lockfile"
+        }
+      ]
+    },
+    "install:ci": {
+      "name": "install:ci",
+      "description": "Install project dependencies using frozen lockfile",
+      "steps": [
+        {
+          "exec": "pnpm i --frozen-lockfile"
+        }
+      ]
+    },
+    "package": {
+      "name": "package",
+      "description": "Creates the distribution package"
+    },
+    "post-compile": {
+      "name": "post-compile",
+      "description": "Runs after successful compilation"
+    },
+    "post-upgrade": {
+      "name": "post-upgrade",
+      "description": "Runs after upgrading dependencies"
+    },
+    "pre-compile": {
+      "name": "pre-compile",
+      "description": "Prepare the project for compilation",
+      "steps": [
+        {
+          "exec": "cp ../api/generated/documentation/html2/index.html public/api.html",
+          "condition": "[ -f \"../api/generated/documentation/html2/index.html\" ]"
+        }
+      ]
+    },
+    "test": {
+      "name": "test",
+      "description": "Run tests",
+      "steps": [
+        {
+          "spawn": "eslint"
+        },
+        {
+          "exec": "react-scripts test --watchAll=false --passWithNoTests"
+        }
+      ]
+    },
+    "upgrade": {
+      "name": "upgrade",
+      "description": "upgrade dependencies",
+      "env": {
+        "CI": "0"
+      },
+      "steps": [
+        {
+          "exec": "pnpm update npm-check-updates"
+        },
+        {
+          "exec": "npm-check-updates --upgrade --target=minor --filter=@faker-js/faker,@storybook/addon-essentials,@storybook/addon-interactions,@storybook/addon-links,@storybook/blocks,@storybook/preset-create-react-app,@storybook/react,@storybook/react-webpack5,@storybook/testing-library,@testing-library/jest-dom,@testing-library/react,@testing-library/react-hooks,@testing-library/user-event,@types/jest,@types/lodash,@types/node,@types/react,@types/react-dom,@typescript-eslint/eslint-plugin,@typescript-eslint/parser,babel-plugin-named-exports-order,eslint-config-prettier,eslint-import-resolver-node,eslint-import-resolver-typescript,eslint-plugin-header,eslint-plugin-import,eslint-plugin-prettier,eslint-plugin-storybook,eslint,msw,msw-storybook-addon,npm-check-updates,prettier,projen,prop-types,react-test-renderer,storybook,typescript,webpack,@aws-galileo/galileo-sdk,@aws-northstar/ui,@cloudscape-design/collection-hooks,@cloudscape-design/components,@tanstack/react-query,@tanstack/react-query-devtools,ace-builds,api-typescript-react-query-hooks,immer,jwt-decode,lodash,react,react-collapsed,react-dom,react-intersection-observer,react-markdown,react-router-dom,react-scripts,use-immer,usehooks-ts,web-vitals"
+        },
+        {
+          "exec": "pnpm i --no-frozen-lockfile"
+        },
+        {
+          "exec": "pnpm update @faker-js/faker @storybook/addon-essentials @storybook/addon-interactions @storybook/addon-links @storybook/blocks @storybook/preset-create-react-app @storybook/react @storybook/react-webpack5 @storybook/testing-library @testing-library/jest-dom @testing-library/react @testing-library/react-hooks @testing-library/user-event @types/jest @types/lodash @types/node @types/react @types/react-dom @typescript-eslint/eslint-plugin @typescript-eslint/parser babel-plugin-named-exports-order eslint-config-prettier eslint-import-resolver-node eslint-import-resolver-typescript eslint-plugin-header eslint-plugin-import eslint-plugin-prettier eslint-plugin-storybook eslint msw msw-storybook-addon npm-check-updates prettier projen prop-types react-test-renderer storybook typescript webpack @aws-galileo/galileo-sdk @aws-northstar/ui @cloudscape-design/collection-hooks @cloudscape-design/components @tanstack/react-query @tanstack/react-query-devtools ace-builds api-typescript-react-query-hooks immer jwt-decode lodash react react-collapsed react-dom react-intersection-observer react-markdown react-router-dom react-scripts use-immer usehooks-ts web-vitals"
+        },
+        {
+          "exec": "npx projen"
+        },
+        {
+          "spawn": "post-upgrade"
+        }
+      ]
+    },
+    "watch": {
+      "name": "watch",
+      "description": "Watch & compile in the background",
+      "steps": [
+        {
+          "exec": "tsc --build -w"
+        }
+      ]
+    }
+  },
+  "env": {
+    "PATH": "$(pnpm -c exec \"node --print process.env.PATH\")",
+    "DISABLE_ESLINT_PLUGIN": "true",
+    "NODE_NO_WARNINGS": "1"
+  },
+  "//": "~~ Generated by projen. To modify, edit .projenrc.js and run \"npx projen\"."
+}

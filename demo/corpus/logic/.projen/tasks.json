@@ -1,0 +1,165 @@
+{
+  "tasks": {
+    "build": {
+      "name": "build",
+      "description": "Full release build",
+      "steps": [
+        {
+          "spawn": "pre-compile"
+        },
+        {
+          "spawn": "compile"
+        },
+        {
+          "spawn": "post-compile"
+        },
+        {
+          "spawn": "test"
+        },
+        {
+          "spawn": "package"
+        }
+      ]
+    },
+    "bundle": {
+      "name": "bundle",
+      "steps": [
+        {
+          "exec": "pnpm dlx esbuild src/api/index.ts --bundle --sourcemap --platform=node --target=node18 --outfile=.docker-dist/api.js"
+        },
+        {
+          "exec": "pnpm dlx esbuild src/indexing/index.ts --bundle --sourcemap --platform=node --target=node18 --outfile=.docker-dist/indexing.js"
+        }
+      ]
+    },
+    "compile": {
+      "name": "compile",
+      "description": "Only compile",
+      "steps": [
+        {
+          "exec": "tsc --build"
+        }
+      ]
+    },
+    "default": {
+      "name": "default",
+      "description": "Synthesize project files",
+      "steps": [
+        {
+          "exec": "npx projen default",
+          "cwd": "../../.."
+        }
+      ]
+    },
+    "eslint": {
+      "name": "eslint",
+      "description": "Runs eslint against the codebase",
+      "steps": [
+        {
+          "exec": "eslint --ext .ts,.tsx --fix --no-error-on-unmatched-pattern src test build-tools"
+        }
+      ]
+    },
+    "install": {
+      "name": "install",
+      "description": "Install project dependencies and update lockfile (non-frozen)",
+      "steps": [
+        {
+          "exec": "pnpm i --no-frozen-lockfile"
+        }
+      ]
+    },
+    "install:ci": {
+      "name": "install:ci",
+      "description": "Install project dependencies using frozen lockfile",
+      "steps": [
+        {
+          "exec": "pnpm i --frozen-lockfile"
+        }
+      ]
+    },
+    "package": {
+      "name": "package",
+      "description": "Creates the distribution package"
+    },
+    "post-compile": {
+      "name": "post-compile",
+      "description": "Runs after successful compilation",
+      "steps": [
+        {
+          "spawn": "bundle"
+        }
+      ]
+    },
+    "post-upgrade": {
+      "name": "post-upgrade",
+      "description": "Runs after upgrading dependencies"
+    },
+    "pre-compile": {
+      "name": "pre-compile",
+      "description": "Prepare the project for compilation"
+    },
+    "test": {
+      "name": "test",
+      "description": "Run tests",
+      "steps": [
+        {
+          "exec": "jest --passWithNoTests --updateSnapshot",
+          "receiveArgs": true
+        },
+        {
+          "spawn": "eslint"
+        }
+      ]
+    },
+    "test:watch": {
+      "name": "test:watch",
+      "description": "Run jest in watch mode",
+      "steps": [
+        {
+          "exec": "jest --watch"
+        }
+      ]
+    },
+    "upgrade": {
+      "name": "upgrade",
+      "description": "upgrade dependencies",
+      "env": {
+        "CI": "0"
+      },
+      "steps": [
+        {
+          "exec": "pnpm update npm-check-updates"
+        },
+        {
+          "exec": "npm-check-updates --upgrade --target=minor --filter=@aws-sdk/types,@types/async,@types/aws-lambda,@types/jest,@types/node-fetch,@types/node,@types/uuid,@typescript-eslint/eslint-plugin,@typescript-eslint/parser,aws-sdk-client-mock,eslint-import-resolver-node,eslint-import-resolver-typescript,eslint-plugin-header,eslint-plugin-import,eslint,jest,jest-junit,npm-check-updates,projen,ts-jest,typescript,@aws-sdk/client-dynamodb,@aws-sdk/client-s3,@aws-sdk/client-sagemaker-runtime,@aws-sdk/client-secrets-manager,@aws-sdk/lib-dynamodb,@aws-galileo/galileo-sdk,@aws-lambda-powertools/logger,@aws-lambda-powertools/metrics,@aws-lambda-powertools/parameters,@middy/core,@middy/error-logger,@middy/http-router,@middy/input-output-logger,api-typescript-interceptors,api-typescript-runtime,async,dotenv,fast-glob,node-fetch"
+        },
+        {
+          "exec": "pnpm i --no-frozen-lockfile"
+        },
+        {
+          "exec": "pnpm update @aws-sdk/types @types/async @types/aws-lambda @types/jest @types/node-fetch @types/node @types/uuid @typescript-eslint/eslint-plugin @typescript-eslint/parser aws-sdk-client-mock eslint-import-resolver-node eslint-import-resolver-typescript eslint-plugin-header eslint-plugin-import eslint jest jest-junit npm-check-updates projen ts-jest typescript @aws-sdk/client-dynamodb @aws-sdk/client-s3 @aws-sdk/client-sagemaker-runtime @aws-sdk/client-secrets-manager @aws-sdk/lib-dynamodb @aws-galileo/galileo-sdk @aws-lambda-powertools/logger @aws-lambda-powertools/metrics @aws-lambda-powertools/parameters @middy/core @middy/error-logger @middy/http-router @middy/input-output-logger api-typescript-interceptors api-typescript-runtime async dotenv fast-glob node-fetch"
+        },
+        {
+          "exec": "npx projen"
+        },
+        {
+          "spawn": "post-upgrade"
+        }
+      ]
+    },
+    "watch": {
+      "name": "watch",
+      "description": "Watch & compile in the background",
+      "steps": [
+        {
+          "exec": "tsc --build -w"
+        }
+      ]
+    }
+  },
+  "env": {
+    "PATH": "$(pnpm -c exec \"node --print process.env.PATH\")"
+  },
+  "//": "~~ Generated by projen. To modify, edit .projenrc.js and run \"npx projen\"."
+}

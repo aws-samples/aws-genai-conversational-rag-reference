@@ -1,0 +1,314 @@
+{
+  "dependencies": [
+    {
+      "name": "@types/aws-lambda",
+      "type": "build"
+    },
+    {
+      "name": "@types/jest",
+      "type": "build"
+    },
+    {
+      "name": "@types/node",
+      "version": "^16",
+      "type": "build"
+    },
+    {
+      "name": "@types/readline-sync",
+      "type": "build"
+    },
+    {
+      "name": "@types/uuid",
+      "type": "build"
+    },
+    {
+      "name": "@typescript-eslint/eslint-plugin",
+      "version": "^5",
+      "type": "build"
+    },
+    {
+      "name": "@typescript-eslint/parser",
+      "version": "^5",
+      "type": "build"
+    },
+    {
+      "name": "aws-cdk",
+      "version": "^2.92.0",
+      "type": "build"
+    },
+    {
+      "name": "aws-lambda",
+      "type": "build"
+    },
+    {
+      "name": "aws-sdk",
+      "type": "build"
+    },
+    {
+      "name": "esbuild",
+      "type": "build"
+    },
+    {
+      "name": "eslint-config-prettier",
+      "type": "build"
+    },
+    {
+      "name": "eslint-import-resolver-node",
+      "type": "build"
+    },
+    {
+      "name": "eslint-import-resolver-typescript",
+      "type": "build"
+    },
+    {
+      "name": "eslint-plugin-header",
+      "type": "build"
+    },
+    {
+      "name": "eslint-plugin-import",
+      "type": "build"
+    },
+    {
+      "name": "eslint-plugin-prettier",
+      "type": "build"
+    },
+    {
+      "name": "eslint",
+      "version": "^8",
+      "type": "build"
+    },
+    {
+      "name": "jest",
+      "type": "build"
+    },
+    {
+      "name": "jest-junit",
+      "version": "^15",
+      "type": "build"
+    },
+    {
+      "name": "npm-check-updates",
+      "version": "^16",
+      "type": "build"
+    },
+    {
+      "name": "prettier",
+      "type": "build"
+    },
+    {
+      "name": "projen",
+      "type": "build"
+    },
+    {
+      "name": "ts-jest",
+      "type": "build"
+    },
+    {
+      "name": "ts-node",
+      "type": "build"
+    },
+    {
+      "name": "typescript",
+      "type": "build"
+    },
+    {
+      "name": "@aws-cdk/aws-cognito-identitypool-alpha",
+      "version": "^2.92.0-alpha.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-cdk/aws-lambda-python-alpha",
+      "version": "^2.92.0-alpha.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-galileo/galileo-sdk",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-lambda-powertools/logger",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-lambda-powertools/metrics",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-lambda-powertools/parameters",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-prototyping-sdk/aws-arch",
+      "version": "^0.19.66",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-prototyping-sdk/cdk-graph-plugin-diagram",
+      "version": "^0.19.66",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-prototyping-sdk/cdk-graph",
+      "version": "^0.19.66",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-prototyping-sdk/identity",
+      "version": "^0.19.66",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-prototyping-sdk/pdk-nag",
+      "version": "^0.19.66",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-prototyping-sdk/pipeline",
+      "version": "^0.19.66",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-prototyping-sdk/static-website",
+      "version": "^0.19.66",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-prototyping-sdk/type-safe-api",
+      "version": "^0.19.66",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/client-codebuild",
+      "version": "^3.391.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/client-dynamodb",
+      "version": "^3.391.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/client-s3",
+      "version": "^3.391.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/client-sagemaker-runtime",
+      "version": "^3.391.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/client-secrets-manager",
+      "version": "^3.391.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/client-service-quotas",
+      "version": "^3.391.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/client-sfn",
+      "version": "^3.391.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/credential-providers",
+      "version": "^3.391.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/lib-dynamodb",
+      "version": "^3.391.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/protocol-http",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/querystring-parser",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/rds-signer",
+      "version": "^3.391.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/signature-v4",
+      "type": "runtime"
+    },
+    {
+      "name": "@middy/core",
+      "type": "runtime"
+    },
+    {
+      "name": "@middy/error-logger",
+      "type": "runtime"
+    },
+    {
+      "name": "@middy/http-router",
+      "type": "runtime"
+    },
+    {
+      "name": "@middy/input-output-logger",
+      "type": "runtime"
+    },
+    {
+      "name": "api-typescript-infra",
+      "type": "runtime"
+    },
+    {
+      "name": "api-typescript-interceptors",
+      "type": "runtime"
+    },
+    {
+      "name": "api-typescript-runtime",
+      "type": "runtime"
+    },
+    {
+      "name": "aws-cdk-lib",
+      "version": "^2.92.0",
+      "type": "runtime"
+    },
+    {
+      "name": "cdk-nag",
+      "type": "runtime"
+    },
+    {
+      "name": "constructs",
+      "version": "^10.2.52",
+      "type": "runtime"
+    },
+    {
+      "name": "corpus-logic",
+      "type": "runtime"
+    },
+    {
+      "name": "pretty-bytes",
+      "type": "runtime"
+    },
+    {
+      "name": "readline-sync",
+      "type": "runtime"
+    },
+    {
+      "name": "sample-dataset",
+      "type": "runtime"
+    },
+    {
+      "name": "shorthash2",
+      "type": "runtime"
+    },
+    {
+      "name": "uuid",
+      "type": "runtime"
+    },
+    {
+      "name": "website",
+      "type": "runtime"
+    }
+  ],
+  "//": "~~ Generated by projen. To modify, edit .projenrc.js and run \"npx projen\"."
+}

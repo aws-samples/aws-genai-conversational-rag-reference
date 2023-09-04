@@ -1,0 +1,80 @@
+import * as path from "node:path";
+import { CloudscapeReactTsWebsiteProject } from "@aws-prototyping-sdk/cloudscape-react-ts-website";
+import { NxMonorepoProject, NxProject } from "@aws-prototyping-sdk/nx-monorepo";
+import { javascript } from "projen";
+import { withStorybook } from "../helpers/withStorybook";
+import { Api } from './api';
+import { DEFAULT_RELEASE_BRANCH } from '../constants';
+import { GalileoSdk } from '../framework';
+
+export interface WebsiteOptions {
+  readonly monorepo: NxMonorepoProject;
+  readonly rootOutdir: string;
+  readonly api: Api;
+  readonly galileoSdk: GalileoSdk;
+}
+
+export class Website {
+  public readonly project: CloudscapeReactTsWebsiteProject;
+
+  constructor(options: WebsiteOptions) {
+    const { monorepo, api, rootOutdir, galileoSdk } = options;
+
+    this.project = new CloudscapeReactTsWebsiteProject({
+      packageManager: javascript.NodePackageManager.PNPM,
+      parent: monorepo,
+      outdir: path.join(rootOutdir, "website"),
+      defaultReleaseBranch: DEFAULT_RELEASE_BRANCH,
+      npmignoreEnabled: false,
+      prettier: true,
+      name: "website",
+      deps: [
+        "@cloudscape-design/collection-hooks",
+        "@tanstack/react-query-devtools",
+        "@tanstack/react-query",
+        "@tanstack/react-virtual@beta",
+        "ace-builds",
+        "immer",
+        "jwt-decode",
+        "lodash",
+        "react-collapsed",
+        "react-intersection-observer",
+        "react-markdown",
+        "use-immer",
+        "usehooks-ts",
+        api.project.library.typescriptReactQueryHooks!.package.packageName,
+        galileoSdk.package.packageName,
+      ],
+      devDeps: [
+        "@faker-js/faker",
+        "@testing-library/react-hooks",
+        "@types/jest",
+        "@types/lodash",
+        "msw-storybook-addon",
+        "msw",
+        "react-test-renderer",
+      ],
+      tsconfigDev: {
+        compilerOptions: {
+          noUnusedLocals: false,
+          noUnusedParameters: false,
+        },
+      },
+    });
+    this.project.addGitIgnore("public/api.html");
+    const apiHtml = path.relative(
+      this.project.outdir,
+      path.join(api.project.documentation.html2!.outdir, "index.html")
+    );
+    this.project.preCompileTask.prependExec(`cp ${apiHtml} public/api.html`, {
+      condition: `[ -f "${apiHtml}" ]`,
+    });
+    // Only warn on errors during development - https://create-react-app.dev/docs/advanced-configuration
+    this.project.tasks.tryFind("dev")?.env("ESLINT_NO_DEV_ERRORS", "true");
+    this.project.tasks.tryFind("dev")?.env("TSC_COMPILE_ON_ERROR", "true");
+    NxProject.ensure(this.project).addImplicitDependency(
+      api.project.documentation.html2!
+    );
+    withStorybook(this.project);
+  }
+}
