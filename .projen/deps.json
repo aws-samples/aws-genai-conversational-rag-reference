@@ -1,18 +1,8 @@
 {
   "dependencies": [
     {
-      "name": "@aws-prototyping-sdk/cloudscape-react-ts-website",
-      "version": "^0.19.66",
-      "type": "build"
-    },
-    {
-      "name": "@aws-prototyping-sdk/nx-monorepo",
-      "version": "^0.19.66",
-      "type": "build"
-    },
-    {
-      "name": "@aws-prototyping-sdk/type-safe-api",
-      "version": "^0.19.66",
+      "name": "@aws/pdk",
+      "version": "^0",
       "type": "build"
     },
     {

@@ -14,7 +14,7 @@ This folder contains all the application code for the galileo demo, and is consi
 ```
 
 ## How to modify the API?
-This application is Schema-First design using the [TypeSafe API](https://aws.github.io/aws-prototyping-sdk/developer_guides/type-safe-api/index.html) package to auto-generate spec, infra, runtime, docs, etc.
+This application is Schema-First design using the [TypeSafe API](https://aws.github.io/aws-pdk/developer_guides/type-safe-api/index.html) package to auto-generate spec, infra, runtime, docs, etc.
 - [Smithy](https://smithy.io/2.0/) is the schema definition language used
 
 Edit the schema by modifying the smithy models located in

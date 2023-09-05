@@ -20,16 +20,10 @@ export interface ITracerInterceptorContext {
  */
 export const tracerInterceptor = async <
   RequestParameters,
-  RequestArrayParameters,
   RequestBody,
   Response extends OperationResponse<number, any>
 >(
-  request: ChainedRequestInput<
-    RequestParameters,
-    RequestArrayParameters,
-    RequestBody,
-    Response
-  >
+  request: ChainedRequestInput<RequestParameters, RequestBody, Response>
 ): Promise<Response | OperationResponse<500, ServerErrorResponseContent>> => {
   const segment = tracer.getSegment(); // This is the facade segment (the one that is created by AWS Lambda)
   let subsegment;

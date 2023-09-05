@@ -15,6 +15,7 @@
     "demo/api/generated/infrastructure/README.md",
     "demo/api/generated/libraries/README.md",
     "demo/api/generated/runtime/README.md",
+    "demo/api/handlers/README.md",
     "LICENSE",
     "nx.json",
     "pnpm-workspace.yaml",

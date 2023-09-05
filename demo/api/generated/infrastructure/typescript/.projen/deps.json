@@ -1,6 +1,10 @@
 {
   "dependencies": [
     {
+      "name": "@types/aws-lambda",
+      "type": "build"
+    },
+    {
       "name": "@types/node",
       "version": "^16",
       "type": "build"
@@ -19,7 +23,7 @@
       "type": "build"
     },
     {
-      "name": "@aws-prototyping-sdk/type-safe-api",
+      "name": "@aws/pdk",
       "type": "runtime"
     },
     {

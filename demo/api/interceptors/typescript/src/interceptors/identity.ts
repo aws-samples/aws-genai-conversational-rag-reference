@@ -247,16 +247,10 @@ const getSigv4CallerIdentity = (
  */
 export const identityInterceptor = async <
   RequestParameters,
-  RequestArrayParameters,
   RequestBody,
   Response extends OperationResponse<number, any>
 >(
-  request: ChainedRequestInput<
-    RequestParameters,
-    RequestArrayParameters,
-    RequestBody,
-    Response
-  >
+  request: ChainedRequestInput<RequestParameters, RequestBody, Response>
 ): Promise<Response | OperationResponse<403, ServerErrorResponseContent>> => {
   const { event } = request;
   const callingIdentity =

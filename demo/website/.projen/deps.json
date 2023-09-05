@@ -181,6 +181,10 @@
       "type": "runtime"
     },
     {
+      "name": "@cloudscape-design/board-components",
+      "type": "runtime"
+    },
+    {
       "name": "@cloudscape-design/collection-hooks",
       "type": "runtime"
     },

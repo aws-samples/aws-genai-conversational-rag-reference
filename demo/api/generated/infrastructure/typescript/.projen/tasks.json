@@ -38,13 +38,13 @@
       "name": "generate",
       "steps": [
         {
-          "exec": "npx --yes -p @aws-prototyping-sdk/type-safe-api@0.19.66 clean-openapi-generated-code --code-path ."
+          "exec": "npx --yes -p @aws/pdk@0.21.2 type-safe-api.clean-openapi-generated-code --code-path ."
         },
         {
-          "exec": "npx --yes -p @aws-prototyping-sdk/type-safe-api@0.19.66 generate --generator typescript-fetch --spec-path ../../../model/.api.json --output-path . --generator-dir typescript-cdk-infrastructure --src-dir src --smithy-json-path ../../../model/build/smithyprojections/api-model/openapi/model/model.json --openapi-normalizer \"KEEP_ONLY_FIRST_TAG_IN_OPERATION=true\" --extra-vendor-extensions '{\"x-runtime-package-name\":\"api-typescript-runtime\",\"x-relative-spec-path\":\"../assets/api.json\",\"x-enable-mock-integrations\":true}' --generate-alias-as-model"
+          "exec": "npx --yes -p @aws/pdk@0.21.2 type-safe-api.generate --generator typescript-fetch --spec-path ../../../model/.api.json --output-path . --generator-dir typescript-cdk-infrastructure --src-dir src --openapi-normalizer \"KEEP_ONLY_FIRST_TAG_IN_OPERATION=true\" --extra-vendor-extensions '{\"x-runtime-package-name\":\"api-typescript-runtime\",\"x-relative-spec-path\":\"../assets/api.json\",\"x-enable-mock-integrations\":true,\"x-handlers-python-module\":\"\",\"x-handlers-java-package\":\"\",\"x-handlers-typescript-asset-path\":\"\",\"x-handlers-python-asset-path\":\"\",\"x-handlers-java-asset-path\":\"\"}' --generate-alias-as-model"
         },
         {
-          "exec": "npx --yes -p @aws-prototyping-sdk/type-safe-api@0.19.66 generate-mock-data --spec-path ../../../model/.api.json --output-path ."
+          "exec": "npx --yes -p @aws/pdk@0.21.2 type-safe-api.generate-mock-data --spec-path ../../../model/.api.json --output-path ."
         },
         {
           "exec": "mkdir -p assets"
@@ -116,13 +116,13 @@
           "exec": "pnpm update npm-check-updates"
         },
         {
-          "exec": "npm-check-updates --upgrade --target=minor --filter=@types/node,npm-check-updates,projen,typescript,@aws-prototyping-sdk/type-safe-api,api-typescript-runtime,aws-cdk-lib,cdk-nag,constructs"
+          "exec": "npm-check-updates --upgrade --target=minor --filter=@types/aws-lambda,@types/node,npm-check-updates,projen,typescript,@aws/pdk,api-typescript-runtime,aws-cdk-lib,cdk-nag,constructs"
         },
         {
           "exec": "pnpm i --no-frozen-lockfile"
         },
         {
-          "exec": "pnpm update @types/node npm-check-updates projen typescript @aws-prototyping-sdk/type-safe-api api-typescript-runtime aws-cdk-lib cdk-nag constructs"
+          "exec": "pnpm update @types/aws-lambda @types/node npm-check-updates projen typescript @aws/pdk api-typescript-runtime aws-cdk-lib cdk-nag constructs"
         },
         {
           "exec": "npx projen"

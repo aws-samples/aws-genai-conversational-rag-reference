@@ -33,9 +33,7 @@
     "galileo-cli": "pnpm dlx tsx ./bin/galileo-cli.ts"
   },
   "devDependencies": {
-    "@aws-prototyping-sdk/cloudscape-react-ts-website": "^0.19.66",
-    "@aws-prototyping-sdk/nx-monorepo": "^0.19.66",
-    "@aws-prototyping-sdk/type-safe-api": "^0.19.66",
+    "@aws/pdk": "^0",
     "@types/clear": "^0.1.2",
     "@types/figlet": "^1.5.6",
     "@types/node": "^16",

@@ -1,12 +1,18 @@
-import { NxMonorepoProject } from "@aws-prototyping-sdk/nx-monorepo";
+import { MonorepoTsProject } from "@aws/pdk/monorepo";
 import { AwsCdkConstructLibrary } from "projen/lib/awscdk";
 import { Stability } from "projen/lib/cdk";
-import { AWS_SDK_VERSION, CDK_VERSION, LANGCHAIN_VERSION, PROJECT_AUTHOR } from "./constants";
-import { TypeScriptProject } from 'projen/lib/typescript';
-import { DEFAULT_RELEASE_BRANCH } from './constants';
+import {
+  AWS_SDK_VERSION,
+  CDK_VERSION,
+  LANGCHAIN_VERSION,
+  PROJECT_AUTHOR,
+} from "./constants";
+import { TypeScriptProject } from "projen/lib/typescript";
+import { DEFAULT_RELEASE_BRANCH } from "./constants";
+import { TypeScriptModuleResolution } from "projen/lib/javascript";
 
 export class GalileoCdkLib extends AwsCdkConstructLibrary {
-  constructor(monorepo: NxMonorepoProject) {
+  constructor(monorepo: MonorepoTsProject) {
     super({
       ...PROJECT_AUTHOR,
       parent: monorepo,
@@ -19,8 +25,8 @@ export class GalileoCdkLib extends AwsCdkConstructLibrary {
       jsiiVersion: "5.x",
       defaultReleaseBranch: DEFAULT_RELEASE_BRANCH,
       deps: [
-        // `@aws-prototyping-sdk/identity@^${PDK_VERSION}`
-        // `@aws-prototyping-sdk/pdk-nag@^${PDK_VERSION}`
+        // `@aws/pdk/identity@^${PDK_VERSION}`
+        // `@aws/pdk/pdk-nag@^${PDK_VERSION}`
       ],
       publishDryRun: true,
     });
@@ -30,7 +36,7 @@ export class GalileoCdkLib extends AwsCdkConstructLibrary {
     // and don't want to slow development of the demo as dep
     // @ts-ignore - private
     this.buildTask._locked = false;
-    this.buildTask.reset("echo \"disabling build until we use it\"")
+    this.buildTask.reset('echo "disabling build until we use it"');
 
     // this.package.addPackageResolutions("jsii-rosetta@5.x");
   }
@@ -39,7 +45,7 @@ export class GalileoCdkLib extends AwsCdkConstructLibrary {
 // TODO: make this Jsii project so we can vend python and other languages automatically
 // Requires bundling all non-Jsii deps and ensure specific interface rules, so waiting till working in Ts
 export class GalileoSdk extends TypeScriptProject {
-  constructor(monorepo: NxMonorepoProject) {
+  constructor(monorepo: MonorepoTsProject) {
     super({
       ...PROJECT_AUTHOR,
       parent: monorepo,
@@ -82,23 +88,19 @@ export class GalileoSdk extends TypeScriptProject {
       publishDryRun: true,
       tsconfigDev: {
         compilerOptions: {
-          lib: [
-            "DOM",
-            "ES2021",
-          ],
+          lib: ["DOM", "ES2021"],
           skipLibCheck: true,
           noUnusedLocals: false,
           noUnusedParameters: false,
-        }
+          moduleResolution: TypeScriptModuleResolution.NODE,
+        },
       },
       tsconfig: {
         compilerOptions: {
-          lib: [
-            "DOM",
-            "ES2021",
-          ],
+          lib: ["DOM", "ES2021"],
           skipLibCheck: true,
-        }
+          moduleResolution: TypeScriptModuleResolution.NODE,
+        },
       },
     });
 

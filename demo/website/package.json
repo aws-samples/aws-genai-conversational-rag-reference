@@ -59,6 +59,7 @@
   "dependencies": {
     "@aws-galileo/galileo-sdk": "^0.0.0",
     "@aws-northstar/ui": "^1.1.7",
+    "@cloudscape-design/board-components": "*",
     "@cloudscape-design/collection-hooks": "^1.0.23",
     "@cloudscape-design/components": "^3.0.362",
     "@tanstack/react-query": "^4.32.6",

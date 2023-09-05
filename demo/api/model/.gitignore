@@ -11,6 +11,7 @@ gradlew.bat
 !/settings.gradle
 !/build.gradle
 !/smithy-build.json
+!/generated/main/smithy/aws-pdk/prelude.smithy
 build
 smithy-output
 .api.json

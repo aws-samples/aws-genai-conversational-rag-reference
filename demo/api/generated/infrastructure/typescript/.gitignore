@@ -38,6 +38,7 @@ jspm_packages/
 /dist/
 !/.npmignore
 !/.openapi-generator-ignore
+!/.openapi-generator-ignore-handlebars
 !/openapitools.json
 /assets/api.json
 src

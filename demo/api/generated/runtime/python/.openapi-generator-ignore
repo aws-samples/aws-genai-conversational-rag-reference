@@ -3,6 +3,9 @@
 test
 test/*
 test/**/*
+.github
+.github/*
+.github/**/*
 .gitlab-ci.yml
 .travis.yml
 git_push.sh

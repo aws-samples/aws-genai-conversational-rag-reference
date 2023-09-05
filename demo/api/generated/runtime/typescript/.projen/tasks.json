@@ -38,10 +38,10 @@
       "name": "generate",
       "steps": [
         {
-          "exec": "npx --yes -p @aws-prototyping-sdk/type-safe-api@0.19.66 clean-openapi-generated-code --code-path ."
+          "exec": "npx --yes -p @aws/pdk@0.21.2 type-safe-api.clean-openapi-generated-code --code-path ."
         },
         {
-          "exec": "npx --yes -p @aws-prototyping-sdk/type-safe-api@0.19.66 generate --generator typescript-fetch --spec-path ../../../model/.api.json --output-path . --generator-dir typescript --src-dir src --smithy-json-path ../../../model/build/smithyprojections/api-model/openapi/model/model.json --additional-properties \"npmName=api-typescript-runtime,typescriptThreePlus=true,useSingleParameter=true,supportsES6=true\" --openapi-normalizer \"KEEP_ONLY_FIRST_TAG_IN_OPERATION=true\" --generate-alias-as-model"
+          "exec": "npx --yes -p @aws/pdk@0.21.2 type-safe-api.generate --generator typescript-fetch --spec-path ../../../model/.api.json --output-path . --generator-dir typescript --src-dir src --additional-properties \"npmName=api-typescript-runtime,typescriptThreePlus=true,useSingleParameter=true,supportsES6=true\" --openapi-normalizer \"KEEP_ONLY_FIRST_TAG_IN_OPERATION=true\" --generate-alias-as-model"
         }
       ]
     },
@@ -107,13 +107,13 @@
           "exec": "pnpm update npm-check-updates"
         },
         {
-          "exec": "npm-check-updates --upgrade --target=minor --filter=@types/node,npm-check-updates,projen,typescript,@types/aws-lambda"
+          "exec": "npm-check-updates --upgrade --target=minor --filter=@types/node,npm-check-updates,projen,typescript,@aws-lambda-powertools/logger,@aws-lambda-powertools/metrics,@aws-lambda-powertools/tracer,@types/aws-lambda"
         },
         {
           "exec": "pnpm i --no-frozen-lockfile"
         },
         {
-          "exec": "pnpm update @types/node npm-check-updates projen typescript @types/aws-lambda"
+          "exec": "pnpm update @types/node npm-check-updates projen typescript @aws-lambda-powertools/logger @aws-lambda-powertools/metrics @aws-lambda-powertools/tracer @types/aws-lambda"
         },
         {
           "exec": "npx projen"

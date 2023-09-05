@@ -33,10 +33,10 @@
       "name": "generate",
       "steps": [
         {
-          "exec": "npx --yes -p @aws-prototyping-sdk/type-safe-api@0.19.66 clean-openapi-generated-code --code-path ."
+          "exec": "npx --yes -p @aws/pdk@0.21.2 type-safe-api.clean-openapi-generated-code --code-path ."
         },
         {
-          "exec": "npx --yes -p @aws-prototyping-sdk/type-safe-api@0.19.66 generate --generator python --spec-path ../../../model/.api.json --output-path . --generator-dir python --src-dir api_python_runtime --smithy-json-path ../../../model/build/smithyprojections/api-model/openapi/model/model.json --additional-properties \"packageName=api_python_runtime,projectName=api-python-runtime\" --openapi-normalizer \"KEEP_ONLY_FIRST_TAG_IN_OPERATION=true\" --generate-alias-as-model"
+          "exec": "npx --yes -p @aws/pdk@0.21.2 type-safe-api.generate --generator python-nextgen --spec-path ../../../model/.api.json --output-path . --generator-dir python --src-dir api_python_runtime --additional-properties \"packageName=api_python_runtime,projectName=api-python-runtime\" --openapi-normalizer \"KEEP_ONLY_FIRST_TAG_IN_OPERATION=true\" --generate-alias-as-model"
         }
       ]
     },

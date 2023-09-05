@@ -86,10 +86,10 @@ pnpm exec cdk deploy --app cdk.out --require-approval never Dev/Galileo-SampleDa
 
 # Development
 
-> *WIP*: This repository is currently a work-in-progress and acts as a living reference. Overtime, this repository will be partially made available via [AWS PDK](https://aws.github.io/aws-prototyping-sdk) as libraries and constructs
-> become more stable and robust. This repository is expected to remain as an example reference for bootstrapping such a project using the toolkit provided by the [AWS PDK](https://aws.github.io/aws-prototyping-sdk).
+> *WIP*: This repository is currently a work-in-progress and acts as a living reference. Overtime, this repository will be partially made available via [AWS PDK](https://aws.github.io/aws-pdk) as libraries and constructs
+> become more stable and robust. This repository is expected to remain as an example reference for bootstrapping such a project using the toolkit provided by the [AWS PDK](https://aws.github.io/aws-pdk).
 
-This codebase is polyglot monorepo managed by [AWS PDK Monoreop](https://aws.github.io/aws-prototyping-sdk/developer_guides/nx-monorepo/index.html) which utilizes the following technologies under the hood:
+This codebase is polyglot monorepo managed by [AWS PDK Monoreop](https://aws.github.io/aws-pdk/developer_guides/nx-monorepo/index.html) which utilizes the following technologies under the hood:
 * [pnpm](https://pnpm.io) - workspace management.
 * [projen](https://projen.io/) - define and maintain complex project configuration through code; Project-as-Code (PaC).
 * [nx](https://nx.dev/) - polyglot package build and dependency management, plus caching and performance improvements.
@@ -123,7 +123,7 @@ At a high-level, the project is structured as follows:
 This project uses [Projen](https://github.com/projen/projen) to handle synthesizing projects. In order to add new Projects or change existing settings, please follow the below process:
 
 1. Modify the `.projenrc.ts` file and save it.
-   1. Refer to [PDK .projenrc.ts](https://github.com/aws/aws-prototyping-sdk/blob/mainline/.projenrc.ts) for a working example.
+   1. Refer to [PDK .projenrc.ts](https://github.com/aws/aws-pdk/blob/mainline/.projenrc.ts) for a working example.
 2. From the root, run `pnpm projen`. This will synthesize all of your projects.
 
 ## Common Commands
@@ -165,14 +165,14 @@ The sample code is currently in pre-release status (ALPHA), during which time ex
 
 The current vector storage (Aurora Postgres) uses default ports, username, and a single master secret without rotation enabled. The cluster is only accessible from within the application VPC which reduces the attack service, however additional hardening of the security posture should be taken before storing sensitive data in the database.
 
-> During deployment, you will be notified of these concerns via [PDK Nag](https://github.com/aws/aws-prototyping-sdk/blob/mainline/packages/pdk-nag/src/packs/README.md#rules) warnings in the console:
+> During deployment, you will be notified of these concerns via [PDK Nag](https://github.com/aws/aws-pdk/blob/mainline/packages/pdk-nag/src/packs/README.md#rules) warnings in the console:
 > `AwsPrototyping-AuroraMySQLPostgresIAMAuth`, `AwsPrototyping-SecretsManagerRotationEnabled`
 
 ### Amazon SageMaker Studio
 
 In development stage, the application deploys an [Amazon SageMaker Studio](https://aws.amazon.com/sagemaker/studio/) domain and user profile that has broad access to many of the resources deployed by the application, along with [SagemakerFullAccess](https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmazonSageMakerFullAccess.html) managed policy. The access is designed to allow rapid deployment and testing of models against the application from within Notebooks without requiring application code modification and deployment. Considerations should be taken when granting users access to this development account and the user profile provided, in addition to implementing stronger least-privileged permissions based on your actual use case and needs.
 
-> During deployment, you will be notified of this concern via [PDK Nag](https://github.com/aws/aws-prototyping-sdk/blob/mainline/packages/pdk-nag/src/packs/README.md#rules) warning in the console:
+> During deployment, you will be notified of this concern via [PDK Nag](https://github.com/aws/aws-pdk/blob/mainline/packages/pdk-nag/src/packs/README.md#rules) warning in the console:
 > `AwsPrototyping-IAMNoManagedPolicies[Policy::arn:<AWS::Partition>:iam::aws:policy/AmazonSageMakerFullAccess]`
 ### Network accessibility
 

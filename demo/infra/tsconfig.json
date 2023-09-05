@@ -12,7 +12,7 @@
     "lib": [
       "ES2020"
     ],
-    "module": "CommonJS",
+    "module": "NodeNext",
     "noEmitOnError": false,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
@@ -25,7 +25,8 @@
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "stripInternal": true,
-    "target": "ES2020"
+    "target": "ES2021",
+    "moduleResolution": "NodeNext"
   },
   "include": [
     "src/**/*.ts"

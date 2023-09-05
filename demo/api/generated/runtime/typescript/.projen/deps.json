@@ -19,6 +19,18 @@
       "type": "build"
     },
     {
+      "name": "@aws-lambda-powertools/logger",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-lambda-powertools/metrics",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-lambda-powertools/tracer",
+      "type": "runtime"
+    },
+    {
       "name": "@types/aws-lambda",
       "type": "runtime"
     }

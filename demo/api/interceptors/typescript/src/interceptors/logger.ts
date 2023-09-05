@@ -23,16 +23,10 @@ export interface ILoggerInterceptorContext {
  */
 export const loggerInterceptor = async <
   RequestParameters,
-  RequestArrayParameters,
   RequestBody,
   Response extends OperationResponse<number, any>
 >(
-  request: ChainedRequestInput<
-    RequestParameters,
-    RequestArrayParameters,
-    RequestBody,
-    Response
-  >
+  request: ChainedRequestInput<RequestParameters, RequestBody, Response>
 ): Promise<Response | OperationResponse<500, ServerErrorResponseContent>> => {
   try {
     logger.addContext(request.context);

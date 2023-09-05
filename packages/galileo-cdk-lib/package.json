@@ -2,7 +2,7 @@
   "name": "@aws-galileo/galileo-cdk-lib",
   "repository": {
     "type": "git",
-    "url": "https://git-codecommit.ap-southeast-2.amazonaws.com/v1/repos/galileo"
+    "url": "https://github.com/aws-samples/aws-genai-conversational-rag-reference"
   },
   "scripts": {
     "build": "npx projen build",

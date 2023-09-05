@@ -14,7 +14,7 @@
       "dom.iterable",
       "esnext"
     ],
-    "module": "commonjs",
+    "module": "NodeNext",
     "noEmitOnError": false,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
@@ -27,7 +27,7 @@
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "stripInternal": true,
-    "target": "es5",
+    "target": "ES2021",
     "allowJs": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,

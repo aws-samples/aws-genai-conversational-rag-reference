@@ -28,7 +28,8 @@ jspm_packages/
 *.tgz
 .yarn-integrity
 .cache
-runtime-config.json
+public/runtime-config.json
+public/api.json
 !/.projenrc.js
 !/.prettierignore
 !/.prettierrc.json

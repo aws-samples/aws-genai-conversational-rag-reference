@@ -38,13 +38,13 @@
       "name": "generate",
       "steps": [
         {
-          "exec": "npx --yes -p @aws-prototyping-sdk/type-safe-api@0.19.66 copy-gradle-wrapper"
+          "exec": "npx --yes -p @aws/pdk@0.21.2 type-safe-api.copy-gradle-wrapper"
         },
         {
           "exec": "./gradlew build"
         },
         {
-          "exec": "npx --yes -p @aws-prototyping-sdk/type-safe-api@0.19.66 parse-openapi-spec --spec-path build/smithyprojections/api-model/openapi/openapi/MyApi.openapi.json --output-path .api.json"
+          "exec": "npx --yes -p @aws/pdk@0.21.2 type-safe-api.parse-openapi-spec --spec-path build/smithyprojections/api-model/openapi/openapi/MyApi.openapi.json --output-path .api.json --smithy-json-path build/smithyprojections/api-model/openapi/model/model.json"
         }
       ]
     },

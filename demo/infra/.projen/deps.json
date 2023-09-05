@@ -138,46 +138,6 @@
       "type": "runtime"
     },
     {
-      "name": "@aws-prototyping-sdk/aws-arch",
-      "version": "^0.19.66",
-      "type": "runtime"
-    },
-    {
-      "name": "@aws-prototyping-sdk/cdk-graph-plugin-diagram",
-      "version": "^0.19.66",
-      "type": "runtime"
-    },
-    {
-      "name": "@aws-prototyping-sdk/cdk-graph",
-      "version": "^0.19.66",
-      "type": "runtime"
-    },
-    {
-      "name": "@aws-prototyping-sdk/identity",
-      "version": "^0.19.66",
-      "type": "runtime"
-    },
-    {
-      "name": "@aws-prototyping-sdk/pdk-nag",
-      "version": "^0.19.66",
-      "type": "runtime"
-    },
-    {
-      "name": "@aws-prototyping-sdk/pipeline",
-      "version": "^0.19.66",
-      "type": "runtime"
-    },
-    {
-      "name": "@aws-prototyping-sdk/static-website",
-      "version": "^0.19.66",
-      "type": "runtime"
-    },
-    {
-      "name": "@aws-prototyping-sdk/type-safe-api",
-      "version": "^0.19.66",
-      "type": "runtime"
-    },
-    {
       "name": "@aws-sdk/client-codebuild",
       "version": "^3.391.0",
       "type": "runtime"
@@ -237,6 +197,11 @@
     },
     {
       "name": "@aws-sdk/signature-v4",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws/pdk",
+      "version": "^0.21.2",
       "type": "runtime"
     },
     {

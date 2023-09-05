@@ -6,7 +6,7 @@ plugins {
 sourceSets {
     main {
         java {
-            srcDirs = ['src/main/smithy']
+            srcDirs = ['src/main/smithy', 'generated/main/smithy']
         }
     }
 }
