@@ -1,0 +1,66 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Website",
+      "request": "launch",
+      "webRoot": "${workspaceRoot}/demo/website/src",
+      "url": "http://localhost:3000",
+      "type": "chrome"
+    },
+    {
+      "name": "Galileo SDK - Debug Jest",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "--nolazy",
+        "${workspaceRoot}/packages/galileo-sdk/node_modules/jest/bin/jest.js",
+        "--runInBand",
+        "--collectCoverage=false",
+        "--colors",
+        "--verbose",
+        "--testTimeout=100000000",
+      ],
+      "cwd": "${workspaceFolder}/packages/galileo-sdk",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "name": "Galileo Interceptors - Debug Jest",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "--nolazy",
+        "${workspaceRoot}/demo/api/interceptors/typescript/node_modules/jest/bin/jest.js",
+        "--runInBand",
+        "--collectCoverage=false",
+        "--colors",
+        "--verbose",
+        "--testTimeout=100000000",
+      ],
+      "cwd": "${workspaceFolder}/demo/api/interceptors/typescript",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "name": "Galileo Corpus - Debug Jest",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "--nolazy",
+        "${workspaceRoot}/demo/corpus/logic/node_modules/jest/bin/jest.js",
+        "--runInBand",
+        "--collectCoverage=false",
+        "--colors",
+        "--verbose",
+        "--testTimeout=100000000",
+      ],
+      "cwd": "${workspaceFolder}/demo/corpus/logic",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+  ]
+}

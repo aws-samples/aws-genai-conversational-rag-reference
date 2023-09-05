@@ -1,0 +1,30 @@
+{
+  "search.exclude": {
+    "**/.yarn": true,
+    "**/.pnp.*": true,
+    "**/node_modules/**/*": true,
+    "**/.cache/**/*": true,
+    "**/build/**/*": true
+  },
+  "eslint.nodePath": "node_modules/eslint/lib",
+  "prettier.prettierPath": "node_modules/prettier/index.js",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.autopep8"
+  },
+  "gradle.nestedProjects": true,
+  "smithyLsp.rootPath": "${workspaceRoot}/demo/api/model",
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/demo/api/interceptors/python",
+    "${workspaceFolder}/demo/api/runtime/python",
+    "${workspaceFolder}/demo/inference-engine"
+  ],
+  // disable eslint extension until can align with monorepo
+  // it just adds noise as commit hook will auto eslint --fix anyways
+  "eslint.enable": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": false,
+    "source.organizeImports": false
+  },
+}
