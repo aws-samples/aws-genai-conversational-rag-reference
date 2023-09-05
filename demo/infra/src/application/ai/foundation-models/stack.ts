@@ -137,6 +137,7 @@ export class FoundationModelStack extends Stack {
               resource: "endpoint",
               // [Security] Unable to scope to endpoint name due to cross-environment without coupling stacks unnecessarily
               resourceName: "*",
+              region: "*",
             });
           }),
       }),

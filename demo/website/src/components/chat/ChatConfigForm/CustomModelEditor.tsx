@@ -20,14 +20,13 @@ import SpaceBetween from "@cloudscape-design/components/space-between";
 import { WritableDraft } from "immer/dist/internal";
 import { get, has, isEmpty, merge, set } from "lodash";
 import { FC, useEffect } from "react";
-import { useImmer } from "use-immer";
-import { useDebounce, useLocalStorage } from "usehooks-ts";
+import { Updater } from "use-immer";
 import { ModelSelector } from "./ModelSelector";
 import { useFoundationModelInventory } from "../../../hooks/llm-inventory";
 
 type CustomModelEditorProps = {
   value?: Partial<IModelInfo>;
-  onChange: (value: Partial<IModelInfo>) => void;
+  updateValue: Updater<Partial<IModelInfo>>;
 };
 
 const PROMPT_TAGS: (keyof IPromptAdapter)[] = [
@@ -40,46 +39,33 @@ const PROMPT_TAGS: (keyof IPromptAdapter)[] = [
   "ai",
 ];
 
-export const CustomModelEditor: FC<CustomModelEditorProps> = (
-  props: CustomModelEditorProps
-) => {
-  const [persistent, persist] = useLocalStorage<Partial<IModelInfo>>(
-    "@galileo/custom-model",
-    {}
-  );
-  const [config, updateConfig] = useImmer<Partial<IModelInfo>>(() => ({
-    modelId: "custom",
-    ...persistent,
-    ...props.value,
-    framework: {
-      type: "SageMakerEndpoint" as ModelFrameworks,
-      ...persistent?.framework,
-      ...props.value?.framework,
-    } as any,
-  }));
-
+export const CustomModelEditor: FC<CustomModelEditorProps> = ({
+  value,
+  updateValue,
+}: CustomModelEditorProps) => {
   const inventory = useFoundationModelInventory();
-
-  useEffect(() => {
-    props.onChange(config);
-  }, [config, props.onChange]);
 
   // pre-populate fields with predefined model
   useEffect(() => {
-    if (config.uuid && inventory?.models) {
-      const _model = inventory.models[config.uuid];
+    if (value?.uuid && inventory?.models) {
+      const _model = inventory.models[value.uuid];
       if (_model) {
-        updateConfig((x) => {
-          merge(x, _model);
+        updateValue((draft) => {
+          merge(draft, {
+            ..._model,
+            name: `Custom:${_model.name}`,
+            modelId: `custom/${_model.modelId}`,
+            framework: {
+              ..._model.framework,
+              // We don't have kwargs editable so don't display
+              modelKwargs: undefined,
+              endpointKwargs: undefined,
+            },
+          });
         });
       }
     }
-  }, [inventory, config.uuid]);
-
-  const debouncedValue = useDebounce(config, 500);
-  useEffect(() => {
-    persist(debouncedValue);
-  }, [debouncedValue, persist]);
+  }, [inventory, value?.uuid]);
 
   return (
     <Container header={<Header variant="h3">Custom Model</Header>}>
@@ -91,13 +77,13 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = (
         >
           <ModelSelector
             none
-            value={config.uuid}
-            onChange={(value) => {
-              updateConfig((x) => {
-                if (isEmpty(value)) {
+            value={value?.uuid}
+            onChange={(_value) => {
+              updateValue((x) => {
+                if (isEmpty(_value)) {
                   x.uuid = undefined;
                 } else {
-                  x.uuid = value;
+                  x.uuid = _value;
                 }
               });
             }}
@@ -107,10 +93,10 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = (
         <FormField label="Framework" stretch>
           <SegmentedControl
             selectedId={
-              config.framework?.type || ("SageMakerEndpoint" as ModelFrameworks)
+              value?.framework?.type || ("SageMakerEndpoint" as ModelFrameworks)
             }
             onChange={({ detail }) =>
-              updateConfig((x) => {
+              updateValue((x) => {
                 x.framework ??= {} as any;
                 x.framework!.type = detail.selectedId as any;
               })
@@ -121,22 +107,22 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = (
                 id: "SageMakerEndpoint" as ModelFrameworks,
                 text: "SageMaker",
               },
-              {
-                id: "Bedrock" as ModelFrameworks,
-                text: "Bedrock",
-              },
+              // {
+              //   id: "Bedrock" as ModelFrameworks,
+              //   text: "Bedrock",
+              // },
             ]}
           />
         </FormField>
 
-        {config.framework?.type ===
+        {value?.framework?.type ===
           ("SageMakerEndpoint" as ModelFrameworks) && (
           <>
             <FormField label="SageMaker Endpoint Name" stretch>
               <Input
-                value={get(config.framework, "endpointName", "")}
+                value={get(value?.framework, "endpointName", "")}
                 onChange={({ detail }) => {
-                  updateConfig((x) => {
+                  updateValue((x) => {
                     (
                       x.framework as WritableDraft<ISageMakerEndpointModelFramework>
                     ).endpointName = detail.value;
@@ -146,12 +132,11 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = (
             </FormField>
             <FormField label="SageMaker Endpoint Region" stretch>
               <Input
-                value={get(config.framework, "endpointRegion", "")}
+                value={get(value?.framework, "endpointRegion", "")}
                 onChange={({ detail }) => {
-                  updateConfig((x) => {
-                    (
-                      x.framework as WritableDraft<ISageMakerEndpointModelFramework>
-                    ).endpointRegion = detail.value;
+                  updateValue((x) => {
+                    x.framework ??= {} as any;
+                    x.framework!.endpointRegion = detail.value;
                   });
                 }}
               />
@@ -165,9 +150,9 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = (
           stretch
         >
           <Input
-            value={config.framework?.role || ""}
+            value={value?.framework?.role || ""}
             onChange={({ detail }) => {
-              updateConfig((x) => {
+              updateValue((x) => {
                 if (isEmpty(detail.value)) {
                   x.framework!.role = undefined;
                 } else {
@@ -183,9 +168,9 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = (
         <FormField label="Constraint: Max Input Length" stretch>
           <Input
             type="number"
-            value={String(config.constraints?.maxInputLength || "")}
+            value={String(value?.constraints?.maxInputLength || "")}
             onChange={({ detail }) => {
-              updateConfig((x) => {
+              updateValue((x) => {
                 if (isEmpty(detail.value)) {
                   if (
                     has<Partial<IModelInfo>>(x, "constraints.maxInputLength")
@@ -211,9 +196,9 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = (
         <FormField label="Constraint: Max Total Tokens" stretch>
           <Input
             type="number"
-            value={String(config.constraints?.maxTotalTokens || "")}
+            value={String(value?.constraints?.maxTotalTokens || "")}
             onChange={({ detail }) => {
-              updateConfig((x) => {
+              updateValue((x) => {
                 if (isEmpty(detail.value)) {
                   if (
                     has<Partial<IModelInfo>>(x, "constraints.maxTotalTokens")
@@ -268,10 +253,10 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = (
                 >
                   <Input
                     value={
-                      config.adapter?.contentHandler?.input?.promptKey || ""
+                      value?.adapter?.contentHandler?.input?.promptKey || ""
                     }
                     onChange={({ detail }) => {
-                      updateConfig((x) => {
+                      updateValue((x) => {
                         if (isEmpty(detail.value)) {
                           if (
                             has<Partial<IModelInfo>>(
@@ -304,11 +289,11 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = (
                 >
                   <Input
                     value={
-                      config.adapter?.contentHandler?.input?.modelKwargsKey ||
+                      value?.adapter?.contentHandler?.input?.modelKwargsKey ||
                       ""
                     }
                     onChange={({ detail }) => {
-                      updateConfig((x) => {
+                      updateValue((x) => {
                         if (isEmpty(detail.value)) {
                           if (
                             has<Partial<IModelInfo>>(
@@ -341,10 +326,10 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = (
                 >
                   <Input
                     value={
-                      config.adapter?.contentHandler?.output?.jsonpath || ""
+                      value?.adapter?.contentHandler?.output?.jsonpath || ""
                     }
                     onChange={({ detail }) => {
-                      updateConfig((x) => {
+                      updateValue((x) => {
                         if (isEmpty(detail.value)) {
                           if (
                             has<Partial<IModelInfo>>(
@@ -395,10 +380,10 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = (
                       <Input
                         ariaLabel="Open"
                         value={tagValueToText(
-                          get(config, `adapter.prompt.${tag}.open`, "")
+                          get(value, `adapter.prompt.${tag}.open`, "")
                         )}
                         onChange={({ detail }) => {
-                          updateConfig((x) => {
+                          updateValue((x) => {
                             if (isEmpty(detail.value)) {
                               if (
                                 has<Partial<IModelInfo>>(
@@ -427,10 +412,10 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = (
                       <Input
                         ariaLabel="Close"
                         value={tagValueToText(
-                          get(config, `adapter.prompt.${tag}.close`, "")
+                          get(value, `adapter.prompt.${tag}.close`, "")
                         )}
                         onChange={({ detail }) => {
-                          updateConfig((x) => {
+                          updateValue((x) => {
                             if (isEmpty(detail.value)) {
                               if (
                                 has<Partial<IModelInfo>>(

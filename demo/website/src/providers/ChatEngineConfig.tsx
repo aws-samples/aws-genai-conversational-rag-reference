@@ -10,6 +10,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useRef,
 } from "react";
 import { useImmer, Updater } from "use-immer";
 import { useLocalStorage, useDebounce } from "usehooks-ts";
@@ -17,13 +18,19 @@ import { useIsAdmin } from "../Auth";
 
 export type { ChatEngineConfig, ChatEngineConfigSearchType };
 
+export interface ChatEngineConfigActions {
+  readonly reset: () => void;
+  readonly copy: () => Promise<void>;
+  readonly paste: () => Promise<void>;
+}
+
 export type ChatEngineConfigContext = [
   config: ChatEngineConfig,
   updater: Updater<ChatEngineConfig>,
-  reset: () => void
+  actions: ChatEngineConfigActions | undefined
 ];
 
-const DEFAULT_CONTEXT: ChatEngineConfigContext = [{}, () => {}, () => {}];
+const DEFAULT_CONTEXT: ChatEngineConfigContext = [{}, () => {}, undefined];
 
 /**
  * Context for storing the ChatEngineConfig.
@@ -66,17 +73,45 @@ const ChatEngineConfigProvider: React.FC<any> = ({ children }) => {
     {}
   );
   const isAdmin = useIsAdmin();
-  const state = useImmer<ChatEngineConfig>(persistent);
+  const [config, updateConfig] = useImmer<ChatEngineConfig>(persistent);
+  const configRef = useRef<ChatEngineConfig>();
+  configRef.current = config;
 
   const reset = useCallback(() => {
-    state[1]({});
+    updateConfig({});
     persist({});
     persistCustomModel({});
-  }, [persist, persistCustomModel, state[1]]);
+  }, [persist, persistCustomModel, updateConfig]);
 
-  const context: ChatEngineConfigContext = [...state, reset];
+  const copy = useCallback(async () => {
+    return navigator.clipboard.writeText(
+      JSON.stringify(configRef.current, null, 2)
+    );
+  }, [configRef]);
 
-  const debouncedValue = useDebounce(state[0], 1000);
+  const paste = useCallback(async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      console.info("Pasting config from clipboard", text);
+      const _clipboardConfig = JSON.parse(text);
+      console.info(_clipboardConfig);
+      updateConfig(_clipboardConfig);
+    } catch (error) {
+      console.error("Failed to paste config", error);
+    }
+  }, [updateConfig]);
+
+  const context: ChatEngineConfigContext = [
+    config,
+    updateConfig,
+    {
+      reset,
+      copy,
+      paste,
+    },
+  ];
+
+  const debouncedValue = useDebounce(config, 1000);
 
   useEffect(() => {
     if (isAdmin && debouncedValue) {
