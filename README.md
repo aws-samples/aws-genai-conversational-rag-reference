@@ -32,12 +32,14 @@ Galileo is:
 *AWS Service Quotas:*
 > Ensure the following service quota limits are increased before deploying. The deployment performs a check and will fail early if limits are not met.
 
-|   Service                                                                                  |   Quota                                       | Minimum Applied Value | Usage                       |
-| ------------------------------------------------------------------------------------------ | --------------------------------------------- | --------------------- | --------------------------- |
-| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas)   | `ml.g5.12xlarge for endpoint usage`           | 1                     | Falcon Lite                 |
-| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas)   | `ml.g5.16xlarge for endpoint usage`           | 1                     | Falcon 7B                   |
-| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas)   | `ml.g5.48xlarge for endpoint usage`           | 1                     | Falcon 40B                  |
-| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas)   | `ml.g4dn.2xlarge for processing job usage`    | 5                     | Embedding/Indexing ETL      |
+| Service                                                                                  | Quota                                      | Minimum Applied Value | Usage                  | Region |
+| ---------------------------------------------------------------------------------------- | ------------------------------------------ | --------------------- | ---------------------- | ------ |
+| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas) | `ml.g5.12xlarge for endpoint usage`        | 1                     | Falcon Lite            | LLM    |
+| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas) | `ml.g5.16xlarge for endpoint usage`        | 1                     | Falcon 7B              | LLM    |
+| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas) | `ml.g5.48xlarge for endpoint usage`        | 1                     | Falcon 40B             | LLM    |
+| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas) | `ml.g4dn.2xlarge for processing job usage` | 5                     | Embedding/Indexing ETL | App    |
+
+> Note: Galileo CLI enables you to deploy your LLM and application into different regions.
 
 ---
 
@@ -90,6 +92,7 @@ pnpm exec cdk deploy --app cdk.out --require-approval never Dev/Galileo-SampleDa
 > become more stable and robust. This repository is expected to remain as an example reference for bootstrapping such a project using the toolkit provided by the [AWS PDK](https://aws.github.io/aws-pdk).
 
 This codebase is polyglot monorepo managed by [AWS PDK Monoreop](https://aws.github.io/aws-pdk/developer_guides/nx-monorepo/index.html) which utilizes the following technologies under the hood:
+
 * [pnpm](https://pnpm.io) - workspace management.
 * [projen](https://projen.io/) - define and maintain complex project configuration through code; Project-as-Code (PaC).
 * [nx](https://nx.dev/) - polyglot package build and dependency management, plus caching and performance improvements.
