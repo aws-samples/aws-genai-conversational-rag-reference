@@ -13,7 +13,7 @@
       "dom",
       "ES2019"
     ],
-    "module": "NodeNext",
+    "module": "CommonJS",
     "noEmitOnError": false,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
@@ -26,9 +26,8 @@
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "stripInternal": true,
-    "target": "ES2021",
-    "skipLibCheck": true,
-    "moduleResolution": "node"
+    "target": "ES2019",
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*.ts"

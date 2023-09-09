@@ -13,7 +13,7 @@
       "DOM",
       "ES2021"
     ],
-    "module": "NodeNext",
+    "module": "CommonJS",
     "noEmitOnError": false,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
@@ -26,7 +26,7 @@
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "stripInternal": true,
-    "target": "ES2021",
+    "target": "ES2019",
     "skipLibCheck": true,
     "moduleResolution": "node"
   },

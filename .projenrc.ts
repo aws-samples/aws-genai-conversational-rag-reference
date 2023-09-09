@@ -2,7 +2,6 @@ import fs from "node:fs";
 import { MonorepoTsProject } from "@aws/pdk/monorepo";
 import { Project, javascript } from "projen";
 import { GalileoCdkLib, Demo, GalileoSdk } from "./projenrc";
-import { TypeScriptModuleResolution } from "projen/lib/javascript";
 
 const DEMO_DIR = "demo";
 const DEMO_NAME = "Galileo";
@@ -86,7 +85,7 @@ const galileoCdkLib = new GalileoCdkLib(monorepo);
 //////////////////////////////////////////////////////////
 // DEMOS
 //////////////////////////////////////////////////////////
-const demo = new Demo({
+new Demo({
   monorepo,
   galileoCdkLib,
   galileoSdk,
@@ -121,19 +120,3 @@ function recurseProjects(
 recurseProjects(monorepo, configureEsLint);
 
 monorepo.synth();
-
-// TEMPORARY: tsconfig/tsconfigDev overrides not working yet in PDK 0.21.2
-// TODO: once projen PR and PDK updates are done, remove this block
-[galileoSdk, demo.api.apiInterceptorsTs, demo.website.project].forEach(
-  (tsProject) => {
-    [tsProject.tsconfig!.file, tsProject.tsconfigDev.file].forEach(
-      (tsconfig) => {
-        tsconfig.addOverride(
-          "compilerOptions.moduleResolution",
-          TypeScriptModuleResolution.NODE
-        );
-      }
-    );
-    tsProject.synth();
-  }
-);

@@ -24,10 +24,7 @@ export class GalileoCdkLib extends AwsCdkConstructLibrary {
       constructsVersion: "10.2.52",
       jsiiVersion: "5.x",
       defaultReleaseBranch: DEFAULT_RELEASE_BRANCH,
-      deps: [
-        // `@aws/pdk/identity@^${PDK_VERSION}`
-        // `@aws/pdk/pdk-nag@^${PDK_VERSION}`
-      ],
+      deps: ["@aws/pdk"],
       publishDryRun: true,
     });
 

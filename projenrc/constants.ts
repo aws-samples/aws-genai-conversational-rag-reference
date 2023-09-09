@@ -15,9 +15,9 @@ export const DEMO_APPLICATION_NAME = "Galileo";
 
 export const AWS_SDK_VERSION = "3.391.0";
 
-export const CDK_VERSION = "2.92.0";
+export const CDK_VERSION = "2.95.0";
 
-export const PDK_VERSION = "0.21.2";
+export const PDK_VERSION = "0.22.1";
 
 // Not semver yet so need to pin version
 export const LANGCHAIN_VERSION = "0.0.136";
