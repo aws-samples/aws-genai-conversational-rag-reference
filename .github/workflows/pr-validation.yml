@@ -6,10 +6,25 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       pull-requests: read
       packages: read
     steps:
+      #######################################################################
+      ## Cache
+      #######################################################################
+      - name: Cache
+        uses: actions/cache@v3.3.2
+        with:
+          key: ${{ runner.os }}-build
+          path: |
+            /root/.m2/**/*
+            /root/.gradle/caches/**/*
+            /var/cache/apt/**/*
+            /var/lib/apt/lists/**/*
+            /root/.composer/**/*
+            /root/.pnpm-store/**/*
+            node_modules/.cache/nx/**/*
       #######################################################################
       ## Setup
       #######################################################################
@@ -41,8 +56,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          # ref: ${{ github.event.pull_request.head.ref }}
+          # repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: feat/aws-pdk-migration
+          repository: sperka/aws-genai-conversational-rag-reference
           token: ${{ secrets.REPO_READ_ACCESS }}
       #######################################################################
       ## Build and Verify
