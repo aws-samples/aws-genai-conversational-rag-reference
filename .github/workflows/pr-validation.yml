@@ -6,7 +6,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
+      pull-requests: read
+      packages: read
     steps:
       #######################################################################
       ## Setup
