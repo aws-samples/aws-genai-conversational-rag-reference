@@ -1,0 +1,52 @@
+name: pr validation
+on:
+  pull_request: {}
+  workflow_dispatch: {}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      #######################################################################
+      ## Setup
+      #######################################################################
+      - name: Setup Java JDK
+        uses: actions/setup-java@v3.12.0
+        with:
+          java-version: 17
+          distribution: corretto
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.8.1
+        with:
+          node-version: 18.x
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+      - name: Setup Python
+        uses: actions/setup-python@v4.7.0
+        with:
+          python-version: 3.11
+      - name: Setup Poetry
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      #######################################################################
+      ## Checkout
+      #######################################################################
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+      #######################################################################
+      ## Build and Verify
+      #######################################################################
+      - name: Install
+        run: pnpm install
+      - name: Build
+        run: pnpm build
+      - name: Check for mutations
+        run: git diff --ignore-space-at-eol --exit-code
