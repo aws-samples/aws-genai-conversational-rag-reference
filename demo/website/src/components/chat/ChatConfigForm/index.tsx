@@ -5,7 +5,11 @@ import {
   QA_TEMPLATE,
 } from "@aws-galileo/galileo-sdk/lib/models/prompts";
 import type { IModelInfo } from "@aws-galileo/galileo-sdk/lib/models/types";
-import { Container } from "@cloudscape-design/components";
+import {
+  Container,
+  Popover,
+  StatusIndicator,
+} from "@cloudscape-design/components";
 import Button from "@cloudscape-design/components/button";
 import ExpandableSection from "@cloudscape-design/components/expandable-section";
 import Form from "@cloudscape-design/components/form";
@@ -17,6 +21,7 @@ import Textarea from "@cloudscape-design/components/textarea";
 import { isEmpty } from "lodash";
 import startCase from "lodash/startCase";
 import { FC, useCallback } from "react";
+import { Updater } from "use-immer";
 import { CustomModelEditor } from "./CustomModelEditor";
 import { CUSTOM_VALUE, ModelSelector } from "./ModelSelector";
 import {
@@ -35,7 +40,7 @@ function formatLabel(value: string): string {
 }
 
 export const ChatConfigForm: FC<ChatConfigProps> = (props: ChatConfigProps) => {
-  const [, updateConfig, resetConfig] = useChatEngineConfig();
+  const [, updateConfig, actions] = useChatEngineConfig();
   const [llmModel, setLlmModel] = useChatEngineConfigState("llmModel");
   const [llmModelKwargs, setLlmModelKwargs] =
     useChatEngineConfigState("llmModelKwargs");
@@ -53,23 +58,25 @@ export const ChatConfigForm: FC<ChatConfigProps> = (props: ChatConfigProps) => {
 
   const isCustomLlmModel = typeof llmModel === "object";
 
-  const onCustomModelChange = useCallback(
-    (value: Partial<IModelInfo>) => {
-      updateConfig((x) => {
-        if (isEmpty(value)) {
-          x.llmModel = undefined;
+  const updateCustomModel: Updater<Partial<IModelInfo>> = useCallback(
+    (x) => {
+      updateConfig((draft) => {
+        if (typeof x === "function") {
+          x(draft.llmModel);
+        } else if (isEmpty(x)) {
+          draft.llmModel = undefined;
         } else {
-          x.llmModel = value;
+          draft.llmModel = x;
         }
       });
     },
-    [resetConfig]
+    [updateConfig]
   );
 
   const onReset = useCallback(() => {
-    resetConfig();
+    actions?.reset();
     setLlmModel(undefined);
-  }, [resetConfig, setLlmModel]);
+  }, [actions?.reset, setLlmModel]);
 
   return (
     <Container>
@@ -84,6 +91,45 @@ export const ChatConfigForm: FC<ChatConfigProps> = (props: ChatConfigProps) => {
             </Button>
           </SpaceBetween>
         }
+        secondaryActions={
+          <SpaceBetween direction="horizontal" size="xs">
+            <Popover
+              size="small"
+              position="left"
+              triggerType="custom"
+              dismissButton={false}
+              content={
+                <StatusIndicator type="success">Copied!</StatusIndicator>
+              }
+            >
+              <Button
+                variant="link"
+                ariaLabel="Copy config to clipboard"
+                onClick={actions?.copy}
+              >
+                Copy
+              </Button>
+            </Popover>
+
+            <Popover
+              size="small"
+              position="left"
+              triggerType="custom"
+              dismissButton={false}
+              content={
+                <StatusIndicator type="success">Pasted!</StatusIndicator>
+              }
+            >
+              <Button
+                variant="link"
+                ariaLabel="Paste config from clipboard"
+                onClick={actions?.paste}
+              >
+                Paste
+              </Button>
+            </Popover>
+          </SpaceBetween>
+        }
       >
         <SpaceBetween direction="vertical" size="l">
           <ExpandableSection headerText="Inference">
@@ -94,7 +140,11 @@ export const ChatConfigForm: FC<ChatConfigProps> = (props: ChatConfigProps) => {
                   value={llmModel}
                   onChange={(value) => {
                     if (value === CUSTOM_VALUE) {
-                      setLlmModel({});
+                      setLlmModel({
+                        framework: {
+                          type: "SageMakerEndpoint",
+                        },
+                      });
                     } else {
                       setLlmModel(value);
                     }
@@ -104,7 +154,7 @@ export const ChatConfigForm: FC<ChatConfigProps> = (props: ChatConfigProps) => {
               {isCustomLlmModel && (
                 <CustomModelEditor
                   value={llmModel}
-                  onChange={onCustomModelChange}
+                  updateValue={updateCustomModel}
                 />
               )}
               <FormField label="Model Kwargs" stretch>
