@@ -1,18 +1,22 @@
 import * as path from "node:path";
-import { NxMonorepoProject, NxProject } from "@aws-prototyping-sdk/nx-monorepo";
+import { MonorepoTsProject, NxProject } from "@aws/pdk/monorepo";
 import {
   DocumentationFormat,
   Language,
   Library,
   ModelLanguage,
   TypeSafeApiProject,
-} from "@aws-prototyping-sdk/type-safe-api";
+} from "@aws/pdk/type-safe-api";
 import { TypeScriptProject } from "projen/lib/typescript";
-import { AWS_SDK_VERSION, DEFAULT_RELEASE_BRANCH, PROJECT_AUTHOR } from "../constants";
+import {
+  AWS_SDK_VERSION,
+  DEFAULT_RELEASE_BRANCH,
+  PROJECT_AUTHOR,
+} from "../constants";
 import { NodePackageManager } from "projen/lib/javascript";
 
 export interface ApiOptions {
-  readonly monorepo: NxMonorepoProject;
+  readonly monorepo: MonorepoTsProject;
   readonly rootOutdir: string;
   readonly serviceName?: string;
 }
@@ -69,10 +73,9 @@ export class Api {
       ["!{projectRoot}/index.html", "!{projectRoot}/.openapi-generator/**/*"],
       ["{projectRoot}/index.html"]
     );
-    NxProject.ensure(this.project.infrastructure.typescript!).addBuildTargetFiles(
-      [],
-      ["{projectRoot}/mocks", "{projectRoot}/assets"]
-    );
+    NxProject.ensure(
+      this.project.infrastructure.typescript!
+    ).addBuildTargetFiles([], ["{projectRoot}/mocks", "{projectRoot}/assets"]);
     NxProject.ensure(
       this.project.library.typescriptReactQueryHooks!
     ).addImplicitDependency(this.project.runtime.typescript!);

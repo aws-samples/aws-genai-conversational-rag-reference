@@ -16,10 +16,13 @@
   "devDependencies": {
     "@types/node": "^16",
     "npm-check-updates": "^16",
-    "projen": "^0.72.13",
-    "typescript": "^5.1.6"
+    "projen": "^0.73.11",
+    "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@aws-lambda-powertools/logger": "^1.12.1",
+    "@aws-lambda-powertools/metrics": "^1.12.1",
+    "@aws-lambda-powertools/tracer": "^1.12.1",
     "@types/aws-lambda": "^8.10.119"
   },
   "pnpm": {},

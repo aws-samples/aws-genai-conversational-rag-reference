@@ -1,21 +1,26 @@
 import * as path from "node:path";
-import { NxMonorepoProject, NxProject } from "@aws-prototyping-sdk/nx-monorepo";
+import { MonorepoTsProject, NxProject } from "@aws/pdk/monorepo";
 import { javascript } from "projen";
 import { AwsCdkTypeScriptApp } from "projen/lib/awscdk";
 import { GalileoCdkLib, GalileoSdk } from "../framework";
 import { LAMBDA_RECOGNIZE_LAYER_VERSION } from "aws-cdk-lib/cx-api";
-import { Api } from './api';
-import { Corpus } from './corpus';
-import { Website } from './website';
-import { Sample } from './sample';
-import { AWS_SDK_VERSION, CDK_VERSION, DEFAULT_RELEASE_BRANCH, PDK_VERSION } from '../constants';
-import { EULA_ENABLED_CONTEXT } from '../../demo/infra/src/galileo/ai/llms/framework/eula/context';
-import { IApplicationContext } from '../../demo/infra/src/application/context';
-import { extractPeerDeps } from '../helpers/extract-peer-deps';
-import { FoundationModelIds } from '../../demo/infra/src/application/ai/foundation-models/ids';
+import { Api } from "./api";
+import { Corpus } from "./corpus";
+import { Website } from "./website";
+import { Sample } from "./sample";
+import {
+  AWS_SDK_VERSION,
+  CDK_VERSION,
+  DEFAULT_RELEASE_BRANCH,
+  PDK_VERSION,
+} from "../constants";
+import { EULA_ENABLED_CONTEXT } from "../../demo/infra/src/galileo/ai/llms/framework/eula/context";
+import { IApplicationContext } from "../../demo/infra/src/application/context";
+import { extractPeerDeps } from "../helpers/extract-peer-deps";
+import { FoundationModelIds } from "../../demo/infra/src/application/ai/foundation-models/ids";
 
 export interface InfraOptions {
-  readonly monorepo: NxMonorepoProject;
+  readonly monorepo: MonorepoTsProject;
   readonly rootOutdir: string;
   readonly applicationName: string;
   readonly galileoCdkLib: GalileoCdkLib;
@@ -30,7 +35,16 @@ export class Infra {
   public readonly project: AwsCdkTypeScriptApp;
 
   constructor(options: InfraOptions) {
-    const { monorepo, rootOutdir, galileoSdk, api, corpus, website, sample, applicationName } = options;
+    const {
+      monorepo,
+      rootOutdir,
+      galileoSdk,
+      api,
+      corpus,
+      website,
+      sample,
+      applicationName,
+    } = options;
 
     this.project = new AwsCdkTypeScriptApp({
       packageManager: javascript.NodePackageManager.PNPM,
@@ -44,14 +58,7 @@ export class Infra {
       name: "infra",
       deps: [
         // this.galileoLibDep, TODO: removing this until we use it, so can remove build dep for now
-        `@aws-prototyping-sdk/static-website@^${PDK_VERSION}`,
-        `@aws-prototyping-sdk/identity@^${PDK_VERSION}`,
-        `@aws-prototyping-sdk/pipeline@^${PDK_VERSION}`,
-        `@aws-prototyping-sdk/pdk-nag@^${PDK_VERSION}`,
-        `@aws-prototyping-sdk/cdk-graph-plugin-diagram@^${PDK_VERSION}`,
-        `@aws-prototyping-sdk/cdk-graph@^${PDK_VERSION}`,
-        `@aws-prototyping-sdk/aws-arch@^${PDK_VERSION}`,
-        `@aws-prototyping-sdk/type-safe-api@^${PDK_VERSION}`,
+        `@aws/pdk@^${PDK_VERSION}`,
         `@aws-cdk/aws-cognito-identitypool-alpha@^${CDK_VERSION}-alpha.0`,
         `@aws-cdk/aws-lambda-python-alpha@^${CDK_VERSION}-alpha.0`,
         `@aws-sdk/client-codebuild@^${AWS_SDK_VERSION}`,
@@ -95,10 +102,10 @@ export class Infra {
         // Automatically update lambda description with asset hash to ensure new versions are deployed
         [LAMBDA_RECOGNIZE_LAYER_VERSION]: true,
         // CICD CodeCommit repository name
-        "repositoryName": "galileo",
+        repositoryName: "galileo",
         // Indicates if LLM End-User License Agreement verification is enabled
         [EULA_ENABLED_CONTEXT]: false, // TODO: Re-enable EULA for beta
-        ...{
+        ...({
           ApplicationName: applicationName,
           ChatDomain: "Legal",
           IncludeSampleDataset: true,
@@ -117,7 +124,7 @@ export class Infra {
             path.join(options.monorepo.outdir, rootOutdir, "infra"),
             path.join(corpus.dockerOutdir)
           ),
-        } as IApplicationContext,
+        } as IApplicationContext),
       },
       tsconfigDev: {
         compilerOptions: {
@@ -139,14 +146,14 @@ export class Infra {
     this.project.eslint?.addIgnorePattern("node_modules");
     this.project.eslint?.addIgnorePattern("test_reports");
 
-    NxProject.ensure(this.project).addBuildTargetFiles(
-      ["!{projectRoot}/cdk.out/**/*"],
-    );
+    NxProject.ensure(this.project).addBuildTargetFiles([
+      "!{projectRoot}/cdk.out/**/*",
+    ]);
 
     // Make sure that infra wait for python deps of the lambda handlers it contains
     NxProject.ensure(this.project).addImplicitDependency(
       api.project.runtime.python!,
-      corpus.logic,
+      corpus.logic
     );
 
     this.project.package.setScript(
@@ -170,6 +177,6 @@ export class Infra {
     this.project.package.setScript(
       "nag",
       "SKIP_BUNDLING=1 pnpm exec cdk synth --no-staging --strict --quiet"
-    )
+    );
   }
 }

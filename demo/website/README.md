@@ -5,7 +5,7 @@ To create a new [Cloudscape](https://cloudscape.design/) React Typescript Projec
 ### Via Projen CLI
 
 ```
-npx projen new --from @aws-prototyping-sdk/cloudscape-react-ts-website cloudscape-react-ts-website [--application-name <your-app>]
+npx projen new --from @aws/pdk/cloudscape-react-ts-website cloudscape-react-ts-website [--application-name <your-app>]
 ```
 
 ### Programmatically

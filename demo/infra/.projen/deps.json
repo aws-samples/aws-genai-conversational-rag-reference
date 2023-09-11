@@ -23,17 +23,17 @@
     },
     {
       "name": "@typescript-eslint/eslint-plugin",
-      "version": "^5",
+      "version": "^6",
       "type": "build"
     },
     {
       "name": "@typescript-eslint/parser",
-      "version": "^5",
+      "version": "^6",
       "type": "build"
     },
     {
       "name": "aws-cdk",
-      "version": "^2.92.0",
+      "version": "^2.95.0",
       "type": "build"
     },
     {
@@ -113,12 +113,12 @@
     },
     {
       "name": "@aws-cdk/aws-cognito-identitypool-alpha",
-      "version": "^2.92.0-alpha.0",
+      "version": "^2.95.0-alpha.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-lambda-python-alpha",
-      "version": "^2.92.0-alpha.0",
+      "version": "^2.95.0-alpha.0",
       "type": "runtime"
     },
     {
@@ -135,46 +135,6 @@
     },
     {
       "name": "@aws-lambda-powertools/parameters",
-      "type": "runtime"
-    },
-    {
-      "name": "@aws-prototyping-sdk/aws-arch",
-      "version": "^0.19.66",
-      "type": "runtime"
-    },
-    {
-      "name": "@aws-prototyping-sdk/cdk-graph-plugin-diagram",
-      "version": "^0.19.66",
-      "type": "runtime"
-    },
-    {
-      "name": "@aws-prototyping-sdk/cdk-graph",
-      "version": "^0.19.66",
-      "type": "runtime"
-    },
-    {
-      "name": "@aws-prototyping-sdk/identity",
-      "version": "^0.19.66",
-      "type": "runtime"
-    },
-    {
-      "name": "@aws-prototyping-sdk/pdk-nag",
-      "version": "^0.19.66",
-      "type": "runtime"
-    },
-    {
-      "name": "@aws-prototyping-sdk/pipeline",
-      "version": "^0.19.66",
-      "type": "runtime"
-    },
-    {
-      "name": "@aws-prototyping-sdk/static-website",
-      "version": "^0.19.66",
-      "type": "runtime"
-    },
-    {
-      "name": "@aws-prototyping-sdk/type-safe-api",
-      "version": "^0.19.66",
       "type": "runtime"
     },
     {
@@ -240,6 +200,11 @@
       "type": "runtime"
     },
     {
+      "name": "@aws/pdk",
+      "version": "^0.22.1",
+      "type": "runtime"
+    },
+    {
       "name": "@middy/core",
       "type": "runtime"
     },
@@ -269,7 +234,7 @@
     },
     {
       "name": "aws-cdk-lib",
-      "version": "^2.92.0",
+      "version": "^2.95.0",
       "type": "runtime"
     },
     {

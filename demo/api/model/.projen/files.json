@@ -6,6 +6,7 @@
     ".projen/files.json",
     ".projen/tasks.json",
     "build.gradle",
+    "generated/main/smithy/aws-pdk/prelude.smithy",
     "project.json",
     "settings.gradle",
     "smithy-build.json"

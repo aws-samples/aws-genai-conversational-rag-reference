@@ -1,13 +1,13 @@
-import { NxMonorepoProject } from "@aws-prototyping-sdk/nx-monorepo";
+import { MonorepoTsProject } from "@aws/pdk/monorepo";
 import { GalileoCdkLib, GalileoSdk } from "../framework";
-import { Api } from './api';
-import { Website } from './website';
-import { Corpus } from './corpus';
-import { Sample } from './sample';
-import { Infra } from './infra';
+import { Api } from "./api";
+import { Website } from "./website";
+import { Corpus } from "./corpus";
+import { Sample } from "./sample";
+import { Infra } from "./infra";
 
 export interface DemoOptions {
-  readonly monorepo: NxMonorepoProject;
+  readonly monorepo: MonorepoTsProject;
   readonly rootOutdir: string;
   readonly applicationName: string;
   readonly galileoCdkLib: GalileoCdkLib;
@@ -15,8 +15,15 @@ export interface DemoOptions {
 }
 
 export class Demo {
+  public readonly api: Api;
+  public readonly website: Website;
+  public readonly corpus: Corpus;
+  public readonly sample: Sample;
+  public readonly infra: Infra;
+
   constructor(options: DemoOptions) {
-    const { monorepo, rootOutdir, galileoSdk, galileoCdkLib, applicationName } = options;
+    const { monorepo, rootOutdir, galileoSdk, galileoCdkLib, applicationName } =
+      options;
 
     const api = new Api({ monorepo, rootOutdir });
 
@@ -26,8 +33,23 @@ export class Demo {
 
     const sample = new Sample({ monorepo, rootOutdir });
 
-    new Infra({ monorepo, rootOutdir, applicationName, api, website, corpus, galileoCdkLib, galileoSdk, sample });
+    this.infra = new Infra({
+      monorepo,
+      rootOutdir,
+      applicationName,
+      api,
+      website,
+      corpus,
+      galileoCdkLib,
+      galileoSdk,
+      sample,
+    });
     monorepo.addGitIgnore("demo/docs/build");
     monorepo.addGitIgnore("demo/docs/dist");
+
+    this.api = api;
+    this.website = website;
+    this.corpus = corpus;
+    this.sample = sample;
   }
 }

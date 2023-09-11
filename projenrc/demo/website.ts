@@ -1,14 +1,15 @@
 import * as path from "node:path";
-import { CloudscapeReactTsWebsiteProject } from "@aws-prototyping-sdk/cloudscape-react-ts-website";
-import { NxMonorepoProject, NxProject } from "@aws-prototyping-sdk/nx-monorepo";
+import { CloudscapeReactTsWebsiteProject } from "@aws/pdk/cloudscape-react-ts-website";
+import { MonorepoTsProject, NxProject } from "@aws/pdk/monorepo";
 import { javascript } from "projen";
 import { withStorybook } from "../helpers/withStorybook";
-import { Api } from './api';
-import { DEFAULT_RELEASE_BRANCH } from '../constants';
-import { GalileoSdk } from '../framework';
+import { Api } from "./api";
+import { DEFAULT_RELEASE_BRANCH } from "../constants";
+import { GalileoSdk } from "../framework";
+import { TypeScriptModuleResolution } from "projen/lib/javascript";
 
 export interface WebsiteOptions {
-  readonly monorepo: NxMonorepoProject;
+  readonly monorepo: MonorepoTsProject;
   readonly rootOutdir: string;
   readonly api: Api;
   readonly galileoSdk: GalileoSdk;
@@ -58,6 +59,7 @@ export class Website {
         compilerOptions: {
           noUnusedLocals: false,
           noUnusedParameters: false,
+          moduleResolution: TypeScriptModuleResolution.NODE,
         },
       },
     });

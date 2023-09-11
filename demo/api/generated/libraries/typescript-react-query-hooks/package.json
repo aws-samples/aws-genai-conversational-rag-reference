@@ -15,17 +15,17 @@
   },
   "devDependencies": {
     "@types/node": "^16",
-    "@types/react": "^18.2.20",
+    "@types/react": "^18.2.21",
     "npm-check-updates": "^16",
-    "projen": "^0.72.13",
-    "react": "18.2.0",
-    "typescript": "^5.1.6"
+    "projen": "^0.73.11",
+    "react": "^18.2.0",
+    "typescript": "^5.2.2"
   },
   "peerDependencies": {
     "react": "^18.2.0"
   },
   "dependencies": {
-    "@tanstack/react-query": "^4.32.6"
+    "@tanstack/react-query": "^4.35.0"
   },
   "pnpm": {},
   "main": "lib/index.js",

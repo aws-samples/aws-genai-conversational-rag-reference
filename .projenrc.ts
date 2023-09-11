@@ -1,21 +1,18 @@
 import fs from "node:fs";
-import { NxMonorepoProject } from "@aws-prototyping-sdk/nx-monorepo";
+import { MonorepoTsProject } from "@aws/pdk/monorepo";
 import { Project, javascript } from "projen";
 import { GalileoCdkLib, Demo, GalileoSdk } from "./projenrc";
-import { PDK_VERSION } from './projenrc/constants';
 
 const DEMO_DIR = "demo";
 const DEMO_NAME = "Galileo";
 
-const monorepo = new NxMonorepoProject({
+const monorepo = new MonorepoTsProject({
   defaultReleaseBranch: "mainline",
   npmignoreEnabled: false,
   devDeps: [
     "esbuild", // needed for aws-cdk-lib
     "esprima", // Error: Your application tried to access esprima, but it isn't declared in your dependencies; this makes the require call ambiguous and unsound.
-    `@aws-prototyping-sdk/nx-monorepo@^${PDK_VERSION}`,
-    `@aws-prototyping-sdk/type-safe-api@^${PDK_VERSION}`,
-    `@aws-prototyping-sdk/cloudscape-react-ts-website@^${PDK_VERSION}`,
+    "@aws/pdk",
     "tsx",
     "commander",
     "figlet",
@@ -45,7 +42,7 @@ const monorepo = new NxMonorepoProject({
   autoDetectBin: false,
   workspaceConfig: {
     linkLocalWorkspaceBins: true,
-  }
+  },
 });
 monorepo.gitignore.exclude("oss-attribution");
 monorepo.eslint?.addIgnorePattern(DEMO_DIR + "/**/*.*");
@@ -78,7 +75,6 @@ monorepo.nx.cacheableOperations.push("generated");
 monorepo.addTask("oss", { exec: "pnpm dlx tsx ./scripts/oss.ts" });
 
 monorepo.package.addPackageResolutions("nth-check@>=2.0.1");
-
 
 //////////////////////////////////////////////////////////
 // FRAMEWORK
@@ -114,7 +110,10 @@ function configureEsLint(project: any) {
     project.eslint.addRules(HEADER_RULE);
   }
 }
-function recurseProjects(project: Project, fn: (project: Project) => void): void {
+function recurseProjects(
+  project: Project,
+  fn: (project: Project) => void
+): void {
   fn(project);
   project.subprojects.forEach((_project) => recurseProjects(_project, fn));
 }

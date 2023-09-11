@@ -1,7 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { UserIdentity } from "@aws-prototyping-sdk/identity";
-import { PDKNag } from "@aws-prototyping-sdk/pdk-nag";
+import { UserIdentity } from "@aws/pdk/identity";
+import { PDKNag } from "@aws/pdk/pdk-nag";
 import { CfnOutput, Stack } from "aws-cdk-lib";
 import {
   CfnUserPoolGroup,

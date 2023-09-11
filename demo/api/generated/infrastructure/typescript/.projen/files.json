@@ -4,6 +4,7 @@
     ".gitignore",
     ".npmignore",
     ".openapi-generator-ignore",
+    ".openapi-generator-ignore-handlebars",
     ".projen/deps.json",
     ".projen/files.json",
     ".projen/tasks.json",

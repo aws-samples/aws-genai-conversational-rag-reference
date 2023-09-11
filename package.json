@@ -33,9 +33,7 @@
     "galileo-cli": "pnpm dlx tsx ./bin/galileo-cli.ts"
   },
   "devDependencies": {
-    "@aws-prototyping-sdk/cloudscape-react-ts-website": "^0.19.66",
-    "@aws-prototyping-sdk/nx-monorepo": "^0.19.66",
-    "@aws-prototyping-sdk/type-safe-api": "^0.19.66",
+    "@aws/pdk": "^0",
     "@types/clear": "^0.1.2",
     "@types/figlet": "^1.5.6",
     "@types/node": "^16",
@@ -43,8 +41,8 @@
     "@types/prompts": "^2.4.4",
     "@types/spdx-correct": "^3.1.0",
     "@types/spdx-satisfies": "^0.1.0",
-    "@typescript-eslint/eslint-plugin": "^5",
-    "@typescript-eslint/parser": "^5",
+    "@typescript-eslint/eslint-plugin": "^6",
+    "@typescript-eslint/parser": "^6",
     "chalk": "^5.3.0",
     "clear": "^0.1.0",
     "commander": "^10.0.1",
@@ -54,31 +52,31 @@
     "eslint-import-resolver-node": "^0.3.9",
     "eslint-import-resolver-typescript": "^3.6.0",
     "eslint-plugin-header": "^3.1.1",
-    "eslint-plugin-import": "^2.28.0",
+    "eslint-plugin-import": "^2.28.1",
     "eslint-plugin-prettier": "^4.2.1",
     "esprima": "^4.0.1",
     "execa": "^7.2.0",
     "figlet": "^1.6.0",
     "node-localstorage": "^3.0.5",
-    "npm-check-updates": "^16.11.1",
+    "npm-check-updates": "^16.13.3",
     "nx": "16.0.0",
     "prettier": "^2.8.8",
-    "projen": "^0.72.13",
+    "projen": "^0.73.11",
     "prompts": "^2.4.2",
     "spdx-correct": "^3.2.0",
     "spdx-satisfies": "^5.0.1",
     "syncpack": "^9.8.6",
     "ts-node": "^10.9.1",
-    "tsx": "^3.12.7",
-    "typescript": "^5.1.6"
+    "tsx": "^3.12.8",
+    "typescript": "^5.2.2"
   },
   "peerDependencies": {
     "nx": "^16"
   },
   "dependencies": {
-    "aws-cdk-lib": "^2.92.0",
-    "cdk-nag": "^2.27.102",
-    "constructs": "^10.2.69"
+    "aws-cdk-lib": "^2.95.0",
+    "cdk-nag": "^2.27.125",
+    "constructs": "^10.2.70"
   },
   "pnpm": {
     "overrides": {

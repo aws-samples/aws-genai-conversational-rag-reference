@@ -5,6 +5,7 @@
 /.npmignore linguist-generated
 /.npmrc linguist-generated
 /.openapi-generator-ignore linguist-generated
+/.openapi-generator-ignore-handlebars linguist-generated
 /.projen/** linguist-generated
 /.projen/deps.json linguist-generated
 /.projen/files.json linguist-generated

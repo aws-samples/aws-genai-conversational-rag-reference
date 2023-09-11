@@ -1,12 +1,8 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import {
-  CdkGraph,
-  FilterPreset,
-  Filters,
-} from "@aws-prototyping-sdk/cdk-graph";
-import { CdkGraphDiagramPlugin } from "@aws-prototyping-sdk/cdk-graph-plugin-diagram";
-import { AwsPrototypingChecks, PDKNag } from "@aws-prototyping-sdk/pdk-nag";
+import { CdkGraph, FilterPreset, Filters, Graph } from "@aws/pdk/cdk-graph";
+import { CdkGraphDiagramPlugin } from "@aws/pdk/cdk-graph-plugin-diagram";
+import { AwsPrototypingChecks, PDKNag } from "@aws/pdk/pdk-nag";
 import { Aspects } from "aws-cdk-lib";
 import { BUNDLING_STACKS } from "aws-cdk-lib/cx-api";
 import { ManualApprovalStep } from "aws-cdk-lib/pipelines";
@@ -80,67 +76,79 @@ import { GalileoNagSupression } from "./galileo/nag";
   );
 
   // [Optional] Additional reporting and tooling provided by CdkGraph such as automatically generating diagrams
-  // @see https://aws.github.io/aws-prototyping-sdk/developer_guides/cdk-graph/index.html
+  // @see https://aws.github.io/aws-pdk/developer_guides/cdk-graph/index.html
   const graph = new CdkGraph(app, {
     plugins: [
       new CdkGraphDiagramPlugin({
         defaults: {
           filterPlan: {
             preset: FilterPreset.COMPACT,
-            focus: (store) => {
-              return store.stages.find(
-                (_stage) => _stage.id === devStage.node.id
-              )!;
+            focus: {
+              filter: {
+                filter: (store: Graph.Store) => {
+                  return store.stages.find(
+                    (_stage) => _stage.id === devStage.node.id
+                  )!;
+                },
+              },
             },
             filters: [
-              Filters.pruneCustomResources(),
-              (store) => {
-                store.nodes.forEach((node) => {
-                  if (node.isDestroyed) return;
-
-                  switch (node.id) {
-                    case "CDKMetadata": {
-                      node.mutateDestroy();
-                      return;
-                    }
-                    case "WebsiteAcl": {
-                      node.mutateDestroy();
-                      return;
-                    }
-                    case "WebsiteDeployment": {
-                      node.mutateDestroy();
-                      return;
-                    }
-                    case "WebACLAssociation": {
-                      const _parent = node.parent!;
-                      node.mutateHoist(_parent.parent!);
-                      _parent.mutateDestroy();
-                      return;
-                    }
-                  }
-
-                  if (node.constructInfoFqn === "aws-cdk-lib.CfnJson") {
-                    node.mutateDestroy();
-                    return;
-                  }
-                  if (
-                    node.constructInfoFqn ===
-                    "aws-cdk-lib.aws_s3_deployment.BucketDeployment"
-                  ) {
-                    node.mutateDestroy();
-                    return;
-                  }
-                  if (
-                    node.constructInfoFqn?.startsWith(
-                      "aws-cdk-lib.aws_stepfunctions."
-                    )
-                  ) {
-                    node.mutateCollapseToParent();
-                    return;
-                  }
-                });
+              {
+                store: Filters.pruneCustomResources(),
               },
-              Filters.pruneEmptyContainers(),
+              {
+                store: {
+                  filter: (store) => {
+                    store.nodes.forEach((node) => {
+                      if (node.isDestroyed) return;
+
+                      switch (node.id) {
+                        case "CDKMetadata": {
+                          node.mutateDestroy();
+                          return;
+                        }
+                        case "WebsiteAcl": {
+                          node.mutateDestroy();
+                          return;
+                        }
+                        case "WebsiteDeployment": {
+                          node.mutateDestroy();
+                          return;
+                        }
+                        case "WebACLAssociation": {
+                          const _parent = node.parent!;
+                          node.mutateHoist(_parent.parent!);
+                          _parent.mutateDestroy();
+                          return;
+                        }
+                      }
+
+                      if (node.constructInfoFqn === "aws-cdk-lib.CfnJson") {
+                        node.mutateDestroy();
+                        return;
+                      }
+                      if (
+                        node.constructInfoFqn ===
+                        "aws-cdk-lib.aws_s3_deployment.BucketDeployment"
+                      ) {
+                        node.mutateDestroy();
+                        return;
+                      }
+                      if (
+                        node.constructInfoFqn?.startsWith(
+                          "aws-cdk-lib.aws_stepfunctions."
+                        )
+                      ) {
+                        node.mutateCollapseToParent();
+                        return;
+                      }
+                    });
+                  },
+                },
+              },
+              {
+                store: Filters.pruneEmptyContainers(),
+              },
             ],
           },
         },

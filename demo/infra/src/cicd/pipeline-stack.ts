@@ -1,6 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { PDKPipeline } from "@aws-prototyping-sdk/pipeline";
+import { PDKPipeline } from "@aws/pdk/pipeline";
 import { Stack, StackProps } from "aws-cdk-lib";
 import {
   BuildSpec,

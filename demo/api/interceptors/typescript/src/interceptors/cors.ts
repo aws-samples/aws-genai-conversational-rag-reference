@@ -16,16 +16,10 @@ export const CORS_HEADERS: ResponseHeaders = {
  */
 export const corsInterceptor = async <
   RequestParameters,
-  RequestArrayParameters,
   RequestBody,
   Response extends OperationResponse<number, any>
 >(
-  request: ChainedRequestInput<
-    RequestParameters,
-    RequestArrayParameters,
-    RequestBody,
-    Response
-  >
+  request: ChainedRequestInput<RequestParameters, RequestBody, Response>
 ): Promise<Response> => {
   const result = await request.chain.next(request);
   return {
