@@ -219,7 +219,7 @@
     },
     {
       "name": "langchain",
-      "version": "0.0.136",
+      "version": "0.0.149",
       "type": "runtime"
     },
     {

@@ -20,4 +20,4 @@ export const CDK_VERSION = "2.95.0";
 export const PDK_VERSION = "0.22.1";
 
 // Not semver yet so need to pin version
-export const LANGCHAIN_VERSION = "0.0.136";
+export const LANGCHAIN_VERSION = "0.0.149";

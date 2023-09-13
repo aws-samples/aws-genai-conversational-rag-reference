@@ -8,12 +8,16 @@ import {
 import { Duration } from "aws-cdk-lib";
 import { IVpc } from "aws-cdk-lib/aws-ec2";
 import { Construct } from "constructs";
+import { camelCase, startCase } from "lodash";
 import {
   DEFAULT_FOUNDATION_MODEL_ID,
   DEFAULT_PREDEFINED_FOUNDATION_MODEL_LIST,
   FoundationModelIds,
 } from "./ids";
-import { HFModelTarProvider } from "../../../galileo/ai/llms/framework";
+import {
+  BEDROCK_DEFAULT_MODEL,
+  BedrockModel,
+} from "../../../galileo/ai/llms/framework/bedrock";
 import { ModelEULA } from "../../../galileo/ai/llms/framework/eula";
 import {
   FalconLite,
@@ -30,6 +34,9 @@ export interface FoundationModelsProps {
   readonly vpc: IVpc;
   readonly foundationModels?: FoundationModelIds[];
   readonly defaultModelId?: string;
+  readonly bedrockModelIds?: string[];
+  readonly bedrockRegion?: string;
+  readonly bedrockEndpointUrl?: string;
 }
 
 export class FoundationModels extends Construct {
@@ -47,10 +54,13 @@ export class FoundationModels extends Construct {
     super(scope, id);
 
     // TODO: add endpoints to vpc, will need to setup VPC endpoints for cross-account development
-    const { foundationModels, defaultModelId } = props;
-
-    // HACK: DO NOT COMMIT
-    HFModelTarProvider.of(this);
+    const {
+      foundationModels,
+      defaultModelId,
+      bedrockEndpointUrl,
+      bedrockModelIds,
+      bedrockRegion,
+    } = props;
 
     const modelsToDeploy = new Set(
       foundationModels || DEFAULT_PREDEFINED_FOUNDATION_MODEL_LIST
@@ -96,7 +106,25 @@ export class FoundationModels extends Construct {
       });
     }
 
-    // ... add LLM/FoundationModels here to deploy
+    //////////////////////////////////////////////////////////
+    // Bedrock - not actual deployments but wire up to the inventory for integration
+    //////////////////////////////////////////////////////////
+    if (modelsToDeploy.has(FoundationModelIds.BEDROCK)) {
+      (bedrockModelIds || [BEDROCK_DEFAULT_MODEL]).forEach(
+        (_bedrockModelId) => {
+          const _id = `Bedrock-${camelCase(_bedrockModelId)}`;
+          new BedrockModel(this, _id, {
+            modelUUID: BedrockModel.formatUUID(_bedrockModelId),
+            modelId: _bedrockModelId,
+            displayName: startCase(_id),
+            region: bedrockRegion,
+            endpointUrl: bedrockEndpointUrl,
+          });
+        }
+      );
+    }
+
+    // NB: add additional LLM/FoundationModels here to deploy
 
     ////////////////////////////////////////////////////////////
     // BUILD THE INVENTORY

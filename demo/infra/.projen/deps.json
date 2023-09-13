@@ -9,6 +9,10 @@
       "type": "build"
     },
     {
+      "name": "@types/lodash",
+      "type": "build"
+    },
+    {
       "name": "@types/node",
       "version": "^16",
       "type": "build"
@@ -253,6 +257,10 @@
     },
     {
       "name": "corpus-logic",
+      "type": "runtime"
+    },
+    {
+      "name": "lodash",
       "type": "runtime"
     },
     {

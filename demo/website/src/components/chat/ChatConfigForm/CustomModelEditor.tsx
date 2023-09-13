@@ -1,10 +1,14 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import type { IPromptAdapter } from "@aws-galileo/galileo-sdk/lib/models/adapter";
-import type {
-  ModelFrameworks,
+import { IPromptAdapter } from "@aws-galileo/galileo-sdk/lib/models/adapter";
+import {
   IModelInfo,
   ISageMakerEndpointModelFramework,
+  IBedrockFramework,
+  isSageMakerEndpointFramework,
+  isBedrockFramework,
+  IModelFramework,
+  ModelFramework,
 } from "@aws-galileo/galileo-sdk/lib/models/types";
 import {
   Container,
@@ -93,39 +97,33 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = ({
         <FormField label="Framework" stretch>
           <SegmentedControl
             selectedId={
-              value?.framework?.type || ("SageMakerEndpoint" as ModelFrameworks)
+              value?.framework?.type || ModelFramework.SAGEMAKER_ENDPOINT
             }
             onChange={({ detail }) =>
               updateValue((x) => {
-                x.framework ??= {} as any;
-                x.framework!.type = detail.selectedId as any;
+                const _framework = (x.framework ??
+                  {}) as WritableDraft<IModelFramework>;
+                _framework.type = detail.selectedId as any;
               })
             }
             label="Framework Type"
-            options={[
-              {
-                id: "SageMakerEndpoint" as ModelFrameworks,
-                text: "SageMaker",
-              },
-              // {
-              //   id: "Bedrock" as ModelFrameworks,
-              //   text: "Bedrock",
-              // },
-            ]}
+            options={Object.values(ModelFramework).map((v) => ({
+              id: v,
+              text: v,
+            }))}
           />
         </FormField>
 
-        {value?.framework?.type ===
-          ("SageMakerEndpoint" as ModelFrameworks) && (
+        {isSageMakerEndpointFramework(value?.framework) && (
           <>
             <FormField label="SageMaker Endpoint Name" stretch>
               <Input
                 value={get(value?.framework, "endpointName", "")}
                 onChange={({ detail }) => {
                   updateValue((x) => {
-                    (
-                      x.framework as WritableDraft<ISageMakerEndpointModelFramework>
-                    ).endpointName = detail.value;
+                    const _framework = (x.framework ??
+                      {}) as WritableDraft<ISageMakerEndpointModelFramework>;
+                    _framework.endpointName = detail.value;
                   });
                 }}
               />
@@ -135,8 +133,54 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = ({
                 value={get(value?.framework, "endpointRegion", "")}
                 onChange={({ detail }) => {
                   updateValue((x) => {
-                    x.framework ??= {} as any;
-                    x.framework!.endpointRegion = detail.value;
+                    const _framework = (x.framework ??
+                      {}) as WritableDraft<ISageMakerEndpointModelFramework>;
+                    _framework.endpointRegion = detail.value;
+                  });
+                }}
+              />
+            </FormField>
+          </>
+        )}
+
+        {isBedrockFramework(value?.framework) && (
+          <>
+            <FormField label="Bedrock Model" stretch>
+              <Input
+                value={get(value?.framework, "modelId", "")}
+                onChange={({ detail }) => {
+                  updateValue((x) => {
+                    const _framework = (x.framework ??
+                      {}) as WritableDraft<IBedrockFramework>;
+                    _framework.modelId = detail.value;
+                  });
+                }}
+              />
+            </FormField>
+            <FormField label="Bedrock Region" stretch>
+              <Input
+                value={get(value?.framework, "region", "")}
+                onChange={({ detail }) => {
+                  updateValue((x) => {
+                    const _framework = (x.framework ??
+                      {}) as WritableDraft<IBedrockFramework>;
+                    _framework.region = detail.value;
+                  });
+                }}
+              />
+            </FormField>
+            <FormField label="Bedrock Endpoint Url" stretch>
+              <Input
+                value={get(value?.framework, "endpointUrl", "")}
+                onChange={({ detail }) => {
+                  updateValue((x) => {
+                    const _framework = (x.framework ??
+                      {}) as WritableDraft<IBedrockFramework>;
+                    if (isEmpty(detail.value)) {
+                      _framework.endpointUrl = undefined;
+                    } else {
+                      _framework.endpointUrl = detail.value;
+                    }
                   });
                 }}
               />

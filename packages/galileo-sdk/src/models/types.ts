@@ -8,7 +8,7 @@ export type Kwargs = Record<string, unknown>;
 
 export enum ModelFramework {
   SAGEMAKER_ENDPOINT = 'SageMakerEndpoint',
-  // BEDROCK = 'Bedrock',
+  BEDROCK = 'Bedrock',
 }
 
 export type ModelFrameworks = `${ModelFramework}`
@@ -25,7 +25,21 @@ export interface ISageMakerEndpointModelFramework {
   readonly endpointKwargs?: Kwargs;
 }
 
-export type IModelFramework = ISageMakerEndpointModelFramework;
+export interface IBedrockFramework {
+  readonly type: ModelFramework.BEDROCK;
+  /** Bedrock model id */
+  readonly modelId: string;
+  /** Bedrock region */
+  readonly region: string;
+  /** Role to assume to invoke endpoint (cross-account support) */
+  readonly role?: string;
+  /** Default model kwargs used to call the model */
+  readonly modelKwargs?: Kwargs;
+  /** Override the endpoint url for service */
+  readonly endpointUrl?: string;
+}
+
+export type IModelFramework = IBedrockFramework | ISageMakerEndpointModelFramework;
 
 export interface IModelConstraints {
   readonly maxInputLength: number;
@@ -55,6 +69,10 @@ export interface IModelInfo {
   readonly adapter?: IModelAdapter;
 }
 
-export function isSageMakerEndpointFramework(framework: IModelFramework): framework is ISageMakerEndpointModelFramework {
-  return framework.type === ModelFramework.SAGEMAKER_ENDPOINT;
+export function isSageMakerEndpointFramework(framework?: IModelFramework): framework is ISageMakerEndpointModelFramework {
+  return framework?.type === ModelFramework.SAGEMAKER_ENDPOINT;
+}
+
+export function isBedrockFramework(framework?: IModelFramework): framework is IBedrockFramework {
+  return framework?.type === ModelFramework.BEDROCK;
 }

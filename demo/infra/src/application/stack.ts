@@ -38,6 +38,8 @@ export class Application extends Stack {
       websiteContentPath,
       foundationModelCrossAccountRoleArn,
       foundationModels,
+      bedrockModelIds,
+      bedrockEndpointUrl,
       geoRestriction,
       adminEmail,
       adminUsername,
@@ -71,6 +73,8 @@ export class Application extends Stack {
         decoupled: decoupleStacks,
         foundationModels,
         defaultModelId,
+        bedrockEndpointUrl,
+        bedrockModelIds,
       }
     );
 
@@ -140,9 +144,6 @@ export class Application extends Stack {
         // Indicate in the UI if potential data sovereignty risk caused from cross-region inference
         dataSovereigntyRisk: foundationModelStack.isCrossRegion,
         inferenceBufferedFunctionUrl: inferenceEngine.inferenceBufferedUrl,
-        // Expose the predefined foundation models that are deployed to UI for config testings
-        foundationModels: foundationModelStack.deployedModelIds.join(","),
-        defaultModelId: foundationModelStack.defaultModelId,
       },
       foundationModelInventorySecret,
     });

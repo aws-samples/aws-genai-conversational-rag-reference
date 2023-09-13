@@ -17,6 +17,7 @@ import {
   DEFAULT_PREDEFINED_FOUNDATION_MODEL_LIST,
   FoundationModelIds,
 } from "../demo/infra/src/application/ai/foundation-models/ids";
+import { BEDROCK_DEFAULT_MODEL, BEDROCK_REGION, BedrockModel, BedrockModelIds } from '../demo/infra/src/galileo/ai/llms/framework/bedrock';
 
 const ROOT = path.resolve(__dirname, "..");
 
@@ -238,6 +239,52 @@ type Task = Parameters<typeof execa.execaCommand>;
     )
   );
 
+  const includesBedrock = (foundationModels as string[]).includes(FoundationModelIds.BEDROCK);
+
+  const selectedBedrockModels = new Set<BedrockModelIds>(
+    cache.getItem("bedrockModelIds") ||
+    [BEDROCK_DEFAULT_MODEL],
+  );
+
+  const { bedrockModelIds, bedrockRegion, bedrockEndpointUrl } = includesBedrock ? cached(
+    await prompts(
+      [
+        {
+          type: "autocompleteMultiselect",
+          name: "bedrockModelIds",
+          message: "Bedrock model ids",
+          min: 1,
+          instructions: chalk.gray(
+            "↑/↓: Highlight option, ←/→/[space]: Toggle selection, Return to submit"
+          ),
+          choices: Object.values(BedrockModelIds).sort().map((_id) => ({
+            title: _id,
+            value: _id,
+            selected: selectedBedrockModels.has(_id),
+          })),
+        },
+        {
+          type: "text",
+          name: "bedrockRegion",
+          message: "Bedrock region",
+          initial: cache.getItem("bedrockRegion") ?? BEDROCK_REGION,
+        },
+        {
+          type: "text",
+          name: "bedrockEndpointUrl",
+          message: `Bedrock endpoint url ${chalk.gray("(optional)")}`,
+          initial: cache.getItem("bedrockEndpointUrl") ?? undefined,
+        },
+      ],
+      { onCancel }
+    )
+  ) : {} as any;
+
+  const availableModelIds = includesBedrock ? [
+    ...(foundationModels as string[]).filter(v => v !== FoundationModelIds.BEDROCK),
+    ...(bedrockModelIds as string[]).map(BedrockModel.formatUUID),
+  ] : (foundationModels as string[]);
+
   const { deployModels, defaultModelId } = cached(
     await prompts(
       [
@@ -246,15 +293,15 @@ type Task = Parameters<typeof execa.execaCommand>;
           name: "defaultModelId",
           message: "Choose the default foundation model",
           hint: "This will be the default model used in inference engine.",
-          choices: (foundationModels as string[]).map((x) => ({
+          choices: availableModelIds.map((x) => ({
             title: x,
             value: x,
           })),
           initial: () => {
             const _initial =
               cache.getItem("defaultModelId") ?? DEFAULT_FOUNDATION_MODEL_ID;
-            if (foundationModels.includes(_initial)) {
-              return foundationModels.indexOf(_initial);
+            if (availableModelIds.includes(_initial)) {
+              return availableModelIds.indexOf(_initial);
             } else {
               return 0;
             }
@@ -316,6 +363,14 @@ type Task = Parameters<typeof execa.execaCommand>;
 
   context.set("FoundationModels", foundationModels.join(","));
   defaultModelId && context.set("DefaultModelId", defaultModelId);
+
+  if (includesBedrock) {
+    context.set("BedrockModelIds", bedrockModelIds.join(","));
+    context.set("BedrockRegion", bedrockRegion);
+    if (bedrockEndpointUrl && bedrockEndpointUrl.length) {
+      context.set("BedrockEndpointUrl", bedrockEndpointUrl);
+    }
+  }
 
   const crossAccountRegex = new RegExp(
     `arn:aws:iam::\\d{10,12}:role\\/${applicationName}-FoundationModel-CrossAccount-\\w+`
