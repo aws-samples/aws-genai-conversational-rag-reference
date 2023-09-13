@@ -506,6 +506,9 @@ importers:
       '@aws-sdk/signature-v4':
         specifier: ^3.374.0
         version: 3.374.0
+      '@aws-sdk/types':
+        specifier: ^3.391.0
+        version: 3.408.0
       '@aws/pdk':
         specifier: ^0.22.1
         version: 0.22.1(@aws-cdk/aws-cognito-identitypool-alpha@2.95.0-alpha.0)(@pnpm/logger@5.0.0)(@types/node@16.18.39)(aws-cdk-lib@2.95.0)(cdk-nag@2.27.125)(constructs@10.2.70)(projen@0.73.11)(typescript@5.2.2)
@@ -723,7 +726,7 @@ importers:
         version: 4.35.0(@tanstack/react-query@4.35.0)(react-dom@18.2.0)(react@18.2.0)
       '@tanstack/react-virtual':
         specifier: beta
-        version: 3.0.0-beta.59(react@18.2.0)
+        version: 3.0.0-beta.60(react@18.2.0)
       ace-builds:
         specifier: ^1.24.1
         version: 1.24.1
@@ -1025,8 +1028,8 @@ importers:
         specifier: ^3.374.0
         version: 3.374.0
       '@aws-sdk/types':
-        specifier: ^3.408.0
-        version: 3.408.0
+        specifier: 3.391.0
+        version: 3.391.0
       '@types/jest':
         specifier: ^29.5.4
         version: 29.5.4
@@ -9241,17 +9244,17 @@ packages:
       use-sync-external-store: 1.2.0(react@18.2.0)
     dev: false
 
-  /@tanstack/react-virtual@3.0.0-beta.59(react@18.2.0):
-    resolution: {integrity: sha512-6t0813V/yiY/rWSwW5TEHMn97LJPDYv6aW75KVJnt5o14Y3ghqFnbX3nJ3icQXfsqYjPoIgXH4TAr8v/w0cZqA==}
+  /@tanstack/react-virtual@3.0.0-beta.60(react@18.2.0):
+    resolution: {integrity: sha512-F0wL9+byp7lf/tH6U5LW0ZjBqs+hrMXJrj5xcIGcklI0pggvjzMNW9DdIBcyltPNr6hmHQ0wt8FDGe1n1ZAThA==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
-      '@tanstack/virtual-core': 3.0.0-beta.59
+      '@tanstack/virtual-core': 3.0.0-beta.60
       react: 18.2.0
     dev: false
 
-  /@tanstack/virtual-core@3.0.0-beta.59:
-    resolution: {integrity: sha512-Z6V6VXk8D4jaRHx8klvL6jUOYWIkWUODTyVQJSfnxAVu8vnuz99FgBXhY/mLZ5qjEX5OPESZZVKRTKqGpMEQKw==}
+  /@tanstack/virtual-core@3.0.0-beta.60:
+    resolution: {integrity: sha512-QlCdhsV1+JIf0c0U6ge6SQmpwsyAT0oQaOSZk50AtEeAyQl9tQrd6qCHAslxQpgphrfe945abvKG8uYvw3hIGA==}
     dev: false
 
   /@testing-library/dom@9.3.1:
@@ -12720,7 +12723,7 @@ packages:
     dependencies:
       semver: 7.5.4
       shelljs: 0.8.5
-      typescript: 5.3.0-dev.20230908
+      typescript: 5.3.0-dev.20230912
     dev: true
 
   /duplexer@0.1.2:
@@ -22783,8 +22786,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.3.0-dev.20230908:
-    resolution: {integrity: sha512-s4fpER8j1Pj58FmFZUmODUx/D9dBwpPf+gb+/lKV6hsXKPPSsFQ4cktq+feqi98Om9RtjyCC+tmndlfmruObBw==}
+  /typescript@5.3.0-dev.20230912:
+    resolution: {integrity: sha512-rf3Qmo6TE47cxy9yZqkjfJvt6ClU04leuTCKzklpOpqjGDO9tgTNE1XP1ReVR9tQs+RsXGbi+QudxIRAJQisBQ==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true

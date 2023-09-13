@@ -200,6 +200,11 @@
       "type": "runtime"
     },
     {
+      "name": "@aws-sdk/types",
+      "version": "^3.391.0",
+      "type": "runtime"
+    },
+    {
       "name": "@aws/pdk",
       "version": "^0.22.1",
       "type": "runtime"

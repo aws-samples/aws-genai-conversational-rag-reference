@@ -54,6 +54,7 @@
     },
     {
       "name": "@aws-sdk/types",
+      "version": "3.391.0",
       "type": "build"
     },
     {
@@ -189,6 +190,11 @@
     },
     {
       "name": "@aws-sdk/signature-v4",
+      "type": "peer"
+    },
+    {
+      "name": "@aws-sdk/types",
+      "version": "^3.391.0",
       "type": "peer"
     },
     {

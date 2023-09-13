@@ -31,7 +31,7 @@
     "@aws-sdk/querystring-parser": "^3.374.0",
     "@aws-sdk/rds-signer": "3.391.0",
     "@aws-sdk/signature-v4": "^3.374.0",
-    "@aws-sdk/types": "^3.408.0",
+    "@aws-sdk/types": "3.391.0",
     "@types/jest": "^29.5.4",
     "@types/lodash": "^4.14.198",
     "@types/node": "^16",
@@ -62,7 +62,8 @@
     "@aws-sdk/protocol-http": "^3.374.0",
     "@aws-sdk/querystring-parser": "^3.374.0",
     "@aws-sdk/rds-signer": "^3.391.0",
-    "@aws-sdk/signature-v4": "^3.374.0"
+    "@aws-sdk/signature-v4": "^3.374.0",
+    "@aws-sdk/types": "^3.391.0"
   },
   "dependencies": {
     "@aws-crypto/sha256-js": "^5.0.0",

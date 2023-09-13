@@ -67,9 +67,9 @@ export class GalileoSdk extends TypeScriptProject {
         "@types/uuid",
         "@types/lodash",
         "aws-sdk-client-mock",
-        "@aws-sdk/types",
       ],
       peerDeps: [
+        `@aws-sdk/types@^${AWS_SDK_VERSION}`,
         `@aws-sdk/client-dynamodb@^${AWS_SDK_VERSION}`,
         `@aws-sdk/lib-dynamodb@^${AWS_SDK_VERSION}`,
         `@aws-sdk/client-s3@^${AWS_SDK_VERSION}`,
