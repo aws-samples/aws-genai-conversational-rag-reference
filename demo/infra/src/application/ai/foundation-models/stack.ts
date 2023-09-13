@@ -1,6 +1,9 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { ModelFramework } from "@aws-galileo/galileo-sdk/lib/models";
+import {
+  ModelFramework,
+  isBedrockFramework,
+} from "@aws-galileo/galileo-sdk/lib/models";
 import {
   Arn,
   ArnFormat,
@@ -41,6 +44,9 @@ export interface FoundationModelStackProps extends StackProps {
   readonly decoupled?: boolean;
 
   readonly foundationModels?: FoundationModelIds[];
+  readonly bedrockModelIds?: string[];
+  readonly bedrockRegion?: string;
+  readonly bedrockEndpointUrl?: string;
   readonly defaultModelId?: string;
 }
 
@@ -69,12 +75,27 @@ export class FoundationModelStack extends Stack {
     return this.inventory.defaultModelId;
   }
 
+  get includesBedrock(): boolean {
+    return (
+      Object.values(this.inventory.models).find((v) =>
+        isBedrockFramework(v.framework)
+      ) != null
+    );
+  }
+
   constructor(scope: Construct, id: string, props: FoundationModelStackProps) {
     super(scope, id, props);
 
     this._decoupled = !!props.decoupled;
 
-    const { applicationVpc, foundationModels, defaultModelId } = props;
+    const {
+      applicationVpc,
+      foundationModels,
+      defaultModelId,
+      bedrockModelIds,
+      bedrockEndpointUrl,
+      bedrockRegion,
+    } = props;
 
     let vpc: IVpc;
     if (applicationVpc && Stack.of(applicationVpc).region === this.region) {
@@ -89,6 +110,9 @@ export class FoundationModelStack extends Stack {
       vpc,
       foundationModels,
       defaultModelId,
+      bedrockModelIds,
+      bedrockRegion,
+      bedrockEndpointUrl,
     });
 
     const applicationRegion = Stack.of(scope).region;
@@ -142,6 +166,16 @@ export class FoundationModelStack extends Stack {
           }),
       }),
     ];
+
+    if (this.includesBedrock) {
+      this._invokeModelsPolicyStatements.push(
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: ["bedrock:Invoke*"],
+          resources: ["*"],
+        })
+      );
+    }
 
     if (props.crossAccountRole) {
       const roleName = safeResourceName(scope, "FoundationModel-CrossAccount");

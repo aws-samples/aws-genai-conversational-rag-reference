@@ -1,6 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import { LLM } from 'langchain/llms/base';
+import { Bedrock } from 'langchain/llms/bedrock';
 import { SageMakerEndpoint } from 'langchain/llms/sagemaker_endpoint';
 import { PromptTemplate, PromptTemplateInput } from 'langchain/prompts';
 import { merge } from 'lodash';
@@ -9,7 +10,7 @@ import { FoundationModelInventory } from '../models';
 import { ModelAdapter } from '../models/adapter';
 import { resolveFoundationModelCredentials } from '../models/cross-account';
 import { CONDENSE_QUESTION_TEMPLATE, QA_TEMPLATE } from '../models/prompts';
-import { IModelInfo, Kwargs, isSageMakerEndpointFramework } from '../models/types';
+import { IModelInfo, Kwargs, isBedrockFramework, isSageMakerEndpointFramework } from '../models/types';
 
 const logger = getLogger('chat/adapter');
 
@@ -113,6 +114,26 @@ export class ChatEngineContext {
         contentHandler: this.adapter.contentHandler,
         endpointKwargs,
         modelKwargs,
+      });
+    } else if (isBedrockFramework(modelInfo.framework)) {
+      const { modelId, region, role, endpointUrl } = modelInfo.framework;
+
+      const kwargs = {
+        ...modelInfo.framework.modelKwargs,
+        ...options.endpointKwargs,
+        ...options.modelKwargs,
+      };
+      logger.debug('Resolved bedrock kwargs', { kwargs });
+
+      this.llm = new Bedrock({
+        verbose: options.verbose,
+        // Support cross-account endpoint if enabled and provided in env
+        // Otherwise default to execution role credentials
+        credentials: resolveFoundationModelCredentials(role),
+        model: modelId,
+        region,
+        endpointUrl,
+        ...kwargs,
       });
     } else {
       // @ts-ignore

@@ -78,6 +78,7 @@ export class Infra {
         "readline-sync",
         "cdk-nag",
         "pretty-bytes",
+        "lodash",
         // Workspace dependencies
         api.project.infrastructure.typescript!.package.packageName,
         api.project.runtime.typescript!.package.packageName,
@@ -97,6 +98,7 @@ export class Infra {
         "@types/aws-lambda",
         "@types/uuid",
         "@types/readline-sync",
+        "@types/lodash",
       ],
       context: {
         // Automatically update lambda description with asset hash to ensure new versions are deployed

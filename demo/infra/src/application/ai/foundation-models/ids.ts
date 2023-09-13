@@ -5,9 +5,13 @@ PDX-License-Identifier: Apache-2.0 */
  * Pre-defined foundation model ids.
  */
 export enum FoundationModelIds {
+  // Falcon
   FALCON_OA_40B = "falcon-oa-40b",
   FALCON_OA_7B = "falcon-oa-7b",
   FALCON_LITE = "falcon-lite",
+
+  // Bedrock
+  BEDROCK = "bedrock",
 }
 
 /**

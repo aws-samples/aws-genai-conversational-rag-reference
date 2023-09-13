@@ -28,6 +28,7 @@
   "devDependencies": {
     "@types/aws-lambda": "^8.10.119",
     "@types/jest": "^29.5.4",
+    "@types/lodash": "^4.14.198",
     "@types/node": "^16",
     "@types/readline-sync": "^1.4.4",
     "@types/uuid": "^9.0.3",
@@ -86,6 +87,7 @@
     "cdk-nag": "^2.27.125",
     "constructs": "^10.2.52",
     "corpus-logic": "0.0.0",
+    "lodash": "^4.17.21",
     "pretty-bytes": "^5.6.0",
     "readline-sync": "^1.4.10",
     "sample-dataset": "0.0.0",

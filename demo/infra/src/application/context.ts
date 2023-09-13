@@ -65,6 +65,27 @@ export interface IApplicationContext {
    */
   readonly FoundationModels?: FoundationModelIds[];
   /**
+   * List of bedrock model ids to integrate with.
+   * @example ["amazon.titan-tg1-large", "anthropic.claude-v1"]
+   * @default ["amazon.titan-tg1-large"]
+   * @experimental
+   */
+  readonly BedrockModelIds?: string[];
+  /**
+   * Bedrock region to invoke
+   * @example "us-west-2"
+   * @default undefined - Defaults to FoundationModelRegion
+   * @experimental
+   */
+  readonly BedrockRegion?: string;
+  /**
+   * Override Bedrock service endpoint url
+   * @example "custom.endpoint.awsamazon.com"
+   * @experimental
+   * @development
+   */
+  readonly BedrockEndpointUrl?: string;
+  /**
    * Get the default foundation model id.
    * @default undefined will use the default defined in code
    * @experimental
@@ -188,6 +209,26 @@ export interface IApplicationConfig {
    */
   readonly foundationModels?: FoundationModelIds[];
   /**
+   * List of bedrock model ids to integrate with.
+   * @example ["amazon.titan-tg1-large", "anthropic.claude-v1"]
+   * @default ["amazon.titan-tg1-large"]
+   * @experimental
+   */
+  readonly bedrockModelIds?: string[];
+  /**
+   * Bedrock region to invoke
+   * @example "us-west-2"
+   * @default undefined - Defaults to FoundationModelRegion
+   * @experimental
+   */
+  readonly bedrockRegion?: string;
+  /**
+   * List of bedrock model ids to integrate with.
+   * @example "custom.endpoint.awsamazon.com"
+   * @experimental
+   */
+  readonly bedrockEndpointUrl?: string;
+  /**
    * Get the default foundation model id
    * @default undefined will use the default defined in code
    * @experimental
@@ -236,6 +277,9 @@ export class ApplicationConfig implements IApplicationConfig {
   readonly chatDomain: string;
   readonly foundationModelRegion?: string;
   readonly foundationModels?: FoundationModelIds[];
+  readonly bedrockModelIds?: string[] | undefined;
+  readonly bedrockRegion?: string | undefined;
+  readonly bedrockEndpointUrl?: string | undefined;
   readonly defaultModelId?: string;
   readonly foundationModelCrossAccountRoleArn?: string;
   readonly decoupleStacks?: boolean;
@@ -342,6 +386,17 @@ export class ApplicationConfig implements IApplicationConfig {
               this.tryGetContext(scope, "FoundationModels")
           )
     ) as FoundationModelIds[] | undefined;
+    this.bedrockModelIds = resolveList(
+      ssmContext.BedrockModelIds ?? this.tryGetContext(scope, "BedrockModelIds")
+    );
+    this.bedrockRegion =
+      process.env.GALILEO_BEDROCK_REGION ??
+      ssmContext.BedrockRegion ??
+      this.tryGetContext(scope, "BedrockRegion");
+    this.bedrockEndpointUrl =
+      process.env.GALILEO_BEDROCK_ENDPOINT_URL ??
+      ssmContext.BedrockEndpointUrl ??
+      this.tryGetContext(scope, "BedrockEndpointUrl");
     this.geoRestriction = resolveList(
       ssmContext.GeoRestriction ?? this.tryGetContext(scope, "GeoRestriction")
     );
