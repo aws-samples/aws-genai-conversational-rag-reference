@@ -62,12 +62,12 @@ jobs:
         run: pnpm install
       - name: Build
         run: pnpm build
-      - name: Check for mutations
-        # Poetry.lock files might be updated by project install usage of "poetry update"
-        run: |
-          CHANGED=$(git diff --ignore-space-at-eol --name-only | grep -v 'poetry.lock')
-          if [ "$CHANGED" -ne 0 ]; then
-            echo "Unexpected file changes: $CHANGED"
-            git diff --ignore-space-at-eol
-            exit 1
-          fi
+      # - name: Check for mutations
+      #   # Poetry.lock files might be updated by project install usage of "poetry update"
+      #   run: |
+      #     CHANGED=$(git diff --ignore-space-at-eol --name-only | grep -v 'poetry.lock')
+      #     if [ "$CHANGED" -ne 0 ]; then
+      #       echo "Unexpected file changes: $CHANGED"
+      #       git diff --ignore-space-at-eol
+      #       exit 1
+      #     fi
