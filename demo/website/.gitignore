@@ -43,6 +43,8 @@ public/api.json
 !/.eslintrc.json
 /build/
 public/api.html
+runtime-config.*
+!runtime-config.example.json
 !/project.json
 !/.storybook/main.ts
 !/.storybook/preview.ts
