@@ -320,8 +320,13 @@ export function useMessageSources(
   return useListChatMessageSources(
     { chatId, messageId },
     {
-      // @ts-expect-error
-      select: (data) => data.chatMessageSources || ([] as ChatMessageSource[]),
+      select: (data) => {
+        if (data.pages && data.pages.length > 0) {
+          return data.pages.flatMap((page) => page.chatMessageSources);
+        }
+        // @ts-ignore
+        return data.chatMessageSources || ([] as ChatMessageSource[]);
+      },
     }
   );
 }
