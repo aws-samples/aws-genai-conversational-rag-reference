@@ -64,6 +64,8 @@ export class Website {
       },
     });
     this.project.addGitIgnore("public/api.html");
+    this.project.addGitIgnore("runtime-config.*");
+    this.project.addGitIgnore("!runtime-config.example.json");
     const apiHtml = path.relative(
       this.project.outdir,
       path.join(api.project.documentation.html2!.outdir, "index.html")
