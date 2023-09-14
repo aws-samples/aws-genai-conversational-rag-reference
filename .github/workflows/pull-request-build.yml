@@ -65,5 +65,9 @@ jobs:
       - name: Check for mutations
         # Poetry.lock files might be updated by project install usage of "poetry update"
         run: |
-          FILES=$(git diff --ignore-space-at-eol --name-only | grep -v 'poetry.lock')
-          [ -z "$FILES" ] || git diff --ignore-space-at-eol --exit-code
+          CHANGED=$(git diff --ignore-space-at-eol --name-only | grep -v 'poetry.lock')
+          if [ "$CHANGED" -ne 0 ]; then
+            echo "Unexpected file changes: $CHANGED"
+            git diff --ignore-space-at-eol
+            exit 1
+          fi
