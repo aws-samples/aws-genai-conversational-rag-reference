@@ -64,4 +64,6 @@ jobs:
         run: pnpm build
       - name: Check for mutations
         # Poetry.lock files might be updated by project install usage of "poetry update"
-        run: git diff --ignore-space-at-eol --exit-code -- ':(exclude)poetry.lock'
+        run: |
+          FILES=$(git diff --ignore-space-at-eol --name-only | grep -v 'poetry.lock')
+          [ -z "$FILES" ] || git diff --ignore-space-at-eol --exit-code
