@@ -73,7 +73,7 @@ check "docker" "docker --version" ">=20.10" \
   "Recommendation: Use Docker Desktop to install Docker 20+. See https://docs.docker.com/desktop/"
 DOCKER_PASS=$?
 
-check "java" "java --version | head -n 1" ">=17" \
+check "java" "java --version | head -n 1" "17" \
   "Recommendation: Use Amazon Corretto 17. See https://docs.aws.amazon.com/corretto/latest/corretto-17-ug/downloads-list.html"
 JAVA_PASS=$?
 
