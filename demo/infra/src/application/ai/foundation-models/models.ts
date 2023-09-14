@@ -124,6 +124,29 @@ export class FoundationModels extends Construct {
       );
     }
 
+    //////////////////////////////////////////////////////////
+    // Existing Models - provide the model info to integrate an existing model
+    // The ExistingLLM construct simply exposes the model info to integrate with inventory
+    //////////////////////////////////////////////////////////
+    // NB: Here is example reference of how to integrate with existing model
+    // new ExistingLLM(this, "MyExistingLLM", {
+    //   modelId: "example",
+    //   uuid: "existing.model",
+    //   name: "Existing Model",
+    //   framework: {
+    //     type: ModelFramework.SAGEMAKER_ENDPOINT,
+    //     endpointName: "endpointName",
+    //     endpointRegion: "endpointRegion",
+    //     endpointKwargs: {},
+    //     modelKwargs: {},
+    //   },
+    //   constraints: {
+    //     maxTotalTokens: 2048,
+    //     maxInputLength: 2047,
+    //   },
+    //   adapter: {},
+    // });
+
     // NB: add additional LLM/FoundationModels here to deploy
 
     ////////////////////////////////////////////////////////////
