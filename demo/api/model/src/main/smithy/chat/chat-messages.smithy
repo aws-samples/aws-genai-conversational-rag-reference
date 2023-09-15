@@ -41,6 +41,21 @@ structure ChatEngineConfig {
     condense_question_prompt: String
 }
 
+/// Chat search options
+structure ChatSearchOptions {
+    // The number of sources to consider (k).
+    limit: Integer
+    // Key-value parameter to pass for filtering metadata (e.g.: domain, collection, etc.).
+    filters: StringAnyMap
+}
+
+structure ChatOptions {
+    // Agent domain.
+    domain: String
+    // Search options for vectorstore.
+    search: ChatSearchOptions
+}
+
 @mixin
 structure ChatMessageIdMixin with [ChatIdMixin] {
     @required
@@ -107,6 +122,10 @@ structure CreateChatMessageInput for CreateChatMessage {
     // Config for chat available only to authorized admin-like groups
     // Will be ignored for other users
     config: ChatEngineConfig
+
+    // Define chat options such as domain, and search options for filtering
+    // available for all users
+    options: ChatOptions
 }
 
 structure CreateChatMessageOutput for CreateChatMessage {

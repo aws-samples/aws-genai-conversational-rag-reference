@@ -145,3 +145,9 @@ structure Tag {
 list Tags {
     member: Tag
 }
+
+/// A generic structure for maps that are indexed by a string and hold Any value
+map StringAnyMap {
+    key: String
+    value: Any
+}
