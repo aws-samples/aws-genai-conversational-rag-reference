@@ -33,6 +33,7 @@ export const handler = createChatMessageHandler(
 
     const question = input.body.question;
     const chatId = input.requestParameters.chatId;
+    const chatOptions = input.body.options;
 
     let config: Chat.ChatEngineConfig = {};
     if (isAdmin(callingIdentity) && input.body.config) {
@@ -58,7 +59,7 @@ export const handler = createChatMessageHandler(
       config,
       chatHistoryTable: ENV.CHAT_MESSAGE_TABLE_NAME,
       chatHistoryTableIndexName: ENV.CHAT_MESSAGE_TABLE_GSI_INDEX_NAME,
-      domain: ENV.DOMAIN,
+      domain: chatOptions?.domain ?? ENV.DOMAIN,
       search: {
         url: ENV.SEARCH_URL,
         fetch: createSignedFetcher({
@@ -67,6 +68,10 @@ export const handler = createChatMessageHandler(
           region: process.env.AWS_REGION! || process.env.AWS_DEFAULT_REGION!,
           idToken: callingIdentity.idToken,
         }),
+        k: chatOptions?.search?.limit,
+        filter: {
+          ...chatOptions?.search?.filters,
+        },
       },
       verbose: true,
     });
