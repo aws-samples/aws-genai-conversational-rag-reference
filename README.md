@@ -25,11 +25,9 @@ Galileo is:
 | Poetry                | >=1.5,<2    | https://python-poetry.org/docs/ |
 | AWS CLI               | v2          | https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html |
 | Docker<sup>1</sup>    | v20+        | https://docs.docker.com/desktop/ |
-| JDK                   | v17<sup>2</sup> | [Amazon Corretto 17](https://docs.aws.amazon.com/corretto/latest/corretto-17-ug/downloads-list.html) |
+| JDK                   | v17+        | [Amazon Corretto 17](https://docs.aws.amazon.com/corretto/latest/corretto-17-ug/downloads-list.html) |
 
 > <sup>1</sup> Docker virtual disk space should have at least 30GB of free space. If you see `no space left on device` error during build, free up space by running `docker system prune -f` and/or increasing the virtual disk size.
->
-> <sup>2</sup> At this time higher versions of JDK are not supported
 
 *AWS Service Quotas:*
 > Ensure the following service quota limits are increased before deploying. The deployment performs a check and will fail early if limits are not met.

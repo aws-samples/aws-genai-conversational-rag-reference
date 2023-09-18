@@ -105,6 +105,8 @@ Class | Method | HTTP request | Description
  - [ChatEngineConfigSearchType](docs/ChatEngineConfigSearchType.md)
  - [ChatMessage](docs/ChatMessage.md)
  - [ChatMessageSource](docs/ChatMessageSource.md)
+ - [ChatOptions](docs/ChatOptions.md)
+ - [ChatSearchOptions](docs/ChatSearchOptions.md)
  - [ClientErrorResponseContent](docs/ClientErrorResponseContent.md)
  - [CreateChatMessageRequestContent](docs/CreateChatMessageRequestContent.md)
  - [CreateChatMessageResponseContent](docs/CreateChatMessageResponseContent.md)
@@ -128,6 +130,7 @@ Class | Method | HTTP request | Description
  - [ServerTemporaryErrorResponseContent](docs/ServerTemporaryErrorResponseContent.md)
  - [SimilaritySearchRequestContent](docs/SimilaritySearchRequestContent.md)
  - [SimilaritySearchResponseContent](docs/SimilaritySearchResponseContent.md)
+ - [StringAnyMap](docs/StringAnyMap.md)
  - [UpdateChatRequestContent](docs/UpdateChatRequestContent.md)
  - [UpdateChatResponseContent](docs/UpdateChatResponseContent.md)
 

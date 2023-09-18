@@ -9,27 +9,10 @@ import {
   ModelFramework,
 } from "@aws-galileo/galileo-sdk/lib/models";
 import { Construct, IConstruct } from "constructs";
+import { BEDROCK_REGION } from "./ids";
+import { formatBedrockModelUUID } from "./utils";
 
-export const BEDROCK_REGION = "us-east-1";
-
-export enum BedrockModelIds {
-  TITAN_TEXT_LARGE = "amazon.titan-tg1-large",
-  TITAN_TEXT_XL = "amazon.titan-tg1-xlarge",
-  // TITAN_TEXT_EMBEDDINGS = "amazon.titan-e1t-medium", // NB: Embedding model not supported with current I/O of inference flow
-
-  ANTHROPIC_CLAUDE_V2 = "anthropic.claude-v2",
-  ANTHROPIC_CLAUDE_V2_100k = "anthropic.claude-v2-100k",
-  ANTHROPIC_CLAUDE_V1 = "anthropic.claude-v1",
-  ANTHROPIC_CLAUDE_V1_INSTANT = "anthropic.claude-instant-v1",
-  ANTHROPIC_CLAUDE_V1_100K = "anthropic.claude-v1-100k",
-
-  AI21_JURASSIC_MID = "ai21.j2-mid",
-  AI21_JURASSIC_ULTRA = "ai21.j2-ultra",
-  AI21_JURASSIC_JUMBO_INSTRUCT = "ai21.j2-jumbo-instruct",
-  AI21_JURASSIC_GRANDE_INSTRUCT = "ai21.j2-grande-instruct",
-}
-
-export const BEDROCK_DEFAULT_MODEL = BedrockModelIds.TITAN_TEXT_LARGE;
+export * from "./ids";
 
 export interface BedrockModelProps {
   /**
@@ -83,9 +66,7 @@ export interface BedrockModelProps {
  * with the rest of the application at runtime.
  */
 export class BedrockModel extends Construct implements IModelInfoProvider {
-  static formatUUID(modelId: string): string {
-    return `bedrock::${modelId}`;
-  }
+  static formatUUID = formatBedrockModelUUID;
 
   readonly modelInfo: IModelInfo;
 

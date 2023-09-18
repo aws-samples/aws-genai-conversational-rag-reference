@@ -17,7 +17,8 @@ import {
   DEFAULT_PREDEFINED_FOUNDATION_MODEL_LIST,
   FoundationModelIds,
 } from "../demo/infra/src/application/ai/foundation-models/ids";
-import { BEDROCK_DEFAULT_MODEL, BEDROCK_REGION, BedrockModel, BedrockModelIds } from '../demo/infra/src/galileo/ai/llms/framework/bedrock';
+import { BedrockModelIds, BEDROCK_DEFAULT_MODEL, BEDROCK_REGION } from '../demo/infra/src/galileo/ai/llms/framework/bedrock/ids';
+import { formatBedrockModelUUID } from '../demo/infra/src/galileo/ai/llms/framework/bedrock/utils';
 
 const ROOT = path.resolve(__dirname, "..");
 
@@ -282,7 +283,7 @@ type Task = Parameters<typeof execa.execaCommand>;
 
   const availableModelIds = includesBedrock ? [
     ...(foundationModels as string[]).filter(v => v !== FoundationModelIds.BEDROCK),
-    ...(bedrockModelIds as string[]).map(BedrockModel.formatUUID),
+    ...(bedrockModelIds as string[]).map(formatBedrockModelUUID),
   ] : (foundationModels as string[]);
 
   const { deployModels, defaultModelId } = cached(
