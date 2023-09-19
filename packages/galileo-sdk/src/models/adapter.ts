@@ -3,6 +3,7 @@ PDX-License-Identifier: Apache-2.0 */
 import { BaseSageMakerContentHandler } from 'langchain/llms/sagemaker_endpoint';
 import { set, get } from 'lodash';
 import { getLogger } from '../common/index.js';
+import { BaseChatTemplatePartials, ChatCondenseQuestionPromptRuntime, ChatQuestionAnswerPromptRuntime } from '../prompt/templates/chat/index.js';
 
 const logger = getLogger('models/adapter');
 
@@ -53,111 +54,53 @@ export interface IContentHandlerAdapter {
   readonly input?: IContentHandlerAdapterInput;
   readonly output?: IContentHandlerAdapterOutput;
 }
+
 /**
  * @struct
  */
-export interface IPromptAdapterTag {
-  readonly open?: string;
-  readonly close?: string;
+export interface IChatPromptAdapter {
+  readonly base?: Partial<BaseChatTemplatePartials>;
+  readonly questionAnswer?: ChatQuestionAnswerPromptRuntime;
+  readonly condenseQuestion?: ChatCondenseQuestionPromptRuntime;
 }
 /**
  * @struct
  */
 export interface IPromptAdapter {
-  readonly sequence?: IPromptAdapterTag;
-  readonly instruction?: IPromptAdapterTag;
-  readonly context?: IPromptAdapterTag;
-  readonly delimiter?: IPromptAdapterTag;
-  readonly system?: IPromptAdapterTag;
-  readonly human?: IPromptAdapterTag;
-  readonly ai?: IPromptAdapterTag;
+  readonly chat?: IChatPromptAdapter;
 }
+
+export class PromptAdapter implements IPromptAdapter {
+
+  readonly chat?: IChatPromptAdapter;
+
+  constructor(adapter?: IPromptAdapter) {
+    this.chat = {
+      base: adapter?.chat?.base,
+      condenseQuestion: adapter?.chat?.base || adapter?.chat?.condenseQuestion ? {
+        ...adapter.chat.condenseQuestion,
+        templatePartials: {
+          ...adapter.chat.base,
+          ...adapter.chat.condenseQuestion?.templatePartials,
+        },
+      } : undefined,
+      questionAnswer: adapter?.chat?.base || adapter?.chat?.questionAnswer ? {
+        ...adapter.chat.questionAnswer,
+        templatePartials: {
+          ...adapter.chat.base,
+          ...adapter.chat.questionAnswer?.templatePartials,
+        },
+      } : undefined,
+    };
+  }
+}
+
 /**
  * @struct
  */
 export interface IModelAdapter {
   readonly prompt?: IPromptAdapter;
   readonly contentHandler?: IContentHandlerAdapter;
-}
-
-// TODO: Consider adopting [prompt-engine](https://github.com/microsoft/prompt-engine) for managing
-// prompt formatting cross-model as adapter system.
-
-export class PromptAdapter {
-  static trim(prompt: string): string {
-    return prompt
-      .trim()
-      .replace(/ {2,}/g, ' ')
-      .replace(/\n{2,}/g, '\n');
-  }
-
-  /** @internal */
-  protected _adapter: Required<IPromptAdapter>;
-
-  constructor(adapter?: IPromptAdapter) {
-    this._adapter = {
-      sequence: {
-        open: adapter?.sequence?.open ?? '',
-        close: adapter?.sequence?.close ?? '',
-      },
-      instruction: {
-        open: adapter?.instruction?.open ?? '',
-        close: adapter?.instruction?.close ?? '',
-      },
-      context: {
-        open: adapter?.context?.open ?? '',
-        close: adapter?.context?.close ?? '',
-      },
-      delimiter: {
-        open: adapter?.delimiter?.open ?? "'''",
-        close: adapter?.delimiter?.close ?? "'''",
-      },
-      system: {
-        open: adapter?.system?.open ?? '',
-        close: adapter?.system?.close ?? '',
-      },
-      human: {
-        open: adapter?.human?.open ?? 'Human: ',
-        close: adapter?.human?.close ?? '',
-      },
-      ai: {
-        open: adapter?.ai?.open ?? 'Assistant: ',
-        close: adapter?.ai?.close ?? '',
-      },
-    };
-  }
-
-  transform(template: string): string {
-    let transformed = template.slice(); // copy
-    // replace all open/close tags
-    for (const [key, tag] of Object.entries(this._adapter)) {
-      transformed = transformed.replace(new RegExp(`<${key}>`, 'igm'), tag.open ?? '');
-      transformed = transformed.replace(new RegExp(`</${key}>`, 'igm'), tag.close ?? '');
-    }
-
-    transformed = PromptAdapter.trim(transformed);
-
-    logger.debug('PromptAdapter#transform:transformed', { template, transformed });
-    return transformed;
-  }
-
-  private _formatMessage(message: string, tag?: IPromptAdapterTag): string {
-    const open = tag?.open ?? '';
-    const close = tag?.close ?? '';
-    return `${open}${message}${close}`;
-  }
-
-  formatHumanMessage(message: string): string {
-    return this._formatMessage(message, this._adapter.human);
-  }
-
-  formatAiMessage(message: string): string {
-    return this._formatMessage(message, this._adapter.ai);
-  }
-
-  formatSystemMessage(message: string): string {
-    return this._formatMessage(message, this._adapter.system);
-  }
 }
 
 export const DEFAULT_OUTPUT_JSONPATH = '[0].generated_text';
@@ -218,12 +161,12 @@ export class AdaptedContentHandler extends BaseSageMakerContentHandler<string, s
 }
 
 export class ModelAdapter {
-  readonly promptAdapter: PromptAdapter;
+  readonly prompt?: IPromptAdapter;
 
   readonly contentHandler: AdaptedContentHandler;
 
   constructor(config?: IModelAdapter) {
-    this.promptAdapter = new PromptAdapter(config?.prompt);
+    this.prompt = new PromptAdapter(config?.prompt);
 
     this.contentHandler = new AdaptedContentHandler(config?.contentHandler);
   }

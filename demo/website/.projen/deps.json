@@ -222,6 +222,11 @@
       "type": "runtime"
     },
     {
+      "name": "langchain",
+      "version": "0.0.149",
+      "type": "runtime"
+    },
+    {
       "name": "lodash",
       "type": "runtime"
     },

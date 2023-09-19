@@ -1,8 +1,8 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { Chat } from "@aws-galileo/galileo-sdk";
 import { createSignedFetcher } from "@aws-galileo/galileo-sdk/lib/auth/aws-sigv4";
-import { fromEnv, fromNodeProviderChain } from "@aws-sdk/credential-providers";
+import * as Chat from "@aws-galileo/galileo-sdk/lib/chat";
+import { fromNodeProviderChain } from "@aws-sdk/credential-providers";
 import {
   interceptors,
   corsInterceptor,

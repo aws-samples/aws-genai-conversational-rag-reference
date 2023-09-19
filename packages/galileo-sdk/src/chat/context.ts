@@ -3,22 +3,22 @@ PDX-License-Identifier: Apache-2.0 */
 import { LLM } from 'langchain/llms/base';
 import { Bedrock } from 'langchain/llms/bedrock';
 import { SageMakerEndpoint } from 'langchain/llms/sagemaker_endpoint';
-import { PromptTemplate, PromptTemplateInput } from 'langchain/prompts';
+import { PromptTemplate } from 'langchain/prompts';
 import { merge } from 'lodash';
 import { getLogger } from '../common/index.js';
 import { ModelAdapter } from '../models/adapter.js';
 import { resolveFoundationModelCredentials } from '../models/cross-account.js';
 import { FoundationModelInventory } from '../models/index.js';
-import { CONDENSE_QUESTION_TEMPLATE, QA_TEMPLATE } from '../models/prompts.js';
 import { IModelInfo, Kwargs, isBedrockFramework, isSageMakerEndpointFramework } from '../models/types.js';
+import { ChatCondenseQuestionPromptRuntime, ChatCondenseQuestionPromptTemplate, ChatQuestionAnswerPromptRuntime, ChatQuestionAnswerPromptTemplate } from '../prompt/templates/chat/index.js';
 
 const logger = getLogger('chat/adapter');
 
 export interface IChatEngineContextOptions {
   readonly domain: string;
   readonly maxNewTokens: number;
-  readonly qaPrompt?: Partial<PromptTemplateInput>;
-  readonly condenseQuestionPrompt?: Partial<PromptTemplateInput>;
+  readonly qaPrompt?: ChatQuestionAnswerPromptRuntime;
+  readonly condenseQuestionPrompt?: ChatCondenseQuestionPromptRuntime;
   readonly modelKwargs?: Kwargs;
   readonly endpointKwargs?: Kwargs;
   readonly verbose?: boolean;
@@ -67,22 +67,27 @@ export class ChatEngineContext {
 
     this.adapter = new ModelAdapter(modelInfo.adapter);
 
-    this.qaPrompt = new PromptTemplate({
-      inputVariables: ['context', 'question', 'domain'],
-      partialVariables: { domain: options.domain },
-      ...options.qaPrompt,
-      template: this.adapter.promptAdapter.transform(
-        options.qaPrompt?.template ?? QA_TEMPLATE,
-      ),
-    });
+    this.qaPrompt = new ChatQuestionAnswerPromptTemplate(merge(
+      // defaults
+      {
+        domain: options.domain,
+      },
+      // model specific config
+      this.adapter.prompt?.chat?.questionAnswer,
+      // runtime specific
+      options.qaPrompt,
+    ));
 
-    this.condenseQuestionPrompt = new PromptTemplate({
-      inputVariables: ['chat_history', 'question'],
-      ...options.condenseQuestionPrompt,
-      template: this.adapter.promptAdapter.transform(
-        options.condenseQuestionPrompt?.template ?? CONDENSE_QUESTION_TEMPLATE,
-      ),
-    });
+    this.condenseQuestionPrompt = new ChatCondenseQuestionPromptTemplate(merge(
+      // defaults
+      {
+        domain: options.domain,
+      },
+      // model specific config
+      this.adapter.prompt?.chat?.condenseQuestion,
+      // runtime specific
+      options.condenseQuestionPrompt,
+    ));
 
     logger.debug('Prompts', {
       qaPrompt: this.qaPrompt.serialize(),

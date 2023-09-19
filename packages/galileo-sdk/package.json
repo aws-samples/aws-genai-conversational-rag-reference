@@ -72,9 +72,12 @@
     "@aws-lambda-powertools/metrics": "^1.12.1",
     "@aws-lambda-powertools/parameters": "^1.12.1",
     "cross-fetch": "^3.1.8",
+    "handlebars": "^4.7.8",
+    "handlebars-helpers-lite": "^0.2.1",
     "langchain": "0.0.149",
     "lodash": "^4.17.21",
     "pg-promise": "^11.5.4",
+    "safe-handlebars": "^1.0.1",
     "uuid": "^9.0.0"
   },
   "pnpm": {
@@ -82,7 +85,7 @@
       "jsii-rosetta": "5.x"
     }
   },
-  "main": "lib/index.js",
+  "main": "lib/index.cjs",
   "license": "Apache-2.0",
   "version": "0.0.0",
   "jest": {
@@ -118,29 +121,23 @@
         }
       ]
     ],
-    "preset": "ts-jest",
+    "preset": "ts-jest/presets/js-with-ts-esm",
     "globals": {
       "ts-jest": {
-        "tsconfig": "tsconfig.dev.json",
-        "useESM": true
+        "tsconfig": "tsconfig.dev.json"
       }
     },
-    "extensionsToTreatAsEsm": [
-      ".ts"
-    ],
     "moduleNameMapper": {
       "^(\\.{1,2}/.*)\\.js$": "$1"
-    }
+    },
+    "transformIgnorePatterns": [
+      "node_modules\\/(?!\\.pnpm|safe-handlebars)"
+    ]
   },
   "types": "lib/index.d.ts",
   "type": "module",
   "private": true,
   "exports": {
-    ".": {
-      "types": "./lib/index.d.ts",
-      "import": "./lib/index.js",
-      "require": "./lib/index.cjs"
-    },
     "./lib": {
       "types": "./lib/index.d.ts",
       "import": "./lib/index.js",
@@ -241,6 +238,11 @@
       "import": "./lib/langchain/embeddings/sagemager_endpoint.js",
       "require": "./lib/langchain/embeddings/sagemager_endpoint.cjs"
     },
+    "./lib/langchain/patch": {
+      "types": "./lib/langchain/patch.d.ts",
+      "import": "./lib/langchain/patch.js",
+      "require": "./lib/langchain/patch.cjs"
+    },
     "./lib/langchain/stores/messages/utils": {
       "types": "./lib/langchain/stores/messages/utils.d.ts",
       "import": "./lib/langchain/stores/messages/utils.js",
@@ -286,15 +288,45 @@
       "import": "./lib/models/llms/falcon.js",
       "require": "./lib/models/llms/falcon.cjs"
     },
-    "./lib/models/prompts": {
-      "types": "./lib/models/prompts.d.ts",
-      "import": "./lib/models/prompts.js",
-      "require": "./lib/models/prompts.cjs"
-    },
     "./lib/models/types": {
       "types": "./lib/models/types.d.ts",
       "import": "./lib/models/types.js",
       "require": "./lib/models/types.cjs"
+    },
+    "./lib/prompt": {
+      "types": "./lib/prompt/index.d.ts",
+      "import": "./lib/prompt/index.js",
+      "require": "./lib/prompt/index.cjs"
+    },
+    "./lib/prompt/handlebars": {
+      "types": "./lib/prompt/handlebars.d.ts",
+      "import": "./lib/prompt/handlebars.js",
+      "require": "./lib/prompt/handlebars.cjs"
+    },
+    "./lib/prompt/templates": {
+      "types": "./lib/prompt/templates/index.d.ts",
+      "import": "./lib/prompt/templates/index.js",
+      "require": "./lib/prompt/templates/index.cjs"
+    },
+    "./lib/prompt/templates/chat": {
+      "types": "./lib/prompt/templates/chat/index.d.ts",
+      "import": "./lib/prompt/templates/chat/index.js",
+      "require": "./lib/prompt/templates/chat/index.cjs"
+    },
+    "./lib/prompt/templates/chat/base": {
+      "types": "./lib/prompt/templates/chat/base.d.ts",
+      "import": "./lib/prompt/templates/chat/base.js",
+      "require": "./lib/prompt/templates/chat/base.cjs"
+    },
+    "./lib/prompt/templates/chat/condense-question": {
+      "types": "./lib/prompt/templates/chat/condense-question.d.ts",
+      "import": "./lib/prompt/templates/chat/condense-question.js",
+      "require": "./lib/prompt/templates/chat/condense-question.cjs"
+    },
+    "./lib/prompt/templates/chat/question-answer": {
+      "types": "./lib/prompt/templates/chat/question-answer.d.ts",
+      "import": "./lib/prompt/templates/chat/question-answer.js",
+      "require": "./lib/prompt/templates/chat/question-answer.cjs"
     },
     "./lib/vectorstores": {
       "types": "./lib/vectorstores/index.d.ts",

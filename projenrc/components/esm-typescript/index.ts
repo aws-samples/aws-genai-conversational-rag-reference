@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { merge } from "lodash";
+import { merge, set } from "lodash";
 import { Stability } from "projen/lib/cdk";
 import {
   PROJECT_AUTHOR,
@@ -11,8 +11,26 @@ import { NodePackageManager, TypeScriptModuleResolution } from "projen/lib/javas
 import { JsonFile, TextFile } from 'projen';
 import { EsmPackageExports } from './pkg-exports';
 
+export interface EsmTypescriptProjectOptions extends Omit<TypeScriptProjectOptions, keyof typeof PROJECT_AUTHOR | "defaultReleaseBranch"> {
+  /**
+   * Indicates if package is private, which will be denoted in the package.json.
+   * @default true
+   */
+  readonly private?: boolean;
+  /**
+   * List of package dependencies that need to be transformed.
+   * Currently just applies to jest https://jestjs.io/docs/configuration#transformignorepatterns-arraystring
+   */
+  readonly depsToTransform?: string[];
+  /**
+   * Indicates if module is automatically exported
+   * @default true
+   */
+  readonly rootExport?: boolean;
+}
+
 export class EsmTypescriptProject extends TypeScriptProject {
-  constructor(options: Omit<TypeScriptProjectOptions, keyof typeof PROJECT_AUTHOR | "defaultReleaseBranch">) {
+  constructor(options: EsmTypescriptProjectOptions) {
     super({
       ...PROJECT_AUTHOR,
       defaultReleaseBranch: DEFAULT_RELEASE_BRANCH,
@@ -24,12 +42,14 @@ export class EsmTypescriptProject extends TypeScriptProject {
         compilerOptions: {
           noUnusedLocals: false,
           noUnusedParameters: false,
+          allowJs: true,
         },
         exclude: []
       }, options.tsconfigDev),
       tsconfig: mergeTsconfigOptions({
         compilerOptions: {
-          lib: ["DOM", "ES2021", "ES2022.Object"],
+          lib: ["DOM", "ES2021"],
+          target: "ES2021",
           moduleResolution: TypeScriptModuleResolution.NODE_NEXT,
           module: TypeScriptModuleResolution.NODE_NEXT,
         },
@@ -46,22 +66,25 @@ export class EsmTypescriptProject extends TypeScriptProject {
       "**/*.test.*",
     ].includes(v))
 
-    // https://kulshekhar.github.io/ts-jest/docs/next/guides/esm-support/
-    merge(this.jest?.config, {
-      extensionsToTreatAsEsm: [".ts"],
-      moduleNameMapper: {
-        "^(\\.{1,2}/.*)\\.js$": "$1",
-      },
-      globals: {
-        "ts-jest": {
-          useESM: true,
-        }
-      }
+    if (this.jest) {
+      // https://kulshekhar.github.io/ts-jest/docs/next/guides/esm-support/
+      merge(this.jest.config, {
+        preset: "ts-jest/presets/js-with-ts-esm",
+        moduleNameMapper: {
+          "^(\\.{1,2}/.*)\\.js$": "$1",
+        },
+      });
 
-    });
+      if (options.depsToTransform) {
+        set(this.jest.config, "transformIgnorePatterns", options.depsToTransform.map((v) => {
+          return `node_modules\\/(?!\\.pnpm|${v})`
+        }))
+      }
+    }
 
     this.package.addField("type", "module");
-    this.package.addField("private", true);
+
+    options.private !== false && this.package.addField("private", true);
 
     this.package.addPackageResolutions("jsii-rosetta@5.x");
 
@@ -99,6 +122,6 @@ export class EsmTypescriptProject extends TypeScriptProject {
 
     this.compileTask.spawn(compileCjsTask);
 
-    new EsmPackageExports(this);
+    new EsmPackageExports(this, { src: this.srcdir, lib: this.libdir, rootExport: options.rootExport });
   }
 }

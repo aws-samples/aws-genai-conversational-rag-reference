@@ -36,9 +36,9 @@ structure ChatEngineConfig {
     // Type of search
     search_type: ChatEngineConfigSearchType
     // Prompt template used for final question/answser request to LLM
-    qa_prompt: String
+    qa_prompt: Any
     // Prompt template used for condensing and reformatting question/history prior to invoking question/answer request
-    condense_question_prompt: String
+    condense_question_prompt: Any
 }
 
 /// Chat search options

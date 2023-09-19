@@ -59,6 +59,9 @@ export class GalileoSdk extends EsmTypescriptProject {
         "@aws-crypto/sha256-js",
         "cross-fetch",
         "lodash",
+        "handlebars",
+        "handlebars-helpers-lite",
+        "safe-handlebars",
       ],
       devDeps: [
         "@types/uuid",
@@ -79,7 +82,13 @@ export class GalileoSdk extends EsmTypescriptProject {
         "@aws-sdk/protocol-http",
         "@aws-sdk/querystring-parser",
       ],
+      depsToTransform: [
+        "safe-handlebars"
+      ],
       publishDryRun: true,
+      // TODO: once we marshal the root module exports better for cross-env/modules we can re-enable this
+      // currently will not support root import of the module
+      rootExport: false,
     });
   }
 }
