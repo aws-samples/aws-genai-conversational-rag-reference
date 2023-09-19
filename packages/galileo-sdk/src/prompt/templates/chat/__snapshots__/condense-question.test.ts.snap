@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`prompt/templates/chat condense-question default 1`] = `
+"Given the following conversational dialog denoted by ''', and the "Followup Question" below, rephrase the "Followup Question" to be a concise standalone question in its original language. Without answering the question, return only the standalone question.
+Dialog: '''
+System: A system message
+
+Human: Hi
+
+Assistant: Hello!
+
+'''
+Followup Question: THE QUESTION
+
+Standalone Question:"
+`;
+
+exports[`prompt/templates/chat condense-question messages 1`] = `
+"Given the following conversational dialog denoted by ''', and the "Followup Question" below, rephrase the "Followup Question" to be a concise standalone question in its original language. Without answering the question, return only the standalone question.
+Dialog: '''
+<|system|>A system message<|endoftext|>
+
+<|prompter|>Hi<|endoftext|>
+
+<|assistant|>Hello!<|endoftext|>
+
+'''
+Followup Question: THE QUESTION
+
+Standalone Question:"
+`;
+
+exports[`prompt/templates/chat condense-question wrappers 1`] = `
+"<SEQUENCE>Given the following conversational dialog denoted by ''', and the "Followup Question" below, rephrase the "Followup Question" to be a concise standalone question in its original language. Without answering the question, return only the standalone question.
+Dialog: '''
+System: A system message
+
+Human: Hi
+
+Assistant: Hello!
+
+'''
+Followup Question: THE QUESTION
+
+Standalone Question: </SEQUENCE>"
+`;

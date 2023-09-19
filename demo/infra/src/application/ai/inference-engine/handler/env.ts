@@ -1,9 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { Models } from "@aws-galileo/galileo-sdk";
+import { FOUNDATION_MODEL_INVENTORY_SECRET } from "@aws-galileo/galileo-sdk/lib/models";
 
-const FOUNDATION_MODEL_INVENTORY_SECRET =
-  Models.FOUNDATION_MODEL_INVENTORY_SECRET;
 export interface IProcessEnv {
   SEARCH_URL: string;
   /** Stringified FoundationModelRecord mapping of deployed models for lookup */

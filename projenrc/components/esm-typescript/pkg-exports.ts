@@ -15,6 +15,11 @@ export type EsmExportRecord = Record<string, EsmExportDefinition>;
 export interface EsmPackageExportsOptions {
   readonly src: string;
   readonly lib: string;
+  /**
+   * Indicates if module is automatically exported
+   * @default true
+   */
+  readonly rootExport?: boolean;
 }
 
 export class EsmPackageExports extends Component implements EsmPackageExportsOptions {
@@ -22,6 +27,7 @@ export class EsmPackageExports extends Component implements EsmPackageExportsOpt
 
   readonly src: string;
   readonly lib: string;
+  readonly rootExport: boolean;
 
   readonly srcDir: string;
 
@@ -30,9 +36,14 @@ export class EsmPackageExports extends Component implements EsmPackageExportsOpt
 
     this.package = project.package;
 
+    this.rootExport = options?.rootExport ?? true;
+
     this.lib = options?.lib ?? "lib";
     this.src = options?.src ?? "src";
     this.srcDir = path.join(this.project.outdir, this.src);
+
+    // CJS fall-back for older versions of Node.js
+    this.package.addField("main", `${this.lib}/index.cjs`);
   }
 
   preSynthesize(): void {
@@ -42,11 +53,13 @@ export class EsmPackageExports extends Component implements EsmPackageExportsOpt
     exports["./package.json"] = "./package.json" as any;
 
     // add root export
-    exports["."] = {
-      types: "./lib/index.d.ts",
-      import: "./lib/index.js",
-      require: "./lib/index.cjs",
-    };
+    if (this.rootExport) {
+      exports["."] = {
+        types: "./lib/index.d.ts",
+        import: "./lib/index.js",
+        require: "./lib/index.cjs",
+      };
+    }
 
     // sort exports
     exports = Object.fromEntries(Object.entries(exports).sort(([a], [b]) => {

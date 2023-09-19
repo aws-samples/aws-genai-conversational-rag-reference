@@ -4,7 +4,7 @@ import { MonorepoTsProject, NxProject } from "@aws/pdk/monorepo";
 import { javascript } from "projen";
 import { withStorybook } from "../helpers/withStorybook";
 import { Api } from "./api";
-import { DEFAULT_RELEASE_BRANCH } from "../constants";
+import { DEFAULT_RELEASE_BRANCH, LANGCHAIN_VERSION } from "../constants";
 import { GalileoSdk } from "../framework";
 import { TypeScriptModuleResolution } from "projen/lib/javascript";
 
@@ -44,6 +44,7 @@ export class Website {
         "use-immer",
         "usehooks-ts",
         "nanoid",
+        `langchain@${LANGCHAIN_VERSION}`, // not semver so need to pin
         api.project.library.typescriptReactQueryHooks!.package.packageName,
         galileoSdk.package.packageName,
       ],

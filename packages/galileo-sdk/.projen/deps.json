@@ -218,6 +218,14 @@
       "type": "runtime"
     },
     {
+      "name": "handlebars",
+      "type": "runtime"
+    },
+    {
+      "name": "handlebars-helpers-lite",
+      "type": "runtime"
+    },
+    {
       "name": "langchain",
       "version": "0.0.149",
       "type": "runtime"
@@ -228,6 +236,10 @@
     },
     {
       "name": "pg-promise",
+      "type": "runtime"
+    },
+    {
+      "name": "safe-handlebars",
       "type": "runtime"
     },
     {

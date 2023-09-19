@@ -7,10 +7,8 @@ import { PromptTemplate } from 'langchain/prompts';
 // import { SerializedChatVectorDBQAChain } from "./serde.js";
 import {
   ChainValues,
-  BaseMessage,
 } from 'langchain/schema';
 import { BaseRetriever } from 'langchain/schema/retriever';
-import { PromptAdapter } from '../models/index.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type LoadValues = Record<string, any>;
@@ -21,7 +19,6 @@ export interface ChatEngineChainInput extends ChainInputs {
   questionGeneratorChain: LLMChain;
   returnSourceDocuments?: boolean;
   inputKey?: string;
-  adapter: PromptAdapter;
 }
 
 export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
@@ -101,8 +98,6 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
 
   returnSourceDocuments = false;
 
-  adapter: PromptAdapter;
-
   constructor(fields: ChatEngineChainInput) {
     super(fields);
     this.retriever = fields.retriever;
@@ -111,23 +106,6 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
     this.inputKey = fields.inputKey ?? this.inputKey;
     this.returnSourceDocuments =
       fields.returnSourceDocuments ?? this.returnSourceDocuments;
-    this.adapter = fields.adapter;
-  }
-
-  getChatHistoryString(history: BaseMessage[], adapter: PromptAdapter): string {
-    return history
-      .map((message) => {
-        if (message._getType() === 'human') {
-          return adapter.formatHumanMessage(message.content);
-        } else if (message._getType() === 'ai') {
-          return adapter.formatAiMessage(message.content);
-        } else if (message._getType() === 'system') {
-          return adapter.formatSystemMessage(message.content);
-        } else {
-          return `${message.content}`;
-        }
-      })
-      .join('\n');
   }
 
   /** @ignore */
@@ -142,7 +120,7 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
       throw new Error(`Chat history key ${this.chatHistoryKey} not found.`);
     }
     const question: string = values[this.inputKey];
-    const chatHistory = this.getChatHistoryString(values[this.chatHistoryKey], this.adapter);
+    const chatHistory = values[this.chatHistoryKey];
 
     let newQuestion = question;
     if (chatHistory.length > 0) {

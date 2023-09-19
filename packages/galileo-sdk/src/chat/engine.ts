@@ -1,5 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import '../langchain/patch.js';
 import { BaseLLM } from 'langchain/llms/base';
 import { PromptTemplate } from 'langchain/prompts';
 import { BaseRetriever } from 'langchain/schema/retriever';
@@ -9,7 +10,8 @@ import { DynamoDBChatMessageHistory } from './dynamodb/message-history.js';
 import { ChatEngineHistory, ChatTurn } from './memory.js';
 import { SearchRetriever, SearchRetrieverInput } from './search.js';
 import { TKwags } from '../common/types.js';
-import { IModelInfo, PromptAdapter } from '../models/index.js';
+import { IModelInfo } from '../models/index.js';
+import { ChatCondenseQuestionPromptRuntime, ChatQuestionAnswerPromptRuntime } from '../prompt/templates/chat/index.js';
 
 export interface ChatEngineConfig {
   readonly llmModel?: string | IModelInfo;
@@ -17,8 +19,8 @@ export interface ChatEngineConfig {
   readonly llmEndpointKwargs?: TKwags;
   readonly search?: SearchRetrieverInput;
   readonly memoryKwargs?: TKwags;
-  readonly qaPrompt?: string;
-  readonly condenseQuestionPrompt?: string;
+  readonly qaPrompt?: string | ChatQuestionAnswerPromptRuntime;
+  readonly condenseQuestionPrompt?: string | ChatCondenseQuestionPromptRuntime;
 }
 
 export interface ChatEngineFromOption {
@@ -43,7 +45,6 @@ interface ChatEngineProps {
   readonly retriever: BaseRetriever;
   readonly qaPrompt: PromptTemplate;
   readonly condenseQuestionPrompt: PromptTemplate;
-  readonly promptAdapter: PromptAdapter;
   readonly verbose?: boolean;
 }
 
@@ -72,8 +73,8 @@ export class ChatEngine {
     const context = new ChatEngineContext(modelInfo, {
       domain,
       maxNewTokens,
-      qaPrompt: config.qaPrompt ? { template: config.qaPrompt } : undefined,
-      condenseQuestionPrompt: config.condenseQuestionPrompt ? { template: config.condenseQuestionPrompt } : undefined,
+      qaPrompt: typeof config.qaPrompt === 'string' ? { template: config.qaPrompt } : config.qaPrompt,
+      condenseQuestionPrompt: typeof config.condenseQuestionPrompt === 'string' ? { template: config.condenseQuestionPrompt } : config.condenseQuestionPrompt,
       endpointKwargs: config.llmEndpointKwargs,
       modelKwargs: config.llmModelKwargs,
       verbose,
@@ -98,7 +99,6 @@ export class ChatEngine {
       chatHistory,
       memory,
       retriever,
-      promptAdapter: context.adapter.promptAdapter,
     });
   }
 
@@ -122,7 +122,6 @@ export class ChatEngine {
       qaPrompt,
       condenseQuestionPrompt,
       verbose,
-      promptAdapter,
     } = props;
 
     this.chatId = chatId;
@@ -137,7 +136,6 @@ export class ChatEngine {
       this.retriever,
       {
         verbose,
-        adapter: promptAdapter,
         memory: this.memory,
         qaChainOptions: {
           type: 'stuff',

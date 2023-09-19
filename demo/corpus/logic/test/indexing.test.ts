@@ -2,13 +2,13 @@
 PDX-License-Identifier: Apache-2.0 */
 // @ts-ignore
 import type {} from '@types/jest';
-import { MemoryVectorStore } from '@aws-galileo/galileo-sdk';
 import { logger } from '@aws-galileo/galileo-sdk/lib/common';
 import { normalizePostgresTableName } from '@aws-galileo/galileo-sdk/lib/vectorstores/pgvector/utils';
 import { HeadObjectCommand, HeadObjectCommandOutput, S3Client } from '@aws-sdk/client-s3';
 import { BatchGetCommand, BatchGetCommandOutput, BatchWriteCommand, DynamoDBDocumentClient, GetCommand, GetCommandOutput, PutCommand } from '@aws-sdk/lib-dynamodb';
 import { mockClient } from 'aws-sdk-client-mock';
 import { FakeEmbeddings } from 'langchain/embeddings/fake';
+import { MemoryVectorStore } from 'langchain/vectorstores/memory';
 
 /* eslint-disable @typescript-eslint/no-require-imports */
 

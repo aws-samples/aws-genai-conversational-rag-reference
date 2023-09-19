@@ -14,7 +14,7 @@ import React, {
   useRef,
 } from "react";
 import { useLocation } from "react-router-dom";
-import { useImmer, Updater } from "use-immer";
+import { useImmer, Updater, DraftFunction } from "use-immer";
 import { useIsAdmin } from "../Auth";
 
 export type { ChatEngineConfig, ChatEngineConfigSearchType };
@@ -45,18 +45,24 @@ export const useChatEngineConfig = (): ChatEngineConfigContext => {
 
 export const useChatEngineConfigState = <P extends keyof ChatEngineConfig>(
   prop: P
-) => {
+): [state: ChatEngineConfig[P], updater: Updater<ChatEngineConfig[P]>] => {
   const [config, updateConfig] = useChatEngineConfig();
-  const setter = useCallback(
-    (value: ChatEngineConfig[P]) => {
+  const setter: Updater<ChatEngineConfig[P]> = useCallback(
+    (value) => {
       updateConfig((draft) => {
-        draft[prop] = value;
+        if (typeof value === "function") {
+          draft[prop] = (value as DraftFunction<ChatEngineConfig[P]>)(
+            draft[prop]
+          );
+        } else {
+          draft[prop] = value;
+        }
       });
     },
     [updateConfig]
   );
 
-  return [config[prop], setter] as const;
+  return [config[prop], setter];
 };
 
 /**
@@ -78,13 +84,13 @@ const ChatEngineConfigProvider: React.FC<PropsWithChildren> = ({
   // Persist anytime chat id is modified, or on unmount
   useEffect(() => {
     if (chatId) {
-      debugger;
       // reset the config to persisted value for chat
       updateConfig(retrieveConfig(chatId));
 
       return () => {
-        debugger;
-        storeConfig(chatId, configRef.current);
+        if (configRef.current != null && !isEmpty(configRef.current)) {
+          storeConfig(chatId, configRef.current);
+        }
       };
     }
     return;

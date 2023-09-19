@@ -63,7 +63,7 @@ export const ChatConfigSplitPanel: FC = () => {
           />
         }
         counter={
-          (isEmpty(config) ? (
+          (config == null || isEmpty(config) ? (
             <StatusIndicator type="stopped" />
           ) : (
             <StatusIndicator type="success" />
