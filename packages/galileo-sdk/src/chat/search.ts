@@ -3,7 +3,7 @@ PDX-License-Identifier: Apache-2.0 */
 import { fetch } from 'cross-fetch';
 import { Document } from 'langchain/document';
 import { RemoteLangChainRetrieverParams, RemoteLangChainRetriever, RemoteRetrieverValues } from 'langchain/retrievers/remote';
-import { getLogger } from '../common';
+import { getLogger } from '../common/index.js';
 
 const logger = getLogger('chat/search');
 

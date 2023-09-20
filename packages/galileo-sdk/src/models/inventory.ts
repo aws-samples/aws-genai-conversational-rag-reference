@@ -1,11 +1,11 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import { SecretsProvider } from '@aws-lambda-powertools/parameters/secrets';
-import { resolveFoundationModelCredentials } from './cross-account';
-import { FOUNDATION_MODEL_INVENTORY_SECRET } from './env';
-import { IModelInfo } from './types';
-import { env } from '../common/env';
-import { getLogger } from '../common/logging';
+import { resolveFoundationModelCredentials } from './cross-account.js';
+import { FOUNDATION_MODEL_INVENTORY_SECRET } from './env.js';
+import { IModelInfo } from './types.js';
+import { env } from '../common/env.js';
+import { getLogger } from '../common/logging/index.js';
 
 const logger = getLogger(__filename);
 

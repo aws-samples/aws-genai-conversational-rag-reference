@@ -7,9 +7,8 @@ import {
   LANGCHAIN_VERSION,
   PROJECT_AUTHOR,
 } from "./constants";
-import { TypeScriptProject } from "projen/lib/typescript";
 import { DEFAULT_RELEASE_BRANCH } from "./constants";
-import { TypeScriptModuleResolution } from "projen/lib/javascript";
+import { EsmTypescriptProject } from './components/esm-typescript';
 
 export class GalileoCdkLib extends AwsCdkConstructLibrary {
   constructor(monorepo: MonorepoTsProject) {
@@ -41,17 +40,15 @@ export class GalileoCdkLib extends AwsCdkConstructLibrary {
 
 // TODO: make this Jsii project so we can vend python and other languages automatically
 // Requires bundling all non-Jsii deps and ensure specific interface rules, so waiting till working in Ts
-export class GalileoSdk extends TypeScriptProject {
+export class GalileoSdk extends EsmTypescriptProject {
   constructor(monorepo: MonorepoTsProject) {
     super({
-      ...PROJECT_AUTHOR,
       parent: monorepo,
       stability: Stability.EXPERIMENTAL,
       packageManager: monorepo.package.packageManager,
       name: "@aws-galileo/galileo-sdk",
       outdir: "packages/galileo-sdk",
       // jsiiVersion: "5.x",
-      defaultReleaseBranch: DEFAULT_RELEASE_BRANCH,
       deps: [
         `langchain@${LANGCHAIN_VERSION}`, // not semver so need to pin
         "uuid",
@@ -83,26 +80,6 @@ export class GalileoSdk extends TypeScriptProject {
         "@aws-sdk/querystring-parser",
       ],
       publishDryRun: true,
-      tsconfigDev: {
-        compilerOptions: {
-          lib: ["DOM", "ES2021"],
-          skipLibCheck: true,
-          noUnusedLocals: false,
-          noUnusedParameters: false,
-          moduleResolution: TypeScriptModuleResolution.NODE,
-        },
-      },
-      tsconfig: {
-        compilerOptions: {
-          lib: ["DOM", "ES2021"],
-          skipLibCheck: true,
-          moduleResolution: TypeScriptModuleResolution.NODE,
-        },
-      },
     });
-
-    this.package.addField("private", true);
-
-    this.package.addPackageResolutions("jsii-rosetta@5.x");
   }
 }

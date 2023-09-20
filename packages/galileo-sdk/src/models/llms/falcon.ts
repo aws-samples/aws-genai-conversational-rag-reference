@@ -1,7 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { IModelAdapter } from '../adapter';
-import { Kwargs } from '../types';
+import { IModelAdapter } from '../adapter.js';
+import { Kwargs } from '../types.js';
 
 export const FALCON_ADAPTER: IModelAdapter = {
   // https://huggingface.co/blog/llama2#how-to-prompt-llama-2

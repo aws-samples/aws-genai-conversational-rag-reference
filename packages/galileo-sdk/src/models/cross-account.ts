@@ -1,8 +1,8 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import { fromTemporaryCredentials } from '@aws-sdk/credential-providers';
-import { FOUNDATION_MODEL_CROSS_ACCOUNT_ROLE_ARN } from './env';
-import { getLogger } from '../common';
+import { FOUNDATION_MODEL_CROSS_ACCOUNT_ROLE_ARN } from './env.js';
+import { getLogger } from '../common/index.js';
 
 const logger = getLogger(__filename);
 

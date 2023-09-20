@@ -41,4 +41,7 @@ junit.xml
 /lib
 /dist/
 !/.eslintrc.json
+lib-cjs
+!/tsconfig.cjs.json
+!/scripts/lib-cjs.js
 !/project.json

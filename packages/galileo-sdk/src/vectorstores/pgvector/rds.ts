@@ -2,7 +2,7 @@
 PDX-License-Identifier: Apache-2.0 */
 import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
 import { Signer } from '@aws-sdk/rds-signer';
-import { envBool, getLogger } from '../../common';
+import { envBool, getLogger } from '../../common/index.js';
 
 const logger = getLogger(__filename);
 

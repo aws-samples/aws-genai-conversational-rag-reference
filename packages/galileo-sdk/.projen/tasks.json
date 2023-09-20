@@ -27,6 +27,26 @@
       "steps": [
         {
           "exec": "tsc --build"
+        },
+        {
+          "spawn": "compile:cjs"
+        }
+      ]
+    },
+    "compile:cjs": {
+      "name": "compile:cjs",
+      "steps": [
+        {
+          "name": "compile",
+          "exec": "tsc --outDir lib-cjs -p tsconfig.cjs.json"
+        },
+        {
+          "name": "move",
+          "exec": "node scripts/lib-cjs.js"
+        },
+        {
+          "name": "cleanup",
+          "exec": "rm -rf lib-cjs"
         }
       ]
     },

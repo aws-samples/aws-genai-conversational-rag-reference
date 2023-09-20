@@ -1,7 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 
-import { IModelAdapter } from './adapter';
+import { IModelAdapter } from './adapter.js';
 
 export type Dict = Record<string, unknown>;
 export type Kwargs = Record<string, unknown>;

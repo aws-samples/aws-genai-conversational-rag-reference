@@ -9,6 +9,8 @@
     ".projen/tasks.json",
     "LICENSE",
     "project.json",
+    "scripts/lib-cjs.js",
+    "tsconfig.cjs.json",
     "tsconfig.dev.json",
     "tsconfig.json"
   ],

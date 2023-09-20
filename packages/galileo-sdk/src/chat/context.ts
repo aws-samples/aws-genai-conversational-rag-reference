@@ -5,12 +5,12 @@ import { Bedrock } from 'langchain/llms/bedrock';
 import { SageMakerEndpoint } from 'langchain/llms/sagemaker_endpoint';
 import { PromptTemplate, PromptTemplateInput } from 'langchain/prompts';
 import { merge } from 'lodash';
-import { getLogger } from '../common';
-import { FoundationModelInventory } from '../models';
-import { ModelAdapter } from '../models/adapter';
-import { resolveFoundationModelCredentials } from '../models/cross-account';
-import { CONDENSE_QUESTION_TEMPLATE, QA_TEMPLATE } from '../models/prompts';
-import { IModelInfo, Kwargs, isBedrockFramework, isSageMakerEndpointFramework } from '../models/types';
+import { getLogger } from '../common/index.js';
+import { ModelAdapter } from '../models/adapter.js';
+import { resolveFoundationModelCredentials } from '../models/cross-account.js';
+import { FoundationModelInventory } from '../models/index.js';
+import { CONDENSE_QUESTION_TEMPLATE, QA_TEMPLATE } from '../models/prompts.js';
+import { IModelInfo, Kwargs, isBedrockFramework, isSageMakerEndpointFramework } from '../models/types.js';
 
 const logger = getLogger('chat/adapter');
 

@@ -1,8 +1,8 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-export * as dynamodb from './dynamodb';
-export * as chain from './chain';
-export * as context from './context';
-export * as memory from './memory';
+export * as dynamodb from './dynamodb/index.js';
+export * as chain from './chain.js';
+export * as context from './context.js';
+export * as memory from './memory.js';
 
-export * from './engine';
+export * from './engine.js';

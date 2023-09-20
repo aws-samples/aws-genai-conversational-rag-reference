@@ -8,8 +8,8 @@ import {
   UpdateCommand,
 } from '@aws-sdk/lib-dynamodb';
 import { v4 as uuidv4 } from 'uuid';
-import { getAllChatMessageIds } from './messages';
-import { listChatMessageSources } from './sources';
+import { getAllChatMessageIds } from './messages.js';
+import { listChatMessageSources } from './sources.js';
 import {
   getChatKey,
   getChatsByTimeKey,
@@ -18,7 +18,7 @@ import {
   Keys,
   DDBUpdateOutput,
   getAllByPagination,
-} from './util';
+} from './util.js';
 
 export async function createChat(
   documentClient: DynamoDBDocumentClient,
