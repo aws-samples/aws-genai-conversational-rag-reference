@@ -226,6 +226,10 @@
       "type": "runtime"
     },
     {
+      "name": "nanoid",
+      "type": "runtime"
+    },
+    {
       "name": "react",
       "type": "runtime"
     },

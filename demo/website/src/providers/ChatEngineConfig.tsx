@@ -1,25 +1,26 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { IModelInfo } from "@aws-galileo/galileo-sdk/lib/models";
 import {
   ChatEngineConfig,
   ChatEngineConfigSearchType,
 } from "api-typescript-react-query-hooks";
+import { isEmpty } from "lodash";
 import React, {
+  PropsWithChildren,
   createContext,
   useCallback,
   useContext,
   useEffect,
   useRef,
 } from "react";
+import { useLocation } from "react-router-dom";
 import { useImmer, Updater } from "use-immer";
-import { useLocalStorage, useDebounce } from "usehooks-ts";
 import { useIsAdmin } from "../Auth";
 
 export type { ChatEngineConfig, ChatEngineConfigSearchType };
 
 export interface ChatEngineConfigActions {
-  readonly reset: () => void;
+  readonly reset: (hard?: boolean) => void;
   readonly copy: () => Promise<void>;
   readonly paste: () => Promise<void>;
 }
@@ -60,28 +61,47 @@ export const useChatEngineConfigState = <P extends keyof ChatEngineConfig>(
 
 /**
  * Sets up the ChatEngineConfig context used to config chat engine config for admins.
- *
- * TODO: restrict this to only admins - not sure how to get this with CognitoAuth (should be in claims, but using Sigv4 so not sure)
+ * This provider MUST wrap the <App /> which manages the splitpanel where dev settings are rendered.
  */
-const ChatEngineConfigProvider: React.FC<any> = ({ children }) => {
-  const [persistent, persist] = useLocalStorage<ChatEngineConfig>(
-    "@galileo/chat-engine-config",
-    {}
-  );
-  const [, persistCustomModel] = useLocalStorage<Partial<IModelInfo>>(
-    "@galileo/custom-model",
-    {}
-  );
+const ChatEngineConfigProvider: React.FC<PropsWithChildren> = ({
+  children,
+}) => {
+  // TODO: find better way to retrieve the route path - useParams is empty
+  const chatId = useLocation()
+    .pathname.match(/chat\/([^/]+)(\/.*)?$/)
+    ?.at(1);
   const isAdmin = useIsAdmin();
-  const [config, updateConfig] = useImmer<ChatEngineConfig>(persistent);
+  const [config, updateConfig] = useImmer<ChatEngineConfig>({});
   const configRef = useRef<ChatEngineConfig>();
   configRef.current = config;
 
-  const reset = useCallback(() => {
-    updateConfig({});
-    persist({});
-    persistCustomModel({});
-  }, [persist, persistCustomModel, updateConfig]);
+  // Persist anytime chat id is modified, or on unmount
+  useEffect(() => {
+    if (chatId) {
+      debugger;
+      // reset the config to persisted value for chat
+      updateConfig(retrieveConfig(chatId));
+
+      return () => {
+        debugger;
+        storeConfig(chatId, configRef.current);
+      };
+    }
+    return;
+  }, [chatId]);
+
+  const reset = useCallback(
+    (hard?: boolean) => {
+      if (hard) {
+        updateConfig({});
+        chatId && storeConfig(chatId, undefined);
+      } else {
+        const _config = chatId && retrieveConfig(chatId);
+        updateConfig(_config || {});
+      }
+    },
+    [chatId, updateConfig]
+  );
 
   const copy = useCallback(async () => {
     return navigator.clipboard.writeText(
@@ -111,14 +131,6 @@ const ChatEngineConfigProvider: React.FC<any> = ({ children }) => {
     },
   ];
 
-  const debouncedValue = useDebounce(config, 1000);
-
-  useEffect(() => {
-    if (isAdmin && debouncedValue) {
-      persist(debouncedValue);
-    }
-  }, [debouncedValue, isAdmin, persist]);
-
   return (
     <ChatEngineConfigContext.Provider
       value={isAdmin ? context : DEFAULT_CONTEXT}
@@ -129,3 +141,19 @@ const ChatEngineConfigProvider: React.FC<any> = ({ children }) => {
 };
 
 export default ChatEngineConfigProvider;
+
+function persistentKey(chatId: string): string {
+  return `@galileo/chat-engine-config/${chatId}`;
+}
+
+function storeConfig(chatId: string, config?: ChatEngineConfig) {
+  if (isEmpty(config)) {
+    localStorage.removeItem(persistentKey(chatId));
+  } else {
+    localStorage.setItem(persistentKey(chatId), JSON.stringify(config));
+  }
+}
+
+function retrieveConfig(chatId: string): ChatEngineConfig {
+  return JSON.parse(localStorage.getItem(persistentKey(chatId)) || "{}");
+}

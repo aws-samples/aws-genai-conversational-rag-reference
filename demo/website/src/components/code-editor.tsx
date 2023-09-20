@@ -8,6 +8,7 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import "ace-builds/css/ace.css";
 import "ace-builds/css/theme/dawn.css";
 import "ace-builds/css/theme/tomorrow_night_bright.css";
+import { NonCancelableEventHandler } from "@cloudscape-design/components/internal/events";
 
 export interface CodeEditorProps
   extends Omit<
@@ -67,9 +68,22 @@ export const CodeEditor = (props: CodeEditorProps) => {
     loadAce().catch(console.error);
   }, [loadAce]);
 
+  const [editorContentHeight, setEditorContentHeight] = useState<number>(
+    props.editorContentHeight || 80
+  );
+  const onEditorContentResize = useCallback<
+    NonCancelableEventHandler<BaseCodeEditorProps.ResizeDetail>
+  >(
+    ({ detail }) => {
+      setEditorContentHeight(detail.height);
+    },
+    [setEditorContentHeight]
+  );
+
   return (
     <BaseCodeEditor
-      editorContentHeight={80}
+      editorContentHeight={editorContentHeight}
+      onEditorContentResize={onEditorContentResize}
       {...props}
       loading={loading}
       ace={ace}

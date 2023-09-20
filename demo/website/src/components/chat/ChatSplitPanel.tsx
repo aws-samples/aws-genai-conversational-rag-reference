@@ -1,11 +1,12 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-// @ts-nocheck
 import { Container } from "@cloudscape-design/components";
 import { Chat } from "api-typescript-react-query-hooks";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import ChatPanel from "./ChatPanel";
 import ChatsList from "./ChatsList";
+import { ChatConfigSplitPanel } from "./dev-settings/ChatConfigSplitPanel";
+import { useIsAdmin } from "../../Auth";
 import SplitPanel from "../layout/SplitPanel";
 
 type SessionsProps = {
@@ -14,6 +15,7 @@ type SessionsProps = {
 };
 
 export default function Sessions({ chats, loading }: SessionsProps) {
+  const isAdmin = useIsAdmin();
   const navigate = useNavigate();
 
   const setSelectedChat = (chat: Chat) =>
@@ -44,7 +46,12 @@ export default function Sessions({ chats, loading }: SessionsProps) {
           width: "100%",
         }}
       >
-        {selectedChat && <ChatPanel chat={selectedChat} />}
+        {selectedChat && (
+          <>
+            <ChatPanel chat={selectedChat} />
+            {isAdmin && <ChatConfigSplitPanel />}
+          </>
+        )}
       </SplitPanel>
     </Container>
   );
