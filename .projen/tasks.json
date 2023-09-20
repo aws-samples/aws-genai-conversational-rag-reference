@@ -228,13 +228,13 @@
           "exec": "pnpm update npm-check-updates"
         },
         {
-          "exec": "npm-check-updates --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@aws/pdk,@types/clear,@types/figlet,@types/node-localstorage,@types/node,@types/prompts,@types/spdx-correct,@types/spdx-satisfies,@typescript-eslint/eslint-plugin,@typescript-eslint/parser,chalk,clear,commander,esbuild,eslint-config-prettier,eslint-import-resolver-node,eslint-import-resolver-typescript,eslint-plugin-header,eslint-plugin-import,eslint-plugin-prettier,eslint,esprima,execa,figlet,node-localstorage,npm-check-updates,prettier,projen,prompts,spdx-correct,spdx-satisfies,syncpack,ts-node,tsx,typescript,nx,aws-cdk-lib,cdk-nag,constructs"
+          "exec": "npm-check-updates --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@aws/pdk,@types/clear,@types/figlet,@types/lodash,@types/node-localstorage,@types/node,@types/prompts,@types/spdx-correct,@types/spdx-satisfies,@typescript-eslint/eslint-plugin,@typescript-eslint/parser,chalk,clear,commander,esbuild,eslint-config-prettier,eslint-import-resolver-node,eslint-import-resolver-typescript,eslint-plugin-header,eslint-plugin-import,eslint-plugin-prettier,eslint,esprima,execa,figlet,lodash,node-localstorage,npm-check-updates,prettier,projen,prompts,spdx-correct,spdx-satisfies,syncpack,ts-node,tsx,typescript,nx,aws-cdk-lib,cdk-nag,constructs"
         },
         {
           "exec": "pnpm i --no-frozen-lockfile"
         },
         {
-          "exec": "pnpm update @aws/pdk @types/clear @types/figlet @types/node-localstorage @types/node @types/prompts @types/spdx-correct @types/spdx-satisfies @typescript-eslint/eslint-plugin @typescript-eslint/parser chalk clear commander esbuild eslint-config-prettier eslint-import-resolver-node eslint-import-resolver-typescript eslint-plugin-header eslint-plugin-import eslint-plugin-prettier eslint esprima execa figlet node-localstorage npm-check-updates prettier projen prompts spdx-correct spdx-satisfies syncpack ts-node tsx typescript nx aws-cdk-lib cdk-nag constructs"
+          "exec": "pnpm update @aws/pdk @types/clear @types/figlet @types/lodash @types/node-localstorage @types/node @types/prompts @types/spdx-correct @types/spdx-satisfies @typescript-eslint/eslint-plugin @typescript-eslint/parser chalk clear commander esbuild eslint-config-prettier eslint-import-resolver-node eslint-import-resolver-typescript eslint-plugin-header eslint-plugin-import eslint-plugin-prettier eslint esprima execa figlet lodash node-localstorage npm-check-updates prettier projen prompts spdx-correct spdx-satisfies syncpack ts-node tsx typescript nx aws-cdk-lib cdk-nag constructs"
         },
         {
           "exec": "pnpm exec projen"

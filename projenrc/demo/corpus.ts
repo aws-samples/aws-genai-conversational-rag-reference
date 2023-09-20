@@ -1,6 +1,6 @@
 import * as path from "node:path";
 import { MonorepoTsProject, NxProject } from "@aws/pdk/monorepo";
-import { NxPythonProject } from "../components";
+import { NxPythonProject } from "../components/python";
 import {
   AWS_SDK_VERSION,
   DEFAULT_RELEASE_BRANCH,
