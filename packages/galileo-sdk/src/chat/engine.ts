@@ -3,13 +3,13 @@ PDX-License-Identifier: Apache-2.0 */
 import { BaseLLM } from 'langchain/llms/base';
 import { PromptTemplate } from 'langchain/prompts';
 import { BaseRetriever } from 'langchain/schema/retriever';
-import { ChatEngineChain } from './chain';
-import { ChatEngineContext } from './context';
-import { DynamoDBChatMessageHistory } from './dynamodb/message-history';
-import { ChatEngineHistory, ChatTurn } from './memory';
-import { SearchRetriever, SearchRetrieverInput } from './search';
-import { TKwags } from '../common/types';
-import { IModelInfo, PromptAdapter } from '../models';
+import { ChatEngineChain } from './chain.js';
+import { ChatEngineContext } from './context.js';
+import { DynamoDBChatMessageHistory } from './dynamodb/message-history.js';
+import { ChatEngineHistory, ChatTurn } from './memory.js';
+import { SearchRetriever, SearchRetrieverInput } from './search.js';
+import { TKwags } from '../common/types.js';
+import { IModelInfo, PromptAdapter } from '../models/index.js';
 
 export interface ChatEngineConfig {
   readonly llmModel?: string | IModelInfo;

@@ -6,7 +6,7 @@ import {
   SageMakerRuntimeClientConfig,
 } from '@aws-sdk/client-sagemaker-runtime';
 import { Embeddings, EmbeddingsParams } from 'langchain/embeddings/base';
-import { TKwags } from '../../common/types';
+import { TKwags } from '../../common/types.js';
 
 export abstract class BaseSageMakerEmbeddingContentHandler<InputType, OutputType> {
   /** The MIME type of the input data passed to endpoint */

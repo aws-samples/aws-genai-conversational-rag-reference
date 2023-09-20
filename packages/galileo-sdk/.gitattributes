@@ -13,5 +13,7 @@
 /package.json linguist-generated
 /pnpm-lock.yaml linguist-generated
 /project.json linguist-generated
+/scripts/lib-cjs.js linguist-generated
+/tsconfig.cjs.json linguist-generated
 /tsconfig.dev.json linguist-generated
 /tsconfig.json linguist-generated

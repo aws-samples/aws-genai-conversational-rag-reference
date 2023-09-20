@@ -6,8 +6,8 @@ import { Embeddings } from 'langchain/embeddings/base';
 import { VectorStore } from 'langchain/vectorstores/base';
 import pg from 'pg-promise';
 
-import { getLogger } from '../../common';
-import { RDSConnConfig } from '../../infra';
+import { RDSConnConfig } from './rds.js';
+import { getLogger } from '../../common/index.js';
 
 const logger = getLogger(__dirname);
 

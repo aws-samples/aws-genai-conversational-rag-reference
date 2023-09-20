@@ -4,7 +4,7 @@ import {
   DynamoDBDocumentClient,
   QueryCommandInput,
 } from '@aws-sdk/lib-dynamodb';
-import { getMessageSourceKey, DDBMessageSource, getAllByPagination } from './util';
+import { getMessageSourceKey, DDBMessageSource, getAllByPagination } from './util.js';
 
 export async function listChatMessageSources(
   documentClient: DynamoDBDocumentClient,

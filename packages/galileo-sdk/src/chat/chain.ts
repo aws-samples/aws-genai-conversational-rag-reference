@@ -1,6 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { BaseLanguageModel } from 'langchain/base_language.js';
+import { BaseLanguageModel } from 'langchain/base_language';
 import { CallbackManagerForChainRun } from 'langchain/callbacks';
 import { BaseChain, ChainInputs, LLMChain, loadQAChain, QAChainParams } from 'langchain/chains';
 import { PromptTemplate } from 'langchain/prompts';
@@ -9,8 +9,8 @@ import {
   ChainValues,
   BaseMessage,
 } from 'langchain/schema';
-import { BaseRetriever } from 'langchain/schema/retriever.js';
-import { PromptAdapter } from '../models';
+import { BaseRetriever } from 'langchain/schema/retriever';
+import { PromptAdapter } from '../models/index.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type LoadValues = Record<string, any>;

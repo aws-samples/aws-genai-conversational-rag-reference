@@ -1,6 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { AdaptedContentHandler, PromptAdapter } from './adapter';
+import { AdaptedContentHandler, PromptAdapter } from './adapter.js';
 
 const QA_TEMPLATE = `<sequence><instruction><system>system details</system>
 

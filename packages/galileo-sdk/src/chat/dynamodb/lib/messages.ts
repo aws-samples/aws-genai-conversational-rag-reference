@@ -11,7 +11,7 @@ import {
 } from '@aws-sdk/lib-dynamodb';
 import { Document } from 'langchain/document';
 import { v4 as uuidv4 } from 'uuid';
-import { listChatMessageSources } from './sources';
+import { listChatMessageSources } from './sources.js';
 import {
   getChatMessagesByTimeKey,
   DDBQueryOutput,
@@ -23,7 +23,7 @@ import {
   bulkDelete,
   AllKeys,
   getAllByPagination,
-} from './util';
+} from './util.js';
 
 export interface CreateHumanChatMessageResponse {
   readonly response: PutCommandOutput;

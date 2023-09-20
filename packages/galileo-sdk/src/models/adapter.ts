@@ -2,7 +2,7 @@
 PDX-License-Identifier: Apache-2.0 */
 import { BaseSageMakerContentHandler } from 'langchain/llms/sagemaker_endpoint';
 import { set, get } from 'lodash';
-import { getLogger } from '../common';
+import { getLogger } from '../common/index.js';
 
 const logger = getLogger('models/adapter');
 

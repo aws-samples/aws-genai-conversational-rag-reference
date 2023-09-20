@@ -16,11 +16,11 @@ import {
   AIMessage,
   StoredMessage,
 } from 'langchain/schema';
-import * as lib from './lib';
-import { getLogger } from '../../common';
+import * as lib from './lib/index.js';
+import { getLogger } from '../../common/index.js';
 import {
   mapStoredMessagesToChatMessages,
-} from '../../langchain/stores/messages/utils';
+} from '../../langchain/stores/messages/utils.js';
 
 const logger = getLogger(__filename);
 

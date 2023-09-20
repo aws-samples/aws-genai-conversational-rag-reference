@@ -3,6 +3,7 @@
   "scripts": {
     "build": "npx projen build",
     "compile": "npx projen compile",
+    "compile:cjs": "npx projen compile:cjs",
     "default": "npx projen default",
     "eslint": "npx projen eslint",
     "package": "npx projen package",
@@ -120,11 +121,202 @@
     "preset": "ts-jest",
     "globals": {
       "ts-jest": {
-        "tsconfig": "tsconfig.dev.json"
+        "tsconfig": "tsconfig.dev.json",
+        "useESM": true
       }
+    },
+    "extensionsToTreatAsEsm": [
+      ".ts"
+    ],
+    "moduleNameMapper": {
+      "^(\\.{1,2}/.*)\\.js$": "$1"
     }
   },
   "types": "lib/index.d.ts",
+  "type": "module",
   "private": true,
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.js",
+      "require": "./lib/index.cjs"
+    },
+    "./lib": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.js",
+      "require": "./lib/index.cjs"
+    },
+    "./lib/auth/aws-sigv4": {
+      "types": "./lib/auth/aws-sigv4/index.d.ts",
+      "import": "./lib/auth/aws-sigv4/index.js",
+      "require": "./lib/auth/aws-sigv4/index.cjs"
+    },
+    "./lib/chat": {
+      "types": "./lib/chat/index.d.ts",
+      "import": "./lib/chat/index.js",
+      "require": "./lib/chat/index.cjs"
+    },
+    "./lib/chat/chain": {
+      "types": "./lib/chat/chain.d.ts",
+      "import": "./lib/chat/chain.js",
+      "require": "./lib/chat/chain.cjs"
+    },
+    "./lib/chat/context": {
+      "types": "./lib/chat/context.d.ts",
+      "import": "./lib/chat/context.js",
+      "require": "./lib/chat/context.cjs"
+    },
+    "./lib/chat/dynamodb": {
+      "types": "./lib/chat/dynamodb/index.d.ts",
+      "import": "./lib/chat/dynamodb/index.js",
+      "require": "./lib/chat/dynamodb/index.cjs"
+    },
+    "./lib/chat/dynamodb/lib": {
+      "types": "./lib/chat/dynamodb/lib/index.d.ts",
+      "import": "./lib/chat/dynamodb/lib/index.js",
+      "require": "./lib/chat/dynamodb/lib/index.cjs"
+    },
+    "./lib/chat/dynamodb/lib/chat": {
+      "types": "./lib/chat/dynamodb/lib/chat.d.ts",
+      "import": "./lib/chat/dynamodb/lib/chat.js",
+      "require": "./lib/chat/dynamodb/lib/chat.cjs"
+    },
+    "./lib/chat/dynamodb/lib/messages": {
+      "types": "./lib/chat/dynamodb/lib/messages.d.ts",
+      "import": "./lib/chat/dynamodb/lib/messages.js",
+      "require": "./lib/chat/dynamodb/lib/messages.cjs"
+    },
+    "./lib/chat/dynamodb/lib/sources": {
+      "types": "./lib/chat/dynamodb/lib/sources.d.ts",
+      "import": "./lib/chat/dynamodb/lib/sources.js",
+      "require": "./lib/chat/dynamodb/lib/sources.cjs"
+    },
+    "./lib/chat/dynamodb/lib/util": {
+      "types": "./lib/chat/dynamodb/lib/util.d.ts",
+      "import": "./lib/chat/dynamodb/lib/util.js",
+      "require": "./lib/chat/dynamodb/lib/util.cjs"
+    },
+    "./lib/chat/dynamodb/message-history": {
+      "types": "./lib/chat/dynamodb/message-history.d.ts",
+      "import": "./lib/chat/dynamodb/message-history.js",
+      "require": "./lib/chat/dynamodb/message-history.cjs"
+    },
+    "./lib/chat/engine": {
+      "types": "./lib/chat/engine.d.ts",
+      "import": "./lib/chat/engine.js",
+      "require": "./lib/chat/engine.cjs"
+    },
+    "./lib/chat/memory": {
+      "types": "./lib/chat/memory.d.ts",
+      "import": "./lib/chat/memory.js",
+      "require": "./lib/chat/memory.cjs"
+    },
+    "./lib/chat/search": {
+      "types": "./lib/chat/search.d.ts",
+      "import": "./lib/chat/search.js",
+      "require": "./lib/chat/search.cjs"
+    },
+    "./lib/common": {
+      "types": "./lib/common/index.d.ts",
+      "import": "./lib/common/index.js",
+      "require": "./lib/common/index.cjs"
+    },
+    "./lib/common/env": {
+      "types": "./lib/common/env.d.ts",
+      "import": "./lib/common/env.js",
+      "require": "./lib/common/env.cjs"
+    },
+    "./lib/common/logging": {
+      "types": "./lib/common/logging/index.d.ts",
+      "import": "./lib/common/logging/index.js",
+      "require": "./lib/common/logging/index.cjs"
+    },
+    "./lib/common/types": {
+      "types": "./lib/common/types.d.ts",
+      "import": "./lib/common/types.js",
+      "require": "./lib/common/types.cjs"
+    },
+    "./lib/langchain/embeddings/sagemager_endpoint": {
+      "types": "./lib/langchain/embeddings/sagemager_endpoint.d.ts",
+      "import": "./lib/langchain/embeddings/sagemager_endpoint.js",
+      "require": "./lib/langchain/embeddings/sagemager_endpoint.cjs"
+    },
+    "./lib/langchain/stores/messages/utils": {
+      "types": "./lib/langchain/stores/messages/utils.d.ts",
+      "import": "./lib/langchain/stores/messages/utils.js",
+      "require": "./lib/langchain/stores/messages/utils.cjs"
+    },
+    "./lib/langchain/vectorstores/memory": {
+      "types": "./lib/langchain/vectorstores/memory.d.ts",
+      "import": "./lib/langchain/vectorstores/memory.js",
+      "require": "./lib/langchain/vectorstores/memory.cjs"
+    },
+    "./lib/models": {
+      "types": "./lib/models/index.d.ts",
+      "import": "./lib/models/index.js",
+      "require": "./lib/models/index.cjs"
+    },
+    "./lib/models/adapter": {
+      "types": "./lib/models/adapter.d.ts",
+      "import": "./lib/models/adapter.js",
+      "require": "./lib/models/adapter.cjs"
+    },
+    "./lib/models/cross-account": {
+      "types": "./lib/models/cross-account.d.ts",
+      "import": "./lib/models/cross-account.js",
+      "require": "./lib/models/cross-account.cjs"
+    },
+    "./lib/models/env": {
+      "types": "./lib/models/env.d.ts",
+      "import": "./lib/models/env.js",
+      "require": "./lib/models/env.cjs"
+    },
+    "./lib/models/inventory": {
+      "types": "./lib/models/inventory.d.ts",
+      "import": "./lib/models/inventory.js",
+      "require": "./lib/models/inventory.cjs"
+    },
+    "./lib/models/llms": {
+      "types": "./lib/models/llms/index.d.ts",
+      "import": "./lib/models/llms/index.js",
+      "require": "./lib/models/llms/index.cjs"
+    },
+    "./lib/models/llms/falcon": {
+      "types": "./lib/models/llms/falcon.d.ts",
+      "import": "./lib/models/llms/falcon.js",
+      "require": "./lib/models/llms/falcon.cjs"
+    },
+    "./lib/models/prompts": {
+      "types": "./lib/models/prompts.d.ts",
+      "import": "./lib/models/prompts.js",
+      "require": "./lib/models/prompts.cjs"
+    },
+    "./lib/models/types": {
+      "types": "./lib/models/types.d.ts",
+      "import": "./lib/models/types.js",
+      "require": "./lib/models/types.cjs"
+    },
+    "./lib/vectorstores": {
+      "types": "./lib/vectorstores/index.d.ts",
+      "import": "./lib/vectorstores/index.js",
+      "require": "./lib/vectorstores/index.cjs"
+    },
+    "./lib/vectorstores/pgvector": {
+      "types": "./lib/vectorstores/pgvector/index.d.ts",
+      "import": "./lib/vectorstores/pgvector/index.js",
+      "require": "./lib/vectorstores/pgvector/index.cjs"
+    },
+    "./lib/vectorstores/pgvector/rds": {
+      "types": "./lib/vectorstores/pgvector/rds.d.ts",
+      "import": "./lib/vectorstores/pgvector/rds.js",
+      "require": "./lib/vectorstores/pgvector/rds.cjs"
+    },
+    "./lib/vectorstores/pgvector/utils": {
+      "types": "./lib/vectorstores/pgvector/utils.d.ts",
+      "import": "./lib/vectorstores/pgvector/utils.js",
+      "require": "./lib/vectorstores/pgvector/utils.cjs"
+    },
+    "./package.json": "./package.json"
+  },
   "//": "~~ Generated by projen. To modify, edit .projenrc.js and run \"npx projen\"."
 }

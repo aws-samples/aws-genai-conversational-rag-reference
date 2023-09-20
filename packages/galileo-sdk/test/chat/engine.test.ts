@@ -8,10 +8,10 @@ import { GetSecretValueCommand, SecretsManagerClient } from '@aws-sdk/client-sec
 import { BatchWriteCommand, DynamoDBDocumentClient, PutCommand, QueryCommandOutput, QueryCommand } from '@aws-sdk/lib-dynamodb';
 import { mockClient } from 'aws-sdk-client-mock';
 
-import * as chatDDBLib from '../../src/chat/dynamodb/lib';
-import { ChatEngine, ChatEngineFromOption } from '../../src/chat/engine';
-import { ChatTurn } from '../../src/chat/memory';
-import { ModelFramework, FOUNDATION_MODEL_INVENTORY_SECRET, IFoundationModelInventory } from '../../src/models';
+import * as chatDDBLib from '../../src/chat/dynamodb/lib/index.js';
+import { ChatEngine, ChatEngineFromOption } from '../../src/chat/engine.js';
+import { ChatTurn } from '../../src/chat/memory.js';
+import { ModelFramework, FOUNDATION_MODEL_INVENTORY_SECRET, IFoundationModelInventory } from '../../src/models/index.js';
 
 // const dynamoDBMock = mockClient(DynamoDBClient);
 const dynamoDBDocumentMock = mockClient(DynamoDBDocumentClient);

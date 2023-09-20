@@ -9,9 +9,10 @@
     "inlineSources": true,
     "lib": [
       "DOM",
-      "ES2021"
+      "ES2021",
+      "ES2022.Object"
     ],
-    "module": "CommonJS",
+    "module": "nodenext",
     "noEmitOnError": false,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
@@ -25,8 +26,7 @@
     "strictPropertyInitialization": true,
     "stripInternal": true,
     "target": "ES2019",
-    "skipLibCheck": true,
-    "moduleResolution": "node"
+    "moduleResolution": "nodenext"
   },
   "include": [
     ".projenrc.js",
