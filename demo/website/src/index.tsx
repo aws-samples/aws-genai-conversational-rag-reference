@@ -7,6 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import Auth from "./Auth";
 import { ApiProvider } from "./providers/ApiProvider";
+import { AppLayoutProvider } from "./providers/AppLayoutProvider";
 import ChatEngineConfigProvider from "./providers/ChatEngineConfig";
 import { FlagsProvider } from "./providers/FlagsProvider";
 import reportWebVitals from "./reportWebVitals";
@@ -27,9 +28,11 @@ createRoot(document.getElementById("root")!).render(
         <Auth>
           <FlagsProvider>
             <ApiProvider>
-              <ChatEngineConfigProvider>
-                <App />
-              </ChatEngineConfigProvider>
+              <AppLayoutProvider>
+                <ChatEngineConfigProvider>
+                  <App />
+                </ChatEngineConfigProvider>
+              </AppLayoutProvider>
             </ApiProvider>
           </FlagsProvider>
         </Auth>

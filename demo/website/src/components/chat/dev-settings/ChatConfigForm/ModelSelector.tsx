@@ -3,7 +3,7 @@ PDX-License-Identifier: Apache-2.0 */
 import Select, { SelectProps } from "@cloudscape-design/components/select";
 import { startCase } from "lodash";
 import { useMemo } from "react";
-import { useFoundationModelInventory } from "../../../hooks/llm-inventory";
+import { useFoundationModelInventory } from "../../../../hooks/llm-inventory";
 
 export const CUSTOM_VALUE = "::CUSTOM::";
 

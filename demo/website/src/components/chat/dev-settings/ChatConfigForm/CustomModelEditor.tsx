@@ -26,7 +26,7 @@ import { get, has, isEmpty, merge, set } from "lodash";
 import { FC, useEffect } from "react";
 import { Updater } from "use-immer";
 import { ModelSelector } from "./ModelSelector";
-import { useFoundationModelInventory } from "../../../hooks/llm-inventory";
+import { useFoundationModelInventory } from "../../../../hooks/llm-inventory";
 
 type CustomModelEditorProps = {
   value?: Partial<IModelInfo>;

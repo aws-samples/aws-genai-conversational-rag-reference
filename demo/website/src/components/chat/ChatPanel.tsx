@@ -9,7 +9,6 @@ import Textarea from "@cloudscape-design/components/textarea";
 import { Chat } from "api-typescript-react-query-hooks";
 import { isEmpty } from "lodash";
 import { useCallback, useRef, useState } from "react";
-import { ChatConfigForm } from "./ChatConfigForm";
 import Conversation, { ConversationViewInfinite } from "./ConversationView";
 import { useIsAdmin } from "../../Auth";
 import {
@@ -69,23 +68,6 @@ export default function ChatPanel(props: SessionChatProps) {
     });
   }
 
-  const [chatConfigAdminModalVisible, setChatConfigAdminModalVisible] =
-    useState(false);
-
-  // used to show the dev settings modal for prompt, kwargs, etc config override
-  const chatConfigModal = (
-    <Modal
-      header={<Header variant="h3">Dev Settings</Header>}
-      onDismiss={() => {
-        setChatConfigAdminModalVisible(false);
-      }}
-      visible={chatConfigAdminModalVisible}
-      size="large"
-    >
-      <ChatConfigForm onClose={() => setChatConfigAdminModalVisible(false)} />
-    </Modal>
-  );
-
   // scroll to bottom when messages are updated
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const onMessages = useCallback(() => {
@@ -104,8 +86,6 @@ export default function ChatPanel(props: SessionChatProps) {
         gap: "16px",
       }}
     >
-      {chatConfigAdminModalVisible && chatConfigModal}
-
       <Modal
         onDismiss={() => setDeleteChatModalVisiblity(false)}
         visible={deleteChatModalVisible}
@@ -155,13 +135,6 @@ export default function ChatPanel(props: SessionChatProps) {
             {props.chat.title}
           </InlineEditor>
         </Header>
-        {isAdmin && (
-          <Button
-            variant="inline-icon"
-            iconName="settings"
-            onClick={() => setChatConfigAdminModalVisible(true)}
-          />
-        )}
         <Button
           variant="inline-icon"
           iconName="remove"

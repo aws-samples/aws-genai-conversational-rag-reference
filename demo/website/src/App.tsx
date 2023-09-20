@@ -9,11 +9,9 @@ import {
   SideNavigation,
   SideNavigationProps,
 } from "@cloudscape-design/components";
-import AppLayout, {
-  AppLayoutProps,
-} from "@cloudscape-design/components/app-layout";
+import AppLayout from "@cloudscape-design/components/app-layout";
 import TopNavigation from "@cloudscape-design/components/top-navigation";
-import React, { createContext, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Navigate,
   Route,
@@ -25,15 +23,11 @@ import { useAppUser } from "./Auth";
 import Config from "./config.json";
 import Chat from "./pages/Chat";
 import Settings from "./pages/Settings";
+import {
+  useHelpPanel,
+  useSplitPanel,
+} from "./providers/AppLayoutProvider/managed-content";
 import { RiskProvider } from "./providers/RiskProvider";
-
-/**
- * Context for updating/retrieving the AppLayout.
- */
-export const AppLayoutContext = createContext({
-  appLayoutProps: {},
-  setAppLayoutProps: (_: AppLayoutProps) => {},
-});
 
 /**
  * Define your nav items here.
@@ -58,7 +52,8 @@ const SIDEBAR_NAVIGATION_ITEMS: SideNavigationProps.Item[] = [
 const App: React.FC = () => {
   const { getAuthenticatedUser } = useCognitoAuthContext();
   const user = useAppUser();
-  const [appLayoutProps, setAppLayoutProps] = useState<AppLayoutProps>({});
+  const splitPanel = useSplitPanel();
+  const helpPanel = useHelpPanel();
   const navigate = useNavigate();
   const location = useLocation();
   const [activeHref, setActiveHref] = useState("/");
@@ -66,14 +61,6 @@ const App: React.FC = () => {
   const [activeBreadcrumbs, setActiveBreadcrumbs] = useState<
     BreadcrumbGroupProps.Item[]
   >([{ text: defaultBreadcrumb, href: "/" }]);
-
-  const setAppLayoutPropsSafe = useCallback(
-    (props: AppLayoutProps) => {
-      JSON.stringify(appLayoutProps) !== JSON.stringify(props) &&
-        setAppLayoutProps(props);
-    },
-    [appLayoutProps]
-  );
 
   useEffect(() => {
     setActiveHref(location.pathname);
@@ -89,12 +76,6 @@ const App: React.FC = () => {
     (e: CustomEvent<{ href: string; external?: boolean }>) => {
       if (!e.detail.external) {
         e.preventDefault();
-        setAppLayoutPropsSafe({
-          contentType: undefined,
-          splitPanelOpen: false,
-          splitPanelSize: undefined,
-          splitPanelPreferences: undefined,
-        });
         navigate(e.detail.href);
       }
     },
@@ -102,9 +83,7 @@ const App: React.FC = () => {
   );
 
   return (
-    <AppLayoutContext.Provider
-      value={{ appLayoutProps, setAppLayoutProps: setAppLayoutPropsSafe }}
-    >
+    <>
       <TopNavigation
         identity={{
           href: "#",
@@ -140,7 +119,7 @@ const App: React.FC = () => {
         notifications={<RiskProvider />}
         navigation={
           <SideNavigation
-            header={{ text: Config.applicationName, href: "/" }}
+            header={{ text: "Nav", href: "/" }}
             activeHref={activeHref}
             onFollow={onNavigate}
             items={SIDEBAR_NAVIGATION_ITEMS}
@@ -155,9 +134,10 @@ const App: React.FC = () => {
             <Route path={"/"} element={<Navigate to="/chat" replace />} />
           </Routes>
         }
-        {...appLayoutProps}
+        splitPanel={splitPanel.active}
+        tools={helpPanel.active}
       />
-    </AppLayoutContext.Provider>
+    </>
   );
 };
 

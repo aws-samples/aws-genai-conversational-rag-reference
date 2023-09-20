@@ -43,6 +43,7 @@ export class Website {
         "react-markdown",
         "use-immer",
         "usehooks-ts",
+        "nanoid",
         api.project.library.typescriptReactQueryHooks!.package.packageName,
         galileoSdk.package.packageName,
       ],
