@@ -29,6 +29,8 @@ const monorepo = new MonorepoTsProject({
     "spdx-satisfies",
     "@types/spdx-correct",
     "spdx-correct",
+    "lodash",
+    "@types/lodash",
   ],
   name: "monorepo",
   packageManager: javascript.NodePackageManager.PNPM,

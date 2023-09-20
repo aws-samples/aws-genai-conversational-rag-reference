@@ -33,6 +33,9 @@ importers:
       '@types/figlet':
         specifier: ^1.5.6
         version: 1.5.6
+      '@types/lodash':
+        specifier: ^4.14.198
+        version: 4.14.198
       '@types/node':
         specifier: ^16
         version: 16.18.39
@@ -96,6 +99,9 @@ importers:
       figlet:
         specifier: ^1.6.0
         version: 1.6.0
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       node-localstorage:
         specifier: ^3.0.5
         version: 3.0.5
@@ -12721,7 +12727,7 @@ packages:
     dependencies:
       semver: 7.5.4
       shelljs: 0.8.5
-      typescript: 5.3.0-dev.20230913
+      typescript: 5.3.0-dev.20230919
     dev: true
 
   /duplexer@0.1.2:
@@ -22809,8 +22815,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.3.0-dev.20230913:
-    resolution: {integrity: sha512-+1lrLCj/NdyBbWXK3ifRSzmg0pSg2WLDmzeXf1/vTOb84eV/TCJ1i9eOS4c40T3tzDSAOjP39x9/+unUakbuKA==}
+  /typescript@5.3.0-dev.20230919:
+    resolution: {integrity: sha512-FU6DZhzId38aY/dX2gHp7phaYkbNJkCx8G//VVs0nVzZv0qjWGggLkMXoMipphO8Hv0TvZu30Zwdt6nzFIbcBQ==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
