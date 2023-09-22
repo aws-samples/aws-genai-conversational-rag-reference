@@ -40,6 +40,7 @@ export class Application extends Stack {
       foundationModels,
       bedrockModelIds,
       bedrockEndpointUrl,
+      bedrockRegion,
       geoRestriction,
       adminEmail,
       adminUsername,
@@ -75,6 +76,7 @@ export class Application extends Stack {
         defaultModelId,
         bedrockEndpointUrl,
         bedrockModelIds,
+        bedrockRegion,
       }
     );
 
