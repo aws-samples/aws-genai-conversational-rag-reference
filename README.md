@@ -1,4 +1,4 @@
-# GenAI Conversational RAG Reference (`ALPHA`)
+# GenAI Conversational RAG Reference (`Closed Preview`)
 > Codename: **Galileo**
 
 Conversational generative AI applications that provide search and summarisation against a collection of private documents (also known as "retrieval augmented generation" or RAG) are comprised of a number of complex components. These include: an elastic document ingestion pipeline, a special purpose vector store for document embeddings, a performant embeddings inference engine, API access to an aligned large language model, the combined functionality of which is exposed via a user interface that maintains session persistance and is secured with authN. Galileo was created to provide all of these things, integrated into a reference application. The use case of this reference application is a virtual legal research assistant, capable of answering questions against US Supreme Court decisions.
@@ -81,7 +81,7 @@ pnpm exec cdk deploy --app cdk.out --require-approval never Dev/Galileo-SampleDa
 
 ## What is deployed?
 
-![](./demo/docs/content/assets/images/cloud-diagram.png)
+![](./demo/docs/content/assets/images/galileo-arch.png)
 
 ---
 ---
