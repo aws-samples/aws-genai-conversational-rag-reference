@@ -11,6 +11,8 @@
     "default": "pnpm exec projen default",
     "deploy:app": "pnpm exec projen deploy:app",
     "deploy:pipeline": "pnpm exec projen deploy:pipeline",
+    "docs:build": "pnpm exec projen docs:build",
+    "docs:serve": "pnpm exec projen docs:serve",
     "eject": "pnpm exec projen eject",
     "eslint": "pnpm exec projen eslint",
     "graph": "pnpm exec projen graph",

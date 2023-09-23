@@ -9,8 +9,8 @@ Galileo is:
 * a developer experience that reduces the time required to deliver the foundations of GenAI prototypes by providing implementations of the components mentioned above
 * engineered so that all components can be hosted within your AWS account
 
-![](./demo/docs/content/assets/images/ux-screenshot.png)
-![](./demo/docs/content/assets/images/mental-model.png)
+![](./docs/content/assets/images/ux-screenshot.png)
+![](./docs/content/assets/images/mental-model.png)
 
 ---
 
@@ -81,7 +81,7 @@ pnpm exec cdk deploy --app cdk.out --require-approval never Dev/Galileo-SampleDa
 
 ## What is deployed?
 
-![](./demo/docs/content/assets/images/galileo-arch.png)
+![](./docs/content/assets/images/galileo-arch.png)
 
 ---
 ---
