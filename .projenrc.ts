@@ -79,6 +79,12 @@ monorepo.addTask("oss", { exec: "pnpm dlx tsx ./scripts/oss.ts" });
 monorepo.package.addPackageResolutions("nth-check@>=2.0.1");
 
 //////////////////////////////////////////////////////////
+// Docs
+//////////////////////////////////////////////////////////
+monorepo.addTask("docs:build", { exec: "docs/scripts/build.sh" });
+monorepo.addTask("docs:serve", { exec: "docs/scripts/serve.sh" });
+
+//////////////////////////////////////////////////////////
 // FRAMEWORK
 //////////////////////////////////////////////////////////
 const galileoSdk = new GalileoSdk(monorepo);

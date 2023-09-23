@@ -89,6 +89,22 @@
         }
       ]
     },
+    "docs:build": {
+      "name": "docs:build",
+      "steps": [
+        {
+          "exec": "docs/scripts/build.sh"
+        }
+      ]
+    },
+    "docs:serve": {
+      "name": "docs:serve",
+      "steps": [
+        {
+          "exec": "docs/scripts/serve.sh"
+        }
+      ]
+    },
     "eject": {
       "name": "eject",
       "description": "Remove projen from the project",

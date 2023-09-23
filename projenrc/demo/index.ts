@@ -44,8 +44,6 @@ export class Demo {
       galileoSdk,
       sample,
     });
-    monorepo.addGitIgnore("demo/docs/build");
-    monorepo.addGitIgnore("demo/docs/dist");
 
     this.api = api;
     this.website = website;
