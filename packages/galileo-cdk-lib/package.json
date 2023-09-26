@@ -11,6 +11,8 @@
     "default": "npx projen default",
     "docgen": "npx projen docgen",
     "eslint": "npx projen eslint",
+    "eslint-staged": "npx projen eslint-staged",
+    "jest": "npx projen jest",
     "package": "npx projen package",
     "package-all": "npx projen package-all",
     "package:js": "npx projen package:js",

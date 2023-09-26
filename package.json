@@ -15,6 +15,8 @@
     "docs:serve": "pnpm exec projen docs:serve",
     "eject": "pnpm exec projen eject",
     "eslint": "pnpm exec projen eslint",
+    "eslint-staged": "pnpm exec projen eslint-staged",
+    "git-secrets-scan": "pnpm exec projen git-secrets-scan",
     "graph": "pnpm exec projen graph",
     "oss": "pnpm exec projen oss",
     "package": "pnpm exec projen package",
@@ -30,18 +32,22 @@
     "watch": "pnpm exec projen watch",
     "workspace:bin:link": "pnpm exec projen workspace:bin:link",
     "synth-workspace": "pnpm exec projen",
+    "commit": "pnpm exec cz",
     "prerequisite-check": "./prerequisite-check.sh",
     "preinstall": "./prerequisite-check.sh",
     "galileo-cli": "pnpm dlx tsx ./bin/galileo-cli.ts"
   },
   "devDependencies": {
     "@aws/pdk": "^0",
+    "@commitlint/cli": "^17.7.1",
+    "@commitlint/config-conventional": "^17.7.0",
+    "@nrwl/devkit": "^16.9.1",
     "@types/clear": "^0.1.2",
     "@types/figlet": "^1.5.6",
     "@types/lodash": "^4.14.198",
     "@types/node": "^16",
-    "@types/node-localstorage": "^1.3.0",
-    "@types/prompts": "^2.4.4",
+    "@types/node-localstorage": "^1.3.1",
+    "@types/prompts": "^2.4.5",
     "@types/spdx-correct": "^3.1.0",
     "@types/spdx-satisfies": "^0.1.0",
     "@typescript-eslint/eslint-plugin": "^6",
@@ -49,6 +55,8 @@
     "chalk": "^5.3.0",
     "clear": "^0.1.0",
     "commander": "^10.0.1",
+    "commitizen": "^4.3.0",
+    "cz-conventional-changelog": "^3.3.0",
     "esbuild": "^0.19.2",
     "eslint": "^8",
     "eslint-config-prettier": "^8.10.0",
@@ -58,8 +66,10 @@
     "eslint-plugin-import": "^2.28.1",
     "eslint-plugin-prettier": "^4.2.1",
     "esprima": "^4.0.1",
-    "execa": "^7.2.0",
+    "execa": "^5.1.1",
     "figlet": "^1.6.0",
+    "got": "^11.8.5",
+    "husky": "^8.0.3",
     "lodash": "^4.17.21",
     "node-localstorage": "^3.0.5",
     "npm-check-updates": "^16.13.3",
@@ -99,6 +109,16 @@
   "version": "0.0.0",
   "types": "lib/index.d.ts",
   "private": true,
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
   "workspaces": {
     "packages": [
       "packages/galileo-cdk-lib",

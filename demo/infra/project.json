@@ -146,6 +146,20 @@
         "command": "pnpm exec projen bundle",
         "cwd": "demo/infra"
       }
+    },
+    "eslint-staged": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec projen eslint-staged",
+        "cwd": "demo/infra"
+      }
+    },
+    "jest": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec projen jest",
+        "cwd": "demo/infra"
+      }
     }
   },
   "implicitDependencies": [

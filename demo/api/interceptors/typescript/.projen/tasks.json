@@ -39,7 +39,17 @@
       "description": "Runs eslint against the codebase",
       "steps": [
         {
-          "exec": "eslint --ext .ts,.tsx --fix --no-error-on-unmatched-pattern src test build-tools"
+          "exec": "eslint --ext .ts,.tsx ${CI:-'--fix'} --no-error-on-unmatched-pattern src test",
+          "receiveArgs": true
+        }
+      ]
+    },
+    "eslint-staged": {
+      "name": "eslint-staged",
+      "description": "Run eslint against the staged files only",
+      "steps": [
+        {
+          "exec": "eslint --fix --no-error-on-unmatched-pattern $(git diff --name-only --relative --staged HEAD . | grep -E '^(.*/)?(src|test)/.*.(ts|tsx)$' | xargs)"
         }
       ]
     },
@@ -61,6 +71,15 @@
         }
       ]
     },
+    "jest": {
+      "name": "jest",
+      "steps": [
+        {
+          "exec": "jest --passWithNoTests ${CI:-'--updateSnapshot'} ${NX_WORKSPACE_ROOT:+'--runInBand'}",
+          "receiveArgs": true
+        }
+      ]
+    },
     "package": {
       "name": "package",
       "description": "Creates the distribution package",
@@ -70,6 +89,9 @@
         },
         {
           "exec": "mv $(npm pack) dist/js/"
+        },
+        {
+          "spawn": "eslint"
         }
       ]
     },
@@ -90,11 +112,7 @@
       "description": "Run tests",
       "steps": [
         {
-          "exec": "jest --passWithNoTests --updateSnapshot",
-          "receiveArgs": true
-        },
-        {
-          "spawn": "eslint"
+          "spawn": "jest"
         }
       ]
     },
