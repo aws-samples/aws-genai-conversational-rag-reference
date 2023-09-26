@@ -1,0 +1,7 @@
+---
+nav:
+  - Overview: index.md
+  - Inference: inference
+  - Prompt Engineering: prompting
+  - Semantic Search: search
+  - History: history

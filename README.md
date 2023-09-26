@@ -1,6 +1,8 @@
 # GenAI Conversational RAG Reference (`Closed Preview`)
 > Codename: **Galileo**
 
+> **ATTENTION**: Until this repository is made public, the documentation [github pages](https://aws-samples.github.io/aws-genai-conversational-rag-reference) site will not be available. To view the full documentation at this time, please run `pnpm run docs:serve` and open the URL provided (default http://127.0.0.1:8000)
+
 Conversational generative AI applications that provide search and summarisation against a collection of private documents (also known as "retrieval augmented generation" or RAG) are comprised of a number of complex components. These include: an elastic document ingestion pipeline, a special purpose vector store for document embeddings, a performant embeddings inference engine, API access to an aligned large language model, the combined functionality of which is exposed via a user interface that maintains session persistance and is secured with authN. Galileo was created to provide all of these things, integrated into a reference application. The use case of this reference application is a virtual legal research assistant, capable of answering questions against US Supreme Court decisions.
 
 Galileo is:

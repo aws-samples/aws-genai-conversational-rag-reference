@@ -1,6 +1,5 @@
 ---
 nav:
   - Overview: overview
-  - Generative AI Components: components
-  - Infrastructure Components: infrastructure
-  - Operational Considerations: operating
+  - Architecture: architecture
+  - Developer Guide: development
