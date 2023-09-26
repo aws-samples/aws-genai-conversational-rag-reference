@@ -45,7 +45,9 @@
     "coverage",
     "cdk.out",
     "node_modules",
-    "test_reports"
+    "test_reports",
+    "samples/",
+    "scripts/"
   ],
   "rules": {
     "prettier/prettier": [

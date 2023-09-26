@@ -6,6 +6,7 @@
     "default": "npx projen default",
     "dev": "npx projen dev",
     "eslint": "npx projen eslint",
+    "eslint-staged": "npx projen eslint-staged",
     "package": "npx projen package",
     "post-compile": "npx projen post-compile",
     "post-upgrade": "npx projen post-upgrade",

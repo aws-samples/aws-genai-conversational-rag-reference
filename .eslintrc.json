@@ -38,8 +38,11 @@
     }
   },
   "ignorePatterns": [
-    "packages/**/*.*",
+    "demo/",
+    "packages/",
     "demo/**/*.*",
+    "samples/",
+    "scripts/",
     "!.projenrc.ts",
     "!projenrc/**/*.ts"
   ],

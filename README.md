@@ -154,6 +154,7 @@ To perform this, follow these steps:
    1. In this instance, _semantic_type_ refers to one of: _fix, feat, build, chore, etc_. Refer to: https://www.conventionalcommits.org/en/v1.0.0-beta.2/#summary
 1. Add commits likes normal via `git commit -am "<semantic_type>: commit msg"`
    1. Recommendation is to use [commitizen](https://github.com/commitizen/cz-cli) to ensure commits follow semantic conventions.
+   1. Or run `pnpm run commit`
 1. `git push -u origin <semantic_type>/<branch_name>`
 1. Raise a Pull-Request against primary repository.
 

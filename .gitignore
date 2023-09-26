@@ -28,8 +28,6 @@ jspm_packages/
 *.tgz
 .yarn-integrity
 .cache
-.tmp
-.DS_Store
 !/.projenrc.js
 !/.prettierignore
 !/.prettierrc.json
@@ -45,6 +43,16 @@ jspm_packages/
 !/nx.json
 !/.nxignore
 !/.syncpackrc.json
+/.tools/
+/.idea/
+*.iml
+.tmp
+LICENSE-THIRD-PARTY
+.DS_Store
+build
+.env
+.venv
+tsconfig.tsbuildinfo
 oss-attribution
 !/demo/api/generated/runtime/README.md
 !/demo/api/generated/documentation/README.md

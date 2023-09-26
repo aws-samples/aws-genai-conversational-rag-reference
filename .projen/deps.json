@@ -6,6 +6,18 @@
       "type": "build"
     },
     {
+      "name": "@commitlint/cli",
+      "type": "build"
+    },
+    {
+      "name": "@commitlint/config-conventional",
+      "type": "build"
+    },
+    {
+      "name": "@nrwl/devkit",
+      "type": "build"
+    },
+    {
       "name": "@types/clear",
       "type": "build"
     },
@@ -61,6 +73,14 @@
       "type": "build"
     },
     {
+      "name": "commitizen",
+      "type": "build"
+    },
+    {
+      "name": "cz-conventional-changelog",
+      "type": "build"
+    },
+    {
       "name": "esbuild",
       "type": "build"
     },
@@ -103,6 +123,15 @@
     },
     {
       "name": "figlet",
+      "type": "build"
+    },
+    {
+      "name": "got",
+      "version": "^11.8.5",
+      "type": "build"
+    },
+    {
+      "name": "husky",
       "type": "build"
     },
     {

@@ -9,6 +9,8 @@
     "destroy": "npx projen destroy",
     "diff": "npx projen diff",
     "eslint": "npx projen eslint",
+    "eslint-staged": "npx projen eslint-staged",
+    "jest": "npx projen jest",
     "package": "npx projen package",
     "post-compile": "npx projen post-compile",
     "post-upgrade": "npx projen post-upgrade",
