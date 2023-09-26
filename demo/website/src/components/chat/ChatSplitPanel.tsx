@@ -42,7 +42,7 @@ export default function Sessions({ chats, loading }: SessionsProps) {
         panelWidth="350px"
         margin="10px"
         style={{
-          minHeight: "700px",
+          // minHeight: "700px",
           width: "100%",
         }}
       >
