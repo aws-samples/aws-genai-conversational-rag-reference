@@ -1,1 +1,0 @@
-# [TBD: give an overview of the cost of operating this solution along with other considerations]

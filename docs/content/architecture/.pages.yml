@@ -1,0 +1,5 @@
+---
+nav:
+  - Overview: index.md
+  - GenAI Components: genai
+  - Core Components: core
