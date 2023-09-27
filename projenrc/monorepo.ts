@@ -42,11 +42,11 @@ export class MonorepoProject extends MonorepoTsProject {
       stale: true,
       github: true,
       release: true,
-      // buildWorkflow: false,
       githubOptions: {
         mergify: false,
         pullRequestLint: true,
       },
+      mutableBuild: false,
       pullRequestTemplate: false,
       ...options,
       devDeps: [
@@ -137,6 +137,7 @@ export class MonorepoProject extends MonorepoTsProject {
     this.release?.addJobs({
       release_docs: this.renderReleaseGitHubPagesJob(),
     });
+    this._mutateBuildWorkflowSteps();
   }
 
   recurseProjects(project: Project, fn: (project: Project) => void): void {
@@ -208,6 +209,28 @@ export class MonorepoProject extends MonorepoTsProject {
     if (project instanceof JsiiProject) {
       // Suppress JSII upgrade warnings
       project.tasks.addEnvironment("JSII_SUPPRESS_UPGRADE_PROMPT", "true");
+    }
+  }
+
+  protected _mutateBuildWorkflowSteps(): void {
+    if (this.buildWorkflow) {
+      // @ts-ignore - private
+      const _renderBuildSteps = this.buildWorkflow.renderBuildSteps.bind(
+        this.buildWorkflow
+      );
+      // The default checkout uses ref/repo which does not work with private repos
+      // checkout@v4 now handles it auto-magically so can safely remove `with` options
+      const renderBuildSteps = (): JobStep[] => {
+        const steps: JobStep[] = _renderBuildSteps();
+        const checkoutStep = steps.find((v) =>
+          v.uses?.startsWith("actions/checkout@")
+        );
+        checkoutStep && Object.assign(checkoutStep, { with: undefined });
+        return steps;
+      };
+
+      // @ts-ignore - private
+      this.buildWorkflow.renderBuildSteps = renderBuildSteps;
     }
   }
 
