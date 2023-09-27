@@ -5,6 +5,7 @@ import path from "node:path";
 import { MonorepoTsProject, MonorepoTsProjectOptions } from "@aws/pdk/monorepo";
 import { Project, javascript } from "projen";
 import { JsiiProject } from "projen/lib/cdk";
+import { Job, JobPermission, JobStep } from "projen/lib/github/workflows-model";
 import { TypeScriptProject } from "projen/lib/typescript";
 
 // Scrappy shim around PDK MonorepoTsProject, which separates stuff we would like
@@ -38,6 +39,15 @@ export class MonorepoProject extends MonorepoTsProject {
         dirs: projectDirs,
         ignorePatterns: packageDirs.map((v) => `${v}/`),
       },
+      stale: true,
+      github: true,
+      release: true,
+      // buildWorkflow: false,
+      githubOptions: {
+        mergify: false,
+        pullRequestLint: true,
+      },
+      pullRequestTemplate: false,
       ...options,
       devDeps: [
         "@aws/pdk",
@@ -121,6 +131,12 @@ export class MonorepoProject extends MonorepoTsProject {
     // Pre-requisite check can be made into component for project re-use
     this.package.setScript("prerequisite-check", "./prerequisite-check.sh");
     this.package.setScript("preinstall", "./prerequisite-check.sh");
+
+    // Workflow config
+    this.github?.actions.set("actions/checkout", "actions/checkout@v4");
+    this.release?.addJobs({
+      release_docs: this.renderReleaseGitHubPagesJob(),
+    });
   }
 
   recurseProjects(project: Project, fn: (project: Project) => void): void {
@@ -201,5 +217,75 @@ export class MonorepoProject extends MonorepoTsProject {
     this.recurseProjects(this, this.configJsii.bind(this));
 
     super.synth();
+  }
+
+  renderWorkflowSetup(
+    _options?: javascript.RenderWorkflowSetupOptions | undefined
+  ): JobStep[] {
+    return [
+      {
+        name: "setup",
+        uses: "./.github/actions/setup",
+      },
+    ];
+  }
+
+  renderReleaseGitHubPagesJob(): Job {
+    // Based on https://github.com/actions/starter-workflows/blob/main/pages/static.yml
+    return {
+      environment: {
+        name: "github-pages",
+        url: "${{ steps.deployment.outputs.page_url }}",
+      },
+      runsOn: ["ubuntu-latest"],
+      needs: ["release", "release_github"],
+      if: "needs.release.outputs.latest_commit == github.sha",
+      permissions: {
+        contents: JobPermission.WRITE,
+        pages: JobPermission.WRITE,
+        idToken: JobPermission.WRITE,
+      },
+      steps: [
+        {
+          name: "Checkout",
+          uses: this.github?.actions.get("actions/checkout"),
+        },
+        {
+          name: "Setup Python",
+          uses: "actions/setup-python@v4",
+          with: {
+            "python-version": "3.11",
+          },
+        },
+        {
+          name: "Setup Poetry",
+          uses: "Gr1N/setup-poetry@v8",
+          with: {
+            "poetry-version": "1.5.1",
+          },
+        },
+        {
+          name: "Build Docs",
+          run: "./docs/scripts/build.sh",
+        },
+        {
+          name: "Setup Pages",
+          uses: "actions/configure-pages@v3",
+        },
+        {
+          name: "Upload artifact",
+          uses: "actions/upload-pages-artifact@v2",
+          with: {
+            path: "./docs/dist/docs",
+          },
+        },
+        {
+          name: "Deploy to GitHub Pages",
+          id: "deployment",
+          uses: "actions/deploy-pages@v2",
+          if: "${{ false }}", // disable until repo is public, since all pages are public
+        },
+      ],
+    };
   }
 }
