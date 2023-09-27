@@ -20,6 +20,23 @@
         }
       ]
     },
+    "bump": {
+      "name": "bump",
+      "description": "Bumps version based on latest git tag and generates a changelog entry",
+      "env": {
+        "OUTFILE": "package.json",
+        "CHANGELOG": "dist/changelog.md",
+        "BUMPFILE": "dist/version.txt",
+        "RELEASETAG": "dist/releasetag.txt",
+        "RELEASE_TAG_PREFIX": ""
+      },
+      "steps": [
+        {
+          "builtin": "release/bump-version"
+        }
+      ],
+      "condition": "! git log --oneline -1 | grep -q \"chore(release):\""
+    },
     "clobber": {
       "name": "clobber",
       "description": "hard resets to HEAD of origin and cleans the local repo",
@@ -236,6 +253,30 @@
         }
       ]
     },
+    "release:mainline": {
+      "name": "release:mainline",
+      "description": "Prepare a release from \"mainline\" branch",
+      "env": {
+        "RELEASE": "true"
+      },
+      "steps": [
+        {
+          "exec": "rm -fr dist"
+        },
+        {
+          "spawn": "bump"
+        },
+        {
+          "spawn": "build"
+        },
+        {
+          "spawn": "unbump"
+        },
+        {
+          "exec": "git diff --ignore-space-at-eol --exit-code"
+        }
+      ]
+    },
     "run-many": {
       "name": "run-many",
       "description": "Run task against multiple workspace projects",
@@ -262,6 +303,22 @@
         }
       ]
     },
+    "unbump": {
+      "name": "unbump",
+      "description": "Restores version to 0.0.0",
+      "env": {
+        "OUTFILE": "package.json",
+        "CHANGELOG": "dist/changelog.md",
+        "BUMPFILE": "dist/version.txt",
+        "RELEASETAG": "dist/releasetag.txt",
+        "RELEASE_TAG_PREFIX": ""
+      },
+      "steps": [
+        {
+          "builtin": "release/reset-version"
+        }
+      ]
+    },
     "upgrade": {
       "name": "upgrade",
       "description": "upgrade dependencies",
@@ -273,13 +330,13 @@
           "exec": "pnpm update npm-check-updates"
         },
         {
-          "exec": "npm-check-updates --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@aws/pdk,@commitlint/cli,@commitlint/config-conventional,@nrwl/devkit,@types/clear,@types/figlet,@types/lodash,@types/node-localstorage,@types/node,@types/prompts,@types/spdx-correct,@types/spdx-satisfies,@typescript-eslint/eslint-plugin,@typescript-eslint/parser,chalk,clear,commander,commitizen,cz-conventional-changelog,esbuild,eslint-config-prettier,eslint-import-resolver-node,eslint-import-resolver-typescript,eslint-plugin-header,eslint-plugin-import,eslint-plugin-prettier,eslint,esprima,execa,figlet,got,husky,lodash,node-localstorage,npm-check-updates,prettier,projen,prompts,spdx-correct,spdx-satisfies,syncpack,ts-node,tsx,typescript,nx,aws-cdk-lib,cdk-nag,constructs"
+          "exec": "npm-check-updates --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@aws/pdk,@commitlint/cli,@commitlint/config-conventional,@nrwl/devkit,@types/clear,@types/figlet,@types/lodash,@types/node-localstorage,@types/node,@types/prompts,@types/spdx-correct,@types/spdx-satisfies,@typescript-eslint/eslint-plugin,@typescript-eslint/parser,chalk,clear,commander,commitizen,cz-conventional-changelog,esbuild,eslint-config-prettier,eslint-import-resolver-node,eslint-import-resolver-typescript,eslint-plugin-header,eslint-plugin-import,eslint-plugin-prettier,eslint,esprima,execa,figlet,got,husky,lodash,node-localstorage,npm-check-updates,prettier,projen,prompts,spdx-correct,spdx-satisfies,standard-version,syncpack,ts-node,tsx,typescript,nx,aws-cdk-lib,cdk-nag,constructs"
         },
         {
           "exec": "pnpm i --no-frozen-lockfile"
         },
         {
-          "exec": "pnpm update @aws/pdk @commitlint/cli @commitlint/config-conventional @nrwl/devkit @types/clear @types/figlet @types/lodash @types/node-localstorage @types/node @types/prompts @types/spdx-correct @types/spdx-satisfies @typescript-eslint/eslint-plugin @typescript-eslint/parser chalk clear commander commitizen cz-conventional-changelog esbuild eslint-config-prettier eslint-import-resolver-node eslint-import-resolver-typescript eslint-plugin-header eslint-plugin-import eslint-plugin-prettier eslint esprima execa figlet got husky lodash node-localstorage npm-check-updates prettier projen prompts spdx-correct spdx-satisfies syncpack ts-node tsx typescript nx aws-cdk-lib cdk-nag constructs"
+          "exec": "pnpm update @aws/pdk @commitlint/cli @commitlint/config-conventional @nrwl/devkit @types/clear @types/figlet @types/lodash @types/node-localstorage @types/node @types/prompts @types/spdx-correct @types/spdx-satisfies @typescript-eslint/eslint-plugin @typescript-eslint/parser chalk clear commander commitizen cz-conventional-changelog esbuild eslint-config-prettier eslint-import-resolver-node eslint-import-resolver-typescript eslint-plugin-header eslint-plugin-import eslint-plugin-prettier eslint esprima execa figlet got husky lodash node-localstorage npm-check-updates prettier projen prompts spdx-correct spdx-satisfies standard-version syncpack ts-node tsx typescript nx aws-cdk-lib cdk-nag constructs"
         },
         {
           "exec": "pnpm exec projen"
