@@ -139,6 +139,9 @@
       "description": "Runs eslint against the codebase for all affected projects",
       "steps": [
         {
+          "exec": "eslint --ext .ts,.tsx ${CI:-'--fix'} --no-error-on-unmatched-pattern ."
+        },
+        {
           "exec": "pnpm exec nx run-many --target=eslint --output-style=stream --nx-bail",
           "receiveArgs": true
         }
@@ -204,9 +207,6 @@
         {
           "exec": "pnpm exec nx run-many --target=package --output-style=stream --nx-bail",
           "receiveArgs": true
-        },
-        {
-          "spawn": "eslint"
         }
       ]
     },
@@ -297,9 +297,6 @@
         },
         {
           "spawn": "git-secrets-scan"
-        },
-        {
-          "spawn": "eslint"
         }
       ]
     },

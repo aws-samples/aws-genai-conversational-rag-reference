@@ -164,13 +164,16 @@ export class MonorepoProject extends MonorepoTsProject {
 
       const eslintTask = project.tasks.tryFind("eslint");
       if (eslintTask) {
-        eslintTask.reset(
-          `eslint --ext .ts,.tsx \${CI:-'--fix'} --no-error-on-unmatched-pattern ${dirs.join(
-            " "
-          )}`,
-          { receiveArgs: true }
-        );
-        project.testTask.spawn(eslintTask);
+        if (isRoot) {
+          eslintTask.prependExec(`eslint --ext .ts,.tsx \${CI:-'--fix'} --no-error-on-unmatched-pattern .`)
+        } else {
+          eslintTask.reset(
+            `eslint --ext .ts,.tsx \${CI:-'--fix'} --no-error-on-unmatched-pattern ${dirs.join(" ")}`,
+            { receiveArgs: true }
+          );
+          project.testTask.spawn(eslintTask);
+          project.packageTask.spawn(eslintTask);
+        }
 
         project.addTask("eslint-staged", {
           description: "Run eslint against the staged files only",
@@ -182,7 +185,6 @@ export class MonorepoProject extends MonorepoTsProject {
             },
           ],
         });
-        project.packageTask.spawn(eslintTask);
       }
     }
   }
