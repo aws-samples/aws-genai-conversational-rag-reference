@@ -37,14 +37,14 @@ export class Website {
         "ace-builds",
         "immer",
         "jwt-decode",
+        `langchain@${LANGCHAIN_VERSION}`, // not semver so need to pin
         "lodash",
+        "nanoid",
         "react-collapsed",
         "react-intersection-observer",
         "react-markdown",
         "use-immer",
         "usehooks-ts",
-        "nanoid",
-        `langchain@${LANGCHAIN_VERSION}`, // not semver so need to pin
         api.project.library.typescriptReactQueryHooks!.package.packageName,
         galileoSdk.package.packageName,
       ],

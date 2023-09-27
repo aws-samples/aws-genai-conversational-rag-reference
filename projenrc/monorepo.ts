@@ -51,13 +51,13 @@ export class MonorepoProject extends MonorepoTsProject {
       ...options,
       devDeps: [
         "@aws/pdk",
+        "@nrwl/devkit",
         "esbuild", // needed for aws-cdk-lib
         "esprima", // Error: Your application tried to access esprima, but it isn't declared in your dependencies; this makes the require call ambiguous and unsound.
-        "tsx",
-        "nx",
-        "@nrwl/devkit",
-        "husky",
         "got@^11.8.5",
+        "husky",
+        "nx",
+        "tsx",
         ...(options.devDeps || []),
       ],
     });
@@ -102,15 +102,15 @@ export class MonorepoProject extends MonorepoTsProject {
 
     // Update .gitignore
     this.gitignore.exclude(
-      "/.tools/",
-      "/.idea/",
-      "*.iml",
-      ".tmp",
-      "LICENSE-THIRD-PARTY",
       ".DS_Store",
-      "build",
       ".env",
+      ".tmp",
       ".venv",
+      "*.iml",
+      "/.idea/",
+      "/.tools/",
+      "build",
+      "LICENSE-THIRD-PARTY",
       "tsconfig.tsbuildinfo"
     );
 
@@ -122,10 +122,10 @@ export class MonorepoProject extends MonorepoTsProject {
     this.gitignore.exclude("oss-attribution");
     this.addTask("oss", { exec: "pnpm dlx tsx ./scripts/oss.ts" });
     this.addDevDeps(
-      "@types/spdx-satisfies",
-      "spdx-satisfies",
       "@types/spdx-correct",
-      "spdx-correct"
+      "@types/spdx-satisfies",
+      "spdx-correct",
+      "spdx-satisfies"
     );
 
     // Pre-requisite check can be made into component for project re-use

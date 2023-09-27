@@ -1,14 +1,16 @@
+/*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
+PDX-License-Identifier: Apache-2.0 */
 import { MonorepoTsProject } from "@aws/pdk/monorepo";
 import { AwsCdkConstructLibrary } from "projen/lib/awscdk";
 import { Stability } from "projen/lib/cdk";
+import { EsmTypescriptProject } from "./components/esm-typescript";
 import {
   AWS_SDK_VERSION,
   CDK_VERSION,
   LANGCHAIN_VERSION,
   PROJECT_AUTHOR,
+  DEFAULT_RELEASE_BRANCH,
 } from "./constants";
-import { DEFAULT_RELEASE_BRANCH } from "./constants";
-import { EsmTypescriptProject } from './components/esm-typescript';
 
 export class GalileoCdkLib extends AwsCdkConstructLibrary {
   constructor(monorepo: MonorepoTsProject) {
@@ -50,41 +52,35 @@ export class GalileoSdk extends EsmTypescriptProject {
       outdir: "packages/galileo-sdk",
       // jsiiVersion: "5.x",
       deps: [
-        `langchain@${LANGCHAIN_VERSION}`, // not semver so need to pin
-        "uuid",
-        "pg-promise",
+        "@aws-crypto/sha256-js",
         "@aws-lambda-powertools/logger",
         "@aws-lambda-powertools/metrics",
         "@aws-lambda-powertools/parameters",
-        "@aws-crypto/sha256-js",
         "cross-fetch",
-        "lodash",
-        "handlebars",
         "handlebars-helpers-lite",
+        "handlebars",
+        "lodash",
+        "pg-promise",
         "safe-handlebars",
+        "uuid",
+        `langchain@${LANGCHAIN_VERSION}`, // not semver so need to pin
       ],
-      devDeps: [
-        "@types/uuid",
-        "@types/lodash",
-        "aws-sdk-client-mock",
-      ],
+      devDeps: ["@types/uuid", "@types/lodash", "aws-sdk-client-mock"],
       peerDeps: [
-        `@aws-sdk/types@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/client-dynamodb@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/lib-dynamodb@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/client-s3@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/rds-signer@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/client-secrets-manager@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/client-sagemaker-runtime@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/client-service-quotas@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/credential-providers@^${AWS_SDK_VERSION}`,
-        "@aws-sdk/signature-v4",
         "@aws-sdk/protocol-http",
         "@aws-sdk/querystring-parser",
+        "@aws-sdk/signature-v4",
+        `@aws-sdk/client-dynamodb@^${AWS_SDK_VERSION}`,
+        `@aws-sdk/client-s3@^${AWS_SDK_VERSION}`,
+        `@aws-sdk/client-sagemaker-runtime@^${AWS_SDK_VERSION}`,
+        `@aws-sdk/client-secrets-manager@^${AWS_SDK_VERSION}`,
+        `@aws-sdk/client-service-quotas@^${AWS_SDK_VERSION}`,
+        `@aws-sdk/credential-providers@^${AWS_SDK_VERSION}`,
+        `@aws-sdk/lib-dynamodb@^${AWS_SDK_VERSION}`,
+        `@aws-sdk/rds-signer@^${AWS_SDK_VERSION}`,
+        `@aws-sdk/types@^${AWS_SDK_VERSION}`,
       ],
-      depsToTransform: [
-        "safe-handlebars"
-      ],
+      depsToTransform: ["safe-handlebars"],
       publishDryRun: true,
       // TODO: once we marshal the root module exports better for cross-env/modules we can re-enable this
       // currently will not support root import of the module
