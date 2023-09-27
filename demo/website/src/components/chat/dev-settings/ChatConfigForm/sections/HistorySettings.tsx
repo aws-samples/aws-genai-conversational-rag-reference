@@ -21,7 +21,11 @@ export const HistorySettings: FC = () => {
             try {
               setMemoryKwargs(JSON.parse(detail.value));
             } catch (error) {
-              console.warn("Failed to parse `Memory Kwargs`", detail.value, error);
+              console.warn(
+                "Failed to parse `Memory Kwargs`",
+                detail.value,
+                error
+              );
             }
           }}
         />

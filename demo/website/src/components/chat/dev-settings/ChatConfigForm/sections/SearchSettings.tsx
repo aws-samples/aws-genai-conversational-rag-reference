@@ -33,7 +33,11 @@ export const SearchSettings: FC = () => {
             try {
               setSearchKwargs(JSON.parse(detail.value));
             } catch (error) {
-              console.warn("Failed to parse `Search Kwargs`", detail.value, error);
+              console.warn(
+                "Failed to parse `Search Kwargs`",
+                detail.value,
+                error
+              );
             }
           }}
         />

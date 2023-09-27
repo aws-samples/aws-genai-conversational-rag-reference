@@ -96,7 +96,11 @@ export const InferenceSettings: FC = () => {
             try {
               setLlmModelKwargs(JSON.parse(detail.value));
             } catch (error) {
-              console.warn("Failed to parse `LLM Model Kwargs`", detail.value, error);
+              console.warn(
+                "Failed to parse `LLM Model Kwargs`",
+                detail.value,
+                error
+              );
             }
           }}
         />
@@ -109,7 +113,11 @@ export const InferenceSettings: FC = () => {
             try {
               setLlmEndpointKwargs(JSON.parse(detail.value));
             } catch (error) {
-              console.warn("Failed to parse `LLM Endpoint Kwargs`", detail.value, error);
+              console.warn(
+                "Failed to parse `LLM Endpoint Kwargs`",
+                detail.value,
+                error
+              );
             }
           }}
         />

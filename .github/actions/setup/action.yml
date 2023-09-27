@@ -1,0 +1,58 @@
+name: 'Setup'
+description: 'Initialize the monorepo by installing engines, dependencies, and synthesizing project.'
+runs:
+  using: "composite"
+  steps:
+    #######################################################################
+    ## Cache
+    #######################################################################
+    - name: Cache
+      uses: actions/cache@v3
+      with:
+        key: ${{ runner.os }}-init
+        path: |
+          /root/.m2/**/*
+          /root/.gradle/caches/**/*
+          /var/cache/apt/**/*
+          /var/lib/apt/lists/**/*
+          /root/.composer/**/*
+          /root/.pnpm-store/**/*
+          node_modules/.cache/nx/**/*
+    #######################################################################
+    ## Setup
+    #######################################################################
+    - name: Setup Java JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: 17
+        distribution: corretto
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+        run_install: false
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.11
+    - name: Setup Poetry
+      uses: Gr1N/setup-poetry@v8
+      with:
+        poetry-version: "1.5.1"
+    #######################################################################
+    ## Install and Synth
+    #######################################################################
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile --prefer-offline
+      env:
+        HUSKY: '0' # By default do not run HUSKY install
+    - name: Synth Project
+      shell: bash
+      run: pnpm projen
+      env:
+        HUSKY: '0' # By default do not run HUSKY install
