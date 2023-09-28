@@ -1,6 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { GalileoCdkLib, Demo, GalileoSdk } from "./projenrc";
+import { GalileoCdkLib, Demo, GalileoSdk, GalileoCli } from "./projenrc";
 import { MonorepoProject } from "./projenrc/monorepo";
 
 const DEMO_DIR = "demo";
@@ -63,6 +63,7 @@ monorepo.addTask("docs:serve", { exec: "docs/scripts/serve.sh" });
 //////////////////////////////////////////////////////////
 const galileoSdk = new GalileoSdk(monorepo);
 const galileoCdkLib = new GalileoCdkLib(monorepo);
+new GalileoCli(monorepo);
 
 //////////////////////////////////////////////////////////
 // DEMOS
