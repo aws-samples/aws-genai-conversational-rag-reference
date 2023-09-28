@@ -1,3 +1,5 @@
+/*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
+PDX-License-Identifier: Apache-2.0 */
 import * as path from "node:path";
 import { MonorepoTsProject, NxProject } from "@aws/pdk/monorepo";
 import { Project, TextFile } from "projen";

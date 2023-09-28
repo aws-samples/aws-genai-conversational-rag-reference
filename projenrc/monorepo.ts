@@ -165,10 +165,14 @@ export class MonorepoProject extends MonorepoTsProject {
       const eslintTask = project.tasks.tryFind("eslint");
       if (eslintTask) {
         if (isRoot) {
-          eslintTask.prependExec(`eslint --ext .ts,.tsx \${CI:-'--fix'} --no-error-on-unmatched-pattern .`)
+          eslintTask.prependExec(
+            `eslint --ext .ts,.tsx \${CI:-'--fix'} --no-error-on-unmatched-pattern .`
+          );
         } else {
           eslintTask.reset(
-            `eslint --ext .ts,.tsx \${CI:-'--fix'} --no-error-on-unmatched-pattern ${dirs.join(" ")}`,
+            `eslint --ext .ts,.tsx \${CI:-'--fix'} --no-error-on-unmatched-pattern ${dirs.join(
+              " "
+            )}`,
             { receiveArgs: true }
           );
           project.testTask.spawn(eslintTask);
