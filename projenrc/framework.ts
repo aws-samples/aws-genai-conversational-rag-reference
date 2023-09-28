@@ -10,6 +10,7 @@ import {
   LANGCHAIN_VERSION,
   PROJECT_AUTHOR,
   DEFAULT_RELEASE_BRANCH,
+  PDK_VERSION,
 } from "./constants";
 
 export class GalileoCdkLib extends AwsCdkConstructLibrary {
@@ -25,7 +26,7 @@ export class GalileoCdkLib extends AwsCdkConstructLibrary {
       constructsVersion: "10.2.52",
       jsiiVersion: "5.x",
       defaultReleaseBranch: DEFAULT_RELEASE_BRANCH,
-      deps: ["@aws/pdk"],
+      deps: [`@aws/pdk@^${PDK_VERSION}`],
       publishDryRun: true,
     });
 

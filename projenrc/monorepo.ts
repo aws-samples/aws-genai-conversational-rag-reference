@@ -7,6 +7,7 @@ import { Project, javascript } from "projen";
 import { JsiiProject } from "projen/lib/cdk";
 import { Job, JobPermission, JobStep } from "projen/lib/github/workflows-model";
 import { TypeScriptProject } from "projen/lib/typescript";
+import { PDK_VERSION } from "./constants";
 
 // Scrappy shim around PDK MonorepoTsProject, which separates stuff we would like
 // to make composable in PDK directly.
@@ -50,7 +51,6 @@ export class MonorepoProject extends MonorepoTsProject {
       pullRequestTemplate: false,
       ...options,
       devDeps: [
-        "@aws/pdk",
         "@nrwl/devkit",
         "esbuild", // needed for aws-cdk-lib
         "esprima", // Error: Your application tried to access esprima, but it isn't declared in your dependencies; this makes the require call ambiguous and unsound.
@@ -61,6 +61,8 @@ export class MonorepoProject extends MonorepoTsProject {
         ...(options.devDeps || []),
       ],
     });
+
+    this.addDevDeps(`@aws/pdk@^${PDK_VERSION}`);
 
     this.projectDirs = projectDirs;
     this.packageDirs = packageDirs;

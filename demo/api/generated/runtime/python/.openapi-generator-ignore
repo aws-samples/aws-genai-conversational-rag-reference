@@ -14,3 +14,4 @@ requirements.txt
 test-requirements.txt
 setup.py
 setup.cfg
+pyproject.toml

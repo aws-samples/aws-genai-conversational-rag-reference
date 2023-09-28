@@ -2,7 +2,7 @@
   "dependencies": [
     {
       "name": "@aws/pdk",
-      "version": "^0",
+      "version": "^0.22.9",
       "type": "build"
     },
     {

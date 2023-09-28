@@ -41,7 +41,7 @@
     "galileo-cli": "pnpm dlx tsx ./bin/galileo-cli.ts"
   },
   "devDependencies": {
-    "@aws/pdk": "^0",
+    "@aws/pdk": "^0.22.9",
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",
     "@nrwl/devkit": "^16.9.1",
