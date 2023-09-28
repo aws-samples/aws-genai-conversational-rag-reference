@@ -64,6 +64,5 @@ oss-attribution
 !/demo/api/generated/runtime/README.md
 !/demo/api/generated/documentation/README.md
 !/demo/api/generated/libraries/README.md
-!/demo/api/handlers/README.md
 !/demo/api/generated/infrastructure/README.md
 !/pnpm-workspace.yaml

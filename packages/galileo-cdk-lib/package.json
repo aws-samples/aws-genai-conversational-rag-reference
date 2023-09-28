@@ -58,7 +58,7 @@
     "constructs": "^10.2.52"
   },
   "dependencies": {
-    "@aws/pdk": "^0.22.1"
+    "@aws/pdk": "^0.22.9"
   },
   "pnpm": {},
   "keywords": [

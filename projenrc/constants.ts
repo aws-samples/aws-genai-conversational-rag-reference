@@ -19,7 +19,7 @@ export const AWS_SDK_VERSION = "3.391.0";
 
 export const CDK_VERSION = "2.95.0";
 
-export const PDK_VERSION = "0.22.1";
+export const PDK_VERSION = "0.22.9";
 
 // Not semver yet so need to pin version
 export const LANGCHAIN_VERSION = "0.0.149";
