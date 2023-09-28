@@ -270,7 +270,8 @@ export class MonorepoProject extends MonorepoTsProject {
       },
       runsOn: ["ubuntu-latest"],
       needs: ["release", "release_github"],
-      if: "needs.release.outputs.latest_commit == github.sha",
+      if: "${{ false }}", // disable until repo is public, since all pages are public
+      // if: "needs.release.outputs.latest_commit == github.sha",
       permissions: {
         contents: JobPermission.WRITE,
         pages: JobPermission.WRITE,
@@ -314,7 +315,6 @@ export class MonorepoProject extends MonorepoTsProject {
           name: "Deploy to GitHub Pages",
           id: "deployment",
           uses: "actions/deploy-pages@v2",
-          if: "${{ false }}", // disable until repo is public, since all pages are public
         },
       ],
     };

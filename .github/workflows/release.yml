@@ -78,7 +78,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    if: needs.release.outputs.latest_commit == github.sha
+    if: ${{ false }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -100,5 +100,4 @@ jobs:
           path: ./docs/dist/docs
       - name: Deploy to GitHub Pages
         id: deployment
-        if: ${{ false }}
         uses: actions/deploy-pages@v2
