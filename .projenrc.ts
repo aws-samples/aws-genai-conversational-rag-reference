@@ -1,5 +1,7 @@
+/*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
+PDX-License-Identifier: Apache-2.0 */
 import { GalileoCdkLib, Demo, GalileoSdk } from "./projenrc";
-import { MonorepoProject } from './projenrc/monorepo';
+import { MonorepoProject } from "./projenrc/monorepo";
 
 const DEMO_DIR = "demo";
 const DEMO_NAME = "Galileo";
@@ -47,7 +49,6 @@ monorepo.nx.setTargetDefault("deploy:app", {
   dependsOn: ["build", "^deploy:app"],
 });
 monorepo.nx.cacheableOperations.push("generated");
-
 
 monorepo.package.addPackageResolutions("nth-check@>=2.0.1");
 

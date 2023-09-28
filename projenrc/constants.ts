@@ -1,3 +1,5 @@
+/*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
+PDX-License-Identifier: Apache-2.0 */
 export const PROJECT_AUTHOR = {
   author: "AWS APJ COPE",
   authorAddress: "apj-cope@amazon.com",

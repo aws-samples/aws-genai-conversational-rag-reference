@@ -1,7 +1,9 @@
-import path from "node:path";
+/*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
+PDX-License-Identifier: Apache-2.0 */
 import fs from "node:fs";
-import { Component } from 'projen';
-import { NodePackage, NodeProject } from 'projen/lib/javascript';
+import path from "node:path";
+import { Component } from "projen";
+import { NodePackage, NodeProject } from "projen/lib/javascript";
 
 export interface EsmExportDefinition {
   readonly types: string;
@@ -22,7 +24,10 @@ export interface EsmPackageExportsOptions {
   readonly rootExport?: boolean;
 }
 
-export class EsmPackageExports extends Component implements EsmPackageExportsOptions {
+export class EsmPackageExports
+  extends Component
+  implements EsmPackageExportsOptions
+{
   readonly package: NodePackage;
 
   readonly src: string;
@@ -62,23 +67,22 @@ export class EsmPackageExports extends Component implements EsmPackageExportsOpt
     }
 
     // sort exports
-    exports = Object.fromEntries(Object.entries(exports).sort(([a], [b]) => {
-      if (a < b) return -1;
-      if (a > b) return 1;
-      return 0;
-    }))
+    exports = Object.fromEntries(
+      Object.entries(exports).sort(([a], [b]) => {
+        if (a < b) return -1;
+        if (a > b) return 1;
+        return 0;
+      })
+    );
 
     this.package.addField("exports", exports);
   }
 
-  extractExports(dir: string, ): EsmExportRecord {
+  extractExports(dir: string): EsmExportRecord {
     const exports: EsmExportRecord = {};
     for (const file of fs.readdirSync(dir, { withFileTypes: true })) {
       if (file.isDirectory()) {
-        Object.assign(
-          exports,
-          this.extractExports(path.join(dir, file.name))
-        );
+        Object.assign(exports, this.extractExports(path.join(dir, file.name)));
       } else if (file.isFile()) {
         // Ignore anything that's not a .js file
         const ext = path.extname(file.name);
@@ -89,12 +93,12 @@ export class EsmPackageExports extends Component implements EsmPackageExportsOpt
         const absPath = path.join(dir, file.name);
         const relPath = path.relative(this.srcDir, absPath);
         const libPath = "./" + path.join(this.lib, relPath);
-        let exportPath = libPath.replace(/(\/index)?\.ts/, '');
+        let exportPath = libPath.replace(/(\/index)?\.ts/, "");
 
         exports[exportPath] = {
-          types: libPath.replace(/\.ts$/, '.d.ts'),
-          import: libPath.replace(/\.ts$/, '.js'),
-          require: libPath.replace(/\.ts$/, '.cjs'),
+          types: libPath.replace(/\.ts$/, ".d.ts"),
+          import: libPath.replace(/\.ts$/, ".js"),
+          require: libPath.replace(/\.ts$/, ".cjs"),
         };
       }
     }

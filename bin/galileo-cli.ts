@@ -1,24 +1,27 @@
 #!/usr/bin/env tsx
-
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
-SPDX-License-Identifier: Apache-2.0 */
-
+PDX-License-Identifier: Apache-2.0 */
+/* eslint-disable import/no-extraneous-dependencies */
 import path from "node:path";
-import { Command } from "commander";
-import figlet from "figlet";
-import prompts from "prompts";
 import chalk from "chalk";
-import * as execa from "execa";
 import clear from "clear";
+import { Command } from "commander";
+import * as execa from "execa";
+import figlet from "figlet";
 import { JSONStorage } from "node-localstorage";
-import { IApplicationContextKey } from "../demo/infra/src/application/context";
+import prompts from "prompts";
 import {
   DEFAULT_FOUNDATION_MODEL_ID,
   DEFAULT_PREDEFINED_FOUNDATION_MODEL_LIST,
   FoundationModelIds,
 } from "../demo/infra/src/application/ai/foundation-models/ids";
-import { BedrockModelIds, BEDROCK_DEFAULT_MODEL, BEDROCK_REGION } from '../demo/infra/src/galileo/ai/llms/framework/bedrock/ids';
-import { formatBedrockModelUUID } from '../demo/infra/src/galileo/ai/llms/framework/bedrock/utils';
+import { IApplicationContextKey } from "../demo/infra/src/application/context";
+import {
+  BedrockModelIds,
+  BEDROCK_DEFAULT_MODEL,
+  BEDROCK_REGION,
+} from "../demo/infra/src/galileo/ai/llms/framework/bedrock/ids";
+import { formatBedrockModelUUID } from "../demo/infra/src/galileo/ai/llms/framework/bedrock/utils";
 
 const ROOT = path.resolve(__dirname, "..");
 
@@ -240,51 +243,60 @@ type Task = Parameters<typeof execa.execaCommand>;
     )
   );
 
-  const includesBedrock = (foundationModels as string[]).includes(FoundationModelIds.BEDROCK);
-
-  const selectedBedrockModels = new Set<BedrockModelIds>(
-    cache.getItem("bedrockModelIds") ||
-    [BEDROCK_DEFAULT_MODEL],
+  const includesBedrock = (foundationModels as string[]).includes(
+    FoundationModelIds.BEDROCK
   );
 
-  const { bedrockModelIds, bedrockRegion, bedrockEndpointUrl } = includesBedrock ? cached(
-    await prompts(
-      [
-        {
-          type: "autocompleteMultiselect",
-          name: "bedrockModelIds",
-          message: "Bedrock model ids",
-          min: 1,
-          instructions: chalk.gray(
-            "↑/↓: Highlight option, ←/→/[space]: Toggle selection, Return to submit"
-          ),
-          choices: Object.values(BedrockModelIds).sort().map((_id) => ({
-            title: _id,
-            value: _id,
-            selected: selectedBedrockModels.has(_id),
-          })),
-        },
-        {
-          type: "text",
-          name: "bedrockRegion",
-          message: "Bedrock region",
-          initial: cache.getItem("bedrockRegion") ?? BEDROCK_REGION,
-        },
-        {
-          type: "text",
-          name: "bedrockEndpointUrl",
-          message: `Bedrock endpoint url ${chalk.gray("(optional)")}`,
-          initial: cache.getItem("bedrockEndpointUrl") ?? undefined,
-        },
-      ],
-      { onCancel }
-    )
-  ) : {} as any;
+  const selectedBedrockModels = new Set<BedrockModelIds>(
+    cache.getItem("bedrockModelIds") || [BEDROCK_DEFAULT_MODEL]
+  );
 
-  const availableModelIds = includesBedrock ? [
-    ...(foundationModels as string[]).filter(v => v !== FoundationModelIds.BEDROCK),
-    ...(bedrockModelIds as string[]).map(formatBedrockModelUUID),
-  ] : (foundationModels as string[]);
+  const { bedrockModelIds, bedrockRegion, bedrockEndpointUrl } = includesBedrock
+    ? cached(
+        await prompts(
+          [
+            {
+              type: "autocompleteMultiselect",
+              name: "bedrockModelIds",
+              message: "Bedrock model ids",
+              min: 1,
+              instructions: chalk.gray(
+                "↑/↓: Highlight option, ←/→/[space]: Toggle selection, Return to submit"
+              ),
+              choices: Object.values(BedrockModelIds)
+                .sort()
+                .map((_id) => ({
+                  title: _id,
+                  value: _id,
+                  selected: selectedBedrockModels.has(_id),
+                })),
+            },
+            {
+              type: "text",
+              name: "bedrockRegion",
+              message: "Bedrock region",
+              initial: cache.getItem("bedrockRegion") ?? BEDROCK_REGION,
+            },
+            {
+              type: "text",
+              name: "bedrockEndpointUrl",
+              message: `Bedrock endpoint url ${chalk.gray("(optional)")}`,
+              initial: cache.getItem("bedrockEndpointUrl") ?? undefined,
+            },
+          ],
+          { onCancel }
+        )
+      )
+    : ({} as any);
+
+  const availableModelIds = includesBedrock
+    ? [
+        ...(foundationModels as string[]).filter(
+          (v) => v !== FoundationModelIds.BEDROCK
+        ),
+        ...(bedrockModelIds as string[]).map(formatBedrockModelUUID),
+      ]
+    : (foundationModels as string[]);
 
   const { deployModels, defaultModelId } = cached(
     await prompts(
