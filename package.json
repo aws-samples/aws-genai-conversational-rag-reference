@@ -38,7 +38,8 @@
     "commit": "pnpm exec cz",
     "prerequisite-check": "./prerequisite-check.sh",
     "preinstall": "./prerequisite-check.sh",
-    "galileo-cli": "pnpm dlx tsx ./bin/galileo-cli.ts"
+    "galileo-cli": "pnpm dlx tsx ./bin/galileo-cli.ts",
+    "galileo-cli-experimental": "pnpm dlx tsx packages/galileo-cli/bin/galileo-cli.ts"
   },
   "devDependencies": {
     "@aws/pdk": "^0.22.9",
@@ -125,6 +126,7 @@
   },
   "workspaces": {
     "packages": [
+      "packages/galileo-cli",
       "packages/galileo-cdk-lib",
       "packages/galileo-sdk",
       "demo/api",
