@@ -25,7 +25,7 @@ import { formatBedrockModelUUID } from "../demo/infra/src/galileo/ai/llms/framew
 
 const ROOT = path.resolve(__dirname, "..");
 
-type Task = Parameters<typeof execa.execaCommand>;
+type Task = Parameters<(typeof execa)["command"]>;
 
 (async () => {
   const NAME = "Galileo CLI";
@@ -35,10 +35,10 @@ type Task = Parameters<typeof execa.execaCommand>;
 
   const execCommand = (
     ...args: Task
-  ): ReturnType<typeof execa.execaCommand> => {
+  ): ReturnType<(typeof execa)["command"]> => {
     lastTasks.push(args);
 
-    return execa.execaCommand(...args);
+    return execa.command(...args);
   };
 
   const cache = new JSONStorage(path.join(__dirname, ".cache", "localstorage"));
@@ -145,7 +145,7 @@ type Task = Parameters<typeof execa.execaCommand>;
       ).confirmed
     ) {
       for (const task of _lastTasks) {
-        await execa.execaCommand(...task);
+        await execa.command(...task);
       }
     }
     process.exit(0);
@@ -352,7 +352,7 @@ type Task = Parameters<typeof execa.execaCommand>;
   );
 
   const account = (
-    await execa.execaCommand(
+    await execa.command(
       `aws --profile ${profile} sts get-caller-identity --query Account --output text`
     )
   ).stdout;
@@ -582,7 +582,7 @@ type Task = Parameters<typeof execa.execaCommand>;
   ) {
     // make sure docker is running
     try {
-      await execa.execaCommand("docker info");
+      await execa.command("docker info");
     } catch (error) {
       throw new Error("Docker must be running - please start docker and retry");
     }
