@@ -374,6 +374,9 @@
       "name": "workspace:bin:link",
       "steps": [
         {
+          "exec": "ln -s $PWD/packages/galileo-cli/bin/.cache $(pnpm bin)/.cache &>/dev/null; exit 0;"
+        },
+        {
           "exec": "ln -s $PWD/packages/galileo-cli/bin/galileo-cli.ts $(pnpm bin)/galileo-cli-experimental &>/dev/null; exit 0;"
         }
       ]

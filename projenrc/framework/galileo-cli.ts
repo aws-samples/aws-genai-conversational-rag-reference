@@ -41,6 +41,7 @@ export class GalileoCli extends TypeScriptAppProject {
         `@aws-sdk/client-s3@^${AWS_SDK_VERSION}`,
         `@aws-sdk/client-sfn@^${AWS_SDK_VERSION}`,
         `@aws-sdk/client-ssm@^${AWS_SDK_VERSION}`,
+        `@aws-sdk/client-sts@^${AWS_SDK_VERSION}`,
         `@aws-sdk/lib-storage@^${AWS_SDK_VERSION}`,
         `@aws-sdk/credential-providers@^${AWS_SDK_VERSION}`,
         "@oclif/core",

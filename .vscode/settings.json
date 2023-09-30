@@ -22,7 +22,7 @@
   ],
   // disable eslint extension until can align with monorepo
   // it just adds noise as commit hook will auto eslint --fix anyways
-  "eslint.enable": false,
+  "eslint.enable": true,
   "editor.codeActionsOnSave": {
     "source.fixAll": false,
     "source.organizeImports": false
