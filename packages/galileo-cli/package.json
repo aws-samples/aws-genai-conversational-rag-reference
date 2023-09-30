@@ -1,6 +1,7 @@
 {
   "name": "@aws-galileo/cli",
   "bin": {
+    ".cache": "bin/.cache",
     "galileo-cli-experimental": "bin/galileo-cli.ts"
   },
   "scripts": {
@@ -57,6 +58,7 @@
     "@aws-sdk/client-s3": "^3.391.0",
     "@aws-sdk/client-sfn": "^3.391.0",
     "@aws-sdk/client-ssm": "^3.391.0",
+    "@aws-sdk/client-sts": "^3.391.0",
     "@aws-sdk/credential-providers": "^3.391.0",
     "@aws-sdk/lib-storage": "^3.391.0",
     "@oclif/core": "^2.15.0",
