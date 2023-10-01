@@ -112,7 +112,7 @@
     },
     {
       "name": "@aws-sdk/client-cognito-identity-provider",
-      "version": "^3.391.0",
+      "version": "^3.418.0",
       "type": "runtime"
     },
     {

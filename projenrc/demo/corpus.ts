@@ -6,6 +6,7 @@ import {
   DEFAULT_RELEASE_BRANCH,
   LANGCHAIN_VERSION,
   PROJECT_AUTHOR,
+  SMITHY_TYPES_VERSION,
 } from "../constants";
 import { TypeScriptProject } from "projen/lib/typescript";
 import { Project } from "projen";
@@ -99,6 +100,8 @@ export class Corpus {
         `@aws-sdk/client-sagemaker-runtime@^${AWS_SDK_VERSION}`,
         `@aws-sdk/client-secrets-manager@^${AWS_SDK_VERSION}`,
         `@aws-sdk/lib-dynamodb@^${AWS_SDK_VERSION}`,
+        `@aws-sdk/types@^${AWS_SDK_VERSION}`,
+        `@smithy/types@^${SMITHY_TYPES_VERSION}`,
       ],
       publishDryRun: true,
       tsconfigDev: {

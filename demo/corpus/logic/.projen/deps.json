@@ -2,31 +2,37 @@
   "dependencies": [
     {
       "name": "@aws-sdk/client-dynamodb",
-      "version": "3.391.0",
+      "version": "3.418.0",
       "type": "build"
     },
     {
       "name": "@aws-sdk/client-s3",
-      "version": "3.391.0",
+      "version": "3.418.0",
       "type": "build"
     },
     {
       "name": "@aws-sdk/client-sagemaker-runtime",
-      "version": "3.391.0",
+      "version": "3.418.0",
       "type": "build"
     },
     {
       "name": "@aws-sdk/client-secrets-manager",
-      "version": "3.391.0",
+      "version": "3.418.0",
       "type": "build"
     },
     {
       "name": "@aws-sdk/lib-dynamodb",
-      "version": "3.391.0",
+      "version": "3.418.0",
       "type": "build"
     },
     {
       "name": "@aws-sdk/types",
+      "version": "3.418.0",
+      "type": "build"
+    },
+    {
+      "name": "@smithy/types",
+      "version": "2.3.4",
       "type": "build"
     },
     {
@@ -118,27 +124,37 @@
     },
     {
       "name": "@aws-sdk/client-dynamodb",
-      "version": "^3.391.0",
+      "version": "^3.418.0",
       "type": "peer"
     },
     {
       "name": "@aws-sdk/client-s3",
-      "version": "^3.391.0",
+      "version": "^3.418.0",
       "type": "peer"
     },
     {
       "name": "@aws-sdk/client-sagemaker-runtime",
-      "version": "^3.391.0",
+      "version": "^3.418.0",
       "type": "peer"
     },
     {
       "name": "@aws-sdk/client-secrets-manager",
-      "version": "^3.391.0",
+      "version": "^3.418.0",
       "type": "peer"
     },
     {
       "name": "@aws-sdk/lib-dynamodb",
-      "version": "^3.391.0",
+      "version": "^3.418.0",
+      "type": "peer"
+    },
+    {
+      "name": "@aws-sdk/types",
+      "version": "^3.418.0",
+      "type": "peer"
+    },
+    {
+      "name": "@smithy/types",
+      "version": "^2.3.4",
       "type": "peer"
     },
     {

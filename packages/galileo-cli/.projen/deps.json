@@ -2,7 +2,7 @@
   "dependencies": [
     {
       "name": "@aws-sdk/types",
-      "version": "^3.391.0",
+      "version": "^3.418.0",
       "type": "build"
     },
     {
@@ -117,32 +117,32 @@
     },
     {
       "name": "@aws-sdk/client-s3",
-      "version": "^3.391.0",
+      "version": "^3.418.0",
       "type": "runtime"
     },
     {
       "name": "@aws-sdk/client-sfn",
-      "version": "^3.391.0",
+      "version": "^3.418.0",
       "type": "runtime"
     },
     {
       "name": "@aws-sdk/client-ssm",
-      "version": "^3.391.0",
+      "version": "^3.418.0",
       "type": "runtime"
     },
     {
       "name": "@aws-sdk/client-sts",
-      "version": "^3.391.0",
+      "version": "^3.418.0",
       "type": "runtime"
     },
     {
       "name": "@aws-sdk/credential-providers",
-      "version": "^3.391.0",
+      "version": "^3.418.0",
       "type": "runtime"
     },
     {
       "name": "@aws-sdk/lib-storage",
-      "version": "^3.391.0",
+      "version": "^3.418.0",
       "type": "runtime"
     },
     {

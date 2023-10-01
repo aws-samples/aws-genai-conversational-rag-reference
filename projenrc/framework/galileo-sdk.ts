@@ -3,7 +3,11 @@ PDX-License-Identifier: Apache-2.0 */
 import { MonorepoTsProject } from "@aws/pdk/monorepo";
 import { Stability } from "projen/lib/cdk";
 import { EsmTypescriptProject } from "../components/esm-typescript";
-import { AWS_SDK_VERSION, LANGCHAIN_VERSION } from "../constants";
+import {
+  AWS_SDK_VERSION,
+  LANGCHAIN_VERSION,
+  SMITHY_TYPES_VERSION,
+} from "../constants";
 
 // TODO: make this Jsii project so we can vend python and other languages automatically
 // Requires bundling all non-Jsii deps and ensure specific interface rules, so waiting till working in Ts
@@ -42,6 +46,7 @@ export class GalileoSdk extends EsmTypescriptProject {
         `@aws-sdk/lib-dynamodb@^${AWS_SDK_VERSION}`,
         `@aws-sdk/rds-signer@^${AWS_SDK_VERSION}`,
         `@aws-sdk/types@^${AWS_SDK_VERSION}`,
+        `@smithy/types@^${SMITHY_TYPES_VERSION}`,
       ],
       publishDryRun: true,
       name: "@aws-galileo/galileo-sdk",

@@ -13,6 +13,7 @@ import {
   CDK_VERSION,
   DEFAULT_RELEASE_BRANCH,
   PDK_VERSION,
+  SMITHY_TYPES_VERSION,
 } from "../constants";
 import { EULA_ENABLED_CONTEXT } from "../../demo/infra/src/galileo/ai/llms/framework/eula/context";
 import { IApplicationContext } from "../../demo/infra/src/application/context";
@@ -93,6 +94,8 @@ export class Infra {
         website.project.package.packageName,
       ],
       devDeps: [
+        `@aws-sdk/types@^${AWS_SDK_VERSION}`,
+        `@smithy/types@^${SMITHY_TYPES_VERSION}`,
         "@types/aws-lambda",
         "@types/lodash",
         "@types/readline-sync",
