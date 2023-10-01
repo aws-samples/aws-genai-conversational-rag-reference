@@ -15,13 +15,11 @@ export const DEMO_OUTDIR = "demo";
 
 export const DEMO_APPLICATION_NAME = "Galileo";
 
-export const AWS_SDK_VERSION = "3.418.0";
-
-export const SMITHY_TYPES_VERSION = "2.3.4";
-
-export const CDK_VERSION = "2.95.0";
-
-export const PDK_VERSION = "0.22.9";
-
-// Not semver yet so need to pin version
-export const LANGCHAIN_VERSION = "0.0.149";
+export const VERSIONS = {
+  AWS_SDK: "3.418.0",
+  CDK: "2.95.0",
+  CONSTRUCTS: "10.2.52",
+  PDK: "0.22.9",
+  LANGCHAIN: "0.0.149", // Not semver yet so need to pin version
+  SMITHY_TYPES: "2.3.4",
+};

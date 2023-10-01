@@ -3,21 +3,16 @@ PDX-License-Identifier: Apache-2.0 */
 import { MonorepoTsProject } from "@aws/pdk/monorepo";
 import { AwsCdkConstructLibrary } from "projen/lib/awscdk";
 import { Stability } from "projen/lib/cdk";
-import {
-  CDK_VERSION,
-  DEFAULT_RELEASE_BRANCH,
-  PROJECT_AUTHOR,
-  PDK_VERSION,
-} from "../constants";
+import { DEFAULT_RELEASE_BRANCH, PROJECT_AUTHOR, VERSIONS } from "../constants";
 
 export class GalileoCdkLib extends AwsCdkConstructLibrary {
   constructor(monorepo: MonorepoTsProject) {
     super({
       ...PROJECT_AUTHOR,
-      cdkVersion: CDK_VERSION,
-      constructsVersion: "10.2.52",
+      cdkVersion: VERSIONS.CDK,
+      constructsVersion: VERSIONS.CONSTRUCTS,
       defaultReleaseBranch: DEFAULT_RELEASE_BRANCH,
-      deps: [`@aws/pdk@^${PDK_VERSION}`],
+      deps: [`@aws/pdk@^${VERSIONS.PDK}`],
       jsiiVersion: "5.x",
       packageManager: monorepo.package.packageManager,
       parent: monorepo,

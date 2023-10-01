@@ -4,7 +4,7 @@ import { MonorepoTsProject, NxProject } from "@aws/pdk/monorepo";
 import { javascript } from "projen";
 import { withStorybook } from "../helpers/withStorybook";
 import { Api } from "./api";
-import { DEFAULT_RELEASE_BRANCH, LANGCHAIN_VERSION } from "../constants";
+import { DEFAULT_RELEASE_BRANCH, VERSIONS } from "../constants";
 import { GalileoSdk } from "../framework";
 import { TypeScriptModuleResolution } from "projen/lib/javascript";
 
@@ -37,7 +37,7 @@ export class Website {
         "ace-builds",
         "immer",
         "jwt-decode",
-        `langchain@${LANGCHAIN_VERSION}`, // not semver so need to pin
+        `langchain@${VERSIONS.LANGCHAIN}`, // not semver so need to pin
         "lodash",
         "nanoid",
         "react-collapsed",
