@@ -78,7 +78,7 @@
     "npm-check-updates": "^16.14.4",
     "nx": "16.0.0",
     "prettier": "^2.8.8",
-    "projen": "^0.73.36",
+    "projen": "^0.73.37",
     "prompts": "^2.4.2",
     "spdx-correct": "^3.2.0",
     "spdx-satisfies": "^5.0.1",
@@ -92,8 +92,8 @@
     "nx": "^16"
   },
   "dependencies": {
-    "aws-cdk-lib": "^2.99.0",
-    "cdk-nag": "^2.27.144",
+    "aws-cdk-lib": "^2.99.1",
+    "cdk-nag": "^2.27.146",
     "constructs": "^10.2.70"
   },
   "pnpm": {
