@@ -15,7 +15,9 @@ export const DEMO_OUTDIR = "demo";
 
 export const DEMO_APPLICATION_NAME = "Galileo";
 
-export const AWS_SDK_VERSION = "3.391.0";
+export const AWS_SDK_VERSION = "3.418.0";
+
+export const SMITHY_TYPES_VERSION = "2.3.4";
 
 export const CDK_VERSION = "2.95.0";
 
