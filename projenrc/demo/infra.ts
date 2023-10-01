@@ -8,13 +8,7 @@ import { Api } from "./api";
 import { Corpus } from "./corpus";
 import { Website } from "./website";
 import { Sample } from "./sample";
-import {
-  AWS_SDK_VERSION,
-  CDK_VERSION,
-  DEFAULT_RELEASE_BRANCH,
-  PDK_VERSION,
-  SMITHY_TYPES_VERSION,
-} from "../constants";
+import { DEFAULT_RELEASE_BRANCH, VERSIONS } from "../constants";
 import { EULA_ENABLED_CONTEXT } from "../../demo/infra/src/galileo/ai/llms/framework/eula/context";
 import { IApplicationContext } from "../../demo/infra/src/application/context";
 import { extractPeerDeps } from "../helpers/extract-peer-deps";
@@ -51,21 +45,21 @@ export class Infra {
       packageManager: javascript.NodePackageManager.PNPM,
       parent: monorepo,
       outdir: path.join(rootOutdir, "infra"),
-      cdkVersion: CDK_VERSION,
-      constructsVersion: "10.2.52",
+      cdkVersion: VERSIONS.CDK,
+      constructsVersion: VERSIONS.CONSTRUCTS,
       defaultReleaseBranch: DEFAULT_RELEASE_BRANCH,
       npmignoreEnabled: false,
       prettier: true,
       name: "infra",
       deps: [
-        `@aws-cdk/aws-cognito-identitypool-alpha@^${CDK_VERSION}-alpha.0`,
-        `@aws-cdk/aws-lambda-python-alpha@^${CDK_VERSION}-alpha.0`,
-        `@aws-sdk/client-codebuild@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/client-dynamodb@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/client-service-quotas@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/client-sfn@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/lib-dynamodb@^${AWS_SDK_VERSION}`,
-        `@aws/pdk@^${PDK_VERSION}`,
+        `@aws-cdk/aws-cognito-identitypool-alpha@^${VERSIONS.CDK}-alpha.0`,
+        `@aws-cdk/aws-lambda-python-alpha@^${VERSIONS.CDK}-alpha.0`,
+        `@aws-sdk/client-codebuild@^${VERSIONS.AWS_SDK}`,
+        `@aws-sdk/client-dynamodb@^${VERSIONS.AWS_SDK}`,
+        `@aws-sdk/client-service-quotas@^${VERSIONS.AWS_SDK}`,
+        `@aws-sdk/client-sfn@^${VERSIONS.AWS_SDK}`,
+        `@aws-sdk/lib-dynamodb@^${VERSIONS.AWS_SDK}`,
+        `@aws/pdk@^${VERSIONS.PDK}`,
         "@aws-lambda-powertools/logger",
         "@aws-lambda-powertools/metrics",
         "@aws-lambda-powertools/parameters",
@@ -94,8 +88,8 @@ export class Infra {
         website.project.package.packageName,
       ],
       devDeps: [
-        `@aws-sdk/types@^${AWS_SDK_VERSION}`,
-        `@smithy/types@^${SMITHY_TYPES_VERSION}`,
+        `@aws-sdk/types@^${VERSIONS.AWS_SDK}`,
+        `@smithy/types@^${VERSIONS.SMITHY_TYPES}`,
         "@types/aws-lambda",
         "@types/lodash",
         "@types/readline-sync",

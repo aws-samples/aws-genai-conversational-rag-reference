@@ -1,13 +1,7 @@
 import * as path from "node:path";
 import { MonorepoTsProject, NxProject } from "@aws/pdk/monorepo";
 import { NxPythonProject } from "../components/python";
-import {
-  AWS_SDK_VERSION,
-  DEFAULT_RELEASE_BRANCH,
-  LANGCHAIN_VERSION,
-  PROJECT_AUTHOR,
-  SMITHY_TYPES_VERSION,
-} from "../constants";
+import { DEFAULT_RELEASE_BRANCH, PROJECT_AUTHOR, VERSIONS } from "../constants";
 import { TypeScriptProject } from "projen/lib/typescript";
 import { Project } from "projen";
 import { GalileoSdk } from "../framework";
@@ -73,7 +67,7 @@ export class Corpus {
         "@aws-lambda-powertools/logger",
         "@aws-lambda-powertools/metrics",
         "@aws-lambda-powertools/parameters",
-        `langchain@${LANGCHAIN_VERSION}`, // not semver so need to pin
+        `langchain@${VERSIONS.LANGCHAIN}`, // not semver so need to pin
         "@middy/core",
         "@middy/error-logger",
         "@middy/http-router",
@@ -95,13 +89,13 @@ export class Corpus {
         "aws-sdk-client-mock",
       ],
       peerDeps: [
-        `@aws-sdk/client-dynamodb@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/client-s3@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/client-sagemaker-runtime@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/client-secrets-manager@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/lib-dynamodb@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/types@^${AWS_SDK_VERSION}`,
-        `@smithy/types@^${SMITHY_TYPES_VERSION}`,
+        `@aws-sdk/client-dynamodb@^${VERSIONS.AWS_SDK}`,
+        `@aws-sdk/client-s3@^${VERSIONS.AWS_SDK}`,
+        `@aws-sdk/client-sagemaker-runtime@^${VERSIONS.AWS_SDK}`,
+        `@aws-sdk/client-secrets-manager@^${VERSIONS.AWS_SDK}`,
+        `@aws-sdk/lib-dynamodb@^${VERSIONS.AWS_SDK}`,
+        `@aws-sdk/types@^${VERSIONS.AWS_SDK}`,
+        `@smithy/types@^${VERSIONS.SMITHY_TYPES}`,
       ],
       publishDryRun: true,
       tsconfigDev: {

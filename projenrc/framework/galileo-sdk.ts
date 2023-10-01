@@ -3,11 +3,7 @@ PDX-License-Identifier: Apache-2.0 */
 import { MonorepoTsProject } from "@aws/pdk/monorepo";
 import { Stability } from "projen/lib/cdk";
 import { EsmTypescriptProject } from "../components/esm-typescript";
-import {
-  AWS_SDK_VERSION,
-  LANGCHAIN_VERSION,
-  SMITHY_TYPES_VERSION,
-} from "../constants";
+import { VERSIONS } from "../constants";
 
 // TODO: make this Jsii project so we can vend python and other languages automatically
 // Requires bundling all non-Jsii deps and ensure specific interface rules, so waiting till working in Ts
@@ -27,7 +23,7 @@ export class GalileoSdk extends EsmTypescriptProject {
         "pg-promise",
         "safe-handlebars",
         "uuid",
-        `langchain@${LANGCHAIN_VERSION}`, // not semver so need to pin
+        `langchain@${VERSIONS.LANGCHAIN}`, // not semver so need to pin
       ],
       depsToTransform: ["safe-handlebars"],
       devDeps: ["@types/uuid", "@types/lodash", "aws-sdk-client-mock"],
@@ -37,16 +33,16 @@ export class GalileoSdk extends EsmTypescriptProject {
         "@aws-sdk/protocol-http",
         "@aws-sdk/querystring-parser",
         "@aws-sdk/signature-v4",
-        `@aws-sdk/client-dynamodb@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/client-s3@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/client-sagemaker-runtime@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/client-secrets-manager@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/client-service-quotas@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/credential-providers@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/lib-dynamodb@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/rds-signer@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/types@^${AWS_SDK_VERSION}`,
-        `@smithy/types@^${SMITHY_TYPES_VERSION}`,
+        `@aws-sdk/client-dynamodb@^${VERSIONS.AWS_SDK}`,
+        `@aws-sdk/client-s3@^${VERSIONS.AWS_SDK}`,
+        `@aws-sdk/client-sagemaker-runtime@^${VERSIONS.AWS_SDK}`,
+        `@aws-sdk/client-secrets-manager@^${VERSIONS.AWS_SDK}`,
+        `@aws-sdk/client-service-quotas@^${VERSIONS.AWS_SDK}`,
+        `@aws-sdk/credential-providers@^${VERSIONS.AWS_SDK}`,
+        `@aws-sdk/lib-dynamodb@^${VERSIONS.AWS_SDK}`,
+        `@aws-sdk/rds-signer@^${VERSIONS.AWS_SDK}`,
+        `@aws-sdk/types@^${VERSIONS.AWS_SDK}`,
+        `@smithy/types@^${VERSIONS.SMITHY_TYPES}`,
       ],
       publishDryRun: true,
       name: "@aws-galileo/galileo-sdk",

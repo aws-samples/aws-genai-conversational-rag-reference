@@ -8,11 +8,7 @@ import {
   TypescriptConfigOptions,
 } from "projen/lib/javascript";
 import { TypeScriptAppProject } from "projen/lib/typescript";
-import {
-  AWS_SDK_VERSION,
-  DEFAULT_RELEASE_BRANCH,
-  PROJECT_AUTHOR,
-} from "../constants";
+import { DEFAULT_RELEASE_BRANCH, PROJECT_AUTHOR, VERSIONS } from "../constants";
 
 const CLI_NAME = "galileo-cli-experimental";
 
@@ -38,12 +34,12 @@ export class GalileoCli extends TypeScriptAppProject {
       ...PROJECT_AUTHOR,
       defaultReleaseBranch: DEFAULT_RELEASE_BRANCH,
       deps: [
-        `@aws-sdk/client-s3@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/client-sfn@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/client-ssm@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/client-sts@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/lib-storage@^${AWS_SDK_VERSION}`,
-        `@aws-sdk/credential-providers@^${AWS_SDK_VERSION}`,
+        `@aws-sdk/client-s3@^${VERSIONS.AWS_SDK}`,
+        `@aws-sdk/client-sfn@^${VERSIONS.AWS_SDK}`,
+        `@aws-sdk/client-ssm@^${VERSIONS.AWS_SDK}`,
+        `@aws-sdk/client-sts@^${VERSIONS.AWS_SDK}`,
+        `@aws-sdk/lib-storage@^${VERSIONS.AWS_SDK}`,
+        `@aws-sdk/credential-providers@^${VERSIONS.AWS_SDK}`,
         "@oclif/core",
         "@oclif/errors",
         "chalk@^4",
@@ -56,7 +52,7 @@ export class GalileoCli extends TypeScriptAppProject {
         "prompts",
       ],
       devDeps: [
-        `@aws-sdk/types@^${AWS_SDK_VERSION}`,
+        `@aws-sdk/types@^${VERSIONS.AWS_SDK}`,
         "@oclif/test",
         "@types/chalk",
         "@types/clear",

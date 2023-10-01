@@ -8,7 +8,7 @@ import { JsiiProject } from "projen/lib/cdk";
 import { Job, JobPermission, JobStep } from "projen/lib/github/workflows-model";
 import { UpgradeDependenciesSchedule } from "projen/lib/javascript";
 import { TypeScriptProject } from "projen/lib/typescript";
-import { PDK_VERSION } from "./constants";
+import { VERSIONS } from "./constants";
 
 // Scrappy shim around PDK MonorepoTsProject, which separates stuff we would like
 // to make composable in PDK directly.
@@ -68,7 +68,7 @@ export class MonorepoProject extends MonorepoTsProject {
       ],
     });
 
-    this.addDevDeps(`@aws/pdk@^${PDK_VERSION}`);
+    this.addDevDeps(`@aws/pdk@^${VERSIONS.PDK}`);
 
     this.projectDirs = projectDirs;
     this.packageDirs = packageDirs;

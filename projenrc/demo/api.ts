@@ -8,11 +8,7 @@ import {
   TypeSafeApiProject,
 } from "@aws/pdk/type-safe-api";
 import { TypeScriptProject } from "projen/lib/typescript";
-import {
-  AWS_SDK_VERSION,
-  DEFAULT_RELEASE_BRANCH,
-  PROJECT_AUTHOR,
-} from "../constants";
+import { DEFAULT_RELEASE_BRANCH, PROJECT_AUTHOR, VERSIONS } from "../constants";
 import { NodePackageManager } from "projen/lib/javascript";
 
 export interface ApiOptions {
@@ -93,7 +89,7 @@ export class Api {
       deps: [
         "@aws-lambda-powertools/logger",
         "@aws-lambda-powertools/tracer",
-        `@aws-sdk/client-cognito-identity-provider@^${AWS_SDK_VERSION}`,
+        `@aws-sdk/client-cognito-identity-provider@^${VERSIONS.AWS_SDK}`,
         "jose",
         "nanoid",
         "node-cache",
