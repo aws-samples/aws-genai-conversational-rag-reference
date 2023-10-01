@@ -205,7 +205,11 @@ export default class DeployCommand extends Command {
     ) {
       this.executeBuild(flags.build);
       this.executeCdkDeploy(cmdDeploy, flags.skipConfirmations);
-      flags.saveExec && context.saveExecTasks();
+      if (flags.saveExec) {
+        context.saveExecTasks();
+      }
+
+      console.info(chalk.bold.greenBright("Success!"));
     }
   }
 
