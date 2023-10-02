@@ -6,6 +6,7 @@ import { MonorepoTsProject, MonorepoTsProjectOptions } from "@aws/pdk/monorepo";
 import { Project, javascript } from "projen";
 import { JsiiProject } from "projen/lib/cdk";
 import { Job, JobPermission, JobStep } from "projen/lib/github/workflows-model";
+import { UpgradeDependenciesSchedule } from "projen/lib/javascript";
 import { TypeScriptProject } from "projen/lib/typescript";
 import { PDK_VERSION } from "./constants";
 
@@ -49,6 +50,11 @@ export class MonorepoProject extends MonorepoTsProject {
       },
       mutableBuild: false,
       pullRequestTemplate: false,
+      depsUpgradeOptions: {
+        workflowOptions: {
+          schedule: UpgradeDependenciesSchedule.WEEKLY,
+        },
+      },
       ...options,
       devDeps: [
         "@nrwl/devkit",
