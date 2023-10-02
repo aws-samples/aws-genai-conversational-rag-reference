@@ -61,6 +61,11 @@
       "type": "build"
     },
     {
+      "name": "aws-cdk-lib",
+      "version": "2.99.1",
+      "type": "build"
+    },
+    {
       "name": "chalk",
       "type": "build"
     },
@@ -74,6 +79,11 @@
     },
     {
       "name": "commitizen",
+      "type": "build"
+    },
+    {
+      "name": "constructs",
+      "version": "10.2.70",
       "type": "build"
     },
     {

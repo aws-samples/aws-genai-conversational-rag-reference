@@ -47,7 +47,7 @@
     },
     {
       "name": "aws-cdk",
-      "version": "^2.95.0",
+      "version": "^2.99.1",
       "type": "build"
     },
     {
@@ -127,12 +127,12 @@
     },
     {
       "name": "@aws-cdk/aws-cognito-identitypool-alpha",
-      "version": "^2.95.0-alpha.0",
+      "version": "^2.99.1-alpha.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-lambda-python-alpha",
-      "version": "^2.95.0-alpha.0",
+      "version": "^2.99.1-alpha.0",
       "type": "runtime"
     },
     {
@@ -258,7 +258,7 @@
     },
     {
       "name": "aws-cdk-lib",
-      "version": "^2.95.0",
+      "version": "^2.99.1",
       "type": "runtime"
     },
     {
@@ -267,7 +267,7 @@
     },
     {
       "name": "constructs",
-      "version": "^10.2.52",
+      "version": "^10.2.70",
       "type": "runtime"
     },
     {

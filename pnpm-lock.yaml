@@ -392,8 +392,8 @@ importers:
         specifier: ^3.3.1
         version: 3.3.1
       langchain:
-        specifier: 0.0.149
-        version: 0.0.149(@aws-crypto/sha256-js@5.0.0)(@aws-sdk/client-dynamodb@3.418.0)(@aws-sdk/client-s3@3.418.0)(@aws-sdk/client-sagemaker-runtime@3.418.0)(@aws-sdk/protocol-http@3.374.0)(@aws-sdk/signature-v4@3.374.0)(pg@8.11.3)
+        specifier: 0.0.157
+        version: 0.0.157(@aws-crypto/sha256-js@5.0.0)(@aws-sdk/client-dynamodb@3.418.0)(@aws-sdk/client-s3@3.418.0)(@aws-sdk/client-sagemaker-runtime@3.418.0)(pg@8.11.3)
       node-fetch:
         specifier: ^2
         version: 2.7.0
@@ -483,11 +483,11 @@ importers:
   demo/infra:
     dependencies:
       '@aws-cdk/aws-cognito-identitypool-alpha':
-        specifier: ^2.95.0-alpha.0
-        version: 2.95.0-alpha.0(aws-cdk-lib@2.95.0)(constructs@10.2.70)
+        specifier: ^2.99.1-alpha.0
+        version: 2.99.1-alpha.0(aws-cdk-lib@2.99.1)(constructs@10.2.70)
       '@aws-cdk/aws-lambda-python-alpha':
-        specifier: ^2.95.0-alpha.0
-        version: 2.95.0-alpha.0(aws-cdk-lib@2.95.0)(constructs@10.2.70)
+        specifier: ^2.99.1-alpha.0
+        version: 2.99.1-alpha.0(aws-cdk-lib@2.99.1)(constructs@10.2.70)
       '@aws-galileo/galileo-sdk':
         specifier: 0.0.0
         version: link:../../packages/galileo-sdk
@@ -544,7 +544,7 @@ importers:
         version: 3.418.0
       '@aws/pdk':
         specifier: ^0.22.9
-        version: 0.22.9(@aws-cdk/aws-cognito-identitypool-alpha@2.95.0-alpha.0)(@pnpm/logger@5.0.0)(@types/node@16.18.39)(aws-cdk-lib@2.95.0)(cdk-nag@2.27.125)(constructs@10.2.70)(projen@0.73.11)(typescript@5.2.2)
+        version: 0.22.9(@aws-cdk/aws-cognito-identitypool-alpha@2.99.1-alpha.0)(@pnpm/logger@5.0.0)(@types/node@16.18.39)(aws-cdk-lib@2.99.1)(cdk-nag@2.27.125)(constructs@10.2.70)(projen@0.73.11)(typescript@5.2.2)
       '@middy/core':
         specifier: ^4.6.1
         version: 4.6.1
@@ -570,13 +570,13 @@ importers:
         specifier: 0.0.0
         version: link:../api/generated/runtime/typescript
       aws-cdk-lib:
-        specifier: ^2.95.0
-        version: 2.95.0(constructs@10.2.70)
+        specifier: ^2.99.1
+        version: 2.99.1(constructs@10.2.70)
       cdk-nag:
         specifier: ^2.27.125
-        version: 2.27.125(aws-cdk-lib@2.95.0)(constructs@10.2.70)
+        version: 2.27.125(aws-cdk-lib@2.99.1)(constructs@10.2.70)
       constructs:
-        specifier: ^10.2.52
+        specifier: ^10.2.70
         version: 10.2.70
       corpus-logic:
         specifier: 0.0.0
@@ -628,8 +628,8 @@ importers:
         specifier: ^6
         version: 6.6.0(eslint@8.46.0)(typescript@5.2.2)
       aws-cdk:
-        specifier: ^2.95.0
-        version: 2.95.0
+        specifier: ^2.99.1
+        version: 2.99.1
       aws-lambda:
         specifier: ^1.0.7
         version: 1.0.7
@@ -782,8 +782,8 @@ importers:
         specifier: ^3.1.2
         version: 3.1.2
       langchain:
-        specifier: 0.0.149
-        version: 0.0.149(@aws-crypto/sha256-js@5.0.0)(@aws-sdk/client-dynamodb@3.418.0)(@aws-sdk/client-s3@3.418.0)(@aws-sdk/client-sagemaker-runtime@3.418.0)(@aws-sdk/protocol-http@3.374.0)(@aws-sdk/signature-v4@3.374.0)(pg@8.11.3)
+        specifier: 0.0.157
+        version: 0.0.157(@aws-crypto/sha256-js@5.0.0)(@aws-sdk/client-dynamodb@3.418.0)(@aws-sdk/client-s3@3.418.0)(@aws-sdk/client-sagemaker-runtime@3.418.0)(pg@8.11.3)
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -943,7 +943,7 @@ importers:
     dependencies:
       '@aws/pdk':
         specifier: ^0.22.9
-        version: 0.22.9(@aws-cdk/aws-cognito-identitypool-alpha@2.93.0-alpha.0)(@pnpm/logger@5.0.0)(@types/node@16.18.39)(aws-cdk-lib@2.95.0)(cdk-nag@2.27.147)(constructs@10.2.52)(projen@0.73.11)(typescript@5.2.2)
+        version: 0.22.9(@aws-cdk/aws-cognito-identitypool-alpha@2.93.0-alpha.0)(@pnpm/logger@5.0.0)(@types/node@16.18.39)(aws-cdk-lib@2.99.1)(cdk-nag@2.27.147)(constructs@10.2.70)(projen@0.73.11)(typescript@5.2.2)
     devDependencies:
       '@types/jest':
         specifier: ^29.5.4
@@ -958,11 +958,11 @@ importers:
         specifier: ^6
         version: 6.6.0(eslint@8.46.0)(typescript@5.2.2)
       aws-cdk-lib:
-        specifier: 2.95.0
-        version: 2.95.0(constructs@10.2.52)
+        specifier: 2.99.1
+        version: 2.99.1(constructs@10.2.70)
       constructs:
-        specifier: 10.2.52
-        version: 10.2.52
+        specifier: 10.2.70
+        version: 10.2.70
       eslint:
         specifier: ^8
         version: 8.46.0
@@ -1190,8 +1190,8 @@ importers:
         specifier: ^0.2.1
         version: 0.2.1(handlebars@4.7.8)(lodash@4.17.21)(moment@2.29.4)
       langchain:
-        specifier: 0.0.149
-        version: 0.0.149(@aws-crypto/sha256-js@5.0.0)(@aws-sdk/client-dynamodb@3.418.0)(@aws-sdk/client-s3@3.418.0)(@aws-sdk/client-sagemaker-runtime@3.418.0)(@aws-sdk/protocol-http@3.374.0)(@aws-sdk/signature-v4@3.374.0)(pg@8.11.3)
+        specifier: 0.0.157
+        version: 0.0.157(@aws-crypto/sha256-js@5.0.0)(@aws-sdk/client-dynamodb@3.418.0)(@aws-sdk/client-s3@3.418.0)(@aws-sdk/client-sagemaker-runtime@3.418.0)(pg@8.11.3)
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -1371,17 +1371,6 @@ packages:
   /@aws-cdk/asset-node-proxy-agent-v6@2.0.1:
     resolution: {integrity: sha512-DDt4SLdLOwWCjGtltH4VCST7hpOI5DzieuhGZsBpZ+AgJdSI2GCjklCXm0GCTwJG/SolkL5dtQXyUKgg9luBDg==}
 
-  /@aws-cdk/aws-cognito-identitypool-alpha@2.93.0-alpha.0(aws-cdk-lib@2.95.0)(constructs@10.2.52):
-    resolution: {integrity: sha512-ZKCtsBaNDUnYXl6g2x45PzSxuXjMyZTzIg3yDWVSUhpvnnMH0nbPvLhAenGXre9Ax+ItKL3Ai4V5LRQWKXQHiA==}
-    engines: {node: '>= 14.15.0'}
-    peerDependencies:
-      aws-cdk-lib: 2.93.0
-      constructs: ^10.0.0
-    dependencies:
-      aws-cdk-lib: 2.95.0(constructs@10.2.52)
-      constructs: 10.2.52
-    dev: false
-
   /@aws-cdk/aws-cognito-identitypool-alpha@2.93.0-alpha.0(aws-cdk-lib@2.95.0)(constructs@10.2.70):
     resolution: {integrity: sha512-ZKCtsBaNDUnYXl6g2x45PzSxuXjMyZTzIg3yDWVSUhpvnnMH0nbPvLhAenGXre9Ax+ItKL3Ai4V5LRQWKXQHiA==}
     engines: {node: '>= 14.15.0'}
@@ -1402,27 +1391,26 @@ packages:
     dependencies:
       aws-cdk-lib: 2.99.1(constructs@10.2.70)
       constructs: 10.2.70
-    dev: true
 
-  /@aws-cdk/aws-cognito-identitypool-alpha@2.95.0-alpha.0(aws-cdk-lib@2.95.0)(constructs@10.2.70):
-    resolution: {integrity: sha512-GxDRBb8sGDRdut4rXUkTErkqPptOI+qK8efwwFrWpCJKWCPVx8Ox6DgbDEOoE3pOHySFLmJCSmNmD0DPkkOXEw==}
+  /@aws-cdk/aws-cognito-identitypool-alpha@2.99.1-alpha.0(aws-cdk-lib@2.99.1)(constructs@10.2.70):
+    resolution: {integrity: sha512-tDAWPD3+XeYSdKer/HLH1dlginbCPtlv169BZdM4Q6qIV3PT+971BLXJrBN43eLkrJ9usxd4SWilwnv2MO47mQ==}
     engines: {node: '>= 14.15.0'}
     peerDependencies:
-      aws-cdk-lib: 2.95.0
+      aws-cdk-lib: 2.99.1
       constructs: ^10.0.0
     dependencies:
-      aws-cdk-lib: 2.95.0(constructs@10.2.70)
+      aws-cdk-lib: 2.99.1(constructs@10.2.70)
       constructs: 10.2.70
     dev: false
 
-  /@aws-cdk/aws-lambda-python-alpha@2.95.0-alpha.0(aws-cdk-lib@2.95.0)(constructs@10.2.70):
-    resolution: {integrity: sha512-2J6iqCllJik6e8RnOIeUrQ/oKPFF2snsVKe7HL6US3GnNKH6bd2ajbW2cUNjw3H2XNorOy4WnxmB+s609zFrwA==}
+  /@aws-cdk/aws-lambda-python-alpha@2.99.1-alpha.0(aws-cdk-lib@2.99.1)(constructs@10.2.70):
+    resolution: {integrity: sha512-cjrQH2pdKgAYg3vN48+0X1s9SYs+yu7qQPFsaZSccgtLxtw6NECzfLs52lt2bHYC9wmDb6ouv9fJ0h85K1gExg==}
     engines: {node: '>= 14.15.0'}
     peerDependencies:
-      aws-cdk-lib: 2.95.0
+      aws-cdk-lib: 2.99.1
       constructs: ^10.0.0
     dependencies:
-      aws-cdk-lib: 2.95.0(constructs@10.2.70)
+      aws-cdk-lib: 2.99.1(constructs@10.2.70)
       constructs: 10.2.70
     dev: false
 
@@ -3265,7 +3253,7 @@ packages:
       - ts-node
       - word-wrap
 
-  /@aws/pdk@0.22.9(@aws-cdk/aws-cognito-identitypool-alpha@2.93.0-alpha.0)(@pnpm/logger@5.0.0)(@types/node@16.18.39)(aws-cdk-lib@2.95.0)(cdk-nag@2.27.147)(constructs@10.2.52)(projen@0.73.11)(typescript@5.2.2):
+  /@aws/pdk@0.22.9(@aws-cdk/aws-cognito-identitypool-alpha@2.93.0-alpha.0)(@pnpm/logger@5.0.0)(@types/node@16.18.39)(aws-cdk-lib@2.99.1)(cdk-nag@2.27.147)(constructs@10.2.70)(projen@0.73.11)(typescript@5.2.2):
     resolution: {integrity: sha512-XeA6xIZ+ImVKCVDwyPd1Emw+D/0/kMVbZagDpC1cpoEkDVkjYbVo5ZsSIUG+Aw1Up43uJT1cYn+xOZH7cCxEUA==}
     hasBin: true
     peerDependencies:
@@ -3275,13 +3263,13 @@ packages:
       constructs: ^10.2.70
       projen: ^0.73
     dependencies:
-      '@aws-cdk/aws-cognito-identitypool-alpha': 2.93.0-alpha.0(aws-cdk-lib@2.95.0)(constructs@10.2.52)
+      '@aws-cdk/aws-cognito-identitypool-alpha': 2.93.0-alpha.0(aws-cdk-lib@2.99.1)(constructs@10.2.70)
       '@hpcc-js/wasm': 2.13.1
       '@pnpm/reviewing.dependencies-hierarchy': 2.0.11(@pnpm/logger@5.0.0)
-      aws-cdk-lib: 2.95.0(constructs@10.2.52)
-      cdk-nag: 2.27.147(aws-cdk-lib@2.95.0)(constructs@10.2.52)
+      aws-cdk-lib: 2.99.1(constructs@10.2.70)
+      cdk-nag: 2.27.147(aws-cdk-lib@2.99.1)(constructs@10.2.70)
       chalk: 4.1.2
-      constructs: 10.2.52
+      constructs: 10.2.70
       execa: 5.1.1
       find-up: 4.1.0
       findup: 0.1.5
@@ -3439,7 +3427,7 @@ packages:
       - ts-node
       - word-wrap
 
-  /@aws/pdk@0.22.9(@aws-cdk/aws-cognito-identitypool-alpha@2.95.0-alpha.0)(@pnpm/logger@5.0.0)(@types/node@16.18.39)(aws-cdk-lib@2.95.0)(cdk-nag@2.27.125)(constructs@10.2.70)(projen@0.73.11)(typescript@5.2.2):
+  /@aws/pdk@0.22.9(@aws-cdk/aws-cognito-identitypool-alpha@2.99.1-alpha.0)(@pnpm/logger@5.0.0)(@types/node@16.18.39)(aws-cdk-lib@2.99.1)(cdk-nag@2.27.125)(constructs@10.2.70)(projen@0.73.11)(typescript@5.2.2):
     resolution: {integrity: sha512-XeA6xIZ+ImVKCVDwyPd1Emw+D/0/kMVbZagDpC1cpoEkDVkjYbVo5ZsSIUG+Aw1Up43uJT1cYn+xOZH7cCxEUA==}
     hasBin: true
     peerDependencies:
@@ -3449,11 +3437,11 @@ packages:
       constructs: ^10.2.70
       projen: ^0.73
     dependencies:
-      '@aws-cdk/aws-cognito-identitypool-alpha': 2.95.0-alpha.0(aws-cdk-lib@2.95.0)(constructs@10.2.70)
+      '@aws-cdk/aws-cognito-identitypool-alpha': 2.99.1-alpha.0(aws-cdk-lib@2.99.1)(constructs@10.2.70)
       '@hpcc-js/wasm': 2.13.1
       '@pnpm/reviewing.dependencies-hierarchy': 2.0.11(@pnpm/logger@5.0.0)
-      aws-cdk-lib: 2.95.0(constructs@10.2.70)
-      cdk-nag: 2.27.125(aws-cdk-lib@2.95.0)(constructs@10.2.70)
+      aws-cdk-lib: 2.99.1(constructs@10.2.70)
+      cdk-nag: 2.27.125(aws-cdk-lib@2.99.1)(constructs@10.2.70)
       chalk: 4.1.2
       constructs: 10.2.70
       execa: 5.1.1
@@ -10318,6 +10306,7 @@ packages:
 
   /@types/node@20.5.1:
     resolution: {integrity: sha512-4tT2UrL5LBqDwoed9wZ6N3umC4Yhz3W3FloMmiiG4JwmUJWpie0c7lcnUNd4gtMKuDEO4wRVS8B6Xa0uMRsMKg==}
+    requiresBuild: true
     dev: true
 
   /@types/normalize-package-data@2.4.1:
@@ -11526,38 +11515,6 @@ packages:
     resolution: {integrity: sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==}
     engines: {node: '>= 0.4'}
 
-  /aws-cdk-lib@2.95.0(constructs@10.2.52):
-    resolution: {integrity: sha512-2G8QAldRI2Fa/ThaMyO04iLu9lER5AYKgrWshJ59L6JT4XraRTqh8sjti+ew4I6ADk6Zaprh2YcLRS2wTcICzA==}
-    engines: {node: '>= 14.15.0'}
-    peerDependencies:
-      constructs: ^10.0.0
-    dependencies:
-      '@aws-cdk/asset-awscli-v1': 2.2.200
-      '@aws-cdk/asset-kubectl-v20': 2.1.2
-      '@aws-cdk/asset-node-proxy-agent-v6': 2.0.1
-      '@balena/dockerignore': 1.0.2
-      case: 1.6.3
-      constructs: 10.2.52
-      fs-extra: 11.1.1
-      ignore: 5.2.4
-      jsonschema: 1.4.1
-      minimatch: 3.1.2
-      punycode: 2.3.0
-      semver: 7.5.4
-      table: 6.8.1
-      yaml: 1.10.2
-    bundledDependencies:
-      - '@balena/dockerignore'
-      - case
-      - fs-extra
-      - ignore
-      - jsonschema
-      - minimatch
-      - punycode
-      - semver
-      - table
-      - yaml
-
   /aws-cdk-lib@2.95.0(constructs@10.2.70):
     resolution: {integrity: sha512-2G8QAldRI2Fa/ThaMyO04iLu9lER5AYKgrWshJ59L6JT4XraRTqh8sjti+ew4I6ADk6Zaprh2YcLRS2wTcICzA==}
     engines: {node: '>= 14.15.0'}
@@ -11622,8 +11579,8 @@ packages:
       - table
       - yaml
 
-  /aws-cdk@2.95.0:
-    resolution: {integrity: sha512-3BBb9S6Wp5wC+zOZghuIC+Eu4pH0rOJAKUHTlaVUND1ePOxlEcxs2+Rww5jGTksi491q2WLwy8DiuymArhjA/w==}
+  /aws-cdk@2.99.1:
+    resolution: {integrity: sha512-uWg4xhBrHNoRMlEgvWzr0MacJ92dLFeJ5AvT7nruxrgShU1fgt/Rsxw1WCXSASaVUsIUGgtO+P89x8cRU2nf7w==}
     engines: {node: '>= 14.15.0'}
     hasBin: true
     optionalDependencies:
@@ -12342,14 +12299,14 @@ packages:
       constructs: 10.2.70
     dev: false
 
-  /cdk-nag@2.27.147(aws-cdk-lib@2.95.0)(constructs@10.2.52):
-    resolution: {integrity: sha512-SjbPc18DDvAz1pnSuFAHxMPeRC1G7+JozK3KhtI60k+21whWquGYkfvM87kHEAWr5nc0okt2InoJRHCiAqSIJA==}
+  /cdk-nag@2.27.125(aws-cdk-lib@2.99.1)(constructs@10.2.70):
+    resolution: {integrity: sha512-ldFlkZhsH7OL2JF11ib2yDgS0q/SNZJHUbExyMTGCFG3mTj/0mjUsCS5EIF3WUbuSRkM446YjdNEZwyfT2152w==}
     peerDependencies:
       aws-cdk-lib: ^2.78.0
       constructs: ^10.0.5
     dependencies:
-      aws-cdk-lib: 2.95.0(constructs@10.2.52)
-      constructs: 10.2.52
+      aws-cdk-lib: 2.99.1(constructs@10.2.70)
+      constructs: 10.2.70
     dev: false
 
   /cdk-nag@2.27.147(aws-cdk-lib@2.99.1)(constructs@10.2.70):
@@ -12827,10 +12784,6 @@ packages:
     resolution: {integrity: sha512-xFxOwqIzR/e1k1gLiWEophSCMqXcwVHIH7akf7b/vxcUeGunlj3hvZaaqxwHsTgn+IndtkQJgSztIDWeumWJDQ==}
     dev: true
 
-  /constructs@10.2.52:
-    resolution: {integrity: sha512-+agHle0qck/Z2ARWtI8WpAiFzBFweti2ai03ShK3R708WTmny+HO97joPQ99oQQvmHaAgCZmAqEUufeySk9J0Q==}
-    engines: {node: '>= 16.14.0'}
-
   /constructs@10.2.70:
     resolution: {integrity: sha512-z6zr1E8K/9tzJbCQzY0UGX0/oVKPFKu9C/mzEnghCG6TAJINnvlq0CMKm63XqqeMleadZYm5T3sZGJKcxJS/Pg==}
     engines: {node: '>= 16.14.0'}
@@ -13088,6 +13041,7 @@ packages:
   /cosmiconfig-typescript-loader@4.4.0(@types/node@20.5.1)(cosmiconfig@8.1.3)(ts-node@10.9.1)(typescript@5.2.2):
     resolution: {integrity: sha512-BabizFdC3wBHhbI4kJh0VkQP9GkBfoHPydD0COMce1nJ1kJAB3F2TmJ/I7diULBKtmEWSwEbuN/KDtgnmUUVmw==}
     engines: {node: '>=v14.21.3'}
+    requiresBuild: true
     peerDependencies:
       '@types/node': '*'
       cosmiconfig: '>=7'
@@ -13864,7 +13818,7 @@ packages:
     dependencies:
       semver: 7.5.4
       shelljs: 0.8.5
-      typescript: 5.3.0-dev.20230930
+      typescript: 5.3.0-dev.20231001
     dev: true
 
   /duplexer@0.1.2:
@@ -18381,8 +18335,8 @@ packages:
     resolution: {integrity: sha512-dhG34DXATL5hSxJbIexCft8FChFXtmskoZYnoPWjXQuebWYCNkVeV3KkGegCK9CP1oswI/vQibS2GY7Em/sJJA==}
     engines: {node: '>= 8'}
 
-  /langchain@0.0.149(@aws-crypto/sha256-js@5.0.0)(@aws-sdk/client-dynamodb@3.418.0)(@aws-sdk/client-s3@3.418.0)(@aws-sdk/client-sagemaker-runtime@3.418.0)(@aws-sdk/protocol-http@3.374.0)(@aws-sdk/signature-v4@3.374.0)(pg@8.11.3):
-    resolution: {integrity: sha512-7Ky7TqlUCbhx6hBwNW+dIyjCXLAPX/3WP1LFZ0ZGz/B0GaAHbyBkm8uuy1jMA3f7/8lJwZMWDL3639Idd7euWA==}
+  /langchain@0.0.157(@aws-crypto/sha256-js@5.0.0)(@aws-sdk/client-dynamodb@3.418.0)(@aws-sdk/client-s3@3.418.0)(@aws-sdk/client-sagemaker-runtime@3.418.0)(pg@8.11.3):
+    resolution: {integrity: sha512-G69Azp9KN/0ispqTM/Ns+UyaOm+GR4TAh3U41idA1gTyyG2n8zcO1hEC/HA4TwcxyNvWVHgX0vLo956Is5DcgQ==}
     engines: {node: '>=18'}
     peerDependencies:
       '@aws-crypto/sha256-js': ^5.0.0
@@ -18393,10 +18347,9 @@ packages:
       '@aws-sdk/client-sagemaker-runtime': ^3.310.0
       '@aws-sdk/client-sfn': ^3.310.0
       '@aws-sdk/credential-provider-node': ^3.388.0
-      '@aws-sdk/protocol-http': ^3.374.0
-      '@aws-sdk/signature-v4': ^3.374.0
       '@azure/storage-blob': ^12.15.0
       '@clickhouse/client': ^0.0.14
+      '@cloudflare/ai': ^1.0.12
       '@elastic/elasticsearch': ^8.4.0
       '@getmetal/metal-sdk': '*'
       '@getzep/zep-js': ^0.7.0
@@ -18412,6 +18365,8 @@ packages:
       '@qdrant/js-client-rest': ^1.2.0
       '@raycast/api': ^1.55.2
       '@smithy/eventstream-codec': ^2.0.5
+      '@smithy/protocol-http': ^3.0.6
+      '@smithy/signature-v4': ^2.0.10
       '@smithy/util-utf8': ^2.0.0
       '@supabase/postgrest-js': ^1.1.1
       '@supabase/supabase-js': ^2.10.0
@@ -18419,6 +18374,7 @@ packages:
       '@tensorflow/tfjs-converter': '*'
       '@tensorflow/tfjs-core': '*'
       '@upstash/redis': ^1.20.6
+      '@vercel/postgres': ^0.5.0
       '@writerai/writer-sdk': ^0.40.2
       '@xata.io/client': ^0.25.1
       '@xenova/transformers': ^2.5.4
@@ -18443,6 +18399,7 @@ packages:
       mammoth: '*'
       mongodb: ^5.2.0
       mysql2: ^3.3.3
+      neo4j-driver: '*'
       node-llama-cpp: '*'
       notion-to-md: ^3.1.0
       pdf-parse: 1.1.1
@@ -18453,7 +18410,7 @@ packages:
       playwright: ^1.32.1
       puppeteer: ^19.7.2
       redis: ^4.6.4
-      replicate: ^0.12.3
+      replicate: ^0.18.0
       sonix-speech-recognition: ^2.1.1
       srt-parser-2: ^1.2.2
       typeorm: ^0.3.12
@@ -18482,13 +18439,11 @@ packages:
         optional: true
       '@aws-sdk/credential-provider-node':
         optional: true
-      '@aws-sdk/protocol-http':
-        optional: true
-      '@aws-sdk/signature-v4':
-        optional: true
       '@azure/storage-blob':
         optional: true
       '@clickhouse/client':
+        optional: true
+      '@cloudflare/ai':
         optional: true
       '@elastic/elasticsearch':
         optional: true
@@ -18520,6 +18475,10 @@ packages:
         optional: true
       '@smithy/eventstream-codec':
         optional: true
+      '@smithy/protocol-http':
+        optional: true
+      '@smithy/signature-v4':
+        optional: true
       '@smithy/util-utf8':
         optional: true
       '@supabase/postgrest-js':
@@ -18533,6 +18492,8 @@ packages:
       '@tensorflow/tfjs-core':
         optional: true
       '@upstash/redis':
+        optional: true
+      '@vercel/postgres':
         optional: true
       '@writerai/writer-sdk':
         optional: true
@@ -18581,6 +18542,8 @@ packages:
       mongodb:
         optional: true
       mysql2:
+        optional: true
+      neo4j-driver:
         optional: true
       node-llama-cpp:
         optional: true
@@ -18632,8 +18595,6 @@ packages:
       '@aws-sdk/client-dynamodb': 3.418.0
       '@aws-sdk/client-s3': 3.418.0
       '@aws-sdk/client-sagemaker-runtime': 3.418.0
-      '@aws-sdk/protocol-http': 3.374.0
-      '@aws-sdk/signature-v4': 3.374.0
       ansi-styles: 5.2.0
       binary-extensions: 2.2.0
       camelcase: 6.3.0
@@ -24942,8 +24903,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.3.0-dev.20230930:
-    resolution: {integrity: sha512-CwEDMMDZAwFEDszTujUIezut2DWmif6C5MTxe1mcduD4dtp73+Pa3Y7d/RuPpePiupRHRZZQW80jSTtLSo4Ukg==}
+  /typescript@5.3.0-dev.20231001:
+    resolution: {integrity: sha512-7S/qroNRzCMGI7Q+V8014H488zvGMdcWxjg888I/ysgC3qmF54kdIYZ6eG5nifm9xg8PxtsdvLoyaahM86VGMg==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
