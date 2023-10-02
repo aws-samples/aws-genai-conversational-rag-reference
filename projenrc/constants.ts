@@ -15,6 +15,7 @@ export const DEMO_OUTDIR = "demo";
 
 export const DEMO_APPLICATION_NAME = "Galileo";
 
+/** Managed Dependency Versions */
 export const VERSIONS = {
   AWS_SDK: "3.418.0",
   CDK: "2.99.1",
@@ -23,3 +24,6 @@ export const VERSIONS = {
   LANGCHAIN: "0.0.157", // Not semver yet so need to pin version
   SMITHY_TYPES: "2.3.4",
 };
+
+/** Upgrade Dependency Filter */
+export const UPGRADE_FILTER = "^(?!(@aws-sdk|@aws\\/pdk|aws-cdk-lib|constructs|langchain)).*"

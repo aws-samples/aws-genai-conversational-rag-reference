@@ -2,13 +2,12 @@
 PDX-License-Identifier: Apache-2.0 */
 import fs from "node:fs";
 import path from "node:path";
-import { MonorepoTsProject, MonorepoTsProjectOptions } from "@aws/pdk/monorepo";
-import { Project, javascript } from "projen";
+import { MonorepoTsProject, MonorepoTsProjectOptions, DEFAULT_CONFIG as SYNCPACK_DEFAULT_CONFIG } from "@aws/pdk/monorepo";
+import { JsonFile, Project, javascript } from "projen";
 import { JsiiProject } from "projen/lib/cdk";
 import { Job, JobPermission, JobStep } from "projen/lib/github/workflows-model";
-import { UpgradeDependenciesSchedule } from "projen/lib/javascript";
 import { TypeScriptProject } from "projen/lib/typescript";
-import { VERSIONS } from "./constants";
+import { VERSIONS, UPGRADE_FILTER } from "./constants";
 
 // Scrappy shim around PDK MonorepoTsProject, which separates stuff we would like
 // to make composable in PDK directly.
@@ -50,10 +49,12 @@ export class MonorepoProject extends MonorepoTsProject {
       },
       mutableBuild: false,
       pullRequestTemplate: false,
-      depsUpgradeOptions: {
-        workflowOptions: {
-          schedule: UpgradeDependenciesSchedule.WEEKLY,
-        },
+      monorepoUpgradeDepsOptions: {
+        syncpackConfig: {
+          ...SYNCPACK_DEFAULT_CONFIG,
+          // exclude managed packages
+          filter: UPGRADE_FILTER,
+        }
       },
       ...options,
       devDeps: [
@@ -148,6 +149,13 @@ export class MonorepoProject extends MonorepoTsProject {
       release_docs: this.renderReleaseGitHubPagesJob(),
     });
     this._mutateBuildWorkflowSteps();
+
+    new JsonFile(this, ".ncurc.json", {
+      marker: false,
+      obj: {
+        filter: UPGRADE_FILTER,
+      }
+    })
   }
 
   recurseProjects(project: Project, fn: (project: Project) => void): void {

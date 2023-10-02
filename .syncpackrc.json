@@ -1,7 +1,7 @@
 {
   "dependencyTypes": [],
   "dev": true,
-  "filter": ".",
+  "filter": "^(?!(@aws-sdk|@aws\\/pdk|aws-cdk-lib|constructs|langchain)).*",
   "indent": "  ",
   "overrides": true,
   "peer": true,
