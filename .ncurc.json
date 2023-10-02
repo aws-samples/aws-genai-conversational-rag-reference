@@ -1,0 +1,3 @@
+{
+  "filter": "^(?!(@aws-sdk|@aws\\/pdk|aws-cdk-lib|constructs|langchain)).*"
+}
