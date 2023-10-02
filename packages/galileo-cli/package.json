@@ -1,7 +1,6 @@
 {
   "name": "@aws-galileo/cli",
   "bin": {
-    ".cache": "bin/.cache",
     "galileo-cli-experimental": "bin/galileo-cli.ts"
   },
   "scripts": {
