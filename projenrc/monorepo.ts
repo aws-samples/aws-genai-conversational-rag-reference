@@ -58,6 +58,8 @@ export class MonorepoProject extends MonorepoTsProject {
       ...options,
       devDeps: [
         "@nrwl/devkit",
+        `aws-cdk-lib@${VERSIONS.CDK}`,
+        `constructs@${VERSIONS.CONSTRUCTS}`,
         "esbuild", // needed for aws-cdk-lib
         "esprima", // Error: Your application tried to access esprima, but it isn't declared in your dependencies; this makes the require call ambiguous and unsound.
         "got@^11.8.5",

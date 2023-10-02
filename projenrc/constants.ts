@@ -17,9 +17,9 @@ export const DEMO_APPLICATION_NAME = "Galileo";
 
 export const VERSIONS = {
   AWS_SDK: "3.418.0",
-  CDK: "2.95.0",
-  CONSTRUCTS: "10.2.52",
+  CDK: "2.99.1",
+  CONSTRUCTS: "10.2.70",
   PDK: "0.22.9",
-  LANGCHAIN: "0.0.149", // Not semver yet so need to pin version
+  LANGCHAIN: "0.0.157", // Not semver yet so need to pin version
   SMITHY_TYPES: "2.3.4",
 };
