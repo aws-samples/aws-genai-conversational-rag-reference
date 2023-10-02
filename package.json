@@ -93,7 +93,7 @@
   },
   "dependencies": {
     "aws-cdk-lib": "^2.99.1",
-    "cdk-nag": "^2.27.146",
+    "cdk-nag": "^2.27.147",
     "constructs": "^10.2.70"
   },
   "pnpm": {
