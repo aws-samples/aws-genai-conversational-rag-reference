@@ -52,6 +52,7 @@ export class MonorepoProject extends MonorepoTsProject {
       },
       mutableBuild: false,
       pullRequestTemplate: false,
+      depsUpgrade: false,
       ...options,
       devDeps: [
         "@nrwl/devkit",

@@ -7,7 +7,6 @@
 /.github/workflows/pull-request-lint.yml linguist-generated
 /.github/workflows/release.yml linguist-generated
 /.github/workflows/stale.yml linguist-generated
-/.github/workflows/upgrade-mainline.yml linguist-generated
 /.gitignore linguist-generated
 /.ncurc.json linguist-generated
 /.npmrc linguist-generated
