@@ -31,7 +31,7 @@ export default class DeployCommand extends Command {
     const { flags } = await this.parse(DeployCommand);
     const applicationName = flags.name;
 
-    this.log("deploy start", flags);
+    // this.log("deploy start", flags);
 
     if (flags.dryRun) {
       context.dryRun = true;

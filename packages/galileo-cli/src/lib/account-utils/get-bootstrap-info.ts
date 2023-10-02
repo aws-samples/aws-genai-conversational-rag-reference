@@ -20,6 +20,12 @@ export interface CdkBootstrapInfo {
   readonly lastUpdated: Date;
 }
 
+/**
+ * https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html#bootstrapping-customizing
+ * `qualifier` is a string that is added to the names of all resources in the bootstrap stack.
+ * A qualifier lets you avoid resource name clashes when you provision multiple bootstrap
+ * stacks in the same environment. The default is hnb659fds (this value has no significance).
+ */
 const DEFAULT_QUALIFIER = "hnb659fds";
 
 /**

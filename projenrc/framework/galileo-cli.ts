@@ -24,6 +24,9 @@ export class GalileoCli extends TypeScriptAppProject {
         lib: ["ES2022"],
         module: "NodeNext",
         moduleResolution: TypeScriptModuleResolution.NODE_NEXT,
+
+        // set these to `undefined` in order to be able to import "external" code
+        // currently we're using imports (model ids) from demo/infra
         rootDir: undefined,
         outDir: undefined,
         target: "ES2022",
@@ -32,6 +35,7 @@ export class GalileoCli extends TypeScriptAppProject {
 
     super({
       ...PROJECT_AUTHOR,
+      autoDetectBin: false,
       defaultReleaseBranch: DEFAULT_RELEASE_BRANCH,
       deps: [
         `@aws-sdk/client-s3@^${VERSIONS.AWS_SDK}`,
