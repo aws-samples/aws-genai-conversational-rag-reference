@@ -31,13 +31,13 @@
     "constructs": "^10.2.70",
     "eslint": "^8",
     "eslint-import-resolver-node": "^0.3.9",
-    "eslint-import-resolver-typescript": "^3.6.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-header": "^3.1.1",
     "eslint-plugin-import": "^2.28.1",
     "jest": "^29.6.4",
     "jest-junit": "^15",
     "npm-check-updates": "^16",
-    "projen": "^0.73.11",
+    "projen": "^0.73.37",
     "ts-jest": "^29.1.1",
     "typescript": "^5.2.2"
   },
@@ -46,7 +46,7 @@
     "constructs": "^10.2.70"
   },
   "dependencies": {
-    "cdk-nag": "^2.27.125"
+    "cdk-nag": "^2.27.146"
   },
   "pnpm": {},
   "main": "lib/index.js",

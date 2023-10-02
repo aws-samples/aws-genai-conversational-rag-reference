@@ -24,6 +24,3 @@ export const VERSIONS = {
   LANGCHAIN: "0.0.157", // Not semver yet so need to pin version
   SMITHY_TYPES: "2.3.4",
 };
-
-/** Upgrade Dependency Filter */
-export const UPGRADE_FILTER = "^(?!(@aws-sdk|@aws\\/pdk|aws-cdk-lib|constructs|langchain)).*"

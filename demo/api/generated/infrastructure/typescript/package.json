@@ -17,14 +17,14 @@
     "@types/aws-lambda": "^8.10.119",
     "@types/node": "^16",
     "npm-check-updates": "^16",
-    "projen": "^0.73.11",
+    "projen": "^0.73.37",
     "typescript": "^5.2.2"
   },
   "dependencies": {
     "@aws/pdk": "^0.22.1",
     "api-typescript-runtime": "0.0.0",
     "aws-cdk-lib": "^2.95.0",
-    "cdk-nag": "^2.27.125",
+    "cdk-nag": "^2.27.146",
     "constructs": "^10.2.70"
   },
   "pnpm": {},
