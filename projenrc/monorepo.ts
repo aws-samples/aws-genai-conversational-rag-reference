@@ -2,12 +2,15 @@
 PDX-License-Identifier: Apache-2.0 */
 import fs from "node:fs";
 import path from "node:path";
-import { MonorepoTsProject, MonorepoTsProjectOptions, DEFAULT_CONFIG as SYNCPACK_DEFAULT_CONFIG } from "@aws/pdk/monorepo";
+import {
+  MonorepoTsProject,
+  MonorepoTsProjectOptions,
+} from "@aws/pdk/monorepo";
 import { JsonFile, Project, javascript } from "projen";
 import { JsiiProject } from "projen/lib/cdk";
 import { Job, JobPermission, JobStep } from "projen/lib/github/workflows-model";
 import { TypeScriptProject } from "projen/lib/typescript";
-import { VERSIONS, UPGRADE_FILTER } from "./constants";
+import { VERSIONS } from "./constants";
 
 // Scrappy shim around PDK MonorepoTsProject, which separates stuff we would like
 // to make composable in PDK directly.
@@ -49,13 +52,6 @@ export class MonorepoProject extends MonorepoTsProject {
       },
       mutableBuild: false,
       pullRequestTemplate: false,
-      monorepoUpgradeDepsOptions: {
-        syncpackConfig: {
-          ...SYNCPACK_DEFAULT_CONFIG,
-          // exclude managed packages
-          filter: UPGRADE_FILTER,
-        }
-      },
       ...options,
       devDeps: [
         "@nrwl/devkit",
@@ -149,13 +145,10 @@ export class MonorepoProject extends MonorepoTsProject {
       release_docs: this.renderReleaseGitHubPagesJob(),
     });
     this._mutateBuildWorkflowSteps();
+  }
 
-    new JsonFile(this, ".ncurc.json", {
-      marker: false,
-      obj: {
-        filter: UPGRADE_FILTER,
-      }
-    })
+  getVersionedDeps(project: Project): Set<string> {
+    return new Set<string>(project.deps.all.filter(v => v.version != null).map(v => v.name));
   }
 
   recurseProjects(project: Project, fn: (project: Project) => void): void {
@@ -163,6 +156,25 @@ export class MonorepoProject extends MonorepoTsProject {
     project.subprojects.forEach((_project) =>
       this.recurseProjects(_project, fn)
     );
+  }
+
+  configUpgradeDependencies(): void {
+    const versionedDeps = new Set<string>();
+    this.recurseProjects(this, (p) => {
+      this.getVersionedDeps(p).forEach(v => versionedDeps.add(v))
+    })
+
+    // ignore all deps that have explicit versioning from being updated
+    if (versionedDeps.size) {
+      const depsFilter = [...versionedDeps].sort().map(v => v.replace("/", "\\/")).join("|");
+      const filter = `^(?!(${depsFilter})).*`
+
+      const ncurc = this.tryFindObjectFile(".ncurc.json") ?? new JsonFile(this, ".ncurc.json", { marker: false, obj: {} });
+      ncurc.addOverride("filter", filter);
+
+      const syncpackrc = this.tryFindObjectFile(".syncpackrc.json") ?? new JsonFile(this, ".syncpackrc.json", { marker: false, obj: {} });
+      syncpackrc.addOverride("filter", filter);
+    }
   }
 
   configureEsLint(project: Project) {
@@ -262,6 +274,8 @@ export class MonorepoProject extends MonorepoTsProject {
     this.recurseProjects(this, this.configureEsLint.bind(this));
     this.recurseProjects(this, this.configureJest.bind(this));
     this.recurseProjects(this, this.configJsii.bind(this));
+
+    this.configUpgradeDependencies();
 
     super.synth();
   }

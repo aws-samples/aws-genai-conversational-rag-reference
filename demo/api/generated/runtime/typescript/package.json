@@ -16,7 +16,7 @@
   "devDependencies": {
     "@types/node": "^16",
     "npm-check-updates": "^16",
-    "projen": "^0.73.11",
+    "projen": "^0.73.37",
     "typescript": "^5.2.2"
   },
   "dependencies": {
