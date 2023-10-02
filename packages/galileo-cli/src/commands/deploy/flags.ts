@@ -27,6 +27,7 @@ export const deployCommandFlags: FlagInput<DeployCommandFlags> = {
   projen: Flags.boolean({
     description: "Run projen to synth project",
     default: true,
+    allowNo: true,
   }),
   profile: Flags.string({
     aliases: ["p"],
@@ -61,6 +62,7 @@ export const deployCommandFlags: FlagInput<DeployCommandFlags> = {
   build: Flags.boolean({
     description: "Perform build",
     default: true,
+    allowNo: true,
   }),
   saveExec: Flags.boolean({
     aliases: ["save"],
