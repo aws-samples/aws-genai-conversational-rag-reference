@@ -1,6 +1,13 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 
+import {
+  CreateCognitoUserRequest,
+  listUserPools,
+  createCognitoUser as _createCognitoUser,
+  deleteCognitoUser as _deleteCognitoUser,
+  DeleteCognitoUserRequest,
+} from "./cognito";
 import { getAWSAccountId } from "./get-aws-account-id";
 import {
   CdkBootstrapInfo,
@@ -54,6 +61,25 @@ export namespace accountUtils {
     }
 
     return cdkBootstrapInfo;
+  };
+
+  export const listCognitoUserPools = async (
+    profile: string,
+    region: string
+  ) => {
+    return listUserPools(profile, region);
+  };
+
+  export const createCognitoUser = async (
+    options: CreateCognitoUserRequest
+  ) => {
+    return _createCognitoUser(options);
+  };
+
+  export const deleteCognitoUser = async (
+    options: DeleteCognitoUserRequest
+  ) => {
+    return _deleteCognitoUser(options);
   };
 }
 
