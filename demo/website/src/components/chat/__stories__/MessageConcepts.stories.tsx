@@ -46,6 +46,7 @@ function MessageConcept({
         style={{ border: "1px solid #ddd", padding: "12px", ...wrapperStyle }}
       >
         {messages.map((msg) => (
+          // @ts-ignore
           <Component message={msg} key={title + msg.messageId} />
         ))}
       </div>

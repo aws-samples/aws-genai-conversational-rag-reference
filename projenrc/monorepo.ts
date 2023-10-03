@@ -2,10 +2,7 @@
 PDX-License-Identifier: Apache-2.0 */
 import fs from "node:fs";
 import path from "node:path";
-import {
-  MonorepoTsProject,
-  MonorepoTsProjectOptions,
-} from "@aws/pdk/monorepo";
+import { MonorepoTsProject, MonorepoTsProjectOptions } from "@aws/pdk/monorepo";
 import { JsonFile, Project, javascript } from "projen";
 import { JsiiProject } from "projen/lib/cdk";
 import { Job, JobPermission, JobStep } from "projen/lib/github/workflows-model";
@@ -56,8 +53,6 @@ export class MonorepoProject extends MonorepoTsProject {
       ...options,
       devDeps: [
         "@nrwl/devkit",
-        `aws-cdk-lib@${VERSIONS.CDK}`,
-        `constructs@${VERSIONS.CONSTRUCTS}`,
         "esbuild", // needed for aws-cdk-lib
         "esprima", // Error: Your application tried to access esprima, but it isn't declared in your dependencies; this makes the require call ambiguous and unsound.
         "got@^11.8.5",
@@ -68,7 +63,11 @@ export class MonorepoProject extends MonorepoTsProject {
       ],
     });
 
-    this.addDevDeps(`@aws/pdk@^${VERSIONS.PDK}`);
+    this.package.addPackageResolutions(
+      `aws-cdk-lib@${VERSIONS.CDK}`,
+      `constructs@${VERSIONS.CONSTRUCTS}`,
+      `@aws/pdk@${VERSIONS.PDK}`
+    );
 
     this.projectDirs = projectDirs;
     this.packageDirs = packageDirs;
@@ -149,7 +148,9 @@ export class MonorepoProject extends MonorepoTsProject {
   }
 
   getVersionedDeps(project: Project): Set<string> {
-    return new Set<string>(project.deps.all.filter(v => v.version != null).map(v => v.name));
+    return new Set<string>(
+      project.deps.all.filter((v) => v.version != null).map((v) => v.name)
+    );
   }
 
   recurseProjects(project: Project, fn: (project: Project) => void): void {
@@ -162,18 +163,25 @@ export class MonorepoProject extends MonorepoTsProject {
   configUpgradeDependencies(): void {
     const versionedDeps = new Set<string>();
     this.recurseProjects(this, (p) => {
-      this.getVersionedDeps(p).forEach(v => versionedDeps.add(v))
-    })
+      this.getVersionedDeps(p).forEach((v) => versionedDeps.add(v));
+    });
 
     // ignore all deps that have explicit versioning from being updated
     if (versionedDeps.size) {
-      const depsFilter = [...versionedDeps].sort().map(v => v.replace("/", "\\/")).join("|");
-      const filter = `^(?!(${depsFilter})).*`
+      const depsFilter = [...versionedDeps]
+        .sort()
+        .map((v) => v.replace("/", "\\/"))
+        .join("|");
+      const filter = `^(?!(${depsFilter})).*`;
 
-      const ncurc = this.tryFindObjectFile(".ncurc.json") ?? new JsonFile(this, ".ncurc.json", { marker: false, obj: {} });
+      const ncurc =
+        this.tryFindObjectFile(".ncurc.json") ??
+        new JsonFile(this, ".ncurc.json", { marker: false, obj: {} });
       ncurc.addOverride("filter", filter);
 
-      const syncpackrc = this.tryFindObjectFile(".syncpackrc.json") ?? new JsonFile(this, ".syncpackrc.json", { marker: false, obj: {} });
+      const syncpackrc =
+        this.tryFindObjectFile(".syncpackrc.json") ??
+        new JsonFile(this, ".syncpackrc.json", { marker: false, obj: {} });
       syncpackrc.addOverride("filter", filter);
     }
   }
