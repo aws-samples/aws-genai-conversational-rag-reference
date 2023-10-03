@@ -80,6 +80,7 @@ export function managedContentFactory<
   const ManagedItemComponent: FC<TProps> = ({ uuid, ...props }) => {
     const { addContent, removeContent } = useHook();
     const content = useMemo(
+      // @ts-ignore
       () => <Component {...(props as unknown as Props)} />,
       [uuid, props]
     );

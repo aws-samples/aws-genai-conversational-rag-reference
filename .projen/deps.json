@@ -2,7 +2,7 @@
   "dependencies": [
     {
       "name": "@aws/pdk",
-      "version": "^0.22.9",
+      "version": "^0",
       "type": "build"
     },
     {
@@ -61,11 +61,6 @@
       "type": "build"
     },
     {
-      "name": "aws-cdk-lib",
-      "version": "2.99.1",
-      "type": "build"
-    },
-    {
       "name": "chalk",
       "type": "build"
     },
@@ -79,11 +74,6 @@
     },
     {
       "name": "commitizen",
-      "type": "build"
-    },
-    {
-      "name": "constructs",
-      "version": "10.2.70",
       "type": "build"
     },
     {
@@ -203,6 +193,11 @@
       "type": "build"
     },
     {
+      "name": "@aws/pdk",
+      "version": "0.22.9",
+      "type": "override"
+    },
+    {
       "name": "@types/babel__traverse",
       "version": "7.18.2",
       "type": "override"
@@ -210,6 +205,16 @@
     {
       "name": "@zkochan/js-yaml",
       "version": "npm:js-yaml@4.1.0",
+      "type": "override"
+    },
+    {
+      "name": "aws-cdk-lib",
+      "version": "2.99.1",
+      "type": "override"
+    },
+    {
+      "name": "constructs",
+      "version": "10.2.70",
       "type": "override"
     },
     {

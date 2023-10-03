@@ -1,7 +1,7 @@
 import * as path from "node:path";
 import { MonorepoTsProject, NxProject } from "@aws/pdk/monorepo";
 import { TypeScriptProject } from "projen/lib/typescript";
-import { DEFAULT_RELEASE_BRANCH, PROJECT_AUTHOR } from "../constants";
+import { DEFAULT_RELEASE_BRANCH, PROJECT_AUTHOR, VERSIONS } from "../constants";
 import { NodePackageManager } from "projen/lib/javascript";
 
 export interface SampleOptions {
@@ -26,7 +26,7 @@ export class Sample {
       name: "sample-dataset",
       defaultReleaseBranch: DEFAULT_RELEASE_BRANCH,
       deps: ["cdk-nag"],
-      peerDeps: ["aws-cdk-lib", "constructs"],
+      peerDeps: [`aws-cdk-lib@^${VERSIONS.CDK}`, `constructs@^${VERSIONS.CONSTRUCTS}`],
       package: false,
     });
     this.project.package.addField("files", [
