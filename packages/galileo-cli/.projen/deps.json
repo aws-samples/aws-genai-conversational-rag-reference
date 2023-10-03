@@ -18,6 +18,10 @@
       "type": "build"
     },
     {
+      "name": "@types/csv-parse",
+      "type": "build"
+    },
+    {
       "name": "@types/execa",
       "type": "build"
     },
@@ -193,6 +197,10 @@
     },
     {
       "name": "clear",
+      "type": "runtime"
+    },
+    {
+      "name": "csv-parse",
       "type": "runtime"
     },
     {
