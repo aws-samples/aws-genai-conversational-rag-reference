@@ -20,6 +20,8 @@ jobs:
         uses: ./.github/actions/setup
       - name: build
         run: pnpm exec projen build
+      - name: Restore poetry.lock files
+        run: git ls-files -m | grep 'poetry.lock' | xargs git restore || exit 0;
       - name: Find mutations
         id: self_mutation
         run: |-

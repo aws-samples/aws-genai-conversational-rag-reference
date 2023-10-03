@@ -40,7 +40,7 @@
     "galileo-cli-experimental": "pnpm dlx tsx packages/galileo-cli/bin/galileo-cli.ts"
   },
   "devDependencies": {
-    "@aws/pdk": "^0",
+    "@aws/pdk": "0.22.9",
     "@commitlint/cli": "^17.7.2",
     "@commitlint/config-conventional": "^17.7.0",
     "@nrwl/devkit": "^16.9.1",
