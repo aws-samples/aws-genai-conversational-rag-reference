@@ -26,23 +26,26 @@ runs:
       with:
         java-version: 17
         distribution: corretto
-    - name: Setup Node.js environment
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18.x
+        cache: gradle
     - name: Setup pnpm
       uses: pnpm/action-setup@v2
       with:
         version: 8
         run_install: false
-    - name: Setup Python
-      uses: actions/setup-python@v4
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v3
       with:
-        python-version: 3.11
+        node-version: 18.x
+        cache: pnpm
     - name: Setup Poetry
       uses: Gr1N/setup-poetry@v8
       with:
         poetry-version: "1.5.1"
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.11
+        cache: poetry
     #######################################################################
     ## Install and Synth
     #######################################################################

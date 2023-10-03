@@ -63,6 +63,8 @@ export class MonorepoProject extends MonorepoTsProject {
       ],
     });
 
+    this.addDevDeps(`@aws/pdk@${VERSIONS.PDK}`);
+
     this.package.addPackageResolutions(
       `aws-cdk-lib@${VERSIONS.CDK}`,
       `constructs@${VERSIONS.CONSTRUCTS}`,
@@ -276,6 +278,11 @@ export class MonorepoProject extends MonorepoTsProject {
 
       // @ts-ignore - private
       this.buildWorkflow.renderBuildSteps = renderBuildSteps;
+
+      this.buildWorkflow.addPostBuildSteps({
+        name: "Restore poetry.lock files",
+        run: "git ls-files -m | grep 'poetry.lock' | xargs git restore || exit 0;",
+      });
     }
   }
 
