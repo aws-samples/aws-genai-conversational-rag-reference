@@ -38,6 +38,7 @@ export class GalileoCli extends TypeScriptAppProject {
       autoDetectBin: false,
       defaultReleaseBranch: DEFAULT_RELEASE_BRANCH,
       deps: [
+        `@aws-sdk/client-cognito-identity-provider@^${VERSIONS.AWS_SDK}`,
         `@aws-sdk/client-s3@^${VERSIONS.AWS_SDK}`,
         `@aws-sdk/client-sfn@^${VERSIONS.AWS_SDK}`,
         `@aws-sdk/client-ssm@^${VERSIONS.AWS_SDK}`,

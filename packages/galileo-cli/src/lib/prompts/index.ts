@@ -67,34 +67,76 @@ namespace galileoPrompts {
   });
 
   export const awsRegion = (options: {
-    regionType: "app" | "foundationModel" | "bedrock";
+    regionType?: "app" | "foundationModel" | "bedrock";
     message?: string;
     initialVal?: string;
   }): PromptObject => ({
     type: "text",
-    name: `${options.regionType}Region`,
-    message: `AWS Region (${options.regionType})`,
+    name: options.regionType ? `${options.regionType}Region` : "region",
+    message: options.regionType
+      ? `AWS Region (${options.regionType})`
+      : "AWS Region",
     initial:
-      options.initialVal ||
-      context.cache.getItem(`${options.regionType}Region`) ||
-      process.env.AWS_REGION ||
-      process.env.AWS_DEFAULT_REGION,
+      options.initialVal || options.regionType
+        ? context.cache.getItem(`${options.regionType}Region`)
+        : context.cache.getItem("region") ||
+          process.env.AWS_REGION ||
+          process.env.AWS_DEFAULT_REGION,
     validate: async (value: string) =>
-      (value && value.length > 0) ||
-      `"${options.regionType}" region is required`,
+      (value && value.length > 0) || `${options.regionType} region is required`,
   });
 
-  export const adminEmailAndUsername: PromptObject[] = [
-    {
+  export const userEmail = (options?: {
+    name?: string;
+    message?: string;
+    initialVal?: string;
+  }): PromptObject => {
+    return {
       type: "text",
+      name: options?.name ?? "email",
+      message: options?.message ?? "Email address",
+      initial:
+        options?.initialVal || context.cache.getItem(options?.name ?? "email"),
+    };
+  };
+  export const username = (options?: {
+    name?: string;
+    message?: string;
+    initialVal?: string;
+  }): PromptObject => {
+    return {
+      type: "text",
+      name: options?.name ?? "username",
+      message: options?.message ?? "User name",
+      initial:
+        options?.initialVal ||
+        context.cache.getItem(options?.name ?? "username"),
+    };
+  };
+  export const userGroup = (options?: {
+    name?: string;
+    message?: string;
+    initialVal?: string;
+  }): PromptObject => {
+    return {
+      type: "text",
+      name: options?.name ?? "userGroup",
+      message: options?.message ?? "User group",
+      initial:
+        options?.initialVal ||
+        context.cache.getItem(options?.name ?? "userGroup"),
+    };
+  };
+
+  export const adminEmailAndUsername: PromptObject[] = [
+    userEmail({
       name: "adminEmail",
       message:
         "Administrator email address" +
         chalk.reset.grey(
           " Enter email address to automatically create Cognito admin user, otherwise leave blank\n"
         ),
-      initial: context.cache.getItem("adminEmail"),
-    },
+    }),
     {
       type: (prev) => (prev == null ? false : "text"),
       name: "adminUsername",
@@ -272,6 +314,22 @@ namespace galileoPrompts {
     initial:
       context.cache.getItem("cloudformationExecutionPolicies") ??
       "arn:aws:iam::aws:policy/PowerUserAccess,arn:aws:iam::aws:policy/IAMFullAccess",
+  };
+
+  export const userPoolPicker = (
+    userPools: { id: string; name: string }[]
+  ): PromptObject => {
+    return {
+      type: "select",
+      name: "userPoolId",
+      message: "Cognito user pools",
+      min: 1,
+      choices: Object.values(userPools).map((up) => ({
+        title: `${up.name} (${up.id})`,
+        value: up.id,
+        selected: context.cache.getItem("userPoolId"),
+      })),
+    };
   };
 }
 

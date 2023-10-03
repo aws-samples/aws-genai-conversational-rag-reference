@@ -51,3 +51,45 @@ EXAMPLES
 
   $ galileo-cli-experimental deploy --replay --skipConfirmations
 ```
+
+### Cognito create/delete user
+
+```shell
+pnpm run galileo-cli-experimental cognito create-user --help
+
+USAGE
+  $ galileo-cli-experimental cognito create-user [--profile <value>] [--region <value>] [--username <value>] [--email <value>] [--group <value>] [--skipConfirmations]
+
+FLAGS
+  --email=<value>      The email address for the new user
+  --group=<value>      The user group to associate the new user with (optional)
+  --profile=<value>    The profile set up for you AWS CLI (associated with your AWS account
+  --region=<value>     The region you want to add your user (user pool)
+  --skipConfirmations  Non-interactive mode. (You need to supply all other flags).
+  --username=<value>   The username for the new user
+
+EXAMPLES
+  $ galileo-cli-experimental cognito create-user --profile=myProfile --region=ap-southeast-1
+
+  $ galileo-cli-experimental cognito create-user --email=myUser@example.com --username=myUser
+
+  $ galileo-cli-experimental cognito create-user --skipConfirmations --profile=myProfile --region=ap-southeast-1 --email=admin@example.com --username=admin --group=Administrators
+```
+
+```shell
+> pnpm run galileo-cli-experimental cognito delete-user --help
+
+USAGE
+  $ galileo-cli-experimental cognito delete-user [--profile <value>] [--region <value>] [--username <value>] [--skipConfirmations]
+
+FLAGS
+  --profile=<value>    The profile set up for you AWS CLI (associated with your AWS account
+  --region=<value>     The region you want to add your user (user pool)
+  --skipConfirmations  Non-interactive mode. (You need to supply all other flags).
+  --username=<value>   The username for the new user
+
+EXAMPLES
+  $ galileo-cli-experimental cognito delete-user
+
+  $ galileo-cli-experimental cognito delete-user --skipConfirmations --profile myProfile --region ap-southeast-1 --username myUserName
+```
