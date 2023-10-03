@@ -93,3 +93,19 @@ EXAMPLES
 
   $ galileo-cli-experimental cognito delete-user --skipConfirmations --profile myProfile --region ap-southeast-1 --username myUserName
 ```
+
+```shell
+> pnpm run galileo-cli-experimental cognito bulk-create-users --help
+
+USAGE
+  $ galileo-cli-experimental cognito bulk-create-users [--profile <value>] [--region <value>] [--group <value>] [--csvFile <value>]
+
+FLAGS
+  --csvFile=<value>  The path to the CSV file containing user information (username, email)
+  --group=<value>    The user group to associate the new users with (optional)
+  --profile=<value>  The profile set up for you AWS CLI (associated with your AWS account
+  --region=<value>   The region you want to add your user (user pool)
+
+EXAMPLES
+  $ galileo-cli-experimental cognito bulk-create-users --profile=myProfile --region=ap-southeast-1 --csvFile /path/to/users.csv
+```

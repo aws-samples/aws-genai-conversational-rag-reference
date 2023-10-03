@@ -1071,6 +1071,9 @@ importers:
       clear:
         specifier: ^0.1.0
         version: 0.1.0
+      csv-parse:
+        specifier: ^5.5.0
+        version: 5.5.0
       execa:
         specifier: ^5.1.1
         version: 5.1.1
@@ -1102,6 +1105,9 @@ importers:
       '@types/clear':
         specifier: ^0.1.2
         version: 0.1.2
+      '@types/csv-parse':
+        specifier: ^1.2.2
+        version: 1.2.2
       '@types/execa':
         specifier: ^2.0.0
         version: 2.0.0
@@ -9735,6 +9741,13 @@ packages:
       '@types/node': 16.18.39
     dev: true
 
+  /@types/csv-parse@1.2.2:
+    resolution: {integrity: sha512-k33tLtRKTQxf7hQfMlkWoS2TQYsnpk1ibZN+rzbuCkeBs8m23nHTeDTF1wb/e7/MSLdtgCzqu3oM1I101kd6yw==}
+    deprecated: This is a stub types definition. csv-parse provides its own type definitions, so you do not need this installed.
+    dependencies:
+      csv-parse: 5.5.0
+    dev: true
+
   /@types/debug@4.1.8:
     resolution: {integrity: sha512-/vPO1EPOs306Cvhwv7KfVfYvOJqA/S/AXjaHQiJboCZzcNDb+TIJFN9/2C9DZ//ijSKWioNyUxD792QmDJ+HKQ==}
     dependencies:
@@ -12927,6 +12940,9 @@ packages:
 
   /csstype@3.1.2:
     resolution: {integrity: sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==}
+
+  /csv-parse@5.5.0:
+    resolution: {integrity: sha512-RxruSK3M4XgzcD7Trm2wEN+SJ26ChIb903+IWxNOcB5q4jT2Cs+hFr6QP39J05EohshRFEvyzEBoZ/466S2sbw==}
 
   /cz-conventional-changelog@3.3.0:
     resolution: {integrity: sha512-U466fIzU5U22eES5lTNiNbZ+d8dfcHcssH4o7QsdWaCcRs/feIPCxKYSWkYBNs5mny7MvEfwpTLWjvbm94hecw==}

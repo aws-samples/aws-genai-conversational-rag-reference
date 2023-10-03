@@ -117,6 +117,7 @@ namespace galileoPrompts {
     name?: string;
     message?: string;
     initialVal?: string;
+    required?: boolean;
   }): PromptObject => {
     return {
       type: "text",
@@ -329,6 +330,18 @@ namespace galileoPrompts {
         value: up.id,
         selected: context.cache.getItem("userPoolId"),
       })),
+    };
+  };
+
+  export const filePathPrompt = (options?: {
+    what?: string;
+    initialVal?: string;
+  }): PromptObject => {
+    return {
+      type: "text",
+      name: "filePath",
+      message: `Enter the path to the ${options?.what ?? "file"}:`,
+      initial: options?.initialVal || context.cache.getItem("filePath"),
     };
   };
 }

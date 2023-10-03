@@ -1,12 +1,17 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 
+import fs from "node:fs";
+import path from "node:path";
+import { parse as csvParse } from "csv-parse/sync";
 import {
   CreateCognitoUserRequest,
   listUserPools,
+  bulkCreateCognitoUsers as _bulkCreateCognitoUsers,
   createCognitoUser as _createCognitoUser,
   deleteCognitoUser as _deleteCognitoUser,
   DeleteCognitoUserRequest,
+  CognitoUserInfo,
 } from "./cognito";
 import { getAWSAccountId } from "./get-aws-account-id";
 import {
@@ -15,6 +20,7 @@ import {
   getCdkBootstrapInfo,
 } from "./get-bootstrap-info";
 import context from "../context";
+import { CredentialsParams } from "../types";
 
 const CACHE_KEYS = {
   ACCOUNTID: "awsAccountId",
@@ -74,6 +80,52 @@ export namespace accountUtils {
     options: CreateCognitoUserRequest
   ) => {
     return _createCognitoUser(options);
+  };
+
+  export const bulkCreateCognitoUsers = async (
+    options: CredentialsParams & {
+      csvFile: string;
+      userPoolId: string;
+      group?: string;
+    }
+  ) => {
+    const { profile, region, userPoolId, csvFile, group } = options;
+
+    // check if file exists
+    let csvFilePath = csvFile;
+    if (!path.isAbsolute(csvFilePath)) {
+      // if it's relative, get the path relative to CWD
+      csvFilePath = path.join(process.cwd(), csvFile);
+    }
+
+    if (!fs.existsSync(csvFilePath)) {
+      throw new Error(`Passed CSV file "${csvFile} doesn't exist!`);
+    }
+
+    const csvFileContent = fs.readFileSync(csvFilePath, { encoding: "utf-8" });
+
+    let records = csvParse(csvFileContent, {
+      columns: ["username", "email", "group"],
+      skipEmptyLines: true,
+      from_line: 2, // skip header
+      delimiter: ",",
+    }) as CognitoUserInfo[];
+
+    if (group != null) {
+      records = records.map((user) => {
+        if (user.userGroup == null) {
+          return { ...user, userGroup: group };
+        }
+        return user;
+      });
+    }
+
+    await _bulkCreateCognitoUsers({
+      profile,
+      region,
+      userPoolId,
+      users: records,
+    });
   };
 
   export const deleteCognitoUser = async (

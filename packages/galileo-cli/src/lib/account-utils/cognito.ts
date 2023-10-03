@@ -14,10 +14,15 @@ import { fromIni } from "@aws-sdk/credential-providers";
 import chalk from "chalk";
 import { CredentialsParams } from "../types";
 
-export interface CreateCognitoUserRequest extends CredentialsParams {
+export interface CognitoUserInfo {
   readonly email: string;
   readonly username: string;
   readonly userGroup?: string;
+}
+
+export interface CreateCognitoUserRequest
+  extends CredentialsParams,
+    CognitoUserInfo {
   readonly userPoolId: string;
 }
 
@@ -25,6 +30,11 @@ export type DeleteCognitoUserRequest = Omit<
   CreateCognitoUserRequest,
   "userGroup" | "email"
 >;
+
+export interface BulkCreateCognitoUsersRequest extends CredentialsParams {
+  readonly users: CognitoUserInfo[];
+  readonly userPoolId: string;
+}
 
 export const listUserPools = async (profile: string, region?: string) => {
   const client = new CognitoIdentityProviderClient({
@@ -98,6 +108,60 @@ export const createCognitoUser = async (options: CreateCognitoUserRequest) => {
         options.username
       )} added to ${chalk.magentaBright(options.userGroup)} user group.`
     );
+  }
+};
+
+export const bulkCreateCognitoUsers = async (
+  options: BulkCreateCognitoUsersRequest
+) => {
+  const client = new CognitoIdentityProviderClient({
+    credentials: fromIni({ profile: options.profile }),
+    region: options.region,
+  });
+
+  let idx = 1;
+  for (const user of options.users) {
+    const createUserResp = await client.send(
+      new AdminCreateUserCommand({
+        ForceAliasCreation: true,
+        DesiredDeliveryMediums: ["EMAIL"],
+        UserAttributes: [
+          {
+            Name: "email",
+            Value: user.email,
+          },
+          {
+            Name: "email_verified",
+            Value: "true",
+          },
+        ],
+        Username: user.username,
+        UserPoolId: options.userPoolId,
+      })
+    );
+
+    console.log(
+      `[${idx}] User successfully created.`,
+      createUserResp.User?.UserCreateDate
+    );
+
+    if (user.userGroup != null) {
+      await client.send(
+        new AdminAddUserToGroupCommand({
+          GroupName: user.userGroup!,
+          Username: user.username,
+          UserPoolId: options.userPoolId,
+        })
+      );
+
+      console.log(
+        `[${idx}] User ${chalk.magentaBright(
+          user.username
+        )} added to ${chalk.magentaBright(user.userGroup)} user group.`
+      );
+    }
+
+    idx++;
   }
 };
 

@@ -7,19 +7,26 @@ import { FlagInput } from "@oclif/core/lib/interfaces/parser";
 export interface BaseCognitoCommandFlags {
   profile?: string;
   region?: string;
-  username?: string;
   skipConfirmations?: boolean;
 }
 
 export interface CognitoCreateUserCommandFlags extends BaseCognitoCommandFlags {
   email?: string;
+  username?: string;
   group?: string;
 
   skipConfirmations?: boolean;
 }
 
-export interface CognitoDeleteUserCommandFlags
-  extends BaseCognitoCommandFlags {}
+export interface CognitoBulkCreateUsersCommandFlags
+  extends BaseCognitoCommandFlags {
+  group?: string;
+  csvFile?: string;
+}
+
+export interface CognitoDeleteUserCommandFlags extends BaseCognitoCommandFlags {
+  username?: string;
+}
 
 const baseFlags: FlagInput<BaseCognitoCommandFlags> = {
   profile: Flags.string({
@@ -31,9 +38,6 @@ const baseFlags: FlagInput<BaseCognitoCommandFlags> = {
     aliases: ["r"],
     description: "The region you want to add your user (user pool)",
   }),
-  username: Flags.string({
-    description: "The username for the new user",
-  }),
 };
 
 export const cognitoCreateUserCommandFlags: FlagInput<CognitoCreateUserCommandFlags> =
@@ -41,6 +45,9 @@ export const cognitoCreateUserCommandFlags: FlagInput<CognitoCreateUserCommandFl
     ...baseFlags,
     email: Flags.string({
       description: "The email address for the new user",
+    }),
+    username: Flags.string({
+      description: "The username for the new user",
     }),
     group: Flags.string({
       description: "The user group to associate the new user with (optional)",
@@ -62,6 +69,9 @@ export const cognitoCreateUserCommandFlags: FlagInput<CognitoCreateUserCommandFl
 export const cognitoDeleteUserCommandFlags: FlagInput<CognitoDeleteUserCommandFlags> =
   {
     ...baseFlags,
+    username: Flags.string({
+      description: "The username for the new user",
+    }),
     skipConfirmations: Flags.boolean({
       aliases: ["yes", "non-interactive"],
       description:
@@ -72,5 +82,17 @@ export const cognitoDeleteUserCommandFlags: FlagInput<CognitoDeleteUserCommandFl
           flags: ["profile", "region", "username"],
         },
       ],
+    }),
+  };
+
+export const cognitoBulkCreateUsersCommandFlags: FlagInput<CognitoBulkCreateUsersCommandFlags> =
+  {
+    ...baseFlags,
+    group: Flags.string({
+      description: "The user group to associate the new users with (optional)",
+    }),
+    csvFile: Flags.string({
+      description:
+        "The path to the CSV file containing user information (username, email)",
     }),
   };
