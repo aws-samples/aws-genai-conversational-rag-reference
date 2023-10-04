@@ -43,4 +43,6 @@ junit.xml
 .jsii
 tsconfig.json
 !/API.md
+/assets/
+!/src/common/resources/service-quota/handler-function.ts
 !/project.json

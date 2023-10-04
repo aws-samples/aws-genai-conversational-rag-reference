@@ -1,5 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { isDevStage } from "@aws/galileo-cdk/lib/common";
 import { INTERCEPTOR_IAM_ACTIONS } from "api-typescript-interceptors";
 import { CfnOutput, Duration, Size } from "aws-cdk-lib";
 import { UserPool } from "aws-cdk-lib/aws-cognito";
@@ -19,7 +20,6 @@ import { ISecret } from "aws-cdk-lib/aws-secretsmanager";
 import { NagSuppressions } from "cdk-nag";
 import { Construct } from "constructs";
 import { ILambdaEnvironment } from "./handler/env";
-import { isDevStage } from "../../context";
 
 export interface InferenceEngineProps {
   readonly searchUrl: string;

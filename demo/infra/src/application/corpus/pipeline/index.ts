@@ -1,5 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { ServiceQuotas, SecureBucket } from "@aws/galileo-cdk/lib/common";
 import {
   ArnFormat,
   CfnOutput,
@@ -37,10 +38,8 @@ import * as tasks from "aws-cdk-lib/aws-stepfunctions-tasks";
 import { NagSuppressions } from "cdk-nag";
 import { Construct } from "constructs";
 import { State, StatePaths } from "./types";
-import { getPowerToolsEnv } from "../../context";
-import { ServiceQuotas } from "@aws/galileo-cdk/core/service-quota";
+import { getPowerToolsEnv } from "../../../application/context";
 import { RDSVectorStore } from "@aws/galileo-cdk/corpus/vector-store/rds-pgvector-cluster";
-import { SecureBucket } from "@aws/galileo-cdk/s3/secure-bucket";
 
 const PROCESSING_INPUT_LOCAL_PATH = "/opt/ml/processing/input_data";
 

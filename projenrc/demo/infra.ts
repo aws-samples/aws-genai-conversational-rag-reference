@@ -141,7 +141,10 @@ export class Infra {
           target: "ES2020",
           baseUrl: ".",
           paths: {
-            "@aws/galileo-cdk/*": ["src/galileo/*"],
+            "@aws/galileo-cdk/*": [
+              "@aws/galileo-cdk/*",
+              "src/galileo/*"
+            ],
           }
         },
 

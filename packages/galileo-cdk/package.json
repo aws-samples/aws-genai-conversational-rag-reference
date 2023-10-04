@@ -6,6 +6,9 @@
   },
   "scripts": {
     "build": "npx projen build",
+    "bundle": "npx projen bundle",
+    "bundle:common/resources/service-quota/handler.lambda": "npx projen bundle:common/resources/service-quota/handler.lambda",
+    "bundle:common/resources/service-quota/handler.lambda:watch": "npx projen bundle:common/resources/service-quota/handler.lambda:watch",
     "compat": "npx projen compat",
     "compile": "npx projen compile",
     "default": "npx projen default",
@@ -30,12 +33,33 @@
     "organization": false
   },
   "devDependencies": {
+    "@aws-lambda-powertools/logger": "^1.12.1",
+    "@aws-lambda-powertools/metrics": "^1.12.1",
+    "@aws-lambda-powertools/parameters": "^1.12.1",
+    "@aws-sdk/client-codebuild": "^3.418.0",
+    "@aws-sdk/client-dynamodb": "^3.418.0",
+    "@aws-sdk/client-service-quotas": "^3.418.0",
+    "@aws-sdk/client-sfn": "^3.418.0",
+    "@aws-sdk/lib-dynamodb": "^3.418.0",
+    "@aws-sdk/types": "^3.418.0",
+    "@middy/core": "^4.6.1",
+    "@middy/error-logger": "^4.6.1",
+    "@middy/http-router": "^4.6.1",
+    "@middy/input-output-logger": "^4.6.1",
+    "@smithy/types": "^2.3.4",
+    "@types/aws-lambda": "^8.10.119",
     "@types/jest": "^29.5.4",
+    "@types/lodash": "^4.14.199",
     "@types/node": "^16",
+    "@types/readline-sync": "^1.4.4",
+    "@types/uuid": "^9.0.3",
     "@typescript-eslint/eslint-plugin": "^6",
     "@typescript-eslint/parser": "^6",
     "aws-cdk-lib": "2.99.1",
+    "aws-lambda": "^1.0.7",
+    "aws-sdk": "^2.1453.0",
     "constructs": "10.2.70",
+    "esbuild": "^0.19.4",
     "eslint": "^8",
     "eslint-import-resolver-node": "^0.3.9",
     "eslint-import-resolver-typescript": "^3.6.1",
@@ -48,17 +72,26 @@
     "jsii-docgen": "^8.0.56",
     "jsii-pacmak": "^1.88.0",
     "jsii-rosetta": "5.x",
+    "lodash": "^4.17.21",
     "npm-check-updates": "^16",
+    "pretty-bytes": "^5.6.0",
     "projen": "^0.73.37",
+    "readline-sync": "^1.4.10",
+    "shorthash2": "^1.0.3",
     "ts-jest": "^29.1.1",
-    "typescript": "^5.2.2"
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.2.2",
+    "uuid": "^9.0.0"
   },
   "peerDependencies": {
     "aws-cdk-lib": "^2.99.1",
     "constructs": "^10.2.70"
   },
   "dependencies": {
-    "@aws/galileo-sdk": "^0.0.0"
+    "@aws-cdk/aws-cognito-identitypool-alpha": "^2.99.1-alpha.0",
+    "@aws-cdk/aws-lambda-python-alpha": "^2.99.1-alpha.0",
+    "@aws/galileo-sdk": "^0.0.0",
+    "cdk-nag": "^2.27.147"
   },
   "bundledDependencies": [
     "@aws/galileo-sdk"

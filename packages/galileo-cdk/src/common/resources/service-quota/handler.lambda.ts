@@ -1,12 +1,12 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { Logger } from "@aws-lambda-powertools/logger";
+import { Logger } from '@aws-lambda-powertools/logger';
 import {
   ServiceQuotasClient,
   ListServiceQuotasCommand,
   ServiceQuota,
   ListServiceQuotasCommandOutput,
-} from "@aws-sdk/client-service-quotas";
+} from '@aws-sdk/client-service-quotas';
 
 const logger = new Logger();
 
@@ -18,10 +18,10 @@ export interface ServiceQuotaRequirement {
 
 export interface ResourceProperties {
   readonly ServiceQuotaRequirements: string;
-  readonly ReportOnly?: "true" | "false";
+  readonly ReportOnly?: 'true' | 'false';
 }
 export interface Event {
-  readonly RequestType: "Create" | "Update" | "Delete";
+  readonly RequestType: 'Create' | 'Update' | 'Delete';
   readonly PhysicalResourceId?: string;
   readonly ResourceProperties: ResourceProperties;
 }
@@ -54,7 +54,7 @@ async function delay(milliseconds: number): Promise<void> {
 }
 
 async function getAllServiceQuotas(
-  serviceCode: string
+  serviceCode: string,
 ): Promise<ServiceQuota[]> {
   const serviceQuotas: ServiceQuota[] = [];
   let nextToken: string | undefined = undefined;
@@ -69,16 +69,16 @@ async function getAllServiceQuotas(
         ServiceCode: serviceCode,
         MaxResults: 100,
         NextToken: nextToken,
-      })
+      }),
     );
-    logger.debug({ message: "ListServiceQuotasCommand:Response:", response });
+    logger.debug({ message: 'ListServiceQuotasCommand:Response:', response });
     nextToken = response.NextToken;
     response.Quotas && serviceQuotas.push(...response.Quotas);
     i++;
   } while (nextToken != null && i < 100);
 
   logger.debug({
-    message: "ServiceQuotas:",
+    message: 'ServiceQuotas:',
     serviceCode,
     serviceQuotas: serviceQuotas.length,
   });
@@ -87,13 +87,13 @@ async function getAllServiceQuotas(
 }
 
 export const handler = async (event: Event): Promise<Response> => {
-  logger.info({ message: "Event:", event });
+  logger.info({ message: 'Event:', event });
   switch (event.RequestType) {
-    case "Create":
-    case "Update": {
-      const reportOnly = event.ResourceProperties.ReportOnly === "true";
+    case 'Create':
+    case 'Update': {
+      const reportOnly = event.ResourceProperties.ReportOnly === 'true';
       const requirements = JSON.parse(
-        event.ResourceProperties.ServiceQuotaRequirements
+        event.ResourceProperties.ServiceQuotaRequirements,
       ) as ServiceQuotaRequirement[];
       const serviceCodes = new Set(requirements.map((v) => v.serviceCode));
       const lookup: Record<string, ServiceQuota[]> = Object.fromEntries(
@@ -101,13 +101,13 @@ export const handler = async (event: Event): Promise<Response> => {
           Array.from(serviceCodes).map(async (serviceCode, i) => {
             await delay(i * 500); // prevent throttle (10 TPS)
             return [serviceCode, await getAllServiceQuotas(serviceCode)];
-          })
-        )
+          }),
+        ),
       );
       logger.info({
-        message: "Fetch service quotes",
+        message: 'Fetch service quotes',
         lookup: Object.fromEntries(
-          Object.entries(lookup).map(([key, value]) => [key, value.length])
+          Object.entries(lookup).map(([key, value]) => [key, value.length]),
         ),
       });
 
@@ -115,7 +115,7 @@ export const handler = async (event: Event): Promise<Response> => {
 
       for (const requirement of requirements) {
         const quota = lookup[requirement.serviceCode]?.find(
-          (_quota) => _quota.QuotaName === requirement.quotaName
+          (_quota) => _quota.QuotaName === requirement.quotaName,
         );
         if (quota == null) {
           logger.error({
@@ -126,7 +126,7 @@ export const handler = async (event: Event): Promise<Response> => {
           report.push({
             requirement,
             success: false,
-            reason: "Invalid serviceCode and/or quotaName",
+            reason: 'Invalid serviceCode and/or quotaName',
           });
         } else {
           const region =
@@ -146,7 +146,7 @@ export const handler = async (event: Event): Promise<Response> => {
               quota,
               success: false,
               quotaUrl,
-              reason: "Insufficient quota value",
+              reason: 'Insufficient quota value',
             });
           }
         }
@@ -155,11 +155,11 @@ export const handler = async (event: Event): Promise<Response> => {
       const failed = report.filter((v) => !v.success);
       const failedCount = failed.length;
 
-      logger.info({ message: "Results:", report, failed, failedCount });
+      logger.info({ message: 'Results:', report, failed, failedCount });
 
       if (failedCount) {
         const error = new Error(
-          `Unmet ServiceQuota requirements: ${JSON.stringify(failed, null, 2)}`
+          `Unmet ServiceQuota requirements: ${JSON.stringify(failed, null, 2)}`,
         );
         if (reportOnly) {
           logger.warn(`[ReportOnly] ${error.message}`, error);
@@ -187,7 +187,7 @@ export const handler = async (event: Event): Promise<Response> => {
         };
       }
     }
-    case "Delete": {
+    case 'Delete': {
       return {
         PhysicalResourceId: event.PhysicalResourceId,
       };

@@ -1,6 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import path from "node:path";
+import { SecureBucket } from "@aws/galileo-cdk/lib/common";
 import { CustomResource, Duration, Stack } from "aws-cdk-lib";
 import * as codebuild from "aws-cdk-lib/aws-codebuild";
 import * as iam from "aws-cdk-lib/aws-iam";
@@ -18,7 +19,6 @@ import {
   MODEL_TAR_FILE,
   ARTIFACT_NAME,
 } from "./types";
-import { SecureBucket } from "../../../../../s3/secure-bucket";
 
 export interface HFModelTarProps {
   readonly hfRepoId: string;

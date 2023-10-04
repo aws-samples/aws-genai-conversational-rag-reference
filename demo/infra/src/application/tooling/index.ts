@@ -1,11 +1,11 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { getStageName } from "@aws/galileo-cdk/lib/common";
 import { NestedStackProps, NestedStack } from "aws-cdk-lib";
 import { IVpc } from "aws-cdk-lib/aws-ec2";
 import { Role } from "aws-cdk-lib/aws-iam";
 import { NagSuppressions } from "cdk-nag";
 import { Construct } from "constructs";
-import { getStageName } from "../context";
 import { SageMakerStudio } from "@aws/galileo-cdk/tooling/sagemaker/studio";
 
 interface ToolingProps extends NestedStackProps {

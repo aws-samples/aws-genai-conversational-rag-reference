@@ -21,6 +21,33 @@
         }
       ]
     },
+    "bundle": {
+      "name": "bundle",
+      "description": "Prepare assets",
+      "steps": [
+        {
+          "spawn": "bundle:common/resources/service-quota/handler.lambda"
+        }
+      ]
+    },
+    "bundle:common/resources/service-quota/handler.lambda": {
+      "name": "bundle:common/resources/service-quota/handler.lambda",
+      "description": "Create a JavaScript bundle from src/common/resources/service-quota/handler.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/common/resources/service-quota/handler.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/common/resources/service-quota/handler.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
+        }
+      ]
+    },
+    "bundle:common/resources/service-quota/handler.lambda:watch": {
+      "name": "bundle:common/resources/service-quota/handler.lambda:watch",
+      "description": "Continuously update the JavaScript bundle from src/common/resources/service-quota/handler.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/common/resources/service-quota/handler.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/common/resources/service-quota/handler.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
+        }
+      ]
+    },
     "compat": {
       "name": "compat",
       "description": "Perform API compatibility check against latest version",
@@ -146,7 +173,12 @@
     },
     "pre-compile": {
       "name": "pre-compile",
-      "description": "Prepare the project for compilation"
+      "description": "Prepare the project for compilation",
+      "steps": [
+        {
+          "spawn": "bundle"
+        }
+      ]
     },
     "test": {
       "name": "test",
@@ -177,13 +209,13 @@
           "exec": "pnpm update npm-check-updates"
         },
         {
-          "exec": "npm-check-updates --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@types/jest,@types/node,@typescript-eslint/eslint-plugin,@typescript-eslint/parser,eslint-import-resolver-node,eslint-import-resolver-typescript,eslint-plugin-header,eslint-plugin-import,eslint,jest,jest-junit,jsii-diff,jsii-docgen,jsii-pacmak,npm-check-updates,projen,ts-jest,typescript,@aws/galileo-sdk,aws-cdk-lib,constructs"
+          "exec": "npm-check-updates --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@aws-lambda-powertools/logger,@aws-lambda-powertools/metrics,@aws-lambda-powertools/parameters,@aws-sdk/client-codebuild,@aws-sdk/client-dynamodb,@aws-sdk/client-service-quotas,@aws-sdk/client-sfn,@aws-sdk/lib-dynamodb,@aws-sdk/types,@middy/core,@middy/error-logger,@middy/http-router,@middy/input-output-logger,@smithy/types,@types/aws-lambda,@types/jest,@types/lodash,@types/node,@types/readline-sync,@types/uuid,@typescript-eslint/eslint-plugin,@typescript-eslint/parser,aws-lambda,aws-sdk,esbuild,eslint-import-resolver-node,eslint-import-resolver-typescript,eslint-plugin-header,eslint-plugin-import,eslint,jest,jest-junit,jsii-diff,jsii-docgen,jsii-pacmak,lodash,npm-check-updates,pretty-bytes,projen,readline-sync,shorthash2,ts-jest,tsconfig-paths,typescript,uuid,@aws/galileo-sdk,aws-cdk-lib,constructs,@aws-cdk/aws-cognito-identitypool-alpha,@aws-cdk/aws-lambda-python-alpha,cdk-nag"
         },
         {
           "exec": "pnpm i --no-frozen-lockfile"
         },
         {
-          "exec": "pnpm update @types/jest @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-import-resolver-node eslint-import-resolver-typescript eslint-plugin-header eslint-plugin-import eslint jest jest-junit jsii-diff jsii-docgen jsii-pacmak npm-check-updates projen ts-jest typescript @aws/galileo-sdk aws-cdk-lib constructs"
+          "exec": "pnpm update @aws-lambda-powertools/logger @aws-lambda-powertools/metrics @aws-lambda-powertools/parameters @aws-sdk/client-codebuild @aws-sdk/client-dynamodb @aws-sdk/client-service-quotas @aws-sdk/client-sfn @aws-sdk/lib-dynamodb @aws-sdk/types @middy/core @middy/error-logger @middy/http-router @middy/input-output-logger @smithy/types @types/aws-lambda @types/jest @types/lodash @types/node @types/readline-sync @types/uuid @typescript-eslint/eslint-plugin @typescript-eslint/parser aws-lambda aws-sdk esbuild eslint-import-resolver-node eslint-import-resolver-typescript eslint-plugin-header eslint-plugin-import eslint jest jest-junit jsii-diff jsii-docgen jsii-pacmak lodash npm-check-updates pretty-bytes projen readline-sync shorthash2 ts-jest tsconfig-paths typescript uuid @aws/galileo-sdk aws-cdk-lib constructs @aws-cdk/aws-cognito-identitypool-alpha @aws-cdk/aws-lambda-python-alpha cdk-nag"
         },
         {
           "exec": "npx projen"

@@ -1,12 +1,12 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { isDevStage } from "@aws/galileo-cdk/lib/common";
 import { CfnOutput, Stack } from "aws-cdk-lib";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import { ManagedPolicy, Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
 import { CfnDomain, CfnUserProfile } from "aws-cdk-lib/aws-sagemaker";
 import { NagSuppressions } from "cdk-nag";
 import { Construct } from "constructs";
-import { isDevStage } from "../../../../application/context";
 
 export interface ISageMakerStudioProps {
   readonly vpc: ec2.IVpc;

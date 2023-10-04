@@ -1,11 +1,18 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import * as path from "node:path";
-import { Annotations, RemovalPolicy, Stack, Stage } from "aws-cdk-lib";
+import {
+  getStageName,
+  getRootStack,
+  safeResourceName as _safeResourceName,
+  getPowerToolsEnv as _getPowerToolsEnv,
+} from "@aws/galileo-cdk/lib/common";
+import { Annotations, Stack, Stage } from "aws-cdk-lib";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { IConstruct } from "constructs";
-import shorthash from "shorthash2";
 import { FoundationModelIds } from "./ai/foundation-models/ids";
+
+export const APPLICATION_NAME = "@galileo/ApplicationName";
 
 export interface IApplicationContext {
   /**
@@ -424,54 +431,8 @@ export class ApplicationConfig implements IApplicationConfig {
   }
 }
 
-export const APPLICATION_NAME = "@galileo/ApplicationName";
-
-export function getStageName(
-  scope: IConstruct,
-  defaultValue?: string
-): string | undefined {
-  return Stage.of(scope)?.stageName ?? defaultValue;
-}
-
-/**
- * Indicates if scope is within development stage.
- * - If resource is not within a stage, it is considered development (sandbox/developer deployment)
- * - If stage the resource belongs to starts with "Dev" then it is considered development
- */
-export function isDevStage(scope: IConstruct): boolean {
-  const stage = getStageName(scope);
-  return stage == null || stage.startsWith("Dev");
-}
-
-/**
- * Gets default removal policy for a resources based on the stage the resource belongs to.
- * - If in development stage (`isDevStage(scope)`) is true, then `RemovalPolicy.DESTROY`
- * - Otherwise, `RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE`
- */
-export function stageAwareRemovalPolicy(scope: IConstruct): RemovalPolicy {
-  return isDevStage(scope)
-    ? RemovalPolicy.DESTROY
-    : RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE;
-}
-
-export function getRootStack(scope: IConstruct): Stack {
-  let stack = Stack.of(scope);
-  while (stack.nestedStackParent) {
-    stack = stack.nestedStackParent;
-  }
-  return stack;
-}
-
 export function getPowerToolsEnv(scope: IConstruct): Record<string, string> {
-  const stageName = getStageName(scope, "Sandbox");
-  const isDev = isDevStage(scope);
-  const applicationName = ApplicationConfig.of(scope).applicationName;
-
-  return {
-    LOG_LEVEL: isDev ? "DEBUG" : "INFO",
-    POWERTOOLS_SERVICE_NAME: `${stageName}-${applicationName}`,
-    POWERTOOLS_METRICS_NAMESPACE: `${stageName}-${applicationName}`,
-  };
+  return _getPowerToolsEnv(scope, ApplicationConfig.of(scope).applicationName);
 }
 
 /**
@@ -484,12 +445,16 @@ export function getPowerToolsEnv(scope: IConstruct): Record<string, string> {
  *
  * The hash appendix is generated from the stage name, region, and scope.node.addr.
  * @param scope Scope to hash against
- * @param name Name of the resource to append safe hash to
+ * @param resourceName Name of the resource to append safe hash to
  * @returns Returned name with hash appendix.
  */
-export function safeResourceName(scope: IConstruct, name: string): string {
-  const stageName = getStageName(scope) || "";
-  const applicationName = ApplicationConfig.of(scope).applicationName;
-  const hash = shorthash(stageName + Stack.of(scope).region + scope.node.addr);
-  return `${applicationName}-${name}-${hash}`;
+export function safeResourceName(
+  scope: IConstruct,
+  resourceName: string
+): string {
+  return _safeResourceName(
+    scope,
+    resourceName,
+    ApplicationConfig.of(scope).applicationName
+  );
 }

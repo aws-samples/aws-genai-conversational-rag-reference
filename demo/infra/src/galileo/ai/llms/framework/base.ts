@@ -1,5 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { ServiceQuotas } from "@aws/galileo-cdk/src/common/resources/service-quota";
 import * as Models from "@aws/galileo-sdk/lib/models";
 import { Duration, Lazy, Stack, Tags } from "aws-cdk-lib";
 import { IVpc } from "aws-cdk-lib/aws-ec2";
@@ -7,7 +8,6 @@ import * as iam from "aws-cdk-lib/aws-iam";
 import * as sagemaker from "aws-cdk-lib/aws-sagemaker";
 import { NagSuppressions } from "cdk-nag";
 import { Construct } from "constructs";
-import { ServiceQuotas } from "../../../core/service-quota";
 
 export interface BaseLLMProps {
   /**
