@@ -6,14 +6,13 @@ import {
   Duration,
   Lazy,
   Stack,
-} from "aws-cdk-lib";
-import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
-import { Runtime } from "aws-cdk-lib/aws-lambda";
-import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
-import { Provider } from "aws-cdk-lib/custom-resources";
-import { NagSuppressions } from "cdk-nag";
-import { Construct, IConstruct, IDependable } from "constructs";
-import { ServiceQuotaRequirement } from "./handler";
+} from 'aws-cdk-lib';
+import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { Provider } from 'aws-cdk-lib/custom-resources';
+import { NagSuppressions } from 'cdk-nag';
+import { Construct, IConstruct, IDependable } from 'constructs';
+import { HandlerFunction } from './handler-function';
+import { ServiceQuotaRequirement } from './handler.lambda';
 
 export { ServiceQuotaRequirement };
 
@@ -27,7 +26,7 @@ function rootStackOf(scope: IConstruct): Stack {
 }
 
 export class ServiceQuotas extends Construct implements IDependable {
-  static readonly UUID: string = "ServiceQuotas_2MTWPddYlb";
+  static readonly UUID: string = 'ServiceQuotas_2MTWPddYlb';
 
   static of(scope: IConstruct): ServiceQuotas {
     const rootStack = rootStackOf(scope);
@@ -40,7 +39,7 @@ export class ServiceQuotas extends Construct implements IDependable {
   static addRequirement(
     scope: IConstruct,
     requirement: ServiceQuotaRequirement,
-    addDependency: boolean = true
+    addDependency: boolean = true,
   ): void {
     const serviceQuota = ServiceQuotas.of(scope);
     serviceQuota.addRequirement(requirement);
@@ -58,16 +57,13 @@ export class ServiceQuotas extends Construct implements IDependable {
   protected constructor(scope: Construct, id: string) {
     super(scope, id);
 
-    const onEventHandler = new NodejsFunction(this, "Lambda", {
-      runtime: Runtime.NODEJS_18_X,
-      entry: require.resolve("./handler/index"),
-      handler: "handler",
+    const onEventHandler = new HandlerFunction(this, 'Lambda', {
       timeout: Duration.minutes(5),
       initialPolicy: [
         new PolicyStatement({
           effect: Effect.ALLOW,
-          actions: ["servicequotas:ListServiceQuotas"],
-          resources: ["*"],
+          actions: ['servicequotas:ListServiceQuotas'],
+          resources: ['*'],
         }),
       ],
     });
@@ -75,21 +71,21 @@ export class ServiceQuotas extends Construct implements IDependable {
       onEventHandler,
       [
         {
-          id: "AwsPrototyping-IAMNoManagedPolicies",
+          id: 'AwsPrototyping-IAMNoManagedPolicies',
           reason:
-            "AWS lambda basic execution role is acceptable since it allows for logging",
+            'AWS lambda basic execution role is acceptable since it allows for logging',
         },
         {
-          id: "AwsPrototyping-IAMNoWildcardPermissions",
+          id: 'AwsPrototyping-IAMNoWildcardPermissions',
           reason:
-            "The handler will not know in advance which quotas it needs to list",
-          appliesTo: ["Resource::*"],
+            'The handler will not know in advance which quotas it needs to list',
+          appliesTo: ['Resource::*'],
         },
       ],
-      true
+      true,
     );
 
-    const provider = new Provider(this, "Provider", {
+    const provider = new Provider(this, 'Provider', {
       onEventHandler,
     });
     const serviceToken = provider.serviceToken;
@@ -98,18 +94,18 @@ export class ServiceQuotas extends Construct implements IDependable {
       provider,
       [
         {
-          id: "AwsPrototyping-IAMNoManagedPolicies",
+          id: 'AwsPrototyping-IAMNoManagedPolicies',
           reason:
-            "AWS lambda basic execution role is acceptable since it allows for logging",
+            'AWS lambda basic execution role is acceptable since it allows for logging',
         },
         {
-          id: "AwsPrototyping-IAMNoWildcardPermissions",
+          id: 'AwsPrototyping-IAMNoWildcardPermissions',
           reason:
-            "The handler will not know in advance which quotas it needs to list",
-          appliesTo: ["Resource::*"],
+            'The handler will not know in advance which quotas it needs to list',
+          appliesTo: ['Resource::*'],
         },
       ],
-      true
+      true,
     );
 
     const requirementsToken = Lazy.string({
@@ -118,21 +114,21 @@ export class ServiceQuotas extends Construct implements IDependable {
       },
     });
 
-    this._resource = new CustomResource(this, "CustomResource", {
+    this._resource = new CustomResource(this, 'CustomResource', {
       serviceToken,
-      resourceType: "Custom::ServiceQuota",
+      resourceType: 'Custom::ServiceQuota',
       properties: {
         ServiceQuotaRequirements: requirementsToken,
         ReportOnly: Lazy.string({
           produce: () => {
-            return this._reportOnly ? "true" : "false";
+            return this._reportOnly ? 'true' : 'false';
           },
         }),
       },
     });
 
     Annotations.of(this).addInfo(
-      `ServiceQuotaRequirements: ${requirementsToken}`
+      `ServiceQuotaRequirements: ${requirementsToken}`,
     );
   }
 

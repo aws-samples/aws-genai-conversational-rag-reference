@@ -953,16 +953,79 @@ importers:
 
   packages/galileo-cdk:
     dependencies:
+      '@aws-cdk/aws-cognito-identitypool-alpha':
+        specifier: ^2.99.1-alpha.0
+        version: 2.99.1-alpha.0(aws-cdk-lib@2.99.1)(constructs@10.2.70)
+      '@aws-cdk/aws-lambda-python-alpha':
+        specifier: ^2.99.1-alpha.0
+        version: 2.99.1-alpha.0(aws-cdk-lib@2.99.1)(constructs@10.2.70)
       '@aws/galileo-sdk':
         specifier: ^0.0.0
         version: link:../galileo-sdk
+      cdk-nag:
+        specifier: ^2.27.147
+        version: 2.27.147(aws-cdk-lib@2.99.1)(constructs@10.2.70)
     devDependencies:
+      '@aws-lambda-powertools/logger':
+        specifier: ^1.12.1
+        version: 1.12.1
+      '@aws-lambda-powertools/metrics':
+        specifier: ^1.12.1
+        version: 1.12.1
+      '@aws-lambda-powertools/parameters':
+        specifier: ^1.12.1
+        version: 1.12.1
+      '@aws-sdk/client-codebuild':
+        specifier: ^3.418.0
+        version: 3.421.0
+      '@aws-sdk/client-dynamodb':
+        specifier: ^3.418.0
+        version: 3.418.0
+      '@aws-sdk/client-service-quotas':
+        specifier: ^3.418.0
+        version: 3.418.0
+      '@aws-sdk/client-sfn':
+        specifier: ^3.418.0
+        version: 3.421.0
+      '@aws-sdk/lib-dynamodb':
+        specifier: ^3.418.0
+        version: 3.418.0(@aws-sdk/client-dynamodb@3.418.0)
+      '@aws-sdk/types':
+        specifier: ^3.418.0
+        version: 3.418.0
+      '@middy/core':
+        specifier: ^4.6.1
+        version: 4.6.1
+      '@middy/error-logger':
+        specifier: ^4.6.1
+        version: 4.6.1
+      '@middy/http-router':
+        specifier: ^4.6.1
+        version: 4.6.1
+      '@middy/input-output-logger':
+        specifier: ^4.6.1
+        version: 4.6.1
+      '@smithy/types':
+        specifier: ^2.3.4
+        version: 2.3.4
+      '@types/aws-lambda':
+        specifier: ^8.10.119
+        version: 8.10.119
       '@types/jest':
         specifier: ^29.5.4
         version: 29.5.4
+      '@types/lodash':
+        specifier: ^4.14.199
+        version: 4.14.199
       '@types/node':
         specifier: ^16
         version: 16.18.39
+      '@types/readline-sync':
+        specifier: ^1.4.4
+        version: 1.4.4
+      '@types/uuid':
+        specifier: ^9.0.3
+        version: 9.0.3
       '@typescript-eslint/eslint-plugin':
         specifier: ^6
         version: 6.6.0(@typescript-eslint/parser@6.6.0)(eslint@8.46.0)(typescript@5.2.2)
@@ -972,9 +1035,18 @@ importers:
       aws-cdk-lib:
         specifier: 2.99.1
         version: 2.99.1(constructs@10.2.70)
+      aws-lambda:
+        specifier: ^1.0.7
+        version: 1.0.7
+      aws-sdk:
+        specifier: ^2.1453.0
+        version: 2.1453.0
       constructs:
         specifier: 10.2.70
         version: 10.2.70
+      esbuild:
+        specifier: ^0.19.4
+        version: 0.19.4
       eslint:
         specifier: ^8
         version: 8.46.0
@@ -1011,18 +1083,36 @@ importers:
       jsii-rosetta:
         specifier: 5.x
         version: 5.1.9
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       npm-check-updates:
         specifier: ^16
         version: 16.14.4
+      pretty-bytes:
+        specifier: ^5.6.0
+        version: 5.6.0
       projen:
         specifier: ^0.73.37
         version: 0.73.37
+      readline-sync:
+        specifier: ^1.4.10
+        version: 1.4.10
+      shorthash2:
+        specifier: ^1.0.3
+        version: 1.0.3
       ts-jest:
         specifier: ^29.1.1
         version: 29.1.1(@babel/core@7.22.9)(esbuild@0.19.4)(jest@29.6.4)(typescript@5.2.2)
+      tsconfig-paths:
+        specifier: ^4.2.0
+        version: 4.2.0
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
+      uuid:
+        specifier: ^9.0.0
+        version: 9.0.0
 
   packages/galileo-cli:
     dependencies:
@@ -1536,27 +1626,23 @@ packages:
 
   /@aws-lambda-powertools/commons@1.12.1:
     resolution: {integrity: sha512-VChNfDUxxcB5KTfQPkJgxYihEZkrmeOzU9/A9FRBc+3v33EEM59T2pIgBkFy0VoINvGi3MoBEln/wyu2jV0ivA==}
-    dev: false
 
   /@aws-lambda-powertools/logger@1.12.1:
     resolution: {integrity: sha512-QMBkd6/rN2MniiNcWeCigT4AKqH+NG1X6xN8S+YLszd4qJvXvRqx2EBO01WVrtyctOE8IpLqxicevmw1cJqDIA==}
     dependencies:
       '@aws-lambda-powertools/commons': 1.12.1
       lodash.merge: 4.6.2
-    dev: false
 
   /@aws-lambda-powertools/metrics@1.12.1:
     resolution: {integrity: sha512-tdwZBrpm7ouzWe1fWP8dzzuyGI7S1j3kAyXGvIOTQMbQEhN/kkSLohZJyfbpnTT10jLv3ozkgff6ZnWw6mX7fA==}
     dependencies:
       '@aws-lambda-powertools/commons': 1.12.1
-    dev: false
 
   /@aws-lambda-powertools/parameters@1.12.1:
     resolution: {integrity: sha512-+TmZ27DkkLkRTxGqflM1u2f9eiylCuuPajfSOZwxDuBgFbEsP6iIDmrCIUOrM7phR0zpq/JBHx+vSeiFQWpzjg==}
     dependencies:
       '@aws-lambda-powertools/commons': 1.12.1
       '@aws-sdk/util-base64-node': 3.209.0
-    dev: false
 
   /@aws-lambda-powertools/tracer@1.12.1:
     resolution: {integrity: sha512-ehaa9JzAfNvoHTbqv/bbu+cJD9RZXPEh22g47vMyQ2qg5e3Xe8wyzecFU35rHLlys9CV3SGLuazlyaTc5K3zmA==}
@@ -1654,7 +1740,6 @@ packages:
       tslib: 2.6.2
     transitivePeerDependencies:
       - aws-crt
-    dev: false
 
   /@aws-sdk/client-cognito-identity-provider@3.421.0:
     resolution: {integrity: sha512-5F0mbbu6X2SnuQLOoGmzYrJ6fFVGNFTk1MzwMpJfgIxprOWXNCDl4pVbEwVsExxMEjpVDcmncqLsJkYa/1jMyg==}
@@ -2078,7 +2163,6 @@ packages:
       tslib: 2.6.2
     transitivePeerDependencies:
       - aws-crt
-    dev: false
 
   /@aws-sdk/client-ssm@3.421.0:
     resolution: {integrity: sha512-xdysVX+b0kmt8uEAIlkWNqyvYKVHFQepDlERHa9sXxPB8KEdzgm/To+WlAHE0Ujg6ju0Vf4FZdKA5k/+1Pbydw==}
@@ -2249,7 +2333,6 @@ packages:
       tslib: 2.6.2
     transitivePeerDependencies:
       - aws-crt
-    dev: false
 
   /@aws-sdk/client-sts@3.388.0:
     resolution: {integrity: sha512-y9FAcAYHT8O6T/jqhgsIQUb4gLiSTKD3xtzudDvjmFi8gl0oRIY1npbeckSiK6k07VQugm2s64I0nDnDxtWsBg==}
@@ -2385,7 +2468,6 @@ packages:
       tslib: 2.6.2
     transitivePeerDependencies:
       - aws-crt
-    dev: false
 
   /@aws-sdk/credential-provider-cognito-identity@3.388.0:
     resolution: {integrity: sha512-j1oyBc0/O76YouOC2wMZuQUfHOjfrKWgBibIwrwqEqacYWMx/IBxZkk9j2fFerIVaKhhMNkZHAGb+qBx0urR/Q==}
@@ -2482,7 +2564,6 @@ packages:
       tslib: 2.6.2
     transitivePeerDependencies:
       - aws-crt
-    dev: false
 
   /@aws-sdk/credential-provider-node@3.388.0:
     resolution: {integrity: sha512-BqWAkIG08gj/wevpesaZhAjALjfUNVjseHQRk+DNUoHIfyibW7Ahf3q/GIPs11dA2o8ECwR9/fo68Sq+sK799A==}
@@ -2538,7 +2619,6 @@ packages:
       tslib: 2.6.2
     transitivePeerDependencies:
       - aws-crt
-    dev: false
 
   /@aws-sdk/credential-provider-process@3.387.0:
     resolution: {integrity: sha512-tQScLHmDlqkQN+mqw4s3cxepEUeHYDhFl5eH+J8puvPqWjXMYpCEdY79SAtWs6SZd4CWiZ0VLeYU6xQBZengbQ==}
@@ -2603,7 +2683,6 @@ packages:
       tslib: 2.6.2
     transitivePeerDependencies:
       - aws-crt
-    dev: false
 
   /@aws-sdk/credential-provider-web-identity@3.387.0:
     resolution: {integrity: sha512-6ueMPl+J3KWv6ZaAWF4Z138QCuBVFZRVAgwbtP3BNqWrrs4Q6TPksOQJ79lRDMpv0EUoyVl04B6lldNlhN8RdA==}
@@ -2658,7 +2737,6 @@ packages:
     engines: {node: '>=14.0.0'}
     dependencies:
       tslib: 2.6.2
-    dev: false
 
   /@aws-sdk/lib-dynamodb@3.418.0(@aws-sdk/client-dynamodb@3.418.0):
     resolution: {integrity: sha512-XHY4HeedF8g1q46c9fiknj2iBEEH0SE9gAJIOojQaWzmLLgVs2Rlpr7SfuHWBt5stqDjxphhQYKORSBMhbxauA==}
@@ -3070,7 +3148,6 @@ packages:
     dependencies:
       '@aws-sdk/util-buffer-from': 3.208.0
       tslib: 2.6.2
-    dev: false
 
   /@aws-sdk/util-buffer-from@3.208.0:
     resolution: {integrity: sha512-7L0XUixNEFcLUGPeBF35enCvB9Xl+K6SQsmbrPk1P3mlV9mguWSDQqbOBwY1Ir0OVbD6H/ZOQU7hI/9RtRI0Zw==}
@@ -3078,7 +3155,6 @@ packages:
     dependencies:
       '@aws-sdk/is-array-buffer': 3.201.0
       tslib: 2.6.2
-    dev: false
 
   /@aws-sdk/util-dynamodb@3.418.0(@aws-sdk/client-dynamodb@3.418.0):
     resolution: {integrity: sha512-5DI0m9ipb6yPfWm9DmXCPJrXttLeioWpHQMGbE+MmvAsNy2AmUJZ4kzmmUEE6YazseL78OtNmA7Pm4Bqs5T/lg==}
@@ -6243,31 +6319,26 @@ packages:
   /@middy/core@4.6.1:
     resolution: {integrity: sha512-3fBaaL2fTX0564pkniDBcTm3S8qOatHVZKDZ8GG3ZrmEJhVkWGkv1e4iWywjtBsLaXzho75uuSUFwdeEbl3x5A==}
     engines: {node: '>=16'}
-    dev: false
 
   /@middy/error-logger@4.6.1:
     resolution: {integrity: sha512-DEQfG+bHlgvoimRyO2JGFgQXjYmO9vAIx1Uek7RIzZ//u4Lz37YPS253koN6S5w736tzgXCcCZgPjLMcPvum2w==}
     engines: {node: '>=16'}
-    dev: false
 
   /@middy/http-router@4.6.1:
     resolution: {integrity: sha512-qq4PdzR+rair6sP6nov81xX/uUyJS1Qye1MEQgBav9NrXBoRHOBic+yDFet5iFKdkfn0r+yM7r4cGpwl1GfUjQ==}
     engines: {node: '>=16'}
     dependencies:
       '@middy/util': 4.6.1
-    dev: false
 
   /@middy/input-output-logger@4.6.1:
     resolution: {integrity: sha512-7ln+17epv31yFKZ/nSlHy+zDJi6Hb+fXya7CuCLB62nEPlIvpCFDkLnTEw6Hu1E6eEOfc+rcSYoi4AUrDLiyGQ==}
     engines: {node: '>=16'}
     dependencies:
       '@middy/util': 4.6.1
-    dev: false
 
   /@middy/util@4.6.1:
     resolution: {integrity: sha512-EylBSkcSU+vg8dBFUu0x494EXzjG3DrTSzePf5pFHzaGeTh0GliButSQXO4PU4eK1p2XUW2Cx0vCYoTbsNAtYA==}
     engines: {node: '>=16'}
-    dev: false
 
   /@mswjs/cookies@0.2.2:
     resolution: {integrity: sha512-mlN83YSrcFgk7Dm1Mys40DLssI1KdJji2CMKN8eOlBqsTADYzj2+jWzsANsUTFbxDMWPD5e9bfA1RGqBpS3O1g==}
@@ -11720,7 +11791,7 @@ packages:
     resolution: {integrity: sha512-xq+q3SRMOxGivLhBNaUdC64hDTQwejJ+H0T/NB1XMtTVEwNTrfFF3gAxiyW0Bu/xWEGhjVKgUcMhCrUy2+uCWg==}
     dependencies:
       base64-js: 1.5.1
-      ieee754: 1.1.13
+      ieee754: 1.2.1
       isarray: 1.0.0
 
   /buffer@5.6.0:
@@ -15789,6 +15860,7 @@ packages:
 
   /ieee754@1.1.13:
     resolution: {integrity: sha512-4vf7I2LYV/HaWerSo3XmlMkp5eZ83i+/CDluXi/IGTs/O1sejBNhTtnxzmRZfvOUqj7lZjqHkeTvpgSFDlWZTg==}
+    dev: true
 
   /ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
@@ -22259,7 +22331,6 @@ packages:
   /readline-sync@1.4.10:
     resolution: {integrity: sha512-gNva8/6UAe8QYepIQH/jQ2qn91Qj0B9sYjMBBs3QOB8F2CXcKgLxQaJRP76sWVRQt+QU+8fAkCbCvjjMFu7Ycw==}
     engines: {node: '>= 0.8.0'}
-    dev: false
 
   /realpath-missing@1.1.0:
     resolution: {integrity: sha512-wnWtnywepjg/eHIgWR97R7UuM5i+qHLA195qdN9UPKvcMqfn60+67S8sPPW3vDlSEfYHoFkKU8IvpCNty3zQvQ==}
@@ -25410,7 +25481,7 @@ packages:
     resolution: {integrity: sha512-drPFnkQJik/O+uPKpqSgr22mpuFHqKdbS835iAQrUC73L2F5WkboIRd63ai/2Yg6I1jzifPFKH2NTK+cfglkIA==}
     engines: {node: '>=4.0.0'}
     dependencies:
-      sax: 1.2.1
+      sax: 1.2.4
       xmlbuilder: 11.0.1
     dev: true
 

@@ -114,6 +114,27 @@
         "cwd": "packages/galileo-cdk"
       }
     },
+    "bundle:common/resources/service-quota/handler.lambda": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec projen bundle:common/resources/service-quota/handler.lambda",
+        "cwd": "packages/galileo-cdk"
+      }
+    },
+    "bundle": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec projen bundle",
+        "cwd": "packages/galileo-cdk"
+      }
+    },
+    "bundle:common/resources/service-quota/handler.lambda:watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec projen bundle:common/resources/service-quota/handler.lambda:watch",
+        "cwd": "packages/galileo-cdk"
+      }
+    },
     "eslint-staged": {
       "executor": "nx:run-commands",
       "options": {

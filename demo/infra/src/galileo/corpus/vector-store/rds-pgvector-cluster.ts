@@ -1,5 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { stageAwareRemovalPolicy } from "@aws/galileo-cdk/lib/common";
 import { CfnOutput, RemovalPolicy } from "aws-cdk-lib";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import { IGrantable } from "aws-cdk-lib/aws-iam";
@@ -7,7 +8,6 @@ import * as rds from "aws-cdk-lib/aws-rds";
 import { ISecret } from "aws-cdk-lib/aws-secretsmanager";
 import { NagSuppressions } from "cdk-nag";
 import { Construct } from "constructs";
-import { stageAwareRemovalPolicy } from "../../../application/context";
 
 export interface RDSVectorStoreProps {
   readonly vpc: ec2.IVpc;

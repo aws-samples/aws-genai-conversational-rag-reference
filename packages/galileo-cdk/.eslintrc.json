@@ -148,7 +148,8 @@
       {
         "devDependencies": [
           "**/test/**",
-          "**/build-tools/**"
+          "**/build-tools/**",
+          "src/common/resources/service-quota/handler.lambda.ts"
         ],
         "optionalDependencies": false,
         "peerDependencies": true

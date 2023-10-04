@@ -1,18 +1,18 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { ServiceQuotas, isDevStage } from "@aws/galileo-cdk/lib/common";
 import { CfnOutput, Duration, Stack, StackProps } from "aws-cdk-lib";
 import { GeoRestriction } from "aws-cdk-lib/aws-cloudfront";
 import { Construct } from "constructs";
 import { FoundationModelStack } from "./ai/foundation-models";
 import { InferenceEngine } from "./ai/inference-engine";
-import { IApplicationConfig, isDevStage } from "./context";
+import { IApplicationConfig } from "./context";
 import { CorpusStack } from "./corpus";
 import { AppDataLayer } from "./data";
 import { IdentityLayer } from "./identity";
 import { NetworkingStack } from "./networking/stack";
 import { PresentationStack } from "./presentation";
 import { Tooling } from "./tooling";
-import { ServiceQuotas } from "@aws/galileo-cdk/core/service-quota";
 
 export interface ApplicationProps extends StackProps, IApplicationConfig {
   readonly supportCrossAccountModelAccess?: boolean;

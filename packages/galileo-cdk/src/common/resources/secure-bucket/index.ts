@@ -6,14 +6,10 @@ import {
   Bucket,
   BucketEncryption,
   BucketProps,
-} from "aws-cdk-lib/aws-s3";
-import { NagSuppressions } from "cdk-nag";
-import { Construct, IConstruct } from "constructs";
-import {
-  getRootStack,
-  isDevStage,
-  stageAwareRemovalPolicy,
-} from "../../application/context";
+} from 'aws-cdk-lib/aws-s3';
+import { NagSuppressions } from 'cdk-nag';
+import { Construct, IConstruct } from 'constructs';
+import { getRootStack, isDevStage, stageAwareRemovalPolicy } from '../../utils';
 
 export interface SecureBucketProps extends BucketProps {
   /**
@@ -33,12 +29,12 @@ export interface SecureBucketProps extends BucketProps {
 
 export class SecureBucket extends Bucket {
   static readonly SERVER_ACCESS_LOGS_BUCKET_UUID =
-    "SecureBucket-ServerAccessLogs_TEBvxboJ5D";
+    'SecureBucket-ServerAccessLogs_TEBvxboJ5D';
 
   static serverAccessLogsOf(scope: IConstruct): SecureBucket {
     const rootStack = getRootStack(scope);
     const existing = rootStack.node.tryFindChild(
-      SecureBucket.SERVER_ACCESS_LOGS_BUCKET_UUID
+      SecureBucket.SERVER_ACCESS_LOGS_BUCKET_UUID,
     ) as SecureBucket | undefined;
     if (existing) {
       return existing;
@@ -50,8 +46,8 @@ export class SecureBucket extends Bucket {
       {
         disableServerAccessLogs: true,
         disableServerAccessLogsReason:
-          "Access logging bucket does not require access logging",
-      }
+          'Access logging bucket does not require access logging',
+      },
     );
   }
 
@@ -84,18 +80,18 @@ export class SecureBucket extends Bucket {
       const reason = props.disableServerAccessLogsReason;
       if (reason == null) {
         throw new Error(
-          "SecureBucket requires a reason for disabling server access logs: `disableServerAccessLogsReason`"
+          'SecureBucket requires a reason for disabling server access logs: `disableServerAccessLogsReason`',
         );
       }
       NagSuppressions.addResourceSuppressions(
         this,
         [
           {
-            id: "AwsPrototyping-S3BucketLoggingEnabled",
+            id: 'AwsPrototyping-S3BucketLoggingEnabled',
             reason,
           },
         ],
-        true
+        true,
       );
     }
   }

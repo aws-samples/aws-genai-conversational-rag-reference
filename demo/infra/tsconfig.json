@@ -29,6 +29,7 @@
     "baseUrl": ".",
     "paths": {
       "@aws/galileo-cdk/*": [
+        "@aws/galileo-cdk/*",
         "src/galileo/*"
       ]
     }
