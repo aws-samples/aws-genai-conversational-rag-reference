@@ -27,6 +27,25 @@
       "internalConsoleOptions": "neverOpen"
     },
     {
+      "name": "Galileo SDK - Bedrock Integ",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "--nolazy",
+        "${workspaceRoot}/packages/galileo-sdk/node_modules/jest/bin/jest.js",
+        "--runInBand",
+        "--collectCoverage=false",
+        "--colors",
+        "--verbose",
+        "--testTimeout=100000000",
+        "--testMatch=*/**/bedrock.integ.ts",
+      ],
+      "cwd": "${workspaceFolder}/packages/galileo-sdk",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
       "name": "Galileo Interceptors - Debug Jest",
       "type": "node",
       "request": "launch",

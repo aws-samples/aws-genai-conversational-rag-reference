@@ -332,6 +332,11 @@
       "import": "./lib/prompt/templates/chat/question-answer.js",
       "require": "./lib/prompt/templates/chat/question-answer.cjs"
     },
+    "./lib/utils/bedrock": {
+      "types": "./lib/utils/bedrock.d.ts",
+      "import": "./lib/utils/bedrock.js",
+      "require": "./lib/utils/bedrock.cjs"
+    },
     "./lib/vectorstores": {
       "types": "./lib/vectorstores/index.d.ts",
       "import": "./lib/vectorstores/index.js",

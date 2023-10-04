@@ -11,6 +11,7 @@ import { resolveFoundationModelCredentials } from '../models/cross-account.js';
 import { FoundationModelInventory } from '../models/index.js';
 import { IModelInfo, Kwargs, isBedrockFramework, isSageMakerEndpointFramework } from '../models/types.js';
 import { ChatCondenseQuestionPromptRuntime, ChatCondenseQuestionPromptTemplate, ChatQuestionAnswerPromptRuntime, ChatQuestionAnswerPromptTemplate } from '../prompt/templates/chat/index.js';
+import { omitManagedBedrockKwargs } from '../utils/bedrock.js';
 
 const logger = getLogger('chat/adapter');
 
@@ -123,12 +124,14 @@ export class ChatEngineContext {
     } else if (isBedrockFramework(modelInfo.framework)) {
       const { modelId, region, role, endpointUrl } = modelInfo.framework;
 
-      const kwargs = {
+      const modelKwargs = {
+        maxTokens: 500,
+        temperature: 0,
         ...modelInfo.framework.modelKwargs,
         ...options.endpointKwargs,
         ...options.modelKwargs,
       };
-      logger.debug('Resolved bedrock kwargs', { kwargs });
+      logger.debug('Resolved bedrock kwargs', { modelKwargs });
 
       this.llm = new Bedrock({
         verbose: options.verbose,
@@ -138,7 +141,8 @@ export class ChatEngineContext {
         model: modelId,
         region,
         endpointUrl,
-        ...kwargs,
+        ...modelKwargs,
+        modelKwargs: omitManagedBedrockKwargs(modelKwargs),
       });
     } else {
       // @ts-ignore
