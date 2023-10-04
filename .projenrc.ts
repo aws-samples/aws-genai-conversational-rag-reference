@@ -7,9 +7,6 @@ const DEMO_DIR = "demo";
 const DEMO_NAME = "Galileo";
 
 const monorepo = new MonorepoProject({
-  bin: {
-    "galileo-cli": "./bin/galileo-cli.ts",
-  },
   devDeps: [
     "@types/clear",
     "@types/figlet",
@@ -53,8 +50,6 @@ monorepo.tryFindObjectFile("tsconfig.json")?.addOverride(
 });
 
 monorepo.eslint?.addIgnorePattern(DEMO_DIR + "/**/*.*");
-
-monorepo.package.setScript("galileo-cli", "pnpm dlx tsx ./bin/galileo-cli.ts");
 
 // Just some helper tasks to abstract deployment for consumers
 monorepo.addTask("bootstrap-account", {

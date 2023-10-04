@@ -1,5 +1,5 @@
 {
-  "name": "@aws-galileo/cli",
+  "name": "@aws/galileo-cli",
   "root": "packages/galileo-cli",
   "targets": {
     "default": {
