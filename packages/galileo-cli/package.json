@@ -1,7 +1,7 @@
 {
-  "name": "@aws-galileo/cli",
+  "name": "@aws/galileo-cli",
   "bin": {
-    "galileo-cli-experimental": "bin/galileo-cli.ts"
+    "galileo-cli": "bin/galileo-cli.ts"
   },
   "scripts": {
     "build": "npx projen build",
@@ -130,7 +130,7 @@
     "oclif.manifest.json"
   ],
   "oclif": {
-    "bin": "galileo-cli-experimental",
+    "bin": "galileo-cli",
     "dirname": "galileo-cli-dir",
     "commands": "src/commands",
     "hooks": {

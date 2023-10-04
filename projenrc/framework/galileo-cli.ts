@@ -10,7 +10,7 @@ import {
 import { TypeScriptAppProject } from "projen/lib/typescript";
 import { DEFAULT_RELEASE_BRANCH, PROJECT_AUTHOR, VERSIONS } from "../constants";
 
-const CLI_NAME = "galileo-cli-experimental";
+const CLI_NAME = "galileo-cli";
 
 /**
  * Galileo CLI
@@ -69,7 +69,7 @@ export class GalileoCli extends TypeScriptAppProject {
         "@types/prompts",
         "ts-node",
       ],
-      name: "@aws-galileo/cli",
+      name: "@aws/galileo-cli",
       outdir: "packages/galileo-cli",
       package: false,
       packageManager: monorepo.package.packageManager,
