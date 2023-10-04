@@ -58,8 +58,8 @@
     "webpack": "^5.88.2"
   },
   "dependencies": {
-    "@aws-galileo/galileo-sdk": "0.0.0",
     "@aws-northstar/ui": "^1.1.7",
+    "@aws/galileo-sdk": "0.0.0",
     "@cloudscape-design/board-components": "^3.0.35",
     "@cloudscape-design/collection-hooks": "^1.0.23",
     "@cloudscape-design/components": "^3.0.381",

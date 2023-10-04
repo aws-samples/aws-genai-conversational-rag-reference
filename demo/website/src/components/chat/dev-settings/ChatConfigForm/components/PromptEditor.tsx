@@ -5,7 +5,7 @@ import {
   ChatCondenseQuestionPromptTemplateInputValues,
   ChatQuestionAnswerPromptTemplate,
   ChatQuestionAnswerPromptTemplateInputValues,
-} from "@aws-galileo/galileo-sdk/lib/prompt/templates/chat";
+} from "@aws/galileo-sdk/lib/prompt/templates/chat";
 import {
   Box,
   Button,

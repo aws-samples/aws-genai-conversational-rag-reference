@@ -1,5 +1,5 @@
 {
-  "name": "@aws-galileo/galileo-sdk",
+  "name": "@aws/galileo-sdk",
   "scripts": {
     "build": "npx projen build",
     "compile": "npx projen compile",

@@ -7,7 +7,7 @@ import {
   IModelInfoProvider,
   Kwargs,
   ModelFramework,
-} from "@aws-galileo/galileo-sdk/lib/models";
+} from "@aws/galileo-sdk/lib/models";
 import { Construct, IConstruct } from "constructs";
 import { BEDROCK_REGION } from "./ids";
 import { formatBedrockModelUUID } from "./utils";

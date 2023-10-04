@@ -2,7 +2,7 @@
 PDX-License-Identifier: Apache-2.0 */
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { IModelInfo } from "@aws-galileo/galileo-sdk/lib/models";
+import { IModelInfo } from "@aws/galileo-sdk/lib/models";
 import { Annotations } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import * as readlineSync from "readline-sync";

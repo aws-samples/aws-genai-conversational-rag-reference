@@ -1,6 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { DistanceStrategy, PGVectorStore } from '@aws-galileo/galileo-sdk/lib/vectorstores';
+import { DistanceStrategy, PGVectorStore } from '@aws/galileo-sdk/lib/vectorstores';
 import { FakeEmbeddings } from 'langchain/embeddings/fake';
 import { vectorStoreFactory } from '.';
 import { ENV } from '../env';

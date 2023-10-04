@@ -1,10 +1,10 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { listChatMessagesByTime } from "@aws-galileo/galileo-sdk/lib/chat/dynamodb/lib/messages";
+import { listChatMessagesByTime } from "@aws/galileo-sdk/lib/chat/dynamodb/lib/messages";
 import {
   parseNextToken,
   generateNextToken,
-} from "@aws-galileo/galileo-sdk/lib/chat/dynamodb/lib/util";
+} from "@aws/galileo-sdk/lib/chat/dynamodb/lib/util";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { interceptors } from "api-typescript-interceptors";

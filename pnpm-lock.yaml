@@ -358,9 +358,6 @@ importers:
 
   demo/corpus/logic:
     dependencies:
-      '@aws-galileo/galileo-sdk':
-        specifier: 0.0.0
-        version: link:../../../packages/galileo-sdk
       '@aws-lambda-powertools/logger':
         specifier: ^1.12.1
         version: 1.12.1
@@ -370,6 +367,9 @@ importers:
       '@aws-lambda-powertools/parameters':
         specifier: ^1.12.1
         version: 1.12.1
+      '@aws/galileo-sdk':
+        specifier: 0.0.0
+        version: link:../../../packages/galileo-sdk
       '@middy/core':
         specifier: ^4.6.1
         version: 4.6.1
@@ -494,9 +494,6 @@ importers:
       '@aws-cdk/aws-lambda-python-alpha':
         specifier: ^2.99.1-alpha.0
         version: 2.99.1-alpha.0(aws-cdk-lib@2.99.1)(constructs@10.2.70)
-      '@aws-galileo/galileo-sdk':
-        specifier: 0.0.0
-        version: link:../../packages/galileo-sdk
       '@aws-lambda-powertools/logger':
         specifier: ^1.12.1
         version: 1.12.1
@@ -551,6 +548,9 @@ importers:
       '@aws/galileo-cdk':
         specifier: ^0.0.0
         version: link:../../packages/galileo-cdk
+      '@aws/galileo-sdk':
+        specifier: 0.0.0
+        version: link:../../packages/galileo-sdk
       '@aws/pdk':
         specifier: 0.22.9
         version: 0.22.9(@aws-cdk/aws-cognito-identitypool-alpha@2.99.1-alpha.0)(@pnpm/logger@5.0.0)(@types/node@16.18.39)(aws-cdk-lib@2.99.1)(cdk-nag@2.27.147)(constructs@10.2.70)(projen@0.73.37)(typescript@5.2.2)
@@ -757,12 +757,12 @@ importers:
 
   demo/website:
     dependencies:
-      '@aws-galileo/galileo-sdk':
-        specifier: 0.0.0
-        version: link:../../packages/galileo-sdk
       '@aws-northstar/ui':
         specifier: ^1.1.7
         version: 1.1.7(@cloudscape-design/components@3.0.381)(@types/react-dom@18.2.7)(@types/react-router-dom@5.3.3)(@types/react@18.2.21)(react-dom@18.2.0)(react-router-dom@6.15.0)(react@18.2.0)
+      '@aws/galileo-sdk':
+        specifier: 0.0.0
+        version: link:../../packages/galileo-sdk
       '@cloudscape-design/board-components':
         specifier: ^3.0.35
         version: 3.0.35(@cloudscape-design/components@3.0.381)(@cloudscape-design/design-tokens@3.0.23)(react-dom@18.2.0)(react@18.2.0)
@@ -953,7 +953,7 @@ importers:
 
   packages/galileo-cdk:
     dependencies:
-      '@aws-galileo/galileo-sdk':
+      '@aws/galileo-sdk':
         specifier: ^0.0.0
         version: link:../galileo-sdk
     devDependencies:

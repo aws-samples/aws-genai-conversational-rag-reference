@@ -3,7 +3,7 @@ PDX-License-Identifier: Apache-2.0 */
 import {
   FALCON_ADAPTER,
   FALCON_MODEL_KWARGS,
-} from "@aws-galileo/galileo-sdk/lib/models/llms/falcon";
+} from "@aws/galileo-sdk/lib/models/llms/falcon";
 import { Construct } from "constructs";
 import { BaseLLMProps } from "../../../framework/base";
 import { HuggingFaceModel } from "../../../framework/huggingface/base";

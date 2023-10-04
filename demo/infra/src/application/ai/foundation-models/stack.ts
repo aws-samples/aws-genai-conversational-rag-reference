@@ -3,7 +3,7 @@ PDX-License-Identifier: Apache-2.0 */
 import {
   ModelFramework,
   isBedrockFramework,
-} from "@aws-galileo/galileo-sdk/lib/models";
+} from "@aws/galileo-sdk/lib/models";
 import {
   Arn,
   ArnFormat,

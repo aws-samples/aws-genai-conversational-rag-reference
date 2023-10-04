@@ -1,7 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 
-import { DistanceStrategy } from "@aws-galileo/galileo-sdk/lib/vectorstores";
+import { DistanceStrategy } from "@aws/galileo-sdk/lib/vectorstores";
 import { BucketInventoryDetails } from "./handlers/inventory";
 
 export interface S3Location {

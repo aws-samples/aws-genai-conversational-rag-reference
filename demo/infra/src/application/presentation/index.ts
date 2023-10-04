@@ -1,5 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { FOUNDATION_MODEL_INVENTORY_SECRET } from "@aws/galileo-sdk/lib/models/env";
 import { PDKNag } from "@aws/pdk/pdk-nag";
 import { StaticWebsite, StaticWebsiteOrigin } from "@aws/pdk/static-website";
 import {
@@ -7,7 +8,6 @@ import {
   Integrations,
   TypeSafeApiIntegration,
 } from "@aws/pdk/type-safe-api";
-import { FOUNDATION_MODEL_INVENTORY_SECRET } from "@aws-galileo/galileo-sdk/lib/models/env";
 import {
   Api as TypeSafeApi,
   ApiIntegrations,

@@ -4,7 +4,7 @@ import {
   IFoundationModelInventory,
   IModelInfoProvider,
   isModelInfoProvider,
-} from "@aws-galileo/galileo-sdk/lib/models";
+} from "@aws/galileo-sdk/lib/models";
 import { Duration } from "aws-cdk-lib";
 import { IVpc } from "aws-cdk-lib/aws-ec2";
 import { Construct } from "constructs";

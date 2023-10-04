@@ -140,10 +140,6 @@
       "type": "runtime"
     },
     {
-      "name": "@aws-galileo/galileo-sdk",
-      "type": "runtime"
-    },
-    {
       "name": "@aws-lambda-powertools/logger",
       "type": "runtime"
     },
@@ -224,6 +220,10 @@
     },
     {
       "name": "@aws/galileo-cdk",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws/galileo-sdk",
       "type": "runtime"
     },
     {
