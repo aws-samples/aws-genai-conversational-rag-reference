@@ -10,7 +10,7 @@ import { Website } from "./website";
 import { Sample } from "./sample";
 import { DEFAULT_RELEASE_BRANCH, VERSIONS } from "../constants";
 import { EULA_ENABLED_CONTEXT } from "../../demo/infra/src/galileo/ai/llms/framework/eula/context";
-import { IApplicationContext } from "../../demo/infra/src/application/context";
+import { IApplicationContext } from "../../packages/galileo-cdk/src/core/app/context";
 import { extractPeerDeps } from "../helpers/extract-peer-deps";
 import { FoundationModelIds } from "../../demo/infra/src/application/ai/foundation-models/ids";
 
@@ -107,21 +107,21 @@ export class Infra {
         // Indicates if LLM End-User License Agreement verification is enabled
         [EULA_ENABLED_CONTEXT]: false, // TODO: Re-enable EULA for beta
         ...({
-          ApplicationName: applicationName,
-          ChatDomain: "Legal",
-          IncludeSampleDataset: true,
+          applicationName,
+          chatDomain: "Legal",
+          includeSampleDataset: true,
           // FoundationModelRegion: "us-east-1",
-          DefaultModelId: FoundationModelIds.FALCON_LITE,
-          FoundationModels: [
+          defaultModelId: FoundationModelIds.FALCON_LITE,
+          foundationModels: [
             // FoundationModelIds.FALCON_40B,
             // FoundationModelIds.FALCON_OA_7B,
             FoundationModelIds.FALCON_LITE,
           ],
-          WebsiteContentPath: path.relative(
+          websiteContentPath: path.relative(
             path.join(options.monorepo.outdir, rootOutdir, "infra"),
             path.join(website.project.outdir, "build")
           ),
-          CorpusDockerImagePath: path.relative(
+          corpusDockerImagePath: path.relative(
             path.join(options.monorepo.outdir, rootOutdir, "infra"),
             path.join(corpus.dockerOutdir)
           ),

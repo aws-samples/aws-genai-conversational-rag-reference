@@ -106,8 +106,8 @@ export default class DeployCommand extends Command {
 
     // collect information for cdkContext and deployStacks
     if (email?.length && username?.length) {
-      context.cdkContext.set("AdminEmail", email);
-      context.cdkContext.set("AdminUsername", username);
+      context.cdkContext.set("adminEmail", email);
+      context.cdkContext.set("adminUsername", username);
     }
     if (deployApp) {
       context.deployStacks.push(`Dev/${applicationName}`);
@@ -115,16 +115,16 @@ export default class DeployCommand extends Command {
     if (deploySample) {
       context.deployStacks.push(`Dev/${applicationName}-SampleDataset`);
     }
-    context.cdkContext.set("IncludeSampleDataset", deploySample as boolean);
+    context.cdkContext.set("includeSampleDataset", deploySample as boolean);
 
-    context.cdkContext.set("FoundationModels", foundationModels.join(","));
-    defaultModelId && context.cdkContext.set("DefaultModelId", defaultModelId);
+    context.cdkContext.set("foundationModels", foundationModels.join(","));
+    defaultModelId && context.cdkContext.set("defaultModelId", defaultModelId);
 
     if (includesBedrock) {
-      context.cdkContext.set("BedrockModelIds", bedrockModelIds.join(","));
-      context.cdkContext.set("BedrockRegion", bedrockRegion);
+      context.cdkContext.set("bedrockModelIds", bedrockModelIds.join(","));
+      context.cdkContext.set("bedrockRegion", bedrockRegion);
       if (bedrockEndpointUrl && bedrockEndpointUrl.length) {
-        context.cdkContext.set("BedrockEndpointUrl", bedrockEndpointUrl);
+        context.cdkContext.set("bedrockEndpointUrl", bedrockEndpointUrl);
       }
     }
 
@@ -141,7 +141,7 @@ export default class DeployCommand extends Command {
     }
 
     const modelRegion =
-      context.cdkContext.get("FoundationModelRegion") || appRegion;
+      context.cdkContext.get("foundationModelRegion") || appRegion;
 
     const regionsToBootstrap = new Set<string>();
     new Set<string>([appRegion, modelRegion]).forEach(async (_region) => {
@@ -312,7 +312,7 @@ export default class DeployCommand extends Command {
 
     switch (deployModels) {
       case DeployModelOptions.SAME_REGION: {
-        context.cdkContext.set("FoundationModelRegion", appRegion);
+        context.cdkContext.set("foundationModelRegion", appRegion);
         context.deployStacks.push(
           `Dev/${applicationName}/FoundationModelStack`
         );
@@ -329,7 +329,7 @@ export default class DeployCommand extends Command {
             { onCancel: this.onPromptCancel }
           )
         );
-        context.cdkContext.set("FoundationModelRegion", foundationModelRegion);
+        context.cdkContext.set("foundationModelRegion", foundationModelRegion);
         context.deployStacks.push(
           `Dev/${applicationName}/FoundationModelStack`
         );
@@ -346,8 +346,8 @@ export default class DeployCommand extends Command {
             { onCancel: this.onPromptCancel }
           )
         );
-        context.cdkContext.set("DecoupleStacks", true);
-        context.cdkContext.set("FoundationModelRegion", foundationModelRegion);
+        context.cdkContext.set("decoupleStacks", true);
+        context.cdkContext.set("foundationModelRegion", foundationModelRegion);
         break;
       }
       case DeployModelOptions.CROSS_ACCOUNT: {
@@ -368,17 +368,17 @@ export default class DeployCommand extends Command {
               { onCancel: this.onPromptCancel }
             )
           );
-        context.cdkContext.set("DecoupleStacks", true);
-        context.cdkContext.set("FoundationModelRegion", foundationModelRegion);
+        context.cdkContext.set("decoupleStacks", true);
+        context.cdkContext.set("foundationModelRegion", foundationModelRegion);
         context.cdkContext.set(
-          "FoundationModelCrossAccountRoleArn",
+          "foundationModelCrossAccountRoleArn",
           crossRegionRoleArn
         );
         break;
       }
       case DeployModelOptions.NO: {
-        context.cdkContext.set("FoundationModelRegion", appRegion);
-        context.cdkContext.set("DecoupleStacks", true);
+        context.cdkContext.set("foundationModelRegion", appRegion);
+        context.cdkContext.set("decoupleStacks", true);
         break;
       }
     }

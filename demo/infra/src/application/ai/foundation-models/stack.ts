@@ -1,5 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { ApplicationContext } from "@aws/galileo-cdk/lib/core/app";
 import {
   ModelFramework,
   isBedrockFramework,
@@ -19,7 +20,6 @@ import { NagSuppressions } from "cdk-nag";
 import { Construct } from "constructs";
 import { FoundationModelIds } from "./ids";
 import { FoundationModels, IFoundationModelInventory } from "./models";
-import { safeResourceName } from "../../context";
 import { NetworkingLayer } from "../../networking/layer";
 
 export interface FoundationModelStackProps extends StackProps {
@@ -118,7 +118,7 @@ export class FoundationModelStack extends Stack {
     const applicationRegion = Stack.of(scope).region;
     this.isCrossRegion = applicationRegion !== this.region;
 
-    this.inventorySecretName = safeResourceName(
+    this.inventorySecretName = ApplicationContext.safeResourceName(
       this,
       "FoundationModelInventory"
     );
@@ -178,7 +178,10 @@ export class FoundationModelStack extends Stack {
     }
 
     if (props.crossAccountRole) {
-      const roleName = safeResourceName(scope, "FoundationModel-CrossAccount");
+      const roleName = ApplicationContext.safeResourceName(
+        scope,
+        "FoundationModel-CrossAccount"
+      );
       this._crossAccountRole = new iam.Role(this, "CrossAccountRole", {
         roleName,
         // Developers will add account trust policies to the role via the console.

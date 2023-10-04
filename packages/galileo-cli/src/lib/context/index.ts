@@ -4,7 +4,11 @@ PDX-License-Identifier: Apache-2.0 */
 import path from "node:path";
 import execa from "execa";
 import { JSONStorage } from "node-localstorage";
-import { IApplicationContextKey, helpers } from "../../internals";
+import {
+  IApplicationContextKey,
+  ApplicationContext,
+  helpers,
+} from "../../internals";
 import { CdkContextValue, ExecaCommandReturn, ExecaTask } from "../types";
 
 class Context {
@@ -34,7 +38,16 @@ class Context {
 
   private constructor() {
     this.cache = new JSONStorage(
-      path.join(__dirname, "..", "..", "..", "bin", ".cache", "localstorage")
+      path.join(
+        __dirname,
+        "..",
+        "..",
+        "..",
+        "bin",
+        ".cache",
+        "localstorage",
+        String(ApplicationContext.MAJOR_VERSION)
+      )
     );
 
     this.cdkContext = new Map<IApplicationContextKey, CdkContextValue>();

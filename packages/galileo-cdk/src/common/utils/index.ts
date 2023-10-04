@@ -2,7 +2,7 @@
 PDX-License-Identifier: Apache-2.0 */
 import { RemovalPolicy, Stack, Stage } from 'aws-cdk-lib';
 import { IConstruct } from 'constructs';
-import shorthash = require('shorthash2');
+import shorthash = require('shorthash2'); // eslint-disable-line @typescript-eslint/no-require-imports
 
 /**
  * Get root stack based on scope

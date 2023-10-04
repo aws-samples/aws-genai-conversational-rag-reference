@@ -1,12 +1,12 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import { ServiceQuotas, isDevStage } from "@aws/galileo-cdk/lib/common";
+import { IApplicationContext } from "@aws/galileo-cdk/lib/core/app";
 import { CfnOutput, Duration, Stack, StackProps } from "aws-cdk-lib";
-import { GeoRestriction } from "aws-cdk-lib/aws-cloudfront";
 import { Construct } from "constructs";
 import { FoundationModelStack } from "./ai/foundation-models";
+import { FoundationModelIds } from "./ai/foundation-models/ids";
 import { InferenceEngine } from "./ai/inference-engine";
-import { IApplicationConfig } from "./context";
 import { CorpusStack } from "./corpus";
 import { AppDataLayer } from "./data";
 import { IdentityLayer } from "./identity";
@@ -14,7 +14,7 @@ import { NetworkingStack } from "./networking/stack";
 import { PresentationStack } from "./presentation";
 import { Tooling } from "./tooling";
 
-export interface ApplicationProps extends StackProps, IApplicationConfig {
+export interface ApplicationProps extends StackProps, IApplicationContext {
   readonly supportCrossAccountModelAccess?: boolean;
 }
 
@@ -72,7 +72,7 @@ export class Application extends Stack {
         applicationVpc: vpc,
         crossAccountRole: supportCrossAccountModelAccess,
         decoupled: decoupleStacks,
-        foundationModels,
+        foundationModels: foundationModels as FoundationModelIds[],
         defaultModelId,
         bedrockEndpointUrl,
         bedrockModelIds,
@@ -135,8 +135,7 @@ export class Application extends Stack {
       userPoolWebClientId: identity.userPoolWebClientId,
       userPoolId: identity.userPoolId,
       // website
-      geoRestriction:
-        geoRestriction && GeoRestriction.allowlist(...geoRestriction),
+      geoRestriction,
       websiteContentPath,
       // lambdas
       createChatMessageFn: inferenceEngine.lambda,

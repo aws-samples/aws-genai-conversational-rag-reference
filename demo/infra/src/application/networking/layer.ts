@@ -1,8 +1,8 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { ApplicationContext } from "@aws/galileo-cdk/lib/core/app";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import { Construct } from "constructs";
-import { safeResourceName } from "../context";
 
 export interface NetworkingLayerProps {}
 
@@ -14,7 +14,7 @@ export class NetworkingLayer extends Construct {
   constructor(scope: Construct, id: string, _props?: NetworkingLayerProps) {
     super(scope, id);
 
-    this.vpcName = safeResourceName(this, "Vpc");
+    this.vpcName = ApplicationContext.safeResourceName(this, "Vpc");
 
     this.vpc = new ec2.Vpc(this, "VPC", {
       vpcName: this.vpcName,

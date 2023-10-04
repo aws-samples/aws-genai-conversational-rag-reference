@@ -15,7 +15,7 @@ import {
   DEFAULT_PREDEFINED_FOUNDATION_MODEL_LIST,
   FoundationModelIds,
 } from "../demo/infra/src/application/ai/foundation-models/ids";
-import { IApplicationContextKey } from "../demo/infra/src/application/context";
+import { IApplicationContextKey, ApplicationContext } from "../packages/galileo-cdk/src/core/app/context";
 import {
   BedrockModelIds,
   BEDROCK_DEFAULT_MODEL,
@@ -41,7 +41,7 @@ type Task = Parameters<(typeof execa)["command"]>;
     return execa.command(...args);
   };
 
-  const cache = new JSONStorage(path.join(__dirname, ".cache", "localstorage"));
+  const cache = new JSONStorage(path.join(__dirname, ".cache", "localstorage", String(ApplicationContext.MAJOR_VERSION)));
   const cached = <T extends Record<string, any>>(
     answers: T,
     prefix?: string
@@ -361,27 +361,27 @@ type Task = Parameters<(typeof execa)["command"]>;
   const context = new Map<IApplicationContextKey, string>();
 
   if (adminEmail?.length && adminUsername?.length) {
-    context.set("AdminEmail", adminEmail);
-    context.set("AdminUsername", adminUsername);
+    context.set("adminEmail", adminEmail);
+    context.set("adminUsername", adminUsername);
   }
 
   if (deployApp) {
     stacks.push(`Dev/${applicationName}`);
   }
 
-  context.set("IncludeSampleDataset", deploySample ? "1" : "0");
+  context.set("includeSampleDataset", deploySample ? "1" : "0");
   if (deploySample) {
     stacks.push(`Dev/${applicationName}-SampleDataset`);
   }
 
-  context.set("FoundationModels", foundationModels.join(","));
-  defaultModelId && context.set("DefaultModelId", defaultModelId);
+  context.set("foundationModels", foundationModels.join(","));
+  defaultModelId && context.set("defaultModelId", defaultModelId);
 
   if (includesBedrock) {
-    context.set("BedrockModelIds", bedrockModelIds.join(","));
-    context.set("BedrockRegion", bedrockRegion);
+    context.set("bedrockModelIds", bedrockModelIds.join(","));
+    context.set("bedrockRegion", bedrockRegion);
     if (bedrockEndpointUrl && bedrockEndpointUrl.length) {
-      context.set("BedrockEndpointUrl", bedrockEndpointUrl);
+      context.set("bedrockEndpointUrl", bedrockEndpointUrl);
     }
   }
 
@@ -391,7 +391,7 @@ type Task = Parameters<(typeof execa)["command"]>;
 
   switch (deployModels) {
     case DeployModelOptions.SAME_REGION: {
-      context.set("FoundationModelRegion", region);
+      context.set("foundationModelRegion", region);
       stacks.push(`Dev/${applicationName}/FoundationModelStack`);
       break;
     }
@@ -409,7 +409,7 @@ type Task = Parameters<(typeof execa)["command"]>;
           { onCancel }
         )
       );
-      context.set("FoundationModelRegion", modelRegion);
+      context.set("foundationModelRegion", modelRegion);
       stacks.push(`Dev/${applicationName}/FoundationModelStack`);
       break;
     }
@@ -430,8 +430,8 @@ type Task = Parameters<(typeof execa)["command"]>;
           { onCancel }
         )
       );
-      context.set("DecoupleStacks", "1");
-      context.set("FoundationModelRegion", modelRegion);
+      context.set("decoupleStacks", "1");
+      context.set("foundationModelRegion", modelRegion);
       break;
     }
     case DeployModelOptions.CROSS_ACCOUNT: {
@@ -461,14 +461,14 @@ type Task = Parameters<(typeof execa)["command"]>;
           { onCancel }
         )
       );
-      context.set("DecoupleStacks", "1");
-      context.set("FoundationModelRegion", modelRegion);
-      context.set("FoundationModelCrossAccountRoleArn", crossRegionRoleArn);
+      context.set("decoupleStacks", "1");
+      context.set("foundationModelRegion", modelRegion);
+      context.set("foundationModelCrossAccountRoleArn", crossRegionRoleArn);
       break;
     }
     case DeployModelOptions.NO: {
-      context.set("FoundationModelRegion", region);
-      context.set("DecoupleStacks", "1");
+      context.set("foundationModelRegion", region);
+      context.set("decoupleStacks", "1");
       break;
     }
   }
@@ -478,7 +478,7 @@ type Task = Parameters<(typeof execa)["command"]>;
     await execCommand("pnpm projen", { cwd: ROOT });
   }
 
-  const modelRegion = context.get("FoundationModelRegion") || region;
+  const modelRegion = context.get("foundationModelRegion") || region;
 
   const regionsToBootstrap = new Set<string>();
   cached(
