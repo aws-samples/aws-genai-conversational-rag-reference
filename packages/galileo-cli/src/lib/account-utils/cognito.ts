@@ -17,7 +17,7 @@ import { CredentialsParams } from "../types";
 export interface CognitoUserInfo {
   readonly email: string;
   readonly username: string;
-  readonly userGroup?: string;
+  readonly group?: string;
 }
 
 export interface CreateCognitoUserRequest
@@ -28,7 +28,7 @@ export interface CreateCognitoUserRequest
 
 export type DeleteCognitoUserRequest = Omit<
   CreateCognitoUserRequest,
-  "userGroup" | "email"
+  "group" | "email"
 >;
 
 export interface BulkCreateCognitoUsersRequest extends CredentialsParams {
@@ -81,23 +81,21 @@ export const createCognitoUser = async (options: CreateCognitoUserRequest) => {
     createUserResp.User?.UserCreateDate
   );
 
-  if (options.userGroup != null) {
+  if (options.group != null) {
     const groupResp = await client.send(
       new GetGroupCommand({
-        GroupName: options.userGroup,
+        GroupName: options.group,
         UserPoolId: options.userPoolId,
       })
     );
 
     if (groupResp.Group == null) {
-      throw new Error(
-        `Provided user group ${options.userGroup} doesn't exist.`
-      );
+      throw new Error(`Provided user group ${options.group} doesn't exist.`);
     }
 
     await client.send(
       new AdminAddUserToGroupCommand({
-        GroupName: options.userGroup!,
+        GroupName: options.group!,
         Username: options.username,
         UserPoolId: options.userPoolId,
       })
@@ -106,7 +104,7 @@ export const createCognitoUser = async (options: CreateCognitoUserRequest) => {
     console.log(
       `User ${chalk.magentaBright(
         options.username
-      )} added to ${chalk.magentaBright(options.userGroup)} user group.`
+      )} added to ${chalk.magentaBright(options.group)} user group.`
     );
   }
 };
@@ -145,10 +143,10 @@ export const bulkCreateCognitoUsers = async (
       createUserResp.User?.UserCreateDate
     );
 
-    if (user.userGroup != null) {
+    if (user.group != null) {
       await client.send(
         new AdminAddUserToGroupCommand({
-          GroupName: user.userGroup!,
+          GroupName: user.group!,
           Username: user.username,
           UserPoolId: options.userPoolId,
         })
@@ -157,7 +155,7 @@ export const bulkCreateCognitoUsers = async (
       console.log(
         `[${idx}] User ${chalk.magentaBright(
           user.username
-        )} added to ${chalk.magentaBright(user.userGroup)} user group.`
+        )} added to ${chalk.magentaBright(user.group)} user group.`
       );
     }
 

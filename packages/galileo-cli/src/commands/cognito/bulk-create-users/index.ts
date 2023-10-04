@@ -28,21 +28,29 @@ Make sure that the CSV file has the following columns: "username,email,group"
   async run(): Promise<void> {
     const { flags } = await this.parse(CognitoBulkCreateUsersCommand);
 
-    const { profile, region, filePath, userGroup } = context.cachedAnswers(
+    const { profile, region } = context.cachedAnswers(
       await prompts(
         [
           galileoPrompts.profile(flags.profile),
           galileoPrompts.awsRegion({
             initialVal: flags.region,
           }),
-          galileoPrompts.userGroup({ initialVal: flags.group }),
-          galileoPrompts.filePathPrompt({
-            initialVal: flags.csvFile,
-            what: "users CSV file",
-          }),
         ],
         { onCancel: this.onPromptCancel }
       )
+    );
+    const { filePath, group } = await prompts(
+      [
+        galileoPrompts.group({
+          message: "User group (for all new users):",
+          initialVal: flags.group,
+        }),
+        galileoPrompts.filePathPrompt({
+          initialVal: flags.csvFile,
+          what: "users CSV file",
+        }),
+      ],
+      { onCancel: this.onPromptCancel }
     );
 
     const userPools = await accountUtils.listCognitoUserPools(profile, region);
@@ -65,7 +73,7 @@ Make sure that the CSV file has the following columns: "username,email,group"
       region,
       csvFile: filePath,
       userPoolId,
-      group: userGroup,
+      group,
     });
   }
 }
