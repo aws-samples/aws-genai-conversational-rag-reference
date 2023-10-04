@@ -49,8 +49,8 @@ export default class DeployCommand extends Command {
     const {
       profile,
       appRegion,
-      adminEmail,
-      adminUsername,
+      email,
+      username,
       deployApp,
       deploySample,
       foundationModels,
@@ -105,9 +105,9 @@ export default class DeployCommand extends Command {
     const account = await accountUtils.retrieveAccount(profile);
 
     // collect information for cdkContext and deployStacks
-    if (adminEmail?.length && adminUsername?.length) {
-      context.cdkContext.set("AdminEmail", adminEmail);
-      context.cdkContext.set("AdminUsername", adminUsername);
+    if (email?.length && username?.length) {
+      context.cdkContext.set("AdminEmail", email);
+      context.cdkContext.set("AdminUsername", username);
     }
     if (deployApp) {
       context.deployStacks.push(`Dev/${applicationName}`);

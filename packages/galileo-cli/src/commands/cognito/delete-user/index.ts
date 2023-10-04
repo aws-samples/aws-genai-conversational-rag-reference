@@ -27,21 +27,25 @@ export default class CognitoDeleteUserCommand extends Command {
 
     let { profile, region, username } = flags;
     if (!flags.skipConfirmations) {
-      const answers = context.cachedAnswers(
+      const answersAccount = context.cachedAnswers(
         await prompts(
           [
             galileoPrompts.profile(flags.profile),
             galileoPrompts.awsRegion({
               initialVal: flags.region,
             }),
-            galileoPrompts.username({ initialVal: flags.username }),
           ],
           { onCancel: this.onPromptCancel }
         )
       );
-      profile = answers.profile!;
-      region = answers.region!;
-      username = answers.username!;
+      const answersUser = await prompts(
+        galileoPrompts.username({ initialVal: flags.username }),
+        { onCancel: this.onPromptCancel }
+      );
+
+      profile = answersAccount.profile!;
+      region = answersAccount.region!;
+      username = answersUser.username!;
     }
 
     const userPools = await accountUtils.listCognitoUserPools(

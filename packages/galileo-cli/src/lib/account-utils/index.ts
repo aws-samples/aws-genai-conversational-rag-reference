@@ -113,10 +113,8 @@ export namespace accountUtils {
 
     if (group != null) {
       records = records.map((user) => {
-        if (user.userGroup == null) {
-          return { ...user, userGroup: group };
-        }
-        return user;
+        // if user group is supplied from the caller (prompt/flag), override group
+        return { ...user, group: group };
       });
     }
 

@@ -26,27 +26,33 @@ export default class CognitoCreateUserCommand extends Command {
   async run(): Promise<void> {
     const { flags } = await this.parse(CognitoCreateUserCommand);
 
-    let { profile, region, email, username, group: userGroup } = flags;
+    let { profile, region, email, username, group } = flags;
     if (!flags.skipConfirmations) {
-      const answers = context.cachedAnswers(
+      const answersAccount = context.cachedAnswers(
         await prompts(
           [
             galileoPrompts.profile(flags.profile),
             galileoPrompts.awsRegion({
               initialVal: flags.region,
             }),
-            galileoPrompts.userEmail({ initialVal: flags.email }),
-            galileoPrompts.username({ initialVal: flags.username }),
-            galileoPrompts.userGroup({ initialVal: flags.group }),
           ],
           { onCancel: this.onPromptCancel }
         )
       );
-      profile = answers.profile!;
-      region = answers.region!;
-      email = answers.email!;
-      username = answers.username!;
-      userGroup = answers.userGroup!;
+      const answersUser = await prompts(
+        [
+          galileoPrompts.email({ initialVal: flags.email }),
+          galileoPrompts.username({ initialVal: flags.username }),
+          galileoPrompts.group({ initialVal: flags.group }),
+        ],
+        { onCancel: this.onPromptCancel }
+      );
+
+      profile = answersAccount.profile!;
+      region = answersAccount.region!;
+      email = answersUser.email!;
+      username = answersUser.username!;
+      group = answersUser.group!;
     }
 
     const userPools = await accountUtils.listCognitoUserPools(
@@ -73,7 +79,7 @@ export default class CognitoCreateUserCommand extends Command {
       email: email!,
       username: username!,
       userPoolId,
-      userGroup,
+      group,
     });
   }
 }

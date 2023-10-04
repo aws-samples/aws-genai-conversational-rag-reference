@@ -86,7 +86,7 @@ namespace galileoPrompts {
       (value && value.length > 0) || `${options.regionType} region is required`,
   });
 
-  export const userEmail = (options?: {
+  export const email = (options?: {
     name?: string;
     message?: string;
     initialVal?: string;
@@ -113,7 +113,7 @@ namespace galileoPrompts {
         context.cache.getItem(options?.name ?? "username"),
     };
   };
-  export const userGroup = (options?: {
+  export const group = (options?: {
     name?: string;
     message?: string;
     initialVal?: string;
@@ -121,17 +121,15 @@ namespace galileoPrompts {
   }): PromptObject => {
     return {
       type: "text",
-      name: options?.name ?? "userGroup",
+      name: options?.name ?? "group",
       message: options?.message ?? "User group",
       initial:
-        options?.initialVal ||
-        context.cache.getItem(options?.name ?? "userGroup"),
+        options?.initialVal || context.cache.getItem(options?.name ?? "group"),
     };
   };
 
   export const adminEmailAndUsername: PromptObject[] = [
-    userEmail({
-      name: "adminEmail",
+    email({
       message:
         "Administrator email address" +
         chalk.reset.grey(
@@ -140,9 +138,9 @@ namespace galileoPrompts {
     }),
     {
       type: (prev) => (prev == null ? false : "text"),
-      name: "adminUsername",
+      name: "username",
       message: "Administrator username",
-      initial: context.cache.getItem("adminUsername") ?? "admin",
+      initial: context.cache.getItem("username") ?? "admin",
     },
   ];
 
