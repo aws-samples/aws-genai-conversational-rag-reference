@@ -1,7 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { envBool } from '@aws-galileo/galileo-sdk/lib/common';
-import { normalizePostgresTableName } from '@aws-galileo/galileo-sdk/lib/vectorstores/pgvector/utils';
+import { envBool } from '@aws/galileo-sdk/lib/common';
+import { normalizePostgresTableName } from '@aws/galileo-sdk/lib/vectorstores/pgvector/utils';
 
 export interface IProcessEnv {
   /** Necessary to connect to rds instance - https://github.com/brianc/node-postgres/issues/2607 */

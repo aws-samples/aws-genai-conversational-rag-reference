@@ -1,6 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { deleteChatMessage } from "@aws-galileo/galileo-sdk/lib/chat/dynamodb/lib/messages";
+import { deleteChatMessage } from "@aws/galileo-sdk/lib/chat/dynamodb/lib/messages";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { interceptors } from "api-typescript-interceptors";

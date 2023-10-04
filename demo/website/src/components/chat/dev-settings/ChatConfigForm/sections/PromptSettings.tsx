@@ -1,10 +1,10 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import "@aws-galileo/galileo-sdk/lib/langchain/patch";
+import "@aws/galileo-sdk/lib/langchain/patch";
 import {
   ChatCondenseQuestionPromptTemplate,
   ChatQuestionAnswerPromptTemplate,
-} from "@aws-galileo/galileo-sdk/lib/prompt/templates/chat";
+} from "@aws/galileo-sdk/lib/prompt/templates/chat";
 import { Icon, Link, TextContent } from "@cloudscape-design/components";
 import FormField from "@cloudscape-design/components/form-field";
 import SpaceBetween from "@cloudscape-design/components/space-between";

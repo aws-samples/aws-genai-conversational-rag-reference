@@ -58,10 +58,10 @@
     "constructs": "^10.2.70"
   },
   "dependencies": {
-    "@aws-galileo/galileo-sdk": "^0.0.0"
+    "@aws/galileo-sdk": "^0.0.0"
   },
   "bundledDependencies": [
-    "@aws-galileo/galileo-sdk"
+    "@aws/galileo-sdk"
   ],
   "pnpm": {},
   "keywords": [

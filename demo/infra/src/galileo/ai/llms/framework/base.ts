@@ -1,6 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import * as Models from "@aws-galileo/galileo-sdk/lib/models";
+import * as Models from "@aws/galileo-sdk/lib/models";
 import { Duration, Lazy, Stack, Tags } from "aws-cdk-lib";
 import { IVpc } from "aws-cdk-lib/aws-ec2";
 import * as iam from "aws-cdk-lib/aws-iam";

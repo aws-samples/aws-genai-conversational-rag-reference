@@ -8,7 +8,7 @@ import {
   isBedrockFramework,
   IModelFramework,
   ModelFramework,
-} from "@aws-galileo/galileo-sdk/lib/models/types";
+} from "@aws/galileo-sdk/lib/models/types";
 import { Container, Header, Link } from "@cloudscape-design/components";
 import FormField from "@cloudscape-design/components/form-field";
 import Input from "@cloudscape-design/components/input";

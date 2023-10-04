@@ -62,10 +62,10 @@
     "@smithy/types": "^2.3.4"
   },
   "dependencies": {
-    "@aws-galileo/galileo-sdk": "0.0.0",
     "@aws-lambda-powertools/logger": "^1.12.1",
     "@aws-lambda-powertools/metrics": "^1.12.1",
     "@aws-lambda-powertools/parameters": "^1.12.1",
+    "@aws/galileo-sdk": "0.0.0",
     "@middy/core": "^4.6.1",
     "@middy/error-logger": "^4.6.1",
     "@middy/http-router": "^4.6.1",

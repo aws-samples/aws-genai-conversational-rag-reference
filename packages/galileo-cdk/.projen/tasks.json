@@ -177,13 +177,13 @@
           "exec": "pnpm update npm-check-updates"
         },
         {
-          "exec": "npm-check-updates --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@types/jest,@types/node,@typescript-eslint/eslint-plugin,@typescript-eslint/parser,eslint-import-resolver-node,eslint-import-resolver-typescript,eslint-plugin-header,eslint-plugin-import,eslint,jest,jest-junit,jsii-diff,jsii-docgen,jsii-pacmak,npm-check-updates,projen,ts-jest,typescript,@aws-galileo/galileo-sdk,aws-cdk-lib,constructs"
+          "exec": "npm-check-updates --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@types/jest,@types/node,@typescript-eslint/eslint-plugin,@typescript-eslint/parser,eslint-import-resolver-node,eslint-import-resolver-typescript,eslint-plugin-header,eslint-plugin-import,eslint,jest,jest-junit,jsii-diff,jsii-docgen,jsii-pacmak,npm-check-updates,projen,ts-jest,typescript,@aws/galileo-sdk,aws-cdk-lib,constructs"
         },
         {
           "exec": "pnpm i --no-frozen-lockfile"
         },
         {
-          "exec": "pnpm update @types/jest @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-import-resolver-node eslint-import-resolver-typescript eslint-plugin-header eslint-plugin-import eslint jest jest-junit jsii-diff jsii-docgen jsii-pacmak npm-check-updates projen ts-jest typescript @aws-galileo/galileo-sdk aws-cdk-lib constructs"
+          "exec": "pnpm update @types/jest @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-import-resolver-node eslint-import-resolver-typescript eslint-plugin-header eslint-plugin-import eslint jest jest-junit jsii-diff jsii-docgen jsii-pacmak npm-check-updates projen ts-jest typescript @aws/galileo-sdk aws-cdk-lib constructs"
         },
         {
           "exec": "npx projen"

@@ -2,8 +2,8 @@
 
 packages:
   - packages/galileo-cli
-  - packages/galileo-sdk
   - packages/galileo-cdk
+  - packages/galileo-sdk
   - demo/api
   - demo/api/generated/documentation/html2
   - demo/api/model

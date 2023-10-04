@@ -45,7 +45,7 @@ export class GalileoSdk extends EsmTypescriptProject {
         `@smithy/types@^${VERSIONS.SMITHY_TYPES}`,
       ],
       publishDryRun: true,
-      name: "@aws-galileo/galileo-sdk",
+      name: "@aws/galileo-sdk",
       outdir: "packages/galileo-sdk",
       // TODO: once we marshal the root module exports better for cross-env/modules we can re-enable this
       // currently will not support root import of the module

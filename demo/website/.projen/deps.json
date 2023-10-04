@@ -173,11 +173,11 @@
       "type": "override"
     },
     {
-      "name": "@aws-galileo/galileo-sdk",
+      "name": "@aws-northstar/ui",
       "type": "runtime"
     },
     {
-      "name": "@aws-northstar/ui",
+      "name": "@aws/galileo-sdk",
       "type": "runtime"
     },
     {

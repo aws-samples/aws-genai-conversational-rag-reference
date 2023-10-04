@@ -1,6 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { getLogger } from '@aws-galileo/galileo-sdk/lib/common';
+import { getLogger } from '@aws/galileo-sdk/lib/common';
 import { Embeddings } from 'langchain/embeddings/base';
 import fetch from 'node-fetch';
 import { ENV } from '../env';

@@ -1,13 +1,13 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { PGVectorStore, PGVectorStoreOptions } from '@aws-galileo/galileo-sdk/lib/vectorstores';
+import { PGVectorStore, PGVectorStoreOptions } from '@aws/galileo-sdk/lib/vectorstores';
 import {
   RDSConnConfig,
   getRDSConnConfig,
-} from '@aws-galileo/galileo-sdk/lib/vectorstores/pgvector/rds';
+} from '@aws/galileo-sdk/lib/vectorstores/pgvector/rds';
 import {
   normalizePostgresTableName,
-} from '@aws-galileo/galileo-sdk/lib/vectorstores/pgvector/utils';
+} from '@aws/galileo-sdk/lib/vectorstores/pgvector/utils';
 import { Embeddings } from 'langchain/embeddings/base';
 import { VectorStore } from 'langchain/vectorstores/base';
 import { ENV } from '../env';

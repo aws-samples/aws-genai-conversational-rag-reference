@@ -3,7 +3,7 @@ PDX-License-Identifier: Apache-2.0 */
 import {
   ModelFramework,
   ISageMakerEndpointModelFramework,
-} from "@aws-galileo/galileo-sdk/lib/models/types";
+} from "@aws/galileo-sdk/lib/models/types";
 import FormField from "@cloudscape-design/components/form-field";
 import SpaceBetween from "@cloudscape-design/components/space-between";
 import { isEmpty } from "lodash";

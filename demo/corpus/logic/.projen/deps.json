@@ -158,10 +158,6 @@
       "type": "peer"
     },
     {
-      "name": "@aws-galileo/galileo-sdk",
-      "type": "runtime"
-    },
-    {
       "name": "@aws-lambda-powertools/logger",
       "type": "runtime"
     },
@@ -171,6 +167,10 @@
     },
     {
       "name": "@aws-lambda-powertools/parameters",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws/galileo-sdk",
       "type": "runtime"
     },
     {

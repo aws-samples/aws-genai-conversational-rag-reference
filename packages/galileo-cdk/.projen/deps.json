@@ -99,7 +99,7 @@
       "type": "build"
     },
     {
-      "name": "@aws-galileo/galileo-sdk",
+      "name": "@aws/galileo-sdk",
       "type": "bundled"
     },
     {
