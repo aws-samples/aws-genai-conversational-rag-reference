@@ -1,12 +1,12 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { ApplicationContext } from "@aws/galileo-cdk/lib/core/app";
 import { Aspects, Stage, StageProps } from "aws-cdk-lib";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import { LAMBDA_RECOGNIZE_LAYER_VERSION } from "aws-cdk-lib/cx-api";
 import { NagSuppressions } from "cdk-nag";
 import { Construct } from "constructs";
 import { SampleDatasetStack } from "sample-dataset";
-import { ApplicationConfig, getPowerToolsEnv } from "./context";
 import { Application } from "./stack";
 
 export interface ApplicationStageProps extends StageProps {
@@ -24,7 +24,7 @@ export class ApplicationStage extends Stage {
       });
     }
 
-    const config = ApplicationConfig.of(this);
+    const config = ApplicationContext.of(this);
     const { applicationName } = config;
 
     const application = new Application(this, applicationName, {
@@ -69,8 +69,8 @@ export class ApplicationStage extends Stage {
       visit: (node) => {
         if (node instanceof lambda.Function) {
           // Add lambda powertools environment vars
-          Object.entries(getPowerToolsEnv(node)).forEach(([key, value]) =>
-            node.addEnvironment(key, value)
+          Object.entries(ApplicationContext.getPowerToolsEnv(node)).forEach(
+            ([key, value]) => node.addEnvironment(key, value)
           );
         }
       },

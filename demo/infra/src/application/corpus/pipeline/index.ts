@@ -1,6 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import { ServiceQuotas, SecureBucket } from "@aws/galileo-cdk/lib/common";
+import { ApplicationContext } from "@aws/galileo-cdk/lib/core/app";
 import {
   ArnFormat,
   CfnOutput,
@@ -38,7 +39,6 @@ import * as tasks from "aws-cdk-lib/aws-stepfunctions-tasks";
 import { NagSuppressions } from "cdk-nag";
 import { Construct } from "constructs";
 import { State, StatePaths } from "./types";
-import { getPowerToolsEnv } from "../../../application/context";
 import { RDSVectorStore } from "@aws/galileo-cdk/corpus/vector-store/rds-pgvector-cluster";
 
 const PROCESSING_INPUT_LOCAL_PATH = "/opt/ml/processing/input_data";
@@ -120,7 +120,7 @@ export class IndexingPipeline extends Construct {
       SubsequentExecutionDelay: executionDelay.toMinutes(),
       Environment: {
         // Available envs are defined in demo/corpus/logic/src/env.ts
-        ...getPowerToolsEnv(this),
+        ...ApplicationContext.getPowerToolsEnv(this),
         ...vectorStore.environment,
         INDEXING_BUCKET: props.inputBucket.bucketName,
         INDEXING_CACHE_TABLE: props.cacheTable.tableName,

@@ -4,15 +4,15 @@
     "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
     "repositoryName": "galileo",
     "@aws-galileo/EULA/ENABLED": false,
-    "ApplicationName": "Galileo",
-    "ChatDomain": "Legal",
-    "IncludeSampleDataset": true,
-    "DefaultModelId": "falcon-lite",
-    "FoundationModels": [
+    "applicationName": "Galileo",
+    "chatDomain": "Legal",
+    "includeSampleDataset": true,
+    "defaultModelId": "falcon-lite",
+    "foundationModels": [
       "falcon-lite"
     ],
-    "WebsiteContentPath": "../website/build",
-    "CorpusDockerImagePath": "../corpus"
+    "websiteContentPath": "../website/build",
+    "corpusDockerImagePath": "../corpus"
   },
   "output": "cdk.out",
   "build": "npx projen bundle",

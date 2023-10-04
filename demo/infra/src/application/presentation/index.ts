@@ -44,7 +44,7 @@ export interface PresentationStackProps
   extends NestedStackProps,
     IIdentityLayer {
   readonly websiteContentPath: string;
-  readonly geoRestriction?: GeoRestriction;
+  readonly geoRestriction?: string | string[] | GeoRestriction;
   readonly datastore: ITable;
   readonly datastoreIndex: string;
   readonly vpc: IVpc;
@@ -276,7 +276,7 @@ export class PresentationStack extends NestedStack {
         defaultBehavior: {
           origin: new StaticWebsiteOrigin(),
         },
-        geoRestriction: props.geoRestriction,
+        geoRestriction: this._resolveGeoRestriction(props.geoRestriction),
       },
     });
 
@@ -302,5 +302,20 @@ export class PresentationStack extends NestedStack {
         resources: [this.typesafeApi.api.arnForExecuteApi("*", "/*", "*")],
       })
     );
+  }
+
+  /** @internal */
+  _resolveGeoRestriction(
+    value?: string | string[] | GeoRestriction
+  ): GeoRestriction | undefined {
+    if (value == null || value instanceof GeoRestriction) {
+      return value;
+    }
+
+    if (typeof value === "string") {
+      value = [value];
+    }
+
+    return GeoRestriction.allowlist(...value);
   }
 }
