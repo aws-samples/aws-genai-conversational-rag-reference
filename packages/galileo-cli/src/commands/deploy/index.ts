@@ -54,6 +54,7 @@ export default class DeployCommand extends Command {
       deployApp,
       deploySample,
       foundationModels,
+      tooling,
     } = context.cachedAnswers(
       await prompts(
         [
@@ -65,6 +66,7 @@ export default class DeployCommand extends Command {
           ...galileoPrompts.adminEmailAndUsername,
           galileoPrompts.confirmDeployApp,
           galileoPrompts.confirmDeploySample,
+          galileoPrompts.confirmTooling,
           galileoPrompts.foundationModels(),
         ],
         { onCancel: this.onPromptCancel }
@@ -116,6 +118,8 @@ export default class DeployCommand extends Command {
       context.deployStacks.push(`Dev/${applicationName}-SampleDataset`);
     }
     context.cdkContext.set("includeSampleDataset", deploySample as boolean);
+
+    context.cdkContext.set("tooling", tooling as boolean);
 
     context.cdkContext.set("foundationModels", foundationModels.join(","));
     defaultModelId && context.cdkContext.set("defaultModelId", defaultModelId);

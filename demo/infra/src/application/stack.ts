@@ -44,6 +44,7 @@ export class Application extends Stack {
       geoRestriction,
       adminEmail,
       adminUsername,
+      tooling: enableTooling,
     } = props;
 
     // Deploy will fail if ServiceQuotas are not met based on underlying infra requirements
@@ -150,7 +151,7 @@ export class Application extends Stack {
     });
 
     // Only add tooling for development stage
-    if (isDevStage(this)) {
+    if (enableTooling === true && isDevStage(this)) {
       const tooling = new Tooling(this, "Tooling", {
         vpc,
         domainName: applicationName,

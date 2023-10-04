@@ -159,6 +159,13 @@ namespace galileoPrompts {
     initial: context.cache.getItem("deploySample") ?? true,
   };
 
+  export const confirmTooling: PromptObject<"tooling"> = {
+    type: "confirm",
+    name: "tooling",
+    message: "Enable tooling in dev stage (SageMaker Studio)?",
+    initial: context.cache.getItem("tooling") ?? false,
+  };
+
   export const foundationModels = (): PromptObject => {
     const selectedFoundationModels = new Set<FoundationModelIds>(
       context.cache.getItem("foundationModels") ||
