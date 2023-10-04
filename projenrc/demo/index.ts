@@ -1,5 +1,5 @@
 import { MonorepoTsProject } from "@aws/pdk/monorepo";
-import { GalileoCdkLib, GalileoSdk } from "../framework";
+import { GalileoCdk, GalileoSdk } from "../framework";
 import { Api } from "./api";
 import { Website } from "./website";
 import { Corpus } from "./corpus";
@@ -10,7 +10,7 @@ export interface DemoOptions {
   readonly monorepo: MonorepoTsProject;
   readonly rootOutdir: string;
   readonly applicationName: string;
-  readonly galileoCdkLib: GalileoCdkLib;
+  readonly galileoCdkLib: GalileoCdk;
   readonly galileoSdk: GalileoSdk;
 }
 

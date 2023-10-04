@@ -37,10 +37,10 @@ import * as tasks from "aws-cdk-lib/aws-stepfunctions-tasks";
 import { NagSuppressions } from "cdk-nag";
 import { Construct } from "constructs";
 import { State, StatePaths } from "./types";
-import { ServiceQuotas } from "../../../galileo/core/service-quota";
-import { RDSVectorStore } from "../../../galileo/corpus/vector-store/rds-pgvector-cluster";
-import { SecureBucket } from "../../../galileo/s3/secure-bucket";
 import { getPowerToolsEnv } from "../../context";
+import { ServiceQuotas } from "@aws/galileo-cdk/core/service-quota";
+import { RDSVectorStore } from "@aws/galileo-cdk/corpus/vector-store/rds-pgvector-cluster";
+import { SecureBucket } from "@aws/galileo-cdk/s3/secure-bucket";
 
 const PROCESSING_INPUT_LOCAL_PATH = "/opt/ml/processing/input_data";
 

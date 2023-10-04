@@ -122,6 +122,10 @@
       "type": "build"
     },
     {
+      "name": "tsconfig-paths",
+      "type": "build"
+    },
+    {
       "name": "typescript",
       "type": "build"
     },
@@ -216,6 +220,10 @@
     {
       "name": "@aws-sdk/types",
       "version": "^3.418.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws/galileo-cdk",
       "type": "runtime"
     },
     {

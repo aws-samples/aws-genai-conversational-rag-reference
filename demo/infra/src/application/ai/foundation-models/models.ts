@@ -17,16 +17,16 @@ import {
 import {
   BEDROCK_DEFAULT_MODEL,
   BedrockModel,
-} from "../../../galileo/ai/llms/framework/bedrock";
-import { ModelEULA } from "../../../galileo/ai/llms/framework/eula";
+} from "@aws/galileo-cdk/ai/llms/framework/bedrock";
+import { ModelEULA } from "@aws/galileo-cdk/ai/llms/framework/eula";
 import {
   FalconLite,
   FalconLiteInstances,
-} from "../../../galileo/ai/llms/models/falcon/lite";
+} from "@aws/galileo-cdk/ai/llms/models/falcon/lite";
 import {
   HuggingFaceFalcon,
   HuggingFaceFalconInstances,
-} from "../../../galileo/ai/llms/models/falcon/tgi";
+} from "@aws/galileo-cdk/ai/llms/models/falcon/tgi";
 
 export { IFoundationModelInventory };
 

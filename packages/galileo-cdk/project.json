@@ -1,131 +1,131 @@
 {
-  "name": "@aws-galileo/galileo-cdk-lib",
-  "root": "packages/galileo-cdk-lib",
+  "name": "@aws/galileo-cdk",
+  "root": "packages/galileo-cdk",
   "targets": {
     "default": {
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec projen default",
-        "cwd": "packages/galileo-cdk-lib"
+        "cwd": "packages/galileo-cdk"
       }
     },
     "pre-compile": {
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec projen pre-compile",
-        "cwd": "packages/galileo-cdk-lib"
+        "cwd": "packages/galileo-cdk"
       }
     },
     "compile": {
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec projen compile",
-        "cwd": "packages/galileo-cdk-lib"
+        "cwd": "packages/galileo-cdk"
       }
     },
     "post-compile": {
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec projen post-compile",
-        "cwd": "packages/galileo-cdk-lib"
+        "cwd": "packages/galileo-cdk"
       }
     },
     "test": {
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec projen test",
-        "cwd": "packages/galileo-cdk-lib"
+        "cwd": "packages/galileo-cdk"
       }
     },
     "package": {
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec projen package",
-        "cwd": "packages/galileo-cdk-lib"
+        "cwd": "packages/galileo-cdk"
       }
     },
     "build": {
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec projen build",
-        "cwd": "packages/galileo-cdk-lib"
+        "cwd": "packages/galileo-cdk"
       }
     },
     "test:watch": {
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec projen test:watch",
-        "cwd": "packages/galileo-cdk-lib"
+        "cwd": "packages/galileo-cdk"
       }
     },
     "post-upgrade": {
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec projen post-upgrade",
-        "cwd": "packages/galileo-cdk-lib"
+        "cwd": "packages/galileo-cdk"
       }
     },
     "upgrade": {
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec projen upgrade",
-        "cwd": "packages/galileo-cdk-lib"
+        "cwd": "packages/galileo-cdk"
       }
     },
     "watch": {
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec projen watch",
-        "cwd": "packages/galileo-cdk-lib"
+        "cwd": "packages/galileo-cdk"
       }
     },
     "eslint": {
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec projen eslint",
-        "cwd": "packages/galileo-cdk-lib"
+        "cwd": "packages/galileo-cdk"
       }
     },
     "compat": {
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec projen compat",
-        "cwd": "packages/galileo-cdk-lib"
+        "cwd": "packages/galileo-cdk"
       }
     },
     "package-all": {
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec projen package-all",
-        "cwd": "packages/galileo-cdk-lib"
+        "cwd": "packages/galileo-cdk"
       }
     },
     "package:js": {
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec projen package:js",
-        "cwd": "packages/galileo-cdk-lib"
+        "cwd": "packages/galileo-cdk"
       }
     },
     "docgen": {
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec projen docgen",
-        "cwd": "packages/galileo-cdk-lib"
+        "cwd": "packages/galileo-cdk"
       }
     },
     "eslint-staged": {
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec projen eslint-staged",
-        "cwd": "packages/galileo-cdk-lib"
+        "cwd": "packages/galileo-cdk"
       }
     },
     "jest": {
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec projen jest",
-        "cwd": "packages/galileo-cdk-lib"
+        "cwd": "packages/galileo-cdk"
       }
     }
   },

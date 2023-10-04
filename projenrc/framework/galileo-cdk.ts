@@ -5,30 +5,20 @@ import { AwsCdkConstructLibrary } from "projen/lib/awscdk";
 import { Stability } from "projen/lib/cdk";
 import { DEFAULT_RELEASE_BRANCH, PROJECT_AUTHOR, VERSIONS } from "../constants";
 
-export class GalileoCdkLib extends AwsCdkConstructLibrary {
+export class GalileoCdk extends AwsCdkConstructLibrary {
   constructor(monorepo: MonorepoTsProject) {
     super({
       ...PROJECT_AUTHOR,
       cdkVersion: VERSIONS.CDK,
       constructsVersion: VERSIONS.CONSTRUCTS,
       defaultReleaseBranch: DEFAULT_RELEASE_BRANCH,
-      deps: [`@aws/pdk@^${VERSIONS.PDK}`],
       jsiiVersion: "5.x",
       packageManager: monorepo.package.packageManager,
       parent: monorepo,
-      name: "@aws-galileo/galileo-cdk-lib",
+      name: "@aws/galileo-cdk",
       publishDryRun: true,
-      outdir: "packages/galileo-cdk-lib",
+      outdir: "packages/galileo-cdk",
       stability: Stability.EXPERIMENTAL,
     });
-
-    // TODO: remove this once we start using this framework lib
-    // for now just going to start dumping some snippets in here
-    // and don't want to slow development of the demo as dep
-    // @ts-ignore - private
-    this.buildTask._locked = false;
-    this.buildTask.reset('echo "disabling build until we use it"');
-
-    // this.package.addPackageResolutions("jsii-rosetta@5.x");
   }
 }

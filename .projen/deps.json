@@ -185,6 +185,10 @@
       "type": "build"
     },
     {
+      "name": "tsconfig-paths",
+      "type": "build"
+    },
+    {
       "name": "tsx",
       "type": "build"
     },
