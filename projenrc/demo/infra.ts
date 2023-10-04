@@ -2,7 +2,7 @@ import * as path from "node:path";
 import { MonorepoTsProject, NxProject } from "@aws/pdk/monorepo";
 import { javascript } from "projen";
 import { AwsCdkTypeScriptApp } from "projen/lib/awscdk";
-import { GalileoCdkLib, GalileoSdk } from "../framework";
+import { GalileoCdk, GalileoSdk } from "../framework";
 import { LAMBDA_RECOGNIZE_LAYER_VERSION } from "aws-cdk-lib/cx-api";
 import { Api } from "./api";
 import { Corpus } from "./corpus";
@@ -18,7 +18,7 @@ export interface InfraOptions {
   readonly monorepo: MonorepoTsProject;
   readonly rootOutdir: string;
   readonly applicationName: string;
-  readonly galileoCdkLib: GalileoCdkLib;
+  readonly galileoCdkLib: GalileoCdk;
   readonly galileoSdk: GalileoSdk;
   readonly api: Api;
   readonly corpus: Corpus;
@@ -34,6 +34,7 @@ export class Infra {
       monorepo,
       rootOutdir,
       galileoSdk,
+      galileoCdkLib,
       api,
       corpus,
       website,
@@ -80,9 +81,9 @@ export class Infra {
         // For lambdas to reuse logic in step function
         corpus.logic.package.packageName,
         ...extractPeerDeps(corpus.logic),
-        // this.galileoLibDep, TODO: removing this until we use it, so can remove build dep for now
         galileoSdk.package.packageName,
         ...extractPeerDeps(galileoSdk),
+        galileoCdkLib.package.packageName,
         // Remove this if not using sample dataset
         sample.project.package.packageName,
         website.project.package.packageName,
@@ -96,6 +97,7 @@ export class Infra {
         "@types/uuid",
         "aws-lambda",
         "aws-sdk",
+        "tsconfig-paths",
       ],
       context: {
         // Automatically update lambda description with asset hash to ensure new versions are deployed
@@ -137,13 +139,25 @@ export class Infra {
           noUnusedParameters: false,
           lib: ["ES2020"],
           target: "ES2020",
+          baseUrl: ".",
+          paths: {
+            "@aws/galileo-cdk/*": ["src/galileo/*"],
+          }
         },
+
       },
     });
     this.project.gitignore.exclude("cdk.context.json");
     this.project.eslint?.addIgnorePattern("cdk.out");
     this.project.eslint?.addIgnorePattern("node_modules");
     this.project.eslint?.addIgnorePattern("test_reports");
+
+    this.project.tryFindObjectFile("tsconfig.json")?.addOverride(
+      "ts-node", {
+      "require": [
+        "tsconfig-paths/register"
+      ]
+    });
 
     NxProject.ensure(this.project).addBuildTargetFiles([
       "!{projectRoot}/cdk.out/**/*",

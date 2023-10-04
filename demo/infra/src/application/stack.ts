@@ -12,7 +12,7 @@ import { IdentityLayer } from "./identity";
 import { NetworkingStack } from "./networking/stack";
 import { PresentationStack } from "./presentation";
 import { Tooling } from "./tooling";
-import { ServiceQuotas } from "../galileo/core/service-quota";
+import { ServiceQuotas } from "@aws/galileo-cdk/core/service-quota";
 
 export interface ApplicationProps extends StackProps, IApplicationConfig {
   readonly supportCrossAccountModelAccess?: boolean;

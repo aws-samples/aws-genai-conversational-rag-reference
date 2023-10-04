@@ -1,6 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { GalileoCdkLib, Demo, GalileoSdk, GalileoCli } from "./projenrc";
+import { GalileoCdk, Demo, GalileoSdk, GalileoCli } from "./projenrc";
 import { MonorepoProject } from "./projenrc/monorepo";
 
 const DEMO_DIR = "demo";
@@ -24,8 +24,34 @@ const monorepo = new MonorepoProject({
     "lodash",
     "node-localstorage",
     "prompts",
+    "tsconfig-paths",
   ],
+  tsconfig: {
+    compilerOptions: {
+      noEmit: true,
+      rootDir: undefined,
+      sourceRoot: undefined,
+      baseUrl: ".",
+      paths: {
+        // Map to source files for projen workspace
+        "@aws/galileo-sdk/*": ["packages/galileo-sdk/src/*"],
+        "@aws/galileo-cdk/*": ["demo/infra/src/galileo/*"],
+      },
+    },
+    include: [
+      ".projenrc.ts",
+      "projenrc/**/*.ts",
+    ],
+  }
 });
+
+monorepo.tryFindObjectFile("tsconfig.json")?.addOverride(
+  "ts-node", {
+  "require": [
+    "tsconfig-paths/register"
+  ]
+});
+
 monorepo.eslint?.addIgnorePattern(DEMO_DIR + "/**/*.*");
 
 monorepo.package.setScript("galileo-cli", "pnpm dlx tsx ./bin/galileo-cli.ts");
@@ -62,7 +88,10 @@ monorepo.addTask("docs:serve", { exec: "docs/scripts/serve.sh" });
 // FRAMEWORK
 //////////////////////////////////////////////////////////
 const galileoSdk = new GalileoSdk(monorepo);
-const galileoCdkLib = new GalileoCdkLib(monorepo);
+
+const galileoCdkLib = new GalileoCdk(monorepo);
+galileoCdkLib.addBundledDeps(galileoSdk.package.packageName);
+
 new GalileoCli(monorepo);
 
 //////////////////////////////////////////////////////////

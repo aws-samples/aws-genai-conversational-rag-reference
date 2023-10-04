@@ -56,6 +56,7 @@
     "projen": "^0.73.37",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.2.2"
   },
   "dependencies": {
@@ -79,6 +80,7 @@
     "@aws-sdk/rds-signer": "^3.418.0",
     "@aws-sdk/signature-v4": "^3.374.0",
     "@aws-sdk/types": "^3.418.0",
+    "@aws/galileo-cdk": "^0.0.0",
     "@aws/pdk": "^0.22.9",
     "@middy/core": "^4.6.1",
     "@middy/error-logger": "^4.6.1",

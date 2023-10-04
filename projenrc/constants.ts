@@ -23,4 +23,4 @@ export const VERSIONS = {
   PDK: "0.22.9",
   LANGCHAIN: "0.0.157", // Not semver yet so need to pin version
   SMITHY_TYPES: "2.3.4",
-};
+} as const;

@@ -5,8 +5,8 @@ import { IVpc } from "aws-cdk-lib/aws-ec2";
 import { Role } from "aws-cdk-lib/aws-iam";
 import { NagSuppressions } from "cdk-nag";
 import { Construct } from "constructs";
-import { SageMakerStudio } from "../../galileo/tooling/sagemaker/studio";
 import { getStageName } from "../context";
+import { SageMakerStudio } from "@aws/galileo-cdk/tooling/sagemaker/studio";
 
 interface ToolingProps extends NestedStackProps {
   readonly vpc: IVpc;

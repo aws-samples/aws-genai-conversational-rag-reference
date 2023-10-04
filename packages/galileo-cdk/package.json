@@ -1,5 +1,5 @@
 {
-  "name": "@aws-galileo/galileo-cdk-lib",
+  "name": "@aws/galileo-cdk",
   "repository": {
     "type": "git",
     "url": "https://github.com/aws-samples/aws-genai-conversational-rag-reference"
@@ -58,8 +58,11 @@
     "constructs": "^10.2.70"
   },
   "dependencies": {
-    "@aws/pdk": "^0.22.9"
+    "@aws-galileo/galileo-sdk": "^0.0.0"
   },
+  "bundledDependencies": [
+    "@aws-galileo/galileo-sdk"
+  ],
   "pnpm": {},
   "keywords": [
     "cdk"

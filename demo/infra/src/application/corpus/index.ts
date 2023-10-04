@@ -21,8 +21,8 @@ import { ISecret } from "aws-cdk-lib/aws-secretsmanager";
 import { NagSuppressions } from "cdk-nag";
 import { Construct } from "constructs";
 import { IndexingPipeline, IndexingPipelineOptions } from "./pipeline";
-import { RDSVectorStore } from "../../galileo/corpus/vector-store/rds-pgvector-cluster";
-import { SecureBucket } from "../../galileo/s3/secure-bucket";
+import { RDSVectorStore } from "@aws/galileo-cdk/corpus/vector-store/rds-pgvector-cluster";
+import { SecureBucket } from "@aws/galileo-cdk/s3/secure-bucket";
 
 export interface CorpusProps extends NestedStackProps {
   readonly vpc: IVpc;

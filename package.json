@@ -84,6 +84,7 @@
     "standard-version": "^9",
     "syncpack": "^9.8.6",
     "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
     "tsx": "^3.13.0",
     "typescript": "^5.2.2"
   },
@@ -128,8 +129,8 @@
   "workspaces": {
     "packages": [
       "packages/galileo-cli",
-      "packages/galileo-cdk-lib",
       "packages/galileo-sdk",
+      "packages/galileo-cdk",
       "demo/api",
       "demo/api/generated/documentation/html2",
       "demo/api/model",
