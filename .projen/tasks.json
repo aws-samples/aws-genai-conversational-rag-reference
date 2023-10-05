@@ -309,6 +309,9 @@
       "steps": [
         {
           "builtin": "release/reset-version"
+        },
+        {
+          "exec": "git ls-files -m | grep 'poetry.lock' | xargs git restore || exit 0;"
         }
       ]
     },

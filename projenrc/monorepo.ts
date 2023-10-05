@@ -147,6 +147,13 @@ export class MonorepoProject extends MonorepoTsProject {
       release_docs: this.renderReleaseGitHubPagesJob(),
     });
     this._mutateBuildWorkflowSteps();
+
+    // patch release:mainline workflow by restoring poetry.locks to prevent git diff
+    this.tasks
+      .tryFind("unbump")
+      ?.exec(
+        "git ls-files -m | grep 'poetry.lock' | xargs git restore || exit 0;"
+      );
   }
 
   getVersionedDeps(project: Project): Set<string> {
