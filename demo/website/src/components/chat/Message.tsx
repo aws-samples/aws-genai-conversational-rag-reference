@@ -212,9 +212,9 @@ export default function Message({
           justifyContent: "space-between",
         }}
       >
-        <div style={{ whiteSpace: "pre-wrap" }}>
-          <TextContent>{message.text}</TextContent>
-        </div>
+        <TextContent>
+          <div style={{ whiteSpace: "pre-wrap" }}>{message.text}</div>
+        </TextContent>
         <div
           style={{
             display: "flex",
