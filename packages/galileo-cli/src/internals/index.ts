@@ -1,7 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 
-export * from "../../../../demo/infra/src/application/ai/foundation-models/ids";
+export * from "../../../galileo-cdk/src/ai/predefined/ids";
 export * from "../../../galileo-cdk/src/ai/llms/framework/bedrock/ids";
 export * from "../../../galileo-cdk/src/ai/llms/framework/bedrock/utils";
 export * from "../../../galileo-cdk/src/core/app/context";
