@@ -4,6 +4,7 @@
     "build": "npx projen build",
     "bundle": "npx projen bundle",
     "compile": "npx projen compile",
+    "compile:watch": "npx projen compile:watch",
     "default": "npx projen default",
     "deploy": "npx projen deploy",
     "destroy": "npx projen destroy",

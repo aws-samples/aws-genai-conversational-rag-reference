@@ -147,6 +147,13 @@
         "cwd": "demo/infra"
       }
     },
+    "compile:watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec projen compile:watch",
+        "cwd": "demo/infra"
+      }
+    },
     "eslint-staged": {
       "executor": "nx:run-commands",
       "options": {
