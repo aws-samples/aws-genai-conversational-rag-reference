@@ -1,11 +1,11 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { FoundationModelIds } from "@aws/galileo-cdk/lib/ai/predefined";
 import { ServiceQuotas, isDevStage } from "@aws/galileo-cdk/lib/common";
 import { IApplicationContext } from "@aws/galileo-cdk/lib/core/app";
 import { CfnOutput, Duration, Stack, StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { FoundationModelStack } from "./ai/foundation-models";
-import { FoundationModelIds } from "./ai/foundation-models/ids";
 import { InferenceEngine } from "./ai/inference-engine";
 import { CorpusStack } from "./corpus";
 import { AppDataLayer } from "./data";

@@ -1,32 +1,32 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import {
-  BEDROCK_DEFAULT_MODEL,
-  BedrockModel,
-} from "@aws/galileo-cdk/lib/ai/llms/framework/bedrock";
-import { ModelEULA } from "@aws/galileo-cdk/lib/ai/llms/framework/eula";
-import {
-  FalconLite,
-  FalconLiteInstances,
-} from "@aws/galileo-cdk/lib/ai/llms/models/falcon/lite";
-import {
-  HuggingFaceFalcon,
-  HuggingFaceFalconInstances,
-} from "@aws/galileo-cdk/lib/ai/llms/models/falcon/tgi";
-import {
   IFoundationModelInventory,
   IModelInfoProvider,
   isModelInfoProvider,
-} from "@aws/galileo-sdk/lib/models";
-import { Duration } from "aws-cdk-lib";
-import { IVpc } from "aws-cdk-lib/aws-ec2";
-import { Construct } from "constructs";
-import { camelCase, startCase } from "lodash";
+} from '@aws/galileo-sdk/lib/models';
+import { Duration } from 'aws-cdk-lib';
+import { IVpc } from 'aws-cdk-lib/aws-ec2';
+import { Construct } from 'constructs';
+import { camelCase, startCase } from 'lodash';
 import {
   DEFAULT_FOUNDATION_MODEL_ID,
   DEFAULT_PREDEFINED_FOUNDATION_MODEL_LIST,
   FoundationModelIds,
-} from "./ids";
+} from './ids';
+import {
+  BEDROCK_DEFAULT_MODEL,
+  BedrockModel,
+} from '../llms/framework/bedrock';
+import { ModelEULA } from '../llms/framework/eula';
+import {
+  FalconLite,
+  FalconLiteInstances,
+} from '../llms/models/falcon/lite';
+import {
+  HuggingFaceFalcon,
+  HuggingFaceFalconInstances,
+} from '../llms/models/falcon/tgi';
 
 export { IFoundationModelInventory };
 
@@ -63,7 +63,7 @@ export class FoundationModels extends Construct {
     } = props;
 
     const modelsToDeploy = new Set(
-      foundationModels || DEFAULT_PREDEFINED_FOUNDATION_MODEL_LIST
+      foundationModels || DEFAULT_PREDEFINED_FOUNDATION_MODEL_LIST,
     );
 
     // Pending legal approval on usage
@@ -78,31 +78,31 @@ export class FoundationModels extends Construct {
     //////////////////////////////////////////////////////////
     if (modelsToDeploy.has(FoundationModelIds.FALCON_OA_40B)) {
       // https://github.com/aws/amazon-sagemaker-examples/blob/main/introduction_to_amazon_algorithms/jumpstart-foundation-models/text-generation-falcon.ipynb
-      new HuggingFaceFalcon(this, "Falcon40b", {
+      new HuggingFaceFalcon(this, 'Falcon40b', {
         modelUUID: FoundationModelIds.FALCON_OA_40B,
-        modelId: "OpenAssistant/falcon-40b-sft-top1-560",
+        modelId: 'OpenAssistant/falcon-40b-sft-top1-560',
         instanceType: HuggingFaceFalconInstances.G5_48XLARGE,
-        displayName: "Falcon OA 40B",
+        displayName: 'Falcon OA 40B',
       });
     }
 
     if (modelsToDeploy.has(FoundationModelIds.FALCON_OA_7B)) {
-      new HuggingFaceFalcon(this, "Falcon7b", {
+      new HuggingFaceFalcon(this, 'Falcon7b', {
         modelUUID: FoundationModelIds.FALCON_OA_7B,
-        modelId: "OpenAssistant/falcon-7b-sft-mix-2000",
+        modelId: 'OpenAssistant/falcon-7b-sft-mix-2000',
         instanceType: HuggingFaceFalconInstances.G5_16XLARGE,
         quantize: false,
         numGpus: 1,
         containerStartupHealthCheckTimeout: Duration.minutes(10),
-        displayName: "Falcon OA 7B",
+        displayName: 'Falcon OA 7B',
       });
     }
 
     if (modelsToDeploy.has(FoundationModelIds.FALCON_LITE)) {
-      new FalconLite(this, "FalconLite", {
+      new FalconLite(this, 'FalconLite', {
         modelUUID: FoundationModelIds.FALCON_LITE,
         instanceType: FalconLiteInstances.G5_12XLARGE,
-        displayName: "Falcon Lite",
+        displayName: 'Falcon Lite',
       });
     }
 
@@ -120,7 +120,7 @@ export class FoundationModels extends Construct {
             region: bedrockRegion,
             endpointUrl: bedrockEndpointUrl,
           });
-        }
+        },
       );
     }
 
@@ -154,7 +154,7 @@ export class FoundationModels extends Construct {
     ////////////////////////////////////////////////////////////
     // find all models defined
     const modelProviders = this.node.children.filter(
-      isModelInfoProvider
+      isModelInfoProvider,
     ) as unknown[] as IModelInfoProvider[];
     // mapping of available foundation models
     // this can include externally managed endpoints and other services later
@@ -162,14 +162,14 @@ export class FoundationModels extends Construct {
     this.inventory = {
       defaultModelId: defaultModelId ?? DEFAULT_FOUNDATION_MODEL_ID,
       models: Object.fromEntries(
-        modelProviders.map((v) => [v.modelInfo.uuid, v.modelInfo])
+        modelProviders.map((v) => [v.modelInfo.uuid, v.modelInfo]),
       ),
     };
 
     new ModelEULA(
       this,
-      "EULA",
-      modelProviders.map((v) => v.modelInfo)
+      'EULA',
+      modelProviders.map((v) => v.modelInfo),
     );
   }
 }
