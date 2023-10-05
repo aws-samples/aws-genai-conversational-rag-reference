@@ -61,6 +61,10 @@
       "type": "build"
     },
     {
+      "name": "case",
+      "type": "build"
+    },
+    {
       "name": "chalk",
       "type": "build"
     },

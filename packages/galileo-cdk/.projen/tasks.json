@@ -26,7 +26,105 @@
       "description": "Prepare assets",
       "steps": [
         {
+          "spawn": "bundle:ai/llms/framework/huggingface/model-tar/handler/isComplete.lambda"
+        },
+        {
+          "spawn": "bundle:ai/llms/framework/huggingface/model-tar/handler/onEvent.lambda"
+        },
+        {
           "spawn": "bundle:common/resources/service-quota/handler.lambda"
+        },
+        {
+          "spawn": "bundle:asset:ai/llms/framework/huggingface/model-tar/source"
+        },
+        {
+          "spawn": "bundle:asset:ai/llms/framework/sagemaker/model-info/code"
+        },
+        {
+          "spawn": "bundle:asset:ai/llms/models/falcon/lite/image"
+        },
+        {
+          "spawn": "bundle:asset:ai/llms/models/sentence-transformer/custom"
+        }
+      ]
+    },
+    "bundle:ai/llms/framework/huggingface/model-tar/handler/isComplete.lambda": {
+      "name": "bundle:ai/llms/framework/huggingface/model-tar/handler/isComplete.lambda",
+      "description": "Create a JavaScript bundle from src/ai/llms/framework/huggingface/model-tar/handler/isComplete.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/ai/llms/framework/huggingface/model-tar/handler/isComplete.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/ai/llms/framework/huggingface/model-tar/handler/isComplete.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
+        }
+      ]
+    },
+    "bundle:ai/llms/framework/huggingface/model-tar/handler/isComplete.lambda:watch": {
+      "name": "bundle:ai/llms/framework/huggingface/model-tar/handler/isComplete.lambda:watch",
+      "description": "Continuously update the JavaScript bundle from src/ai/llms/framework/huggingface/model-tar/handler/isComplete.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/ai/llms/framework/huggingface/model-tar/handler/isComplete.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/ai/llms/framework/huggingface/model-tar/handler/isComplete.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
+        }
+      ]
+    },
+    "bundle:ai/llms/framework/huggingface/model-tar/handler/onEvent.lambda": {
+      "name": "bundle:ai/llms/framework/huggingface/model-tar/handler/onEvent.lambda",
+      "description": "Create a JavaScript bundle from src/ai/llms/framework/huggingface/model-tar/handler/onEvent.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/ai/llms/framework/huggingface/model-tar/handler/onEvent.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/ai/llms/framework/huggingface/model-tar/handler/onEvent.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
+        }
+      ]
+    },
+    "bundle:ai/llms/framework/huggingface/model-tar/handler/onEvent.lambda:watch": {
+      "name": "bundle:ai/llms/framework/huggingface/model-tar/handler/onEvent.lambda:watch",
+      "description": "Continuously update the JavaScript bundle from src/ai/llms/framework/huggingface/model-tar/handler/onEvent.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/ai/llms/framework/huggingface/model-tar/handler/onEvent.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/ai/llms/framework/huggingface/model-tar/handler/onEvent.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
+        }
+      ]
+    },
+    "bundle:asset:ai/llms/framework/huggingface/model-tar/source": {
+      "name": "bundle:asset:ai/llms/framework/huggingface/model-tar/source",
+      "steps": [
+        {
+          "exec": "mkdir -p assets/ai/llms/framework/huggingface/model-tar/source"
+        },
+        {
+          "exec": "rsync -av --exclude=test_* --exclude=__pycache__/**/* --exclude=.pytest_cache/**/* src/ai/llms/framework/huggingface/model-tar/source.asset/ assets/ai/llms/framework/huggingface/model-tar/source"
+        }
+      ]
+    },
+    "bundle:asset:ai/llms/framework/sagemaker/model-info/code": {
+      "name": "bundle:asset:ai/llms/framework/sagemaker/model-info/code",
+      "steps": [
+        {
+          "exec": "mkdir -p assets/ai/llms/framework/sagemaker/model-info/code"
+        },
+        {
+          "exec": "rsync -av --exclude=test_* --exclude=__pycache__/**/* --exclude=.pytest_cache/**/* src/ai/llms/framework/sagemaker/model-info/code.asset/ assets/ai/llms/framework/sagemaker/model-info/code"
+        }
+      ]
+    },
+    "bundle:asset:ai/llms/models/falcon/lite/image": {
+      "name": "bundle:asset:ai/llms/models/falcon/lite/image",
+      "steps": [
+        {
+          "exec": "mkdir -p assets/ai/llms/models/falcon/lite/image"
+        },
+        {
+          "exec": "rsync -av --exclude=test_* --exclude=__pycache__/**/* --exclude=.pytest_cache/**/* src/ai/llms/models/falcon/lite/image.asset/ assets/ai/llms/models/falcon/lite/image"
+        }
+      ]
+    },
+    "bundle:asset:ai/llms/models/sentence-transformer/custom": {
+      "name": "bundle:asset:ai/llms/models/sentence-transformer/custom",
+      "steps": [
+        {
+          "exec": "mkdir -p assets/ai/llms/models/sentence-transformer/custom"
+        },
+        {
+          "exec": "rsync -av --exclude=test_* --exclude=__pycache__/**/* --exclude=.pytest_cache/**/* src/ai/llms/models/sentence-transformer/custom.asset/ assets/ai/llms/models/sentence-transformer/custom"
         }
       ]
     },
@@ -209,13 +307,13 @@
           "exec": "pnpm update npm-check-updates"
         },
         {
-          "exec": "npm-check-updates --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@aws-lambda-powertools/logger,@aws-lambda-powertools/metrics,@aws-lambda-powertools/parameters,@aws-sdk/client-codebuild,@aws-sdk/client-dynamodb,@aws-sdk/client-service-quotas,@aws-sdk/client-sfn,@aws-sdk/lib-dynamodb,@aws-sdk/types,@middy/core,@middy/error-logger,@middy/http-router,@middy/input-output-logger,@smithy/types,@types/aws-lambda,@types/jest,@types/lodash,@types/node,@types/readline-sync,@types/uuid,@typescript-eslint/eslint-plugin,@typescript-eslint/parser,aws-lambda,aws-sdk,esbuild,eslint-import-resolver-node,eslint-import-resolver-typescript,eslint-plugin-header,eslint-plugin-import,eslint,jest,jest-junit,jsii-diff,jsii-docgen,jsii-pacmak,lodash,npm-check-updates,pretty-bytes,projen,readline-sync,shorthash2,ts-jest,tsconfig-paths,typescript,uuid,@aws/galileo-sdk,aws-cdk-lib,constructs,@aws-cdk/aws-cognito-identitypool-alpha,@aws-cdk/aws-lambda-python-alpha,cdk-nag"
+          "exec": "npm-check-updates --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@aws-sdk/client-codebuild,@aws-sdk/client-dynamodb,@aws-sdk/client-service-quotas,@aws-sdk/client-sfn,@aws-sdk/lib-dynamodb,@aws-sdk/types,@types/jest,@types/node,@typescript-eslint/eslint-plugin,@typescript-eslint/parser,esbuild,eslint-import-resolver-node,eslint-import-resolver-typescript,eslint-plugin-header,eslint-plugin-import,eslint,jest,jest-junit,jsii-diff,jsii-docgen,jsii-pacmak,npm-check-updates,projen,ts-jest,typescript,@aws-lambda-powertools/logger,@aws-lambda-powertools/metrics,@aws-lambda-powertools/parameters,@aws/galileo-sdk,@middy/core,@middy/error-logger,@middy/http-router,@middy/input-output-logger,@smithy/types,@types/aws-lambda,@types/lodash,@types/readline-sync,@types/uuid,aws-lambda,aws-sdk,lodash,pretty-bytes,readline-sync,shorthash2,tsconfig-paths,uuid,aws-cdk-lib,constructs,@aws-cdk/aws-cognito-identitypool-alpha,@aws-cdk/aws-lambda-python-alpha,cdk-nag"
         },
         {
           "exec": "pnpm i --no-frozen-lockfile"
         },
         {
-          "exec": "pnpm update @aws-lambda-powertools/logger @aws-lambda-powertools/metrics @aws-lambda-powertools/parameters @aws-sdk/client-codebuild @aws-sdk/client-dynamodb @aws-sdk/client-service-quotas @aws-sdk/client-sfn @aws-sdk/lib-dynamodb @aws-sdk/types @middy/core @middy/error-logger @middy/http-router @middy/input-output-logger @smithy/types @types/aws-lambda @types/jest @types/lodash @types/node @types/readline-sync @types/uuid @typescript-eslint/eslint-plugin @typescript-eslint/parser aws-lambda aws-sdk esbuild eslint-import-resolver-node eslint-import-resolver-typescript eslint-plugin-header eslint-plugin-import eslint jest jest-junit jsii-diff jsii-docgen jsii-pacmak lodash npm-check-updates pretty-bytes projen readline-sync shorthash2 ts-jest tsconfig-paths typescript uuid @aws/galileo-sdk aws-cdk-lib constructs @aws-cdk/aws-cognito-identitypool-alpha @aws-cdk/aws-lambda-python-alpha cdk-nag"
+          "exec": "pnpm update @aws-sdk/client-codebuild @aws-sdk/client-dynamodb @aws-sdk/client-service-quotas @aws-sdk/client-sfn @aws-sdk/lib-dynamodb @aws-sdk/types @types/jest @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser esbuild eslint-import-resolver-node eslint-import-resolver-typescript eslint-plugin-header eslint-plugin-import eslint jest jest-junit jsii-diff jsii-docgen jsii-pacmak npm-check-updates projen ts-jest typescript @aws-lambda-powertools/logger @aws-lambda-powertools/metrics @aws-lambda-powertools/parameters @aws/galileo-sdk @middy/core @middy/error-logger @middy/http-router @middy/input-output-logger @smithy/types @types/aws-lambda @types/lodash @types/readline-sync @types/uuid aws-lambda aws-sdk lodash pretty-bytes readline-sync shorthash2 tsconfig-paths uuid aws-cdk-lib constructs @aws-cdk/aws-cognito-identitypool-alpha @aws-cdk/aws-lambda-python-alpha cdk-nag"
         },
         {
           "exec": "npx projen"

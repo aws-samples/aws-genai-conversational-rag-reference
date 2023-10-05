@@ -38,7 +38,7 @@ export const handler = listChatMessagesHandler(
     let pageSize = 20;
     try {
       if (input.requestParameters?.pageSize) {
-        pageSize = parseInt(input.requestParameters?.pageSize);
+        pageSize = parseInt(String(input.requestParameters.pageSize));
       }
     } catch {}
 

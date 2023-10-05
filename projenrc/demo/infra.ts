@@ -9,7 +9,7 @@ import { Corpus } from "./corpus";
 import { Website } from "./website";
 import { Sample } from "./sample";
 import { DEFAULT_RELEASE_BRANCH, VERSIONS } from "../constants";
-import { EULA_ENABLED_CONTEXT } from "../../demo/infra/src/galileo/ai/llms/framework/eula/context";
+import { EULA_ENABLED_CONTEXT } from "../../packages/galileo-cdk/src/ai/llms/framework/eula/context";
 import { IApplicationContext } from "../../packages/galileo-cdk/src/core/app/context";
 import { extractPeerDeps } from "../helpers/extract-peer-deps";
 import { FoundationModelIds } from "../../demo/infra/src/application/ai/foundation-models/ids";

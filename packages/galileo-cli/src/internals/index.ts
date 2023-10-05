@@ -2,8 +2,8 @@
 PDX-License-Identifier: Apache-2.0 */
 
 export * from "../../../../demo/infra/src/application/ai/foundation-models/ids";
-export * from "../../../../demo/infra/src/galileo/ai/llms/framework/bedrock/ids";
-export * from "../../../../demo/infra/src/galileo/ai/llms/framework/bedrock/utils";
+export * from "../../../galileo-cdk/src/ai/llms/framework/bedrock/ids";
+export * from "../../../galileo-cdk/src/ai/llms/framework/bedrock/utils";
 export * from "../../../galileo-cdk/src/core/app/context";
 
 import chalk from "chalk";

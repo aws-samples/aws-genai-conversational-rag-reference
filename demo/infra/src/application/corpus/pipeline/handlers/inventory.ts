@@ -70,6 +70,7 @@ export async function getBucketInventory(
   logger.info("Get bucket inventory", { bucket, prefix, filter, since });
 
   do {
+    // @ts-ignore - 'NextContinuationToken' implicitly has type 'any'
     const { Contents, NextContinuationToken } = await client.send(
       new ListObjectsV2Command({
         Bucket: bucket,

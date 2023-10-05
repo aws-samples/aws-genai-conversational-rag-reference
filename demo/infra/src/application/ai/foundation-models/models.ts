@@ -1,6 +1,19 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import {
+  BEDROCK_DEFAULT_MODEL,
+  BedrockModel,
+} from "@aws/galileo-cdk/lib/ai/llms/framework/bedrock";
+import { ModelEULA } from "@aws/galileo-cdk/lib/ai/llms/framework/eula";
+import {
+  FalconLite,
+  FalconLiteInstances,
+} from "@aws/galileo-cdk/lib/ai/llms/models/falcon/lite";
+import {
+  HuggingFaceFalcon,
+  HuggingFaceFalconInstances,
+} from "@aws/galileo-cdk/lib/ai/llms/models/falcon/tgi";
+import {
   IFoundationModelInventory,
   IModelInfoProvider,
   isModelInfoProvider,
@@ -14,19 +27,6 @@ import {
   DEFAULT_PREDEFINED_FOUNDATION_MODEL_LIST,
   FoundationModelIds,
 } from "./ids";
-import {
-  BEDROCK_DEFAULT_MODEL,
-  BedrockModel,
-} from "@aws/galileo-cdk/ai/llms/framework/bedrock";
-import { ModelEULA } from "@aws/galileo-cdk/ai/llms/framework/eula";
-import {
-  FalconLite,
-  FalconLiteInstances,
-} from "@aws/galileo-cdk/ai/llms/models/falcon/lite";
-import {
-  HuggingFaceFalcon,
-  HuggingFaceFalconInstances,
-} from "@aws/galileo-cdk/ai/llms/models/falcon/tgi";
 
 export { IFoundationModelInventory };
 
