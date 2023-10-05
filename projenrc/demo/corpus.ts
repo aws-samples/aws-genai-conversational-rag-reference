@@ -46,8 +46,8 @@ export class Corpus {
         "python@>=3.8.1,<4.0",
         "sentence-transformers@^2.2.2",
         "typing_extensions@~4.3.0",
-        // https://stackoverflow.com/a/76647180
-        `torch@{version = ">=2.0.0, !=2.0.1"}`,
+        // https://github.com/pytorch/pytorch/issues/100974
+        "torch@2.0.0",
         `transformers@{extras = ["torch"], version = "^4.31.0"}`,
       ],
       devDeps: ["pytest@^7.3.2", "pytest-watch@^4.2.0"],

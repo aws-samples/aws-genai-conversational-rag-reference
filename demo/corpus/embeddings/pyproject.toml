@@ -18,10 +18,8 @@ include = [ "corpus_embeddings", "corpus_embeddings/**/*.py" ]
   [tool.poetry.dependencies]
   python = ">=3.8.1,<4.0"
   sentence-transformers = "^2.2.2"
+  torch = "2.0.0"
   typing_extensions = "~4.3.0"
-
-    [tool.poetry.dependencies.torch]
-    version = ">=2.0.0, !=2.0.1"
 
     [tool.poetry.dependencies.transformers]
     extras = [ "torch" ]
