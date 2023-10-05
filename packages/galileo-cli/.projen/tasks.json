@@ -5,7 +5,7 @@
       "description": "Full release build",
       "steps": [
         {
-          "exec": "echo \"disabling build until we use it\""
+          "exec": "pnpm exec tsc --noEmit"
         }
       ]
     },

@@ -12,7 +12,7 @@ import { DEFAULT_RELEASE_BRANCH, VERSIONS } from "../constants";
 import { EULA_ENABLED_CONTEXT } from "../../packages/galileo-cdk/src/ai/llms/framework/eula/context";
 import { IApplicationContext } from "../../packages/galileo-cdk/src/core/app/context";
 import { extractPeerDeps } from "../helpers/extract-peer-deps";
-import { FoundationModelIds } from "../../demo/infra/src/application/ai/foundation-models/ids";
+import { FoundationModelIds } from "../../packages/galileo-cdk/src/ai/predefined/ids";
 
 export interface InfraOptions {
   readonly monorepo: MonorepoTsProject;
@@ -194,5 +194,9 @@ export class Infra {
       "nag",
       "SKIP_BUNDLING=1 pnpm exec cdk synth --no-staging --strict --quiet"
     );
+
+    this.project.addTask("compile:watch", {
+      exec: `pnpm exec tsc --noEmit --skipLibCheck --watch --project ${this.project.tsconfigDev.fileName}`
+    })
   }
 }

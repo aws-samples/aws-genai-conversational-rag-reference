@@ -63,6 +63,9 @@ export class GalileoCdk extends AwsCdkConstructLibrary {
       },
     });
 
+    // TODO: enable packing once we publish - for now is just local so faster builds
+    this.packageTask.reset();
+
     // allow aws sdk imports for lambda
     this.eslint?.allowDevDeps("!@aws-sdk/*");
 

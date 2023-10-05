@@ -96,7 +96,7 @@ export class GalileoCli extends TypeScriptAppProject {
     // TODO: remove this part once building enabled
     // @ts-ignore - private
     this.buildTask._locked = false;
-    this.buildTask.reset('echo "disabling build until we use it"');
+    this.buildTask.reset("pnpm exec tsc --noEmit");
 
     // register script in root to execute cli
     const packageRelPath = path.relative(monorepo.outdir, this.outdir);

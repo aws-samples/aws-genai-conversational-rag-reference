@@ -29,6 +29,14 @@
       "name": "compile",
       "description": "Only compile"
     },
+    "compile:watch": {
+      "name": "compile:watch",
+      "steps": [
+        {
+          "exec": "pnpm exec tsc --noEmit --skipLibCheck --watch --project tsconfig.dev.json"
+        }
+      ]
+    },
     "default": {
       "name": "default",
       "description": "Synthesize project files"
