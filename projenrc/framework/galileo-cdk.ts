@@ -5,6 +5,7 @@ import { MonorepoTsProject } from "@aws/pdk/monorepo";
 import { awscdk } from "projen";
 import { AwsCdkConstructLibrary, LambdaAutoDiscover } from "projen/lib/awscdk";
 import { AutoDiscoverBase, Stability } from "projen/lib/cdk";
+import { CdkAssetAutoDiscover } from "../components/awscdk/assets";
 import { DEFAULT_RELEASE_BRANCH, PROJECT_AUTHOR, VERSIONS } from "../constants";
 
 export class GalileoCdk extends AwsCdkConstructLibrary {
@@ -28,15 +29,17 @@ export class GalileoCdk extends AwsCdkConstructLibrary {
         "cdk-nag",
       ],
       devDeps: [
-        "@aws-lambda-powertools/logger",
-        "@aws-lambda-powertools/metrics",
-        "@aws-lambda-powertools/parameters",
         `@aws-sdk/client-codebuild@^${VERSIONS.AWS_SDK}`,
         `@aws-sdk/client-dynamodb@^${VERSIONS.AWS_SDK}`,
         `@aws-sdk/client-service-quotas@^${VERSIONS.AWS_SDK}`,
         `@aws-sdk/client-sfn@^${VERSIONS.AWS_SDK}`,
         `@aws-sdk/lib-dynamodb@^${VERSIONS.AWS_SDK}`,
         `@aws-sdk/types@^${VERSIONS.AWS_SDK}`,
+      ],
+      bundledDeps: [
+        "@aws-lambda-powertools/logger",
+        "@aws-lambda-powertools/metrics",
+        "@aws-lambda-powertools/parameters",
         "@middy/core",
         "@middy/error-logger",
         "@middy/http-router",
@@ -60,20 +63,30 @@ export class GalileoCdk extends AwsCdkConstructLibrary {
       },
     });
 
+    // allow aws sdk imports for lambda
+    this.eslint?.allowDevDeps("!@aws-sdk/*");
+
+    new CdkAssetAutoDiscover(this, {
+      srcdir: this.srcdir,
+      cdkDeps: this.cdkDeps,
+      tsconfigPath: this.tsconfigDev.fileName,
+    });
+
     const autoDiscoverComps = this.components.filter(
       (v) => v instanceof AutoDiscoverBase
     ) as AutoDiscoverBase[];
     autoDiscoverComps.forEach((c: AutoDiscoverBase) => {
       if (c instanceof LambdaAutoDiscover) {
-        const entrypoint = c.entrypoints[0];
-        const basePath = path.posix.join(
-          path.dirname(entrypoint),
-          path.basename(entrypoint, ".lambda.ts")
-        );
-        const functionPath = basePath + "-function.ts";
-        if (this.tryFindFile(functionPath)) {
-          this.eslint?.addIgnorePattern(functionPath);
-        }
+        c.entrypoints.forEach((entrypoint) => {
+          const basePath = path.posix.join(
+            path.dirname(entrypoint),
+            path.basename(entrypoint, ".lambda.ts")
+          );
+          const functionPath = basePath + "-function.ts";
+          if (this.tryFindFile(functionPath)) {
+            this.eslint?.addIgnorePattern(functionPath);
+          }
+        });
       }
     });
   }

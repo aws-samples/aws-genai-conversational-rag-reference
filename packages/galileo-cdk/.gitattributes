@@ -14,5 +14,11 @@
 /package.json linguist-generated
 /pnpm-lock.yaml linguist-generated
 /project.json linguist-generated
+/src/ai/llms/framework/huggingface/model-tar/handler/isComplete-function.ts linguist-generated
+/src/ai/llms/framework/huggingface/model-tar/handler/onEvent-function.ts linguist-generated
+/src/ai/llms/framework/huggingface/model-tar/source-asset.ts linguist-generated
+/src/ai/llms/framework/sagemaker/model-info/code-asset.ts linguist-generated
+/src/ai/llms/models/falcon/lite/image-asset.ts linguist-generated
+/src/ai/llms/models/sentence-transformer/custom-asset.ts linguist-generated
 /src/common/resources/service-quota/handler-function.ts linguist-generated
 /tsconfig.dev.json linguist-generated

@@ -8,6 +8,12 @@
     ".projen/tasks.json",
     "LICENSE",
     "project.json",
+    "src/ai/llms/framework/huggingface/model-tar/handler/isComplete-function.ts",
+    "src/ai/llms/framework/huggingface/model-tar/handler/onEvent-function.ts",
+    "src/ai/llms/framework/huggingface/model-tar/source-asset.ts",
+    "src/ai/llms/framework/sagemaker/model-info/code-asset.ts",
+    "src/ai/llms/models/falcon/lite/image-asset.ts",
+    "src/ai/llms/models/sentence-transformer/custom-asset.ts",
     "src/common/resources/service-quota/handler-function.ts",
     "tsconfig.dev.json"
   ],

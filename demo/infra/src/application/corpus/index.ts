@@ -1,6 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import { SecureBucket } from "@aws/galileo-cdk/lib/common";
+import { RDSVectorStore } from "@aws/galileo-cdk/lib/data";
 import { INTERCEPTOR_IAM_ACTIONS } from "api-typescript-interceptors";
 import { OperationLookup } from "api-typescript-runtime";
 import { Duration, NestedStack, NestedStackProps, Size } from "aws-cdk-lib";
@@ -22,7 +23,6 @@ import { ISecret } from "aws-cdk-lib/aws-secretsmanager";
 import { NagSuppressions } from "cdk-nag";
 import { Construct } from "constructs";
 import { IndexingPipeline, IndexingPipelineOptions } from "./pipeline";
-import { RDSVectorStore } from "@aws/galileo-cdk/corpus/vector-store/rds-pgvector-cluster";
 
 export interface CorpusProps extends NestedStackProps {
   readonly vpc: IVpc;

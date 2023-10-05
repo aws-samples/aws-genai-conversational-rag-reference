@@ -1,5 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { GalileoNagSupression } from "@aws/galileo-cdk/lib/tooling/nag";
 import { CdkGraph, FilterPreset, Filters, Graph } from "@aws/pdk/cdk-graph";
 import { CdkGraphDiagramPlugin } from "@aws/pdk/cdk-graph-plugin-diagram";
 import { AwsPrototypingChecks, PDKNag } from "@aws/pdk/pdk-nag";
@@ -9,7 +10,6 @@ import { ManualApprovalStep } from "aws-cdk-lib/pipelines";
 import { NagSuppressions } from "cdk-nag";
 import { ApplicationStage } from "./application/stage";
 import { PipelineStack } from "./cicd/pipeline-stack";
-import { GalileoNagSupression } from "./galileo/nag";
 
 /* eslint-disable @typescript-eslint/no-floating-promises */
 (async () => {

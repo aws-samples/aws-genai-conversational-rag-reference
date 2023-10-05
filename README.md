@@ -113,7 +113,8 @@ At a high-level, the project is structured as follows:
 │   ├── sample-dataset # Sample dataset generator and example deployment constructs
 │   └── website # Front-end website (React + Cloudscape)
 ├── packages # Framework packages - will eventually be moved to AWS PDK
-│   ├── galileo-cdk-lib # Currently not used, but will be home for CDK infra constructs that are reusable
+│   ├── galileo-cdk # CDK construct library
+│   ├── galileo-cli # Command-Line Interface
 │   └── galileo-sdk # SDK for core reusable toolkit library/tools/etc.
 ├── scripts # Development scripts for this repository
 ├── projenrc # Projen constructs that generate everything above

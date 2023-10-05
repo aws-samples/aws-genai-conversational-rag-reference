@@ -13,6 +13,7 @@ const monorepo = new MonorepoProject({
     "@types/lodash",
     "@types/node-localstorage",
     "@types/prompts",
+    "case",
     "chalk",
     "clear",
     "commander",
@@ -35,18 +36,12 @@ const monorepo = new MonorepoProject({
         "@aws/galileo-cdk/*": ["demo/infra/src/galileo/*"],
       },
     },
-    include: [
-      ".projenrc.ts",
-      "projenrc/**/*.ts",
-    ],
-  }
+    include: [".projenrc.ts", "projenrc/**/*.ts"],
+  },
 });
 
-monorepo.tryFindObjectFile("tsconfig.json")?.addOverride(
-  "ts-node", {
-  "require": [
-    "tsconfig-paths/register"
-  ]
+monorepo.tryFindObjectFile("tsconfig.json")?.addOverride("ts-node", {
+  require: ["tsconfig-paths/register"],
 });
 
 monorepo.eslint?.addIgnorePattern(DEMO_DIR + "/**/*.*");

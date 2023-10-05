@@ -114,10 +114,10 @@
         "cwd": "packages/galileo-cdk"
       }
     },
-    "bundle:common/resources/service-quota/handler.lambda": {
+    "bundle:ai/llms/framework/huggingface/model-tar/handler/isComplete.lambda": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "pnpm exec projen bundle:common/resources/service-quota/handler.lambda",
+        "command": "pnpm exec projen bundle:ai/llms/framework/huggingface/model-tar/handler/isComplete.lambda",
         "cwd": "packages/galileo-cdk"
       }
     },
@@ -128,10 +128,66 @@
         "cwd": "packages/galileo-cdk"
       }
     },
+    "bundle:ai/llms/framework/huggingface/model-tar/handler/isComplete.lambda:watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec projen bundle:ai/llms/framework/huggingface/model-tar/handler/isComplete.lambda:watch",
+        "cwd": "packages/galileo-cdk"
+      }
+    },
+    "bundle:ai/llms/framework/huggingface/model-tar/handler/onEvent.lambda": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec projen bundle:ai/llms/framework/huggingface/model-tar/handler/onEvent.lambda",
+        "cwd": "packages/galileo-cdk"
+      }
+    },
+    "bundle:ai/llms/framework/huggingface/model-tar/handler/onEvent.lambda:watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec projen bundle:ai/llms/framework/huggingface/model-tar/handler/onEvent.lambda:watch",
+        "cwd": "packages/galileo-cdk"
+      }
+    },
+    "bundle:common/resources/service-quota/handler.lambda": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec projen bundle:common/resources/service-quota/handler.lambda",
+        "cwd": "packages/galileo-cdk"
+      }
+    },
     "bundle:common/resources/service-quota/handler.lambda:watch": {
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec projen bundle:common/resources/service-quota/handler.lambda:watch",
+        "cwd": "packages/galileo-cdk"
+      }
+    },
+    "bundle:asset:ai/llms/framework/huggingface/model-tar/source": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec projen bundle:asset:ai/llms/framework/huggingface/model-tar/source",
+        "cwd": "packages/galileo-cdk"
+      }
+    },
+    "bundle:asset:ai/llms/framework/sagemaker/model-info/code": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec projen bundle:asset:ai/llms/framework/sagemaker/model-info/code",
+        "cwd": "packages/galileo-cdk"
+      }
+    },
+    "bundle:asset:ai/llms/models/falcon/lite/image": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec projen bundle:asset:ai/llms/models/falcon/lite/image",
+        "cwd": "packages/galileo-cdk"
+      }
+    },
+    "bundle:asset:ai/llms/models/sentence-transformer/custom": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec projen bundle:asset:ai/llms/models/sentence-transformer/custom",
         "cwd": "packages/galileo-cdk"
       }
     },
