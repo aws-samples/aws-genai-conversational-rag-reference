@@ -35,12 +35,8 @@ export const handler = listChatMessagesHandler(
 
     const chatId = input.requestParameters.chatId;
 
-    let pageSize = 20;
-    try {
-      if (input.requestParameters?.pageSize) {
-        pageSize = parseInt(String(input.requestParameters.pageSize));
-      }
-    } catch {}
+    const pageSize = input.requestParameters?.pageSize ?? 20;
+    const ascending = input.requestParameters?.ascending ?? false;
 
     const nextToken = input.requestParameters.nextToken
       ? parseNextToken(input.requestParameters.nextToken)
@@ -52,7 +48,7 @@ export const handler = listChatMessagesHandler(
       indexName,
       userId,
       chatId,
-      false,
+      ascending,
       pageSize,
       nextToken
     );

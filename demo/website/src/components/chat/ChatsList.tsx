@@ -89,6 +89,7 @@ function ChatCards({
       onSelectionChange={({ detail }) => {
         onSelect(detail.selectedItems[0]);
       }}
+      stickyHeader
       loading={loading}
       selectedItems={selectedItem ? [selectedItem] : []}
       selectionType="single"

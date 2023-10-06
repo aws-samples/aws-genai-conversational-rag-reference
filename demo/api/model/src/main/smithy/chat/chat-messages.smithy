@@ -89,11 +89,16 @@ list ChatMessages {
 //
 @input
 structure ListChatMessagesInput for ChatMessageResource with [PaginatedInputMixin] {
+    // Id of the chat to list messages for.
     @required
     @httpLabel
     chatId: String
-    // Indicates if resulting messages should be returned in reverse order
-    // which is generally how the UI expects them
+    // Indicates if messages are queried in ascending order. Useful for infinite scrolling.
+    @httpQuery("ascending")
+    asc: Boolean
+    // Indicates if resulting page of messages should be returned in reverse order.
+    // This does not change the query result order, only the order of items in the current
+    // page. Useful for infinite scroll in combination with `ascending=true`
     @httpQuery("reverse")
     reverse: Boolean
 }

@@ -86,7 +86,7 @@ const App: React.FC = () => {
           {
             text: "API Explorer",
             type: "link",
-            href: "/apiExplorer"
+            href: "/apiExplorer",
           },
           // TODO: enable settings once we implement it
           // {
@@ -95,11 +95,11 @@ const App: React.FC = () => {
           //   href: "/settings",
           // },
         ],
-      },)
+      });
     }
 
     return _navItems;
-  }, [isAdmin])
+  }, [isAdmin]);
 
   return (
     <>

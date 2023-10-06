@@ -3,9 +3,7 @@ PDX-License-Identifier: Apache-2.0 */
 import { FC, createContext, useContext, useMemo } from "react";
 import { useRuntimeConfig } from "../Auth";
 
-export interface IFeatureFlags {
-  readonly infiniteQuery?: boolean;
-}
+export interface IFeatureFlags {}
 
 export const FlagContext = createContext<IFeatureFlags>({});
 

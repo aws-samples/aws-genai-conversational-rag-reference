@@ -7,7 +7,6 @@ import ChatPanel from "./ChatPanel";
 import ChatsList from "./ChatsList";
 import { ChatConfigSplitPanel } from "./dev-settings/ChatConfigSplitPanel";
 import { useIsAdmin } from "../../Auth";
-import SplitPanel from "../layout/SplitPanel";
 
 type SessionsProps = {
   chats: Chat[];
@@ -30,29 +29,44 @@ export default function Sessions({ chats, loading }: SessionsProps) {
 
   return (
     <Container>
-      <SplitPanel
-        panel={
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          flex: 1,
+          height: "calc(90vh - 300px)",
+          minHeight: 500,
+          gap: 20,
+        }}
+      >
+        <div
+          style={{
+            width: 300,
+            flex: "none",
+            overflow: "scroll",
+          }}
+        >
           <ChatsList
             loading={loading}
             items={chats ?? []}
             selectedItem={selectedChat}
             onSelect={(chat) => setSelectedChat(chat)}
           />
-        }
-        panelWidth="350px"
-        margin="10px"
-        style={{
-          // minHeight: "700px",
-          width: "100%",
-        }}
-      >
-        {selectedChat && (
-          <>
-            <ChatPanel chat={selectedChat} />
-            {isAdmin && <ChatConfigSplitPanel />}
-          </>
-        )}
-      </SplitPanel>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flex: 1,
+          }}
+        >
+          {selectedChat && (
+            <>
+              <ChatPanel chat={selectedChat} />
+              {isAdmin && <ChatConfigSplitPanel />}
+            </>
+          )}
+        </div>
+      </div>
     </Container>
   );
 }

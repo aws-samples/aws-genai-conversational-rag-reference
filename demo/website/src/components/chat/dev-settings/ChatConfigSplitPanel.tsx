@@ -70,7 +70,7 @@ export const ChatConfigSplitPanel: FC = () => {
           )) as any
         }
       >
-        Dev Settings
+        Chat Settings
       </Header>
     ),
     [config, actions]
