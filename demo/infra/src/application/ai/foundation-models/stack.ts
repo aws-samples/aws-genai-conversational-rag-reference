@@ -153,20 +153,15 @@ export class FoundationModelStack extends Stack {
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
         actions: ["sagemaker:InvokeEndpoint", "sagemaker:DescribeEndpoint"],
-        resources: Object.values(this.inventory.models)
-          .filter(
-            (modelInfo) =>
-              modelInfo.framework.type === ModelFramework.SAGEMAKER_ENDPOINT
-          )
-          .map((_modelInfo) => {
-            return Stack.of(this).formatArn({
-              service: "sagemaker",
-              resource: "endpoint",
-              // [Security] Unable to scope to endpoint name due to cross-environment without coupling stacks unnecessarily
-              resourceName: "*",
-              region: "*",
-            });
+        resources: [
+          Stack.of(this).formatArn({
+            service: "sagemaker",
+            resource: "endpoint",
+            // [Security] Unable to scope to endpoint name due to cross-environment without coupling stacks unnecessarily
+            resourceName: "*",
+            region: "*",
           }),
+        ],
       }),
     ];
 
