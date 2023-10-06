@@ -13,7 +13,7 @@ import {
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 import React, { FC } from "react";
-import { useInifniteChatMessages } from "./chats";
+import { useInfiniteChatMessages } from "./chats";
 
 export const mswServer = setupServer();
 
@@ -70,7 +70,7 @@ describe("useInfiniteChatMessage", () => {
       })
     );
 
-    const { result } = renderHook(() => useInifniteChatMessages(chatId), {
+    const { result } = renderHook(() => useInfiniteChatMessages(chatId), {
       wrapper,
     });
 
@@ -100,7 +100,7 @@ describe("useInfiniteChatMessage", () => {
       })
     );
 
-    const { result } = renderHook(() => useInifniteChatMessages(chatId), {
+    const { result } = renderHook(() => useInfiniteChatMessages(chatId), {
       wrapper,
     });
 
@@ -171,7 +171,7 @@ describe("useInfiniteChatMessage", () => {
     );
 
     const { result } = renderHook(
-      () => useInifniteChatMessages(chatId, pageSize),
+      () => useInfiniteChatMessages(chatId, pageSize),
       {
         wrapper,
       }

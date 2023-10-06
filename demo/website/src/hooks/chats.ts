@@ -23,16 +23,27 @@ import {
   ChatMessageSource,
   DefaultApiClientContext,
   ChatMessage,
+  ListChatMessagesRequest,
 } from "api-typescript-react-query-hooks";
 import produce from "immer";
+import { last } from "lodash";
 import { useCallback, useContext } from "react";
 
 type ListChatMessagesData = InfiniteData<FetchMessagesResponse>;
 
+export const CHAT_MESSAGE_PARAMS: Partial<ListChatMessagesRequest> = {
+  ascending: true,
+  reverse: false,
+  pageSize: 2,
+};
+
 export const queryKeyGenerators = {
   listChats: () => ["listChats"],
   getAllDataForChat: (chatId: string) => ["chat", chatId],
-  listChatMessages: (chatId: string) => ["chat", chatId, "messages"],
+  listChatMessages: (chatId: string) => [
+    "listChatMessages",
+    { ...CHAT_MESSAGE_PARAMS, chatId },
+  ],
   // TODO refactor out all prebuilt hooks to imporve query keys
   listChatMessageSources: (chatId: string, messageId: string) => [
     "listChatMessageSources",
@@ -100,7 +111,8 @@ export function useCreateChatMutation(
 }
 
 export function useCreateChatMessageMutation(
-  chatId: string
+  chatId: string,
+  onSuccess?: () => void
 ): ReturnType<typeof useCreateChatMessage> {
   const queryClient = useQueryClient();
 
@@ -114,50 +126,32 @@ export function useCreateChatMessageMutation(
       // listChatMessages query cache
       queryClient.setQueryData(
         listChatMessagesQueryKey,
-        (
-          old:
-            | ListChatMessagesData
-            | ListChatMessagesResponseContent
-            | undefined
-        ) =>
-          produce(old, (messagesData) => {
-            const isInfinite = old && "pages" in old;
+        (old: ListChatMessagesData | undefined) => {
+          return produce(old, (draft) => {
             if (question && answer) {
-              // TODO: remove this after we have infinite working
+              const lastPage:
+                | ListChatMessagesData["pages"][number]
+                | ListChatMessagesResponseContent
+                | undefined = last(draft?.pages || []) as any;
+              const chatMessages =
+                (lastPage && "data" in lastPage && lastPage.data) ||
+                (lastPage as ListChatMessagesResponseContent).chatMessages;
 
-              // KLUDGE: disabling due to issues with rendering content in new session
-              if (isInfinite && false) {
-                const pages =
-                  (messagesData as ListChatMessagesData).pages || [];
-                const pageData = pages[0]?.data;
-                // we're adding the question and answer messages to the first page since
-                // we're using descending records in the app
-                if (pageData) {
-                  // if we already have previous entries
-                  pageData.unshift(answer, question);
-                } else {
-                  // this is the first message
-                  messagesData = {
-                    pages: [
-                      { data: [answer, question], nextCursor: undefined },
-                    ],
-                    pageParams: [null],
-                  };
-                }
+              if (chatMessages) {
+                chatMessages.push(question, answer);
               } else {
-                messagesData = {
-                  ...messagesData,
-                  chatMessages: [
-                    ...((messagesData as ListChatMessagesResponseContent)
-                      ?.chatMessages || []),
-                    question,
-                    answer,
-                  ],
-                };
+                // this is the first message
+                return {
+                  pages: [{ data: [question, answer], nextCursor: undefined }],
+                  pageParams: [null],
+                } as ListChatMessagesData;
               }
+
+              onSuccess && onSuccess();
             }
-            return messagesData;
-          })
+            return draft;
+          });
+        }
       );
 
       // add the sources for the answer to the listChatMessageSources query cache
@@ -335,7 +329,10 @@ type FetchMessagesResponse = {
   data: ChatMessage[];
   nextCursor: string | undefined;
 };
-export function useInifniteChatMessages(chatId: string, pageSize: number = 10) {
+export function useInfiniteChatMessages(
+  chatId: string,
+  pageSize: number = 100
+) {
   const key = queryKeyGenerators.listChatMessages(chatId);
 
   const api = useContext(DefaultApiClientContext);
@@ -345,6 +342,8 @@ export function useInifniteChatMessages(chatId: string, pageSize: number = 10) {
         chatId,
         nextToken: pageParam,
         pageSize: pageSize,
+        reverse: true,
+        ascending: true,
       });
       return {
         data: result.chatMessages || [],
