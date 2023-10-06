@@ -22,6 +22,7 @@ export class Website {
     const { monorepo, api, rootOutdir, galileoSdk } = options;
 
     this.project = new CloudscapeReactTsWebsiteProject({
+      typeSafeApi: api.project,
       packageManager: javascript.NodePackageManager.PNPM,
       parent: monorepo,
       outdir: path.join(rootOutdir, "website"),

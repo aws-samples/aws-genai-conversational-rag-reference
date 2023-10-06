@@ -11,7 +11,7 @@ import {
 } from "@cloudscape-design/components";
 import AppLayout from "@cloudscape-design/components/app-layout";
 import TopNavigation from "@cloudscape-design/components/top-navigation";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Navigate,
   Route,
@@ -19,8 +19,9 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
-import { useAppUser } from "./Auth";
+import { useAppUser, useIsAdmin } from "./Auth";
 import Config from "./config.json";
+import ApiExplorer from "./pages/ApiExplorer";
 import Chat from "./pages/Chat";
 import Settings from "./pages/Settings";
 import {
@@ -30,27 +31,11 @@ import {
 import { RiskProvider } from "./providers/RiskProvider";
 
 /**
- * Define your nav items here.
- */
-const SIDEBAR_NAVIGATION_ITEMS: SideNavigationProps.Item[] = [
-  {
-    text: "Chat",
-    type: "link",
-    href: "/chat",
-  },
-  // TODO: enable settings once we implement it
-  // {
-  //   text: "Settings",
-  //   type: "link",
-  //   href: "/settings",
-  // },
-];
-
-/**
  * Defines the App layout and contains logic for routing.
  */
 const App: React.FC = () => {
   const { getAuthenticatedUser } = useCognitoAuthContext();
+  const isAdmin = useIsAdmin();
   const user = useAppUser();
   const splitPanel = useSplitPanel();
   const helpPanel = useHelpPanel();
@@ -81,6 +66,40 @@ const App: React.FC = () => {
     },
     [navigate]
   );
+
+  const sideNavigation = useMemo<SideNavigationProps.Item[]>(() => {
+    const _navItems: SideNavigationProps.Item[] = [
+      {
+        text: "Chat",
+        type: "link",
+        href: "/chat",
+      },
+    ];
+
+    if (isAdmin) {
+      _navItems.push({
+        text: "Developer Tools",
+        type: "expandable-link-group",
+        href: "#",
+        defaultExpanded: false,
+        items: [
+          {
+            text: "API Explorer",
+            type: "link",
+            href: "/apiExplorer"
+          },
+          // TODO: enable settings once we implement it
+          // {
+          //   text: "Settings",
+          //   type: "link",
+          //   href: "/settings",
+          // },
+        ],
+      },)
+    }
+
+    return _navItems;
+  }, [isAdmin])
 
   return (
     <>
@@ -122,7 +141,7 @@ const App: React.FC = () => {
             header={{ text: "Nav", href: "/" }}
             activeHref={activeHref}
             onFollow={onNavigate}
-            items={SIDEBAR_NAVIGATION_ITEMS}
+            items={sideNavigation}
           />
         }
         content={
@@ -130,6 +149,7 @@ const App: React.FC = () => {
             <Route path={"/chat"} element={<Chat />}>
               <Route path={":id"} element={<Chat />} />
             </Route>
+            <Route path="/apiExplorer" element={<ApiExplorer />} />
             <Route path={"/settings"} element={<Settings />} />
             <Route path={"/"} element={<Navigate to="/chat" replace />} />
           </Routes>
