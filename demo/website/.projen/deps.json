@@ -74,6 +74,10 @@
       "type": "build"
     },
     {
+      "name": "@types/swagger-ui-react",
+      "type": "build"
+    },
+    {
       "name": "@typescript-eslint/eslint-plugin",
       "version": "^6",
       "type": "build"
@@ -214,6 +218,10 @@
       "type": "runtime"
     },
     {
+      "name": "aws4fetch",
+      "type": "runtime"
+    },
+    {
       "name": "immer",
       "type": "runtime"
     },
@@ -261,6 +269,11 @@
     {
       "name": "react-scripts",
       "version": "^5",
+      "type": "runtime"
+    },
+    {
+      "name": "swagger-ui-react",
+      "version": "5.5.0",
       "type": "runtime"
     },
     {
