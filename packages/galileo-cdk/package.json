@@ -172,14 +172,6 @@
     }
   },
   "types": "lib/index.d.ts",
-  "typesVersions": {
-    "<=3.9": {
-      "lib/*": [
-        "lib/.types-compat/ts3.9/*",
-        "lib/.types-compat/ts3.9/*/index.d.ts"
-      ]
-    }
-  },
   "stability": "experimental",
   "jsii": {
     "outdir": "dist",

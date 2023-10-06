@@ -1,7 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import path from "node:path";
-import { MonorepoTsProject } from "@aws/pdk/monorepo";
+import { MonorepoTsProject, NxProject } from "@aws/pdk/monorepo";
 import { awscdk } from "projen";
 import { AwsCdkConstructLibrary, LambdaAutoDiscover } from "projen/lib/awscdk";
 import { AutoDiscoverBase, Stability } from "projen/lib/cdk";
@@ -62,6 +62,11 @@ export class GalileoCdk extends AwsCdkConstructLibrary {
         runtime: awscdk.LambdaRuntime.NODEJS_18_X,
       },
     });
+
+    // Add /assets dir to build cache outputs
+    NxProject.ensure(this).addBuildTargetFiles(undefined, [
+      "{projectRoot}/assets",
+    ]);
 
     // TODO: enable packing once we publish - for now is just local so faster builds
     this.packageTask.reset();
