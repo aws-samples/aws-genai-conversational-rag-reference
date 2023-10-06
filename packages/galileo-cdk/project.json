@@ -2,6 +2,32 @@
   "name": "@aws/galileo-cdk",
   "root": "packages/galileo-cdk",
   "targets": {
+    "build": {
+      "inputs": [
+        "default",
+        "^default"
+      ],
+      "outputs": [
+        "{projectRoot}/dist",
+        "{projectRoot}/lib",
+        "{projectRoot}/build",
+        "{projectRoot}/coverage",
+        "{projectRoot}/test-reports",
+        "{projectRoot}/target",
+        "{projectRoot}/cdk.out",
+        "{projectRoot}/LICENSE_THIRD_PARTY",
+        "{projectRoot}/.jsii",
+        "{projectRoot}/assets"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec projen build",
+        "cwd": "packages/galileo-cdk"
+      }
+    },
     "default": {
       "executor": "nx:run-commands",
       "options": {
@@ -41,13 +67,6 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec projen package",
-        "cwd": "packages/galileo-cdk"
-      }
-    },
-    "build": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "pnpm exec projen build",
         "cwd": "packages/galileo-cdk"
       }
     },
