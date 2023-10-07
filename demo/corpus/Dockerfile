@@ -57,7 +57,7 @@ RUN if [ -e "aws-lambda-rie" ]; then chmod +x aws-lambda-rie; mv aws-lambda-rie 
 # Install python deps
 WORKDIR ${EMBEDDINGS_DIR}
 COPY ./embeddings/dist ${EMBEDDINGS_DIR}/
-RUN pip install --target ${PYTHON_TARGET} ./corpus_embeddings-0.0.0-py3-none-any.whl
+RUN pip install --default-timeout=3000 --target ${PYTHON_TARGET} ./corpus_embeddings-0.0.0-py3-none-any.whl
 WORKDIR ${EMBEDDINGS_DIR}
 RUN tree -L 2 .
 
