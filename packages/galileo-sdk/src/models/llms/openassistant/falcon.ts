@@ -1,8 +1,8 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { IModelAdapter } from '../adapter.js';
-import { DEFAULT_MAX_NEW_TOKENS } from '../constants.js';
-import { Kwargs } from '../types.js';
+import { IModelAdapter } from '../../adapter.js';
+import { DEFAULT_MAX_NEW_TOKENS } from '../../constants.js';
+import { Kwargs } from '../../types.js';
 
 export const FALCON_ADAPTER: IModelAdapter = {
   prompt: {

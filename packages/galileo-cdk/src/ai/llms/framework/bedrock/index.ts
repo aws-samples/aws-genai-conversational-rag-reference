@@ -7,6 +7,7 @@ import {
   IModelInfoProvider,
   Kwargs,
   ModelFramework,
+  LLM,
 } from '@aws/galileo-sdk/lib/models';
 import { Construct, IConstruct } from 'constructs';
 import { BEDROCK_REGION } from './ids';
@@ -83,7 +84,7 @@ export class BedrockModel extends Construct implements IModelInfoProvider {
         modelKwargs: props.modelKwargs,
         endpointUrl: props.endpointUrl,
       },
-      adapter: props.adapter,
+      adapter: props.adapter ?? LLM.resolveBedrockModelAdapter(props.modelId),
     };
   }
 }

@@ -2,14 +2,10 @@
 PDX-License-Identifier: Apache-2.0 */
 import {
   FoundationModelIds,
-  FoundationModels,
   IFoundationModelInventory,
 } from "@aws/galileo-cdk/lib/ai/predefined";
 import { ApplicationContext } from "@aws/galileo-cdk/lib/core/app";
-import {
-  ModelFramework,
-  isBedrockFramework,
-} from "@aws/galileo-sdk/lib/models";
+import { isBedrockFramework } from "@aws/galileo-sdk/lib/models";
 import {
   Arn,
   ArnFormat,
@@ -23,6 +19,7 @@ import * as iam from "aws-cdk-lib/aws-iam";
 import { ISecret, ReplicaRegion, Secret } from "aws-cdk-lib/aws-secretsmanager";
 import { NagSuppressions } from "cdk-nag";
 import { Construct } from "constructs";
+import { FoundationModels } from "./models";
 import { NetworkingLayer } from "../../networking/layer";
 
 export interface FoundationModelStackProps extends StackProps {

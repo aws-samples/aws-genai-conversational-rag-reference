@@ -21,8 +21,3 @@ export const DEFAULT_PREDEFINED_FOUNDATION_MODEL_LIST: FoundationModelIds[] = [
   // FoundationModelIds.FALCON_7B,
   FoundationModelIds.FALCON_LITE,
 ];
-
-/**
- * Id of the foundation model to use as default for inference engines.
- */
-export const DEFAULT_FOUNDATION_MODEL_ID = FoundationModelIds.FALCON_LITE;

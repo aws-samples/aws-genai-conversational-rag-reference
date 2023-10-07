@@ -292,10 +292,30 @@
       "import": "./lib/models/llms/index.js",
       "require": "./lib/models/llms/index.cjs"
     },
-    "./lib/models/llms/falcon": {
-      "types": "./lib/models/llms/falcon.d.ts",
-      "import": "./lib/models/llms/falcon.js",
-      "require": "./lib/models/llms/falcon.cjs"
+    "./lib/models/llms/anthropic": {
+      "types": "./lib/models/llms/anthropic/index.d.ts",
+      "import": "./lib/models/llms/anthropic/index.js",
+      "require": "./lib/models/llms/anthropic/index.cjs"
+    },
+    "./lib/models/llms/anthropic/claude": {
+      "types": "./lib/models/llms/anthropic/claude.d.ts",
+      "import": "./lib/models/llms/anthropic/claude.js",
+      "require": "./lib/models/llms/anthropic/claude.cjs"
+    },
+    "./lib/models/llms/openassistant": {
+      "types": "./lib/models/llms/openassistant/index.d.ts",
+      "import": "./lib/models/llms/openassistant/index.js",
+      "require": "./lib/models/llms/openassistant/index.cjs"
+    },
+    "./lib/models/llms/openassistant/falcon": {
+      "types": "./lib/models/llms/openassistant/falcon.d.ts",
+      "import": "./lib/models/llms/openassistant/falcon.js",
+      "require": "./lib/models/llms/openassistant/falcon.cjs"
+    },
+    "./lib/models/llms/utils": {
+      "types": "./lib/models/llms/utils.d.ts",
+      "import": "./lib/models/llms/utils.js",
+      "require": "./lib/models/llms/utils.cjs"
     },
     "./lib/models/types": {
       "types": "./lib/models/types.d.ts",
