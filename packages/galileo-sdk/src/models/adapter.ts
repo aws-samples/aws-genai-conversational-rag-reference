@@ -1,7 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import { BaseSageMakerContentHandler } from 'langchain/llms/sagemaker_endpoint';
-import { set, get } from 'lodash';
+import { set, get, isEmpty } from 'lodash';
 import { getLogger } from '../common/index.js';
 import { BaseChatTemplatePartials, ChatCondenseQuestionPromptRuntime, ChatQuestionAnswerPromptRuntime } from '../prompt/templates/chat/index.js';
 
@@ -165,7 +165,11 @@ export class ModelAdapter {
 
   readonly contentHandler: AdaptedContentHandler;
 
+  readonly isDefault: boolean;
+
   constructor(config?: IModelAdapter) {
+    this.isDefault = config == null || isEmpty(config);
+
     this.prompt = new PromptAdapter(config?.prompt);
 
     this.contentHandler = new AdaptedContentHandler(config?.contentHandler);

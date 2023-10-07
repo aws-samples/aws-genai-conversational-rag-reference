@@ -6,7 +6,7 @@ import { HandlebarsPromptTemplate, HandlebarsPromptTemplateRuntime, ScopedHandle
 
 export const CHAT_CONDENSE_QUESTION_PARTIALS: ChatTemplatePartials = {
   ...BASE_CHAT_PARTIALS,
-  Body: '{{>Instruction}}\n\n{{>Dialog}}\n\n{{>Cue}}',
+  Context: '{{>Dialog}}',
   Instruction: 'Given the following conversational dialog denoted by {{>Delimiter}}, and the "Followup Question" below, rephrase the "Followup Question" to be a concise standalone question in its original language. Without answering the question, return only the standalone question.',
   Cue: 'Followup Question: {{question}}\n\nStandalone Question: ',
 } as const;

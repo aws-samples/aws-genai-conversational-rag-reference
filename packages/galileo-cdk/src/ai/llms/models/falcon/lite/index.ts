@@ -3,7 +3,7 @@ PDX-License-Identifier: Apache-2.0 */
 import {
   FALCON_ADAPTER,
   FALCON_MODEL_KWARGS,
-} from '@aws/galileo-sdk/lib/models/llms/falcon';
+} from '@aws/galileo-sdk/lib/models/llms/openassistant';
 import { DockerImageAsset, Platform } from 'aws-cdk-lib/aws-ecr-assets';
 import * as sagemaker from 'aws-cdk-lib/aws-sagemaker';
 import { Construct } from 'constructs';

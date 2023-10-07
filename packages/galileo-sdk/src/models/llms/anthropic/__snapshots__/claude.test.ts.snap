@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`models/llms/anthropic/claude adapter should render condense prompt 1`] = `
+"
+
+Human: <system>Given the following conversational dialog denoted by <dialog>, and the "Followup Question" below, rephrase the "Followup Question" to be a concise standalone question in its original language. Without answering the question, return only the standalone question.
+
+<dialog>
+	System: A system message
+
+	Human: Hi
+
+	Assistant: Hello!
+</dialog>
+</system>
+
+Followup Question: THE QUESTION
+
+Assistant: "
+`;
+
+exports[`models/llms/anthropic/claude adapter should render qa prompt 1`] = `
+"
+
+Human: <system>You are a research assistant in the "DOMAIN" domain. Based on the following rules and provided corpus denoted by <corpus>, answer the question. 
+Rules:
+1. only use knowledge from the provided corpus to answer the question
+2. always be truthful, honest, unbiased, and unharmful
+3. be concise, do not repeat the question or yourself in the answer
+
+
+<corpus>
+THE CORPUS
+</corpus>
+</system>
+
+Question: THE QUESTION
+
+Assistant: "
+`;

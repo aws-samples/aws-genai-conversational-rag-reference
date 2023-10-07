@@ -1,6 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import {
+  FoundationModelRecord,
   IFoundationModelInventory,
   IModelInfoProvider,
   isModelInfoProvider,
@@ -10,7 +11,6 @@ import { IVpc } from 'aws-cdk-lib/aws-ec2';
 import { Construct } from 'constructs';
 import { camelCase, startCase } from 'lodash';
 import {
-  DEFAULT_FOUNDATION_MODEL_ID,
   DEFAULT_PREDEFINED_FOUNDATION_MODEL_LIST,
   FoundationModelIds,
 } from './ids';
@@ -18,7 +18,6 @@ import {
   BEDROCK_DEFAULT_MODEL,
   BedrockModel,
 } from '../llms/framework/bedrock';
-import { ModelEULA } from '../llms/framework/eula';
 import {
   FalconLite,
   FalconLiteInstances,
@@ -30,7 +29,7 @@ import {
 
 export { IFoundationModelInventory };
 
-export interface FoundationModelsProps {
+export interface PredefinedFoundationModelsProps {
   readonly vpc: IVpc;
   readonly foundationModels?: FoundationModelIds[];
   readonly defaultModelId?: string;
@@ -39,8 +38,14 @@ export interface FoundationModelsProps {
   readonly bedrockEndpointUrl?: string;
 }
 
-export class FoundationModels extends Construct {
+export interface IFoundationModelManager {
+  readonly deployedModelIds: string[];
+  readonly defaultModelId: string;
   readonly inventory: IFoundationModelInventory;
+}
+
+export class PredefinedFoundationModels extends Construct implements IFoundationModelManager {
+  protected _defaultModelId?: string;
 
   get deployedModelIds(): string[] {
     return Object.keys(this.inventory.models);
@@ -50,7 +55,33 @@ export class FoundationModels extends Construct {
     return this.inventory.defaultModelId;
   }
 
-  constructor(scope: Construct, id: string, props: FoundationModelsProps) {
+  get modelProviders(): IModelInfoProvider[] {
+    // find all models defined
+    return this.node.children.filter(
+      isModelInfoProvider,
+    ) as unknown[] as IModelInfoProvider[];
+  }
+
+  get inventory(): IFoundationModelInventory {
+    const modelProviders = this.modelProviders;
+
+    // mapping of available foundation models
+    // this can include externally managed endpoints and other services later
+    // acts as inventory
+
+    const models: FoundationModelRecord = Object.fromEntries(
+      modelProviders.map((v) => [v.modelInfo.uuid, v.modelInfo]),
+    );
+
+    const defaultModelId = this._defaultModelId ?? modelProviders[0].modelInfo.uuid;
+
+    return {
+      defaultModelId,
+      models,
+    };
+  }
+
+  constructor(scope: Construct, id: string, props: PredefinedFoundationModelsProps) {
     super(scope, id);
 
     // TODO: add endpoints to vpc, will need to setup VPC endpoints for cross-account development
@@ -61,6 +92,8 @@ export class FoundationModels extends Construct {
       bedrockModelIds,
       bedrockRegion,
     } = props;
+
+    this._defaultModelId = defaultModelId;
 
     const modelsToDeploy = new Set(
       foundationModels || DEFAULT_PREDEFINED_FOUNDATION_MODEL_LIST,
@@ -124,52 +157,6 @@ export class FoundationModels extends Construct {
       );
     }
 
-    //////////////////////////////////////////////////////////
-    // Existing Models - provide the model info to integrate an existing model
-    // The ExistingLLM construct simply exposes the model info to integrate with inventory
-    //////////////////////////////////////////////////////////
-    // NB: Here is example reference of how to integrate with existing model
-    // new ExistingLLM(this, "MyExistingLLM", {
-    //   modelId: "example",
-    //   uuid: "existing.model",
-    //   name: "Existing Model",
-    //   framework: {
-    //     type: ModelFramework.SAGEMAKER_ENDPOINT,
-    //     endpointName: "endpointName",
-    //     endpointRegion: "endpointRegion",
-    //     endpointKwargs: {},
-    //     modelKwargs: {},
-    //   },
-    //   constraints: {
-    //     maxTotalTokens: 2048,
-    //     maxInputLength: 2047,
-    //   },
-    //   adapter: {},
-    // });
-
     // NB: add additional LLM/FoundationModels here to deploy
-
-    ////////////////////////////////////////////////////////////
-    // BUILD THE INVENTORY
-    ////////////////////////////////////////////////////////////
-    // find all models defined
-    const modelProviders = this.node.children.filter(
-      isModelInfoProvider,
-    ) as unknown[] as IModelInfoProvider[];
-    // mapping of available foundation models
-    // this can include externally managed endpoints and other services later
-    // acts as inventory
-    this.inventory = {
-      defaultModelId: defaultModelId ?? DEFAULT_FOUNDATION_MODEL_ID,
-      models: Object.fromEntries(
-        modelProviders.map((v) => [v.modelInfo.uuid, v.modelInfo]),
-      ),
-    };
-
-    new ModelEULA(
-      this,
-      'EULA',
-      modelProviders.map((v) => v.modelInfo),
-    );
   }
 }

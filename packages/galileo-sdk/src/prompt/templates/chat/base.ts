@@ -48,11 +48,11 @@ export const BASE_CHAT_PARTIALS: BaseChatTemplatePartials = {
   BaseMessage: '{{#if type}}{{type}}: {{/if}}{{content}}',
 
   Messages: `{{#each chat_history}}
-{{~#if (eq type "human")}}{{>HumanMessage}}
+{{#if (eq type "human")}}{{>HumanMessage}}
 {{~else if (eq type "ai")}}{{>AIMessage}}
 {{~else if (eq type "system")}}{{>SystemMessage}}
 {{~else}}{{>BaseMessage}}
-{{/if}}{{>MessageSeparator}}{{/each}}`,
+{{/if}}{{#isnt @last true}}{{>MessageSeparator}}{{/isnt}}{{/each}}`,
   Dialog: 'Dialog: {{>Delimiter}}\n{{>Messages}}\n{{>Delimiter}}',
 
   Corpus: 'Corpus: {{>Delimiter}}\n{{context}}\n{{>Delimiter}}',

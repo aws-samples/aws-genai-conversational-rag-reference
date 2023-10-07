@@ -11,7 +11,7 @@ CORPUS
 '''
 Question: THE QUESTION
 
-Answer:"
+Answer: "
 `;
 
 exports[`prompt/templates/chat question-answer default 1`] = `
@@ -26,7 +26,7 @@ CORPUS
 '''
 Question: THE QUESTION
 
-Answer:"
+Answer: "
 `;
 
 exports[`prompt/templates/chat question-answer flatten 1`] = `
@@ -45,7 +45,12 @@ Answer: "
 `;
 
 exports[`prompt/templates/chat question-answer messages 1`] = `
-"You are a research assistant in the "DOMAIN" domain. Based on the following rules and provided corpus denoted by ''', answer the question. 
+"
+
+
+
+
+You are a research assistant in the "DOMAIN" domain. Based on the following rules and provided corpus denoted by ''', answer the question. 
 Rules:
 1. only use knowledge from the provided corpus to answer the question
 2. always be truthful, honest, unbiased, and unharmful
@@ -56,7 +61,7 @@ CORPUS
 '''
 Question: THE QUESTION
 
-Answer:"
+Answer:         "
 `;
 
 exports[`prompt/templates/chat question-answer partial template overrides 1`] = `
@@ -75,7 +80,11 @@ Answer: </WRAPPER>"
 `;
 
 exports[`prompt/templates/chat question-answer wrappers 1`] = `
-"<SEQUENCE>You are a research assistant in the "DOMAIN" domain. Based on the following rules and provided corpus denoted by ''', answer the question. 
+"
+
+
+
+<SEQUENCE>You are a research assistant in the "DOMAIN" domain. Based on the following rules and provided corpus denoted by ''', answer the question. 
 Rules:
 1. only use knowledge from the provided corpus to answer the question
 2. always be truthful, honest, unbiased, and unharmful
@@ -86,5 +95,5 @@ CORPUS
 '''
 Question: THE QUESTION
 
-Answer: </SEQUENCE>"
+Answer: </SEQUENCE>        "
 `;

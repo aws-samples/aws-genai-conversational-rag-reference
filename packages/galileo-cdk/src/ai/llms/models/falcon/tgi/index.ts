@@ -3,7 +3,7 @@ PDX-License-Identifier: Apache-2.0 */
 import {
   FALCON_ADAPTER,
   FALCON_MODEL_KWARGS,
-} from '@aws/galileo-sdk/lib/models/llms/falcon';
+} from '@aws/galileo-sdk/lib/models/llms/openassistant';
 import { Construct } from 'constructs';
 import { BaseLLMProps } from '../../../framework/base';
 import { HuggingFaceModel } from '../../../framework/huggingface/base';
@@ -57,7 +57,7 @@ export interface HuggingFaceFalconProps extends BaseLLMProps {
 
 export class HuggingFaceFalcon extends HuggingFaceModel {
   static numGpuFromInstanceType(
-    instanceType: HuggingFaceFalconInstances | string,
+    instanceType?: HuggingFaceFalconInstances | string,
   ): number {
     switch (instanceType) {
       case HuggingFaceFalconInstances.G5_16XLARGE:

@@ -113,7 +113,7 @@ export class HandlebarsPromptTemplate<
   async format(values: InputValues, options?: RuntimeOptions): Promise<string> {
     const allValues = await this.mergePartialAndUserVariables(values);
     const render = this.handlebars.compile(this.template, this.compileOptions);
-    return render(allValues, merge({}, this.runtimeOptions, options)).trim();
+    return render(allValues, merge({}, this.runtimeOptions, options));
   }
 
   async mergePartialAndUserVariables(

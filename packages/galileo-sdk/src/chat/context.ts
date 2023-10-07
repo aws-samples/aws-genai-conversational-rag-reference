@@ -10,6 +10,7 @@ import { ModelAdapter } from '../models/adapter.js';
 import { DEFAULT_MAX_NEW_TOKENS } from '../models/constants.js';
 import { resolveFoundationModelCredentials } from '../models/cross-account.js';
 import { FoundationModelInventory } from '../models/index.js';
+import { resolveModelAdapter } from '../models/llms/utils.js';
 import { IModelInfo, Kwargs, isBedrockFramework, isSageMakerEndpointFramework } from '../models/types.js';
 import {
   ChatCondenseQuestionPromptRuntime,
@@ -72,34 +73,8 @@ export class ChatEngineContext {
 
     logger.debug('LLM configuration', { modelInfo, options });
 
-    this.adapter = new ModelAdapter(modelInfo.adapter);
-
-    this.qaPrompt = new ChatQuestionAnswerPromptTemplate(merge(
-      // defaults
-      {
-        domain: options.domain,
-      },
-      // model specific config
-      this.adapter.prompt?.chat?.questionAnswer,
-      // runtime specific
-      options.qaPrompt,
-    ));
-
-    this.condenseQuestionPrompt = new ChatCondenseQuestionPromptTemplate(merge(
-      // defaults
-      {
-        domain: options.domain,
-      },
-      // model specific config
-      this.adapter.prompt?.chat?.condenseQuestion,
-      // runtime specific
-      options.condenseQuestionPrompt,
-    ));
-
-    logger.debug('Prompts', {
-      qaPrompt: this.qaPrompt.serialize(),
-      condenseQuestionPrompt: this.condenseQuestionPrompt.serialize(),
-    });
+    this.adapter = resolveModelAdapter(modelInfo);
+    logger.debug('ModelAdapter:', { isDefault: this.adapter.isDefault, adapter: this.adapter.isDefault ? undefined : this.adapter });
 
     if (isSageMakerEndpointFramework(modelInfo.framework)) {
       const { endpointName, endpointRegion, role } = modelInfo.framework;
@@ -154,6 +129,33 @@ export class ChatEngineContext {
       // @ts-ignore
       throw new Error(`Model Framework "${modelInfo.framework.type}" is not supported/implemented`);
     }
+
+    this.qaPrompt = new ChatQuestionAnswerPromptTemplate(merge(
+      // defaults
+      {
+        domain: options.domain,
+      },
+      // model specific config
+      this.adapter.prompt?.chat?.questionAnswer,
+      // runtime specific
+      options.qaPrompt,
+    ));
+
+    this.condenseQuestionPrompt = new ChatCondenseQuestionPromptTemplate(merge(
+      // defaults
+      {
+        domain: options.domain,
+      },
+      // model specific config
+      this.adapter.prompt?.chat?.condenseQuestion,
+      // runtime specific
+      options.condenseQuestionPrompt,
+    ));
+
+    logger.debug('Prompts', {
+      qaPrompt: this.qaPrompt.serialize(),
+      condenseQuestionPrompt: this.condenseQuestionPrompt.serialize(),
+    });
   }
 
   getNumTokens(text: string): number {
