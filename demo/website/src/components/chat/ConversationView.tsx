@@ -1,6 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { Spinner } from "@cloudscape-design/components";
+import { Alert, Spinner } from "@cloudscape-design/components";
 import {
   ChatMessage,
   useListChatMessages,
@@ -25,7 +25,9 @@ export const ConversationView = forwardRef(
       });
 
     const messages = useMemo<ChatMessage[]>(
-      () => data?.pages?.flatMap((p) => p.chatMessages || []) ?? [],
+      () =>
+        data?.pages?.flatMap((p) => p.chatMessages || (p as any).data || []) ??
+        [],
       [data]
     );
 
@@ -39,62 +41,52 @@ export const ConversationView = forwardRef(
     }, [hasNextPage && isFetching]);
 
     return (
-      <div
-        ref={ref}
-        style={{
-          display: "flex",
-          flex: 1,
-          flexDirection: "column",
-          backgroundColor: "#fcfcfc",
-          padding: "4px",
-          boxSizing: "border-box",
-          overflowY: "scroll",
-        }}
-      >
-        {messages.length === 0 && !isLoading && (
-          <EmptyState title="No messages" subtitle="No messages to display." />
-        )}
-        {messages.map((message) => (
-          <Message
-            message={message}
-            key={message.messageId}
-            humanStyles={{
-              backgroundColor: "#ffffff",
-            }}
-            aiStyles={{
-              backgroundColor: "#efefef",
-            }}
-          />
-        ))}
-        {isLoading ||
-          (isFetching && (
+      <>
+        {error && <Alert type="error">{error.message}</Alert>}
+        <div
+          ref={ref}
+          style={{
+            display: "flex",
+            flex: 1,
+            flexDirection: "column",
+            backgroundColor: "#fcfcfc",
+            padding: "4px",
+            boxSizing: "border-box",
+            overflowY: "scroll",
+          }}
+        >
+          {messages.length === 0 && !isLoading && (
+            <EmptyState
+              title="No messages"
+              subtitle="No messages to display."
+            />
+          )}
+          {messages.map((message) => (
+            <Message
+              message={message}
+              key={message.messageId}
+              humanStyles={{
+                backgroundColor: "#ffffff",
+              }}
+              aiStyles={{
+                backgroundColor: "#efefef",
+              }}
+            />
+          ))}
+          {(isLoading || isFetching) && (
             <div
               style={{
-                width: "100%",
-                height: "100%",
                 display: "flex",
                 flex: 1,
                 justifyContent: "center",
-                padding: 20,
+                alignItems: "center",
               }}
             >
-              <Spinner size="normal" />
+              <Spinner size="big" />
             </div>
-          ))}
-        {error && (
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              flex: 1,
-              justifyContent: "center",
-            }}
-          >
-            <code>{error.message}</code>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      </>
     );
   }
 );

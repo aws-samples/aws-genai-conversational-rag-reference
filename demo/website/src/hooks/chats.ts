@@ -34,7 +34,7 @@ type ListChatMessagesData = InfiniteData<FetchMessagesResponse>;
 export const CHAT_MESSAGE_PARAMS: Partial<ListChatMessagesRequest> = {
   ascending: true,
   reverse: false,
-  pageSize: 2,
+  pageSize: 10,
 };
 
 export const queryKeyGenerators = {
@@ -110,6 +110,11 @@ export function useCreateChatMutation(
   return createChat;
 }
 
+type ListChatMessagesDataPage = ListChatMessagesData["pages"][number];
+type ListChatMessagePage =
+  | ListChatMessagesDataPage
+  | ListChatMessagesResponseContent;
+
 export function useCreateChatMessageMutation(
   chatId: string,
   onSuccess?: () => void
@@ -129,20 +134,39 @@ export function useCreateChatMessageMutation(
         (old: ListChatMessagesData | undefined) => {
           return produce(old, (draft) => {
             if (question && answer) {
-              const lastPage:
-                | ListChatMessagesData["pages"][number]
-                | ListChatMessagesResponseContent
-                | undefined = last(draft?.pages || []) as any;
-              const chatMessages =
-                (lastPage && "data" in lastPage && lastPage.data) ||
-                (lastPage as ListChatMessagesResponseContent).chatMessages;
+              const lastPage: ListChatMessagePage | undefined = last(
+                draft?.pages || []
+              ) as any;
 
-              if (chatMessages) {
-                chatMessages.push(question, answer);
+              if (lastPage) {
+                // empty chat (new) page contains "data" while non-empty container "chatMessages"
+                const chatMessages =
+                  ("data" in lastPage && lastPage.data) ||
+                  ("chatMessages" in lastPage && lastPage.chatMessages) ||
+                  undefined;
+
+                if (chatMessages == null) {
+                  // unable to inject new chat messages, just reset to resolve
+                  console.warn(
+                    "Failed to inject new chat turn into query cache"
+                  );
+                  queryClient
+                    .resetQueries({
+                      queryKey: [listChatMessagesQueryKey],
+                    })
+                    .catch(console.error);
+                } else {
+                  chatMessages.push(question, answer);
+                }
               } else {
                 // this is the first message
                 return {
-                  pages: [{ data: [question, answer], nextCursor: undefined }],
+                  pages: [
+                    {
+                      data: [question, answer],
+                      nextCursor: undefined,
+                    },
+                  ],
                   pageParams: [null],
                 } as ListChatMessagesData;
               }
@@ -166,6 +190,7 @@ export function useCreateChatMessageMutation(
         }
       );
     },
+    mutationKey: ["createChatMessage", chatId],
   });
 
   return createChatMessage;
