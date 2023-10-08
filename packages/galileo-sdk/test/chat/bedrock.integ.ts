@@ -53,10 +53,6 @@ describe('integ/bedrock', () => {
                 top_p: 0.5,
               },
             },
-            constraints: {
-              maxInputLength: 2048,
-              maxTotalTokens: 2048,
-            },
             adapter: {
               prompt: {
                 chat: {

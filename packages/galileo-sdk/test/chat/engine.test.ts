@@ -49,7 +49,6 @@ describe('chat/engine', () => {
               endpointRegion: 'us-east-1',
             },
             constraints: {
-              maxInputLength: 2048,
               maxTotalTokens: 2048,
             },
           },

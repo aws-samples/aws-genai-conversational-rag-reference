@@ -97,7 +97,6 @@ export class HuggingFaceFalcon extends HuggingFaceModel {
       // default model kwargs
       modelKwargs: {
         ...FALCON_MODEL_KWARGS,
-        max_new_tokens: maxTotalTokens - 1,
       },
       image: {
         repoId: 'huggingface-pytorch-tgi-inference',

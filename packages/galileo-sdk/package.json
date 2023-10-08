@@ -267,6 +267,11 @@
       "import": "./lib/models/adapter.js",
       "require": "./lib/models/adapter.cjs"
     },
+    "./lib/models/constants": {
+      "types": "./lib/models/constants.d.ts",
+      "import": "./lib/models/constants.js",
+      "require": "./lib/models/constants.cjs"
+    },
     "./lib/models/cross-account": {
       "types": "./lib/models/cross-account.d.ts",
       "import": "./lib/models/cross-account.js",

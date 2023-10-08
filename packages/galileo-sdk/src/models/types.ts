@@ -42,7 +42,10 @@ export interface IBedrockFramework {
 export type IModelFramework = IBedrockFramework | ISageMakerEndpointModelFramework;
 
 export interface IModelConstraints {
-  readonly maxInputLength: number;
+  /**
+   * @default `maxTotalTokens - 1`
+   */
+  readonly maxInputLength?: number;
   readonly maxTotalTokens: number;
 }
 
