@@ -7,10 +7,16 @@ import { PromptTemplate } from 'langchain/prompts';
 import { merge } from 'lodash';
 import { getLogger } from '../common/index.js';
 import { ModelAdapter } from '../models/adapter.js';
+import { DEFAULT_MAX_NEW_TOKENS } from '../models/constants.js';
 import { resolveFoundationModelCredentials } from '../models/cross-account.js';
 import { FoundationModelInventory } from '../models/index.js';
 import { IModelInfo, Kwargs, isBedrockFramework, isSageMakerEndpointFramework } from '../models/types.js';
-import { ChatCondenseQuestionPromptRuntime, ChatCondenseQuestionPromptTemplate, ChatQuestionAnswerPromptRuntime, ChatQuestionAnswerPromptTemplate } from '../prompt/templates/chat/index.js';
+import {
+  ChatCondenseQuestionPromptRuntime,
+  ChatCondenseQuestionPromptTemplate,
+  ChatQuestionAnswerPromptRuntime,
+  ChatQuestionAnswerPromptTemplate,
+} from '../prompt/templates/chat/index.js';
 import { omitManagedBedrockKwargs } from '../utils/bedrock.js';
 
 const logger = getLogger('chat/adapter');
@@ -125,7 +131,7 @@ export class ChatEngineContext {
       const { modelId, region, role, endpointUrl } = modelInfo.framework;
 
       const modelKwargs = {
-        maxTokens: 500,
+        maxTokens: DEFAULT_MAX_NEW_TOKENS,
         temperature: 0,
         ...modelInfo.framework.modelKwargs,
         ...options.endpointKwargs,
@@ -157,7 +163,10 @@ export class ChatEngineContext {
   }
 
   get maxInputLength(): number {
-    return this.modelInfo.constraints?.maxInputLength || 2048;
+    if (this.modelInfo.constraints) {
+      return this.modelInfo.constraints.maxInputLength || this.modelInfo.constraints.maxTotalTokens - 1;
+    }
+    return 2048;
   }
 
   get qaPromptLength(): number {
@@ -169,6 +178,7 @@ export class ChatEngineContext {
   }
 
   truncateInputText(text: string): string {
+    // TODO: integrate truncation into the chain flow
     const tokens = this.getNumTokens(text);
     if (tokens <= this.maxInputLength) {
       return text;

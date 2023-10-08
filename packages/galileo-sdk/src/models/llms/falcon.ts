@@ -1,6 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import { IModelAdapter } from '../adapter.js';
+import { DEFAULT_MAX_NEW_TOKENS } from '../constants.js';
 import { Kwargs } from '../types.js';
 
 export const FALCON_ADAPTER: IModelAdapter = {
@@ -34,7 +35,7 @@ export const FALCON_MODEL_KWARGS: Kwargs = {
   top_p: 0.6,
   temperature: 0.001,
   top_k: 30,
-  max_new_tokens: 2048,
+  max_new_tokens: DEFAULT_MAX_NEW_TOKENS,
   repetition_penalty: 1.03,
   stop: ['<|endoftext|>'],
   return_full_text: false,
