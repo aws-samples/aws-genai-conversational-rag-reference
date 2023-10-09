@@ -2,10 +2,7 @@
 PDX-License-Identifier: Apache-2.0 */
 import { BaseSageMakerContentHandler } from 'langchain/llms/sagemaker_endpoint';
 import { set, get, isEmpty } from 'lodash';
-import { getLogger } from '../common/index.js';
 import { BaseChatTemplatePartials, ChatCondenseQuestionPromptRuntime, ChatQuestionAnswerPromptRuntime } from '../prompt/templates/chat/index.js';
-
-const logger = getLogger('models/adapter');
 
 /**
  * @struct
@@ -146,7 +143,7 @@ export class AdaptedContentHandler extends BaseSageMakerContentHandler<string, s
       Object.assign(input, modelKwargs);
     }
 
-    logger.debug('AdaptedContentHandler#transformInput:', { prompt, modelKwargs, input });
+    console.debug('AdaptedContentHandler#transformInput:', { prompt, modelKwargs, input });
 
     return Buffer.from(JSON.stringify(input), this.inputEncoding);
   }
@@ -155,7 +152,7 @@ export class AdaptedContentHandler extends BaseSageMakerContentHandler<string, s
     const response = JSON.parse(Buffer.from(output).toString(this.outputEncoding));
     // extract the path from json
     const result = get(response, this.outputJsonpath);
-    logger.debug('AdaptedContentHandler#transformOutput:', { response, result });
+    console.debug('AdaptedContentHandler#transformOutput:', { response, result });
     return result;
   }
 }

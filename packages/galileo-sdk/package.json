@@ -302,6 +302,16 @@
       "import": "./lib/models/llms/anthropic/claude.js",
       "require": "./lib/models/llms/anthropic/claude.cjs"
     },
+    "./lib/models/llms/meta": {
+      "types": "./lib/models/llms/meta/index.d.ts",
+      "import": "./lib/models/llms/meta/index.js",
+      "require": "./lib/models/llms/meta/index.cjs"
+    },
+    "./lib/models/llms/meta/llama2": {
+      "types": "./lib/models/llms/meta/llama2.d.ts",
+      "import": "./lib/models/llms/meta/llama2.js",
+      "require": "./lib/models/llms/meta/llama2.cjs"
+    },
     "./lib/models/llms/openassistant": {
       "types": "./lib/models/llms/openassistant/index.d.ts",
       "import": "./lib/models/llms/openassistant/index.js",

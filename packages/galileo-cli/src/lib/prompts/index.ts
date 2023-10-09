@@ -8,7 +8,6 @@ import {
   BEDROCK_DEFAULT_MODEL,
   BEDROCK_REGION,
   BedrockModelIds,
-  DEFAULT_FOUNDATION_MODEL_ID,
   DEFAULT_PREDEFINED_FOUNDATION_MODEL_LIST,
   FoundationModelIds,
   helpers,
@@ -238,13 +237,12 @@ namespace galileoPrompts {
       })),
       initial: () => {
         const _initial =
-          context.cache.getItem("defaultModelId") ??
-          DEFAULT_FOUNDATION_MODEL_ID;
-        if (availableModelIds.includes(_initial)) {
+          context.cache.getItem("defaultModelId")
+        if (_initial && availableModelIds.includes(_initial)) {
           return availableModelIds.indexOf(_initial);
-        } else {
-          return 0;
         }
+
+        return 0;
       },
     };
   };

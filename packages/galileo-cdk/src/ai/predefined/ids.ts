@@ -12,6 +12,9 @@ export enum FoundationModelIds {
 
   // Bedrock
   BEDROCK = 'bedrock',
+
+  // LLama2
+  META_LLAMA2_BASE_13B = 'meta.llama2.base-13b',
 }
 
 /**

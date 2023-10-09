@@ -35,7 +35,7 @@ export interface BaseLLMProps {
   /** Default endpoint kwargs to call the endpoint */
   readonly endpointKwargs?: Models.Kwargs;
   readonly adapter?: Models.IModelAdapter;
-  readonly instanceType: string;
+  readonly instanceType?: string;
   readonly instanceCount?: number;
   readonly executionRole?: iam.Role;
   readonly modelDataDownloadTimeout?: Duration;
@@ -111,6 +111,10 @@ export abstract class BaseLLM
 
   constructor(scope: Construct, id: string, props: BaseLLMProps) {
     super(scope, id);
+
+    if (props.instanceType == null) {
+      throw new Error('LLM missing `instanceType` prop');
+    }
 
     this.region = Stack.of(this).resolve(Stack.of(this).region);
 

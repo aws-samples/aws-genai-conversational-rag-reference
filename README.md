@@ -1,4 +1,5 @@
 # GenAI Conversational RAG Reference (`Closed Preview`)
+
 > Codename: **Galileo**
 
 > **ATTENTION**: Until this repository is made public, the documentation [github pages](https://aws-samples.github.io/aws-genai-conversational-rag-reference) site will not be available. To view the full documentation at this time, please run `pnpm run docs:serve` and open the URL provided (default http://127.0.0.1:8000)
@@ -7,9 +8,9 @@ Conversational generative AI applications that provide search and summarisation 
 
 Galileo is:
 
-* a framework to help you rapidly experiment with, deploy, and launch GenAI powered products and services
-* a developer experience that reduces the time required to deliver the foundations of GenAI prototypes by providing implementations of the components mentioned above
-* engineered so that all components can be hosted within your AWS account
+- a framework to help you rapidly experiment with, deploy, and launch GenAI powered products and services
+- a developer experience that reduces the time required to deliver the foundations of GenAI prototypes by providing implementations of the components mentioned above
+- engineered so that all components can be hosted within your AWS account
 
 ![](./docs/content/assets/images/ux-screenshot.png)
 ![](./docs/content/assets/images/mental-model.png)
@@ -18,28 +19,30 @@ Galileo is:
 
 ## Prerequisites
 
-*Development Environment:*
-|   Tool                |   Version   |    Recommendation            |
+_Development Environment:_
+| Tool | Version | Recommendation |
 | --------------------- | ----------- | ---------------------------- |
-| pnpm                  | >=8.x       | https://pnpm.io/installation |
-| NodeJS                | >=18        | Use Node Version Manager ([nvm](https://github.com/nvm-sh/nvm)) |
-| Python                | >=3.10,<4   | Use Python Version Manager ([pyenv](https://github.com/pyenv/pyenv)) |
-| Poetry                | >=1.5,<2    | https://python-poetry.org/docs/ |
-| AWS CLI               | v2          | https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html |
-| Docker<sup>1</sup>    | v20+        | https://docs.docker.com/desktop/ |
-| JDK                   | v17+        | [Amazon Corretto 17](https://docs.aws.amazon.com/corretto/latest/corretto-17-ug/downloads-list.html) |
+| pnpm | >=8.x | https://pnpm.io/installation |
+| NodeJS | >=18 | Use Node Version Manager ([nvm](https://github.com/nvm-sh/nvm)) |
+| Python | >=3.10,<4 | Use Python Version Manager ([pyenv](https://github.com/pyenv/pyenv)) |
+| Poetry | >=1.5,<2 | https://python-poetry.org/docs/ |
+| AWS CLI | v2 | https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html |
+| Docker<sup>1</sup> | v20+ | https://docs.docker.com/desktop/ |
+| JDK | v17+ | [Amazon Corretto 17](https://docs.aws.amazon.com/corretto/latest/corretto-17-ug/downloads-list.html) |
 
 > <sup>1</sup> Docker virtual disk space should have at least 30GB of free space. If you see `no space left on device` error during build, free up space by running `docker system prune -f` and/or increasing the virtual disk size.
 
-*AWS Service Quotas:*
-> Ensure the following service quota limits are increased before deploying. The deployment performs a check and will fail early if limits are not met.
+_AWS Service Quotas:_
 
-| Service                                                                                  | Quota                                      | Minimum Applied Value | Usage                  | Region |
-| ---------------------------------------------------------------------------------------- | ------------------------------------------ | --------------------- | ---------------------- | ------ |
-| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas) | `ml.g5.12xlarge for endpoint usage`        | 1                     | Falcon Lite            | LLM    |
-| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas) | `ml.g5.16xlarge for endpoint usage`        | 1                     | Falcon 7B              | LLM    |
-| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas) | `ml.g5.48xlarge for endpoint usage`        | 1                     | Falcon 40B             | LLM    |
-| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas) | `ml.g4dn.2xlarge for processing job usage` | 5                     | Embedding/Indexing ETL | App    |
+> Ensure the following service quota limits are increased before deploying *based on the models you deploy*. The deployment performs a check and will fail early if limits are not met.
+
+| Service                                                                                  | Quota                                      | Minimum Applied Value | Usage                    | Region |
+| ---------------------------------------------------------------------------------------- | ------------------------------------------ | --------------------- | ------------------------ | ------ |
+| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas) | `ml.g4dn.2xlarge for processing job usage` | 5\*                   | Embedding/Indexing ETL   | App    |
+| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas) | `ml.g5.12xlarge for endpoint usage`        | 1-2                   | Falcon Lite / Llama2 13B | LLM    |
+| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas) | `ml.g5.16xlarge for endpoint usage`        | 1                     | Falcon 7B                | LLM    |
+| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas) | `ml.g5.48xlarge for endpoint usage`        | 1                     | Falcon 40B               | LLM    |
+| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas) | `ml.g5.12xlarge for endpoint usage`        | 1                     | Llama2 13B               | LLM    |
 
 > Note: Galileo CLI enables you to deploy your LLM and application into different regions.
 
@@ -49,10 +52,11 @@ Galileo is:
 
 Quickly deploy the full solution using the following:
 
-> * Make sure docker is running! And with sufficient virtual disk space.
-> * Make sure your AWS credentials are setup and available in the shell.
+> - Make sure docker is running! And with sufficient virtual disk space.
+> - Make sure your AWS credentials are setup and available in the shell.
 
 ## Galileo CLI
+
 Use the companion cli for deploying the cdk infra
 
 ```sh
@@ -64,6 +68,7 @@ pnpm run galileo-cli
 > `pnpm run galileo-cli --help` for cli help info
 
 ## Manually
+
 ```sh
 pnpm install
 pnpm build
@@ -86,20 +91,22 @@ pnpm exec cdk deploy --app cdk.out --require-approval never Dev/Galileo-SampleDa
 ![](./docs/content/assets/images/galileo-arch.png)
 
 ---
+
 ---
 
 # Development
 
-> *WIP*: This repository is currently a work-in-progress and acts as a living reference. Overtime, this repository will be partially made available via [AWS PDK](https://aws.github.io/aws-pdk) as libraries and constructs
+> _WIP_: This repository is currently a work-in-progress and acts as a living reference. Overtime, this repository will be partially made available via [AWS PDK](https://aws.github.io/aws-pdk) as libraries and constructs
 > become more stable and robust. This repository is expected to remain as an example reference for bootstrapping such a project using the toolkit provided by the [AWS PDK](https://aws.github.io/aws-pdk).
 
 This codebase is polyglot monorepo managed by [AWS PDK Monoreop](https://aws.github.io/aws-pdk/developer_guides/nx-monorepo/index.html) which utilizes the following technologies under the hood:
 
-* [pnpm](https://pnpm.io) - workspace management.
-* [projen](https://projen.io/) - define and maintain complex project configuration through code; Project-as-Code (PaC).
-* [nx](https://nx.dev/) - polyglot package build and dependency management, plus caching and performance improvements.
+- [pnpm](https://pnpm.io) - workspace management.
+- [projen](https://projen.io/) - define and maintain complex project configuration through code; Project-as-Code (PaC).
+- [nx](https://nx.dev/) - polyglot package build and dependency management, plus caching and performance improvements.
 
 ## Folder Structure
+
 At a high-level, the project is structured as follows:
 
 ```sh
@@ -161,10 +168,9 @@ To perform this, follow these steps:
 
 ---
 
-
 ## Security considerations
 
->The sample code; software libraries; command line tools; proofs of concept; templates; or other related technology (including any of the foregoing that are provided by our personnel) is provided to you as AWS Content under the AWS Customer Agreement, or the relevant written agreement between you and AWS (whichever applies). You should not use this AWS Content in your production accounts, or on production or other critical data. You are responsible for testing, securing, and optimizing the AWS Content, such as sample code, as appropriate for production grade use based on your specific quality control practices and standards. Deploying AWS Content may incur AWS charges for creating or using AWS chargeable resources, such as running Amazon EC2 instances or using Amazon S3 storage.
+> The sample code; software libraries; command line tools; proofs of concept; templates; or other related technology (including any of the foregoing that are provided by our personnel) is provided to you as AWS Content under the AWS Customer Agreement, or the relevant written agreement between you and AWS (whichever applies). You should not use this AWS Content in your production accounts, or on production or other critical data. You are responsible for testing, securing, and optimizing the AWS Content, such as sample code, as appropriate for production grade use based on your specific quality control practices and standards. Deploying AWS Content may incur AWS charges for creating or using AWS chargeable resources, such as running Amazon EC2 instances or using Amazon S3 storage.
 
 The sample code is currently in pre-release status (ALPHA), during which time extra care should be taken when working with sensitive data handled by the deployed application. Please ensure a comprehensive [AWS Well-Architected Framework](https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html) review against the specific use case and data before using in production and/or with potentially sensitive data.
 
@@ -181,13 +187,14 @@ In development stage, the application deploys an [Amazon SageMaker Studio](https
 
 > During deployment, you will be notified of this concern via [PDK Nag](https://github.com/aws/aws-pdk/blob/mainline/packages/pdk-nag/src/packs/README.md#rules) warning in the console:
 > `AwsPrototyping-IAMNoManagedPolicies[Policy::arn:<AWS::Partition>:iam::aws:policy/AmazonSageMakerFullAccess]`
+
 ### Network accessibility
 
 By default the [WebACL](https://docs.aws.amazon.com/waf/latest/developerguide/web-acl.html) associated with the CloudFront distribution is does not apply geo restriction. You’d need to modify the configuration of the CDK application to apply geo restrictions.
 
 ### Authentication
 
-The default configuration uses [Amazon Cognito](https://aws.amazon.com/cognito/) authentication to control website and api access. The default configuration deploys a [User pool](https://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html#what-is-amazon-cognito-user-pools) configured with Multi-Factor Authentication (MFA) and does not allow sign-up. The application creates an *Administrator* group with elevated permissions to perform additional functionality with the api, such as modifying the inference engine configuration at runtime. When expanding the permissions of the *Administrator* group and the users that belong to it, extra care should be taken.
+The default configuration uses [Amazon Cognito](https://aws.amazon.com/cognito/) authentication to control website and api access. The default configuration deploys a [User pool](https://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html#what-is-amazon-cognito-user-pools) configured with Multi-Factor Authentication (MFA) and does not allow sign-up. The application creates an _Administrator_ group with elevated permissions to perform additional functionality with the api, such as modifying the inference engine configuration at runtime. When expanding the permissions of the _Administrator_ group and the users that belong to it, extra care should be taken.
 
 ### Content Security Policy
 
@@ -199,7 +206,7 @@ You should only import content, such as sample corpus data, from sources that yo
 
 ### CloudFront Security Policy
 
-When using the default CloudFront domain and certificate (*.[cloudfront.net](http://cloudfront.net/)), CloudFront automatically sets the security policy to [TLSv1](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/secure-connections-supported-viewer-protocols-ciphers.html). It’s recommended that you use a [custom domain](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/CNAMEs.html) and certificate with the CloudFront distribution and configure it to use use a [Security Policy](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/secure-connections-supported-viewer-protocols-ciphers.html) that does not allow older protocols such as TLS 1.0. Consider using the  `TLSv1.2_2021` Security Policy.
+When using the default CloudFront domain and certificate (\*.[cloudfront.net](http://cloudfront.net/)), CloudFront automatically sets the security policy to [TLSv1](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/secure-connections-supported-viewer-protocols-ciphers.html). It’s recommended that you use a [custom domain](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/CNAMEs.html) and certificate with the CloudFront distribution and configure it to use use a [Security Policy](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/secure-connections-supported-viewer-protocols-ciphers.html) that does not allow older protocols such as TLS 1.0. Consider using the `TLSv1.2_2021` Security Policy.
 
 ### AWS Well-Architected Framework
 
