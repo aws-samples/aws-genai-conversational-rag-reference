@@ -38,6 +38,7 @@ export interface PromptEditorProps<
 > {
   readonly value?: string | T;
   readonly promptCls: PTC;
+  readonly promptClsOptions?: any;
   readonly onChange: (value?: string | T) => void;
   readonly defaultInputValues: Partial<IV>;
 }
@@ -70,7 +71,7 @@ export const PromptEditor: FC<PromptEditorProps> = (props) => {
 
   // generate a flattened version of the default template
   useEffect(() => {
-    const prompt = new props.promptCls({});
+    const prompt = new props.promptCls(props.promptClsOptions || {});
 
     defaultTemplateRef.current = prompt.flatten();
     setValue((current) => {
@@ -93,7 +94,7 @@ export const PromptEditor: FC<PromptEditorProps> = (props) => {
     } else {
       setPartials(undefined);
     }
-  }, [props.promptCls]);
+  }, [props.promptCls, props.promptClsOptions]);
 
   // Update editor auto completion based on template partials
   useEffect(() => {
@@ -170,7 +171,7 @@ export const PromptEditor: FC<PromptEditorProps> = (props) => {
                 setInputValues(JSON.parse(detail.value));
               } catch {}
             }}
-            language="javascript"
+            language="json"
             editorContentHeight={250}
           />
         ) : (

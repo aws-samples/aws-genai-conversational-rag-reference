@@ -15,7 +15,7 @@ export const HistorySettings: FC = () => {
     <SpaceBetween direction="vertical" size="s">
       <FormField label="Memory Kwargs">
         <CodeEditor
-          language="javascript"
+          language="json"
           value={toCodeEditorJson(memoryKwargs)}
           onChange={({ detail }) => {
             try {

@@ -9,13 +9,18 @@ import { Icon, Link, TextContent } from "@cloudscape-design/components";
 import FormField from "@cloudscape-design/components/form-field";
 import SpaceBetween from "@cloudscape-design/components/space-between";
 import { FC } from "react";
-import { useChatEngineConfigState } from "../../../../../providers/ChatEngineConfig";
+import {
+  useChatEngineConfigModelAdapter,
+  useChatEngineConfigState,
+} from "../../../../../providers/ChatEngineConfig";
 import PromptEditor from "../components/PromptEditor";
 
 export const PromptSettings: FC = () => {
   const [qaPrompt, setQaPrompt] = useChatEngineConfigState("qaPrompt");
   const [condenseQuestionPrompt, setCondenseQuestionPrompt] =
     useChatEngineConfigState("condenseQuestionPrompt");
+
+  const adapter = useChatEngineConfigModelAdapter();
 
   return (
     <SpaceBetween direction="vertical" size="s">
@@ -62,6 +67,7 @@ export const PromptSettings: FC = () => {
       >
         <PromptEditor
           promptCls={ChatQuestionAnswerPromptTemplate}
+          promptClsOptions={adapter?.prompt?.chat?.questionAnswer}
           value={qaPrompt}
           onChange={setQaPrompt}
           defaultInputValues={{
@@ -78,6 +84,7 @@ export const PromptSettings: FC = () => {
       >
         <PromptEditor
           promptCls={ChatCondenseQuestionPromptTemplate}
+          promptClsOptions={adapter?.prompt?.chat?.condenseQuestion}
           value={condenseQuestionPrompt}
           onChange={setCondenseQuestionPrompt}
           defaultInputValues={{

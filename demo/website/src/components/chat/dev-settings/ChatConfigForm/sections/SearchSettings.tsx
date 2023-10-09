@@ -27,7 +27,7 @@ export const SearchSettings: FC = () => {
     <SpaceBetween direction="vertical" size="s">
       <FormField label="Search Kwargs" stretch>
         <CodeEditor
-          language="javascript"
+          language="json"
           value={toCodeEditorJson(searchKwargs)}
           onChange={({ detail }) => {
             try {

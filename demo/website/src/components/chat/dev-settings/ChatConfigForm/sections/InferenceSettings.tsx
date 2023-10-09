@@ -4,6 +4,7 @@ import {
   ModelFramework,
   ISageMakerEndpointModelFramework,
 } from "@aws/galileo-sdk/lib/models/types";
+import { Icon } from "@cloudscape-design/components";
 import FormField from "@cloudscape-design/components/form-field";
 import SpaceBetween from "@cloudscape-design/components/space-between";
 import { isEmpty } from "lodash";
@@ -78,7 +79,16 @@ export const InferenceSettings: FC = () => {
 
   return (
     <SpaceBetween direction="vertical" size="s">
-      <FormField label="LLM model" stretch>
+      <FormField
+        label="LLM model"
+        stretch
+        constraintText={
+          <>
+            <Icon name="status-warning" size="small" /> Settings will be
+            overridden to selected model defaults (Kwargs / Prompts)
+          </>
+        }
+      >
         <ModelSelector
           custom
           value={isCustomLlmModel ? CUSTOM_VALUE : llmModel?.uuid}
@@ -90,11 +100,12 @@ export const InferenceSettings: FC = () => {
       )}
       <FormField label="Model Kwargs" stretch>
         <CodeEditor
-          language="javascript"
+          language="json"
           value={toCodeEditorJson(llmModelKwargs)}
           onChange={({ detail }) => {
             try {
-              setLlmModelKwargs(JSON.parse(detail.value));
+              detail.value.length &&
+                setLlmModelKwargs(JSON.parse(detail.value));
             } catch (error) {
               console.warn(
                 "Failed to parse `LLM Model Kwargs`",
@@ -107,11 +118,12 @@ export const InferenceSettings: FC = () => {
       </FormField>
       <FormField label="Model Endpoint Kwargs" stretch>
         <CodeEditor
-          language="javascript"
+          language="json"
           value={toCodeEditorJson(llmEndpointKwargs)}
           onChange={({ detail }) => {
             try {
-              setLlmEndpointKwargs(JSON.parse(detail.value));
+              detail.value.length &&
+                setLlmEndpointKwargs(JSON.parse(detail.value));
             } catch (error) {
               console.warn(
                 "Failed to parse `LLM Endpoint Kwargs`",
