@@ -37,7 +37,7 @@ export const BASE_CHAT_PARTIALS: BaseChatTemplatePartials = {
   Layout: '{{>Header}}{{>Body}}{{>Footer}}',
   Header: '',
   Footer: '',
-  Body: '{{>Instruction}}\n\n{{>Context}}\n\n{{>Cue}}',
+  Body: '{{>Instruction}}\n\n\n{{>Context}}\n\n\n{{>Cue}}',
 
   Rules: '{{#each rules}}{{add @index 1}}. {{.}}\n{{/each}}',
 
@@ -53,16 +53,13 @@ export const BASE_CHAT_PARTIALS: BaseChatTemplatePartials = {
 {{~else if (eq type "system")}}{{>SystemMessage}}
 {{~else}}{{>BaseMessage}}
 {{/if}}{{#isnt @last true}}{{>MessageSeparator}}{{/isnt}}{{/each}}`,
-  Dialog: 'Dialog: {{>Delimiter}}\n{{>Messages}}\n{{>Delimiter}}',
+  Dialog: 'Dialog: {{>Delimiter}}\n{{>Messages}}\n\n{{>Delimiter}}',
 
   Corpus: 'Corpus: {{>Delimiter}}\n{{context}}\n{{>Delimiter}}',
 
   // determine "context" based on either corpus (qa) or dialog (condense)
   // This is a helper to support cross-prompt scaffolding with common body
-  Context: `
-{{~#if context}}{{>Corpus}}{{/if~}}
-{{~#if chat_history}}{{>Dialog}}{{/if~}}
-`,
+  Context: '{{#if context}}{{>Corpus}}{{/if}}{{#if chat_history}}{{>Dialog}}{{/if}}',
 
 } as const;
 

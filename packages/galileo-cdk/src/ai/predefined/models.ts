@@ -26,6 +26,7 @@ import {
   HuggingFaceFalcon,
   HuggingFaceFalconInstances,
 } from '../llms/models/falcon/tgi';
+import { Llama2Base13BSageMaker } from '../llms/models/meta';
 
 export { IFoundationModelInventory };
 
@@ -136,6 +137,16 @@ export class PredefinedFoundationModels extends Construct implements IFoundation
         modelUUID: FoundationModelIds.FALCON_LITE,
         instanceType: FalconLiteInstances.G5_12XLARGE,
         displayName: 'Falcon Lite',
+      });
+    }
+
+    //////////////////////////////////////////////////////////
+    // Meta: Llama2
+    //////////////////////////////////////////////////////////
+    if (modelsToDeploy.has(FoundationModelIds.META_LLAMA2_BASE_13B)) {
+      new Llama2Base13BSageMaker(this, 'Llama2_13B', {
+        modelUUID: FoundationModelIds.META_LLAMA2_BASE_13B,
+        modelId: 'meta-llama/Llama-2-13b',
       });
     }
 

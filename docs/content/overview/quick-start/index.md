@@ -18,15 +18,18 @@
 
 *AWS Service Quotas:*
 !!! warning "Service Quota Requirements"
-    Ensure the necessary service quota limits are increased based on your configuration before deploying. The deployment performs a check and will fail early if limits are not met.
+    Ensure the necessary service quota limits are increased *based on your configuration* before deploying. The deployment performs a check and will fail early if limits are not met.
+    The embedding model usage is required for all deployments at this time, and must be 5 unless configured different in the code.
 
-| Service | Quota | Minimum Applied Value | Usage | Region |
-| --- | --- | --- | --- | --- |
-| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas) | `ml.g5.12xlarge for endpoint usage`        | 1                     | Falcon Lite            | LLM    |
-| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas) | `ml.g5.16xlarge for endpoint usage`        | 1                     | Falcon 7B              | LLM    |
-| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas) | `ml.g5.48xlarge for endpoint usage`        | 1                     | Falcon 40B             | LLM    |
-| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas) | `ml.g4dn.2xlarge for processing job usage` | 5                     | Embedding/Indexing ETL | App    |
+| Service                                                                                  | Quota                                      | Minimum Applied Value | Usage                    | Region |
+| ---------------------------------------------------------------------------------------- | ------------------------------------------ | --------------------- | ------------------------ | ------ |
+| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas) | `ml.g4dn.2xlarge for processing job usage` | 5\*                   | Embedding/Indexing ETL   | App    |
+| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas) | `ml.g5.12xlarge for endpoint usage`        | 1-2                   | Falcon Lite / Llama2 13B | LLM    |
+| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas) | `ml.g5.16xlarge for endpoint usage`        | 1                     | Falcon 7B                | LLM    |
+| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas) | `ml.g5.48xlarge for endpoint usage`        | 1                     | Falcon 40B               | LLM    |
+| [SageMaker](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas) | `ml.g5.12xlarge for endpoint usage`        | 1                     | Llama2 13B               | LLM    |
 
+Example, if you only deploy the *Falcon Lite* predefined model, then you only need to ensure `ml.g5.12xlarge for endpoint usage >= 1`, while the other quotas for *X for endpoint usage* can remain 0.
 
 !!! tip "Cross-Region Deployments"
     Galileo CLI enables you to deploy your LLM stack and application stack into different regions.

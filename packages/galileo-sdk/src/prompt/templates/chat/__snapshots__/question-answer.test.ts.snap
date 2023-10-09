@@ -6,9 +6,11 @@ Rules:
 1. rule 1
 2. rule 2
 
+
 Corpus: '''
 CORPUS
 '''
+
 Question: THE QUESTION
 
 Answer: "
@@ -21,9 +23,11 @@ Rules:
 2. always be truthful, honest, unbiased, and unharmful
 3. be concise, do not repeat the question or yourself in the answer
 
+
 Corpus: '''
 CORPUS
 '''
+
 Question: THE QUESTION
 
 Answer: "
@@ -35,9 +39,11 @@ Rules:
 {{#each rules}}{{add @index 1}}. {{.}}
 {{/each}}
 
+
 Corpus: '''
 {{context}}
 '''
+
 
 Question: {{question}}
 
@@ -56,9 +62,11 @@ Rules:
 2. always be truthful, honest, unbiased, and unharmful
 3. be concise, do not repeat the question or yourself in the answer
 
+
 Corpus: '''
 CORPUS
 '''
+
 Question: THE QUESTION
 
 Answer:         "
@@ -71,9 +79,11 @@ Rules:
 2. always be truthful, honest, unbiased, and unharmful
 3. be concise, do not repeat the question or yourself in the answer
 
+
 Corpus: '''
 CORPUS
 '''
+
 Question: THE QUESTION
 
 Answer: </WRAPPER>"
@@ -90,9 +100,11 @@ Rules:
 2. always be truthful, honest, unbiased, and unharmful
 3. be concise, do not repeat the question or yourself in the answer
 
+
 Corpus: '''
 CORPUS
 '''
+
 Question: THE QUESTION
 
 Answer: </SEQUENCE>        "
