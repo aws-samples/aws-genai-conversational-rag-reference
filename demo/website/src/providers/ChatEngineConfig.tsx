@@ -1,21 +1,26 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { ModelAdapter } from "@aws/galileo-sdk/lib/models/adapter";
+import { resolveModelAdapter } from "@aws/galileo-sdk/lib/models/llms/utils";
+import { IModelInfo } from "@aws/galileo-sdk/lib/models/types";
 import {
   ChatEngineConfig,
   ChatEngineConfigSearchType,
 } from "api-typescript-react-query-hooks";
-import { isEmpty } from "lodash";
+import { isEmpty, merge } from "lodash";
 import React, {
   PropsWithChildren,
   createContext,
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
 } from "react";
 import { useLocation } from "react-router-dom";
 import { useImmer, Updater, DraftFunction } from "use-immer";
 import { useIsAdmin } from "../Auth";
+import { useFoundationModelInventory } from "../hooks/llm-inventory";
 
 export type { ChatEngineConfig, ChatEngineConfigSearchType };
 
@@ -63,6 +68,36 @@ export const useChatEngineConfigState = <P extends keyof ChatEngineConfig>(
   );
 
   return [config[prop], setter];
+};
+
+export const useChatEngineConfigModelInfo = (
+  noDefault: boolean = false
+): Partial<IModelInfo> | undefined => {
+  const llmModel: IModelInfo | undefined =
+    useChatEngineConfigState("llmModel")[0];
+  const inventory = useFoundationModelInventory();
+
+  return useMemo(() => {
+    if (inventory) {
+      const uuid =
+        llmModel?.uuid || (noDefault ? undefined : inventory.defaultModelId);
+      const inventoryInfo = uuid ? inventory.models[uuid] : {};
+      return merge({}, inventoryInfo, llmModel || {});
+    }
+    return undefined;
+  }, [inventory, llmModel?.uuid, noDefault]);
+};
+
+export const useChatEngineConfigModelAdapter = (
+  noDefault: boolean = false
+): ModelAdapter | undefined => {
+  const modelInfo = useChatEngineConfigModelInfo(noDefault);
+
+  return useMemo(() => {
+    return modelInfo
+      ? resolveModelAdapter(modelInfo as any)
+      : new ModelAdapter();
+  }, [modelInfo]);
 };
 
 /**
