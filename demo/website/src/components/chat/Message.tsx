@@ -90,13 +90,15 @@ export function MessageSources({ chatId, messageId }: MessageSourcesProps) {
         <Spinner size="big" />
       ) : (
         sourcesRequest.data &&
-        sourcesRequest.data.length > 0 && (
+        (sourcesRequest.data.length ? (
           <div style={{ marginTop: "8px" }}>
             {sourcesRequest.data.map((source) => (
               <SourceComponent source={source} key={source.sourceId} />
             ))}
           </div>
-        )
+        ) : (
+          "No sources available"
+        ))
       )}
     </div>
   );
@@ -106,14 +108,18 @@ function SourcePopover(props: { chatId: string; messageId: string }) {
   const [visible, setVisible] = useState(false);
   return (
     <>
-      <Modal
-        onDismiss={() => setVisible(false)}
-        visible={visible}
-        size="large"
-        header="Sources"
-      >
-        <MessageSources chatId={props.chatId} messageId={props.messageId} />
-      </Modal>
+      {/* Lazy load sources */}
+      {visible && (
+        <Modal
+          onDismiss={() => setVisible(false)}
+          visible
+          size="large"
+          header="Sources"
+        >
+          <MessageSources chatId={props.chatId} messageId={props.messageId} />
+        </Modal>
+      )}
+
       <Button
         iconName="folder-open"
         variant="inline-icon"
