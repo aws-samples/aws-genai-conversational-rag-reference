@@ -1,9 +1,12 @@
 ---
 nav:
   - Overview: index.md
-  - Dev Settings: dev-settings
+  - Build Pipeline: cicd
+  - Prompt Development Settings: dev-settings
   - Models: models
   - Corpus: corpus
+  - UI State: uistate
+  - Vector Store: vstore
   - API: api
   - Website: website
   - Troubleshooting: troubleshooting

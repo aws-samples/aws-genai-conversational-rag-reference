@@ -1,7 +1,8 @@
 ---
 nav:
   - Overview: index.md
-  - Getting Started: quick-start
+  - Vision: vision
   - How it Works: how
+  - Getting Started: quick-start
   - Security: security
   - Contributing: contributing

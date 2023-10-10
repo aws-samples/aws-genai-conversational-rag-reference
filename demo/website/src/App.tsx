@@ -138,7 +138,7 @@ const App: React.FC = () => {
         notifications={<RiskProvider />}
         navigation={
           <SideNavigation
-            header={{ text: "Nav", href: "/" }}
+            header={{ text: "Assistant", href: "/" }}
             activeHref={activeHref}
             onFollow={onNavigate}
             items={sideNavigation}
