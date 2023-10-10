@@ -22,7 +22,8 @@ import {
   useUpdateChat,
 } from "api-typescript-react-query-hooks";
 import produce from "immer";
-import { last } from "lodash";
+import { last, set } from "lodash";
+import { useIsAdmin } from "../Auth";
 
 type PaginatedListChatMessagesResponse =
   InfiniteData<ListChatMessagesResponseContent>;
@@ -124,13 +125,19 @@ export function useCreateChatMessageMutation(
   chatId: string,
   onSuccess?: () => void
 ): ReturnType<typeof useCreateChatMessage> {
+  const isAdmin = useIsAdmin();
   const queryClient = useQueryClient();
 
   const listChatMessagesQueryKey = queryKeyGenerators.listChatMessages(chatId);
 
   const createChatMessage = useCreateChatMessage({
     onSuccess: (questionResponse, _vars) => {
-      const { question, answer, sources } = questionResponse;
+      const { question, answer, sources, traceData } = questionResponse;
+
+      // TODO: until we persist the traceData, just adding to answer message for discoverability
+      if (isAdmin && traceData) {
+        set(answer, "traceData", traceData);
+      }
 
       // add both the question and answer to the list of chats in the
       // listChatMessages query cache

@@ -232,6 +232,11 @@
       "import": "./lib/common/logging/index.js",
       "require": "./lib/common/logging/index.cjs"
     },
+    "./lib/common/metrics": {
+      "types": "./lib/common/metrics/index.d.ts",
+      "import": "./lib/common/metrics/index.js",
+      "require": "./lib/common/metrics/index.cjs"
+    },
     "./lib/common/types": {
       "types": "./lib/common/types.d.ts",
       "import": "./lib/common/types.js",

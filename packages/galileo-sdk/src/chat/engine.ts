@@ -10,7 +10,7 @@ import { DynamoDBChatMessageHistory } from './dynamodb/message-history.js';
 import { ChatEngineHistory, ChatTurn } from './memory.js';
 import { SearchRetriever, SearchRetrieverInput } from './search.js';
 import { TKwags } from '../common/types.js';
-import { IModelInfo } from '../models/index.js';
+import { Dict, IModelInfo } from '../models/index.js';
 import { ChatCondenseQuestionPromptRuntime, ChatQuestionAnswerPromptRuntime } from '../prompt/templates/chat/index.js';
 
 export interface ChatEngineConfig {
@@ -33,6 +33,7 @@ export interface ChatEngineFromOption {
   readonly search: SearchRetrieverInput;
   readonly verbose?: boolean;
   readonly config?: ChatEngineConfig;
+  readonly returnTraceData?: boolean;
 }
 
 interface ChatEngineProps {
@@ -46,6 +47,7 @@ interface ChatEngineProps {
   readonly qaPrompt: PromptTemplate;
   readonly condenseQuestionPrompt: PromptTemplate;
   readonly verbose?: boolean;
+  readonly returnTraceData?: boolean;
 }
 
 export class ChatEngine {
@@ -111,6 +113,10 @@ export class ChatEngine {
 
   readonly chain: ChatEngineChain;
 
+  protected qaPrompt: PromptTemplate;
+  protected condenseQuestionPrompt: PromptTemplate;
+  protected readonly returnTraceData: boolean;
+
   constructor(props: ChatEngineProps) {
     const {
       chatId,
@@ -122,7 +128,12 @@ export class ChatEngine {
       qaPrompt,
       condenseQuestionPrompt,
       verbose,
+      returnTraceData,
     } = props;
+
+    this.returnTraceData = returnTraceData ?? false;
+    this.qaPrompt = qaPrompt;
+    this.condenseQuestionPrompt = condenseQuestionPrompt;
 
     this.chatId = chatId;
     this.userId = userId;
@@ -139,12 +150,12 @@ export class ChatEngine {
         memory: this.memory,
         qaChainOptions: {
           type: 'stuff',
-          prompt: qaPrompt,
+          prompt: this.qaPrompt,
           verbose,
         },
         questionGenerator: {
           llm: this.llm,
-          prompt: condenseQuestionPrompt,
+          prompt: this.condenseQuestionPrompt,
         },
         returnSourceDocuments: true,
       },
@@ -163,7 +174,25 @@ export class ChatEngine {
       question: query,
       answer: result.text,
       turn,
+      traceData: this.returnTraceData ? this._resolveTraceData() : undefined,
     };
+  }
+
+  protected _resolveTraceData(): Dict {
+    try {
+      return {
+        chatId: this.chatId,
+        userId: this.userId,
+        ...this.chain.traceData,
+        llm: this.llm.toJSON(),
+        qaPrompt: this.qaPrompt.toJSON(),
+        condenseQuestionPrompt: this.condenseQuestionPrompt.toJSON(),
+      };
+    } catch (error) {
+      return {
+        __resolveTraceError: (error as Error).message,
+      };
+    }
   }
 }
 
@@ -176,5 +205,5 @@ export interface ChatEngineQueryResponse {
   /** Full details regarding stored entities/sources for the turn (human => ai) */
   readonly turn: ChatTurn;
   /** Additional data about the query execution, such as debugging data for admins */
-  readonly data?: Record<string, any>;
+  readonly traceData?: Record<string, any>;
 }

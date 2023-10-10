@@ -24,6 +24,7 @@ import {
   AllKeys,
   getAllByPagination,
 } from './util.js';
+import { startPerfMetric } from '../../../common/metrics/index.js';
 
 export interface CreateHumanChatMessageResponse {
   readonly response: PutCommandOutput;
@@ -156,6 +157,8 @@ export async function listChatMessagesByTime(
   limit = 20,
   nextToken?: AllKeys,
 ) {
+  const $$ = startPerfMetric('DDBChatMessages_listChatMessagesByTime');
+
   const keys = getChatMessagesByTimeKey(userId, chatId);
 
   const input: QueryCommandInput = {
@@ -176,6 +179,7 @@ export async function listChatMessagesByTime(
   AllKeys
   >;
 
+  $$();
   return response;
 }
 
@@ -188,6 +192,8 @@ export async function listAllMessagesByTime(
   asc = false,
   limit = 20,
 ): Promise<DDBChatMessage[]> {
+  const $$ = startPerfMetric('DDBChatMessages_listAllMessagesByTime');
+
   const keys = getChatMessagesByTimeKey(userId, chatId);
   const commandInput: QueryCommandInput = {
     TableName: tableName,
@@ -200,7 +206,11 @@ export async function listAllMessagesByTime(
     ScanIndexForward: asc,
   };
 
-  return getAllByPagination(documentClient, commandInput);
+  const response = await getAllByPagination<DDBChatMessage>(documentClient, commandInput);
+
+  $$();
+
+  return response;
 }
 
 export async function getAllChatMessageIds(

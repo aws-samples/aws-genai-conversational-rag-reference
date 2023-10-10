@@ -9,6 +9,10 @@ import {
   ChainValues,
 } from 'langchain/schema';
 import { BaseRetriever } from 'langchain/schema/retriever';
+import { getLogger } from '../common/index.js';
+import { startPerfMetric } from '../common/metrics/index.js';
+
+const logger = getLogger('chat/chain');
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type LoadValues = Record<string, any>;
@@ -90,6 +94,10 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
     );
   }
 
+  get traceData(): any {
+    return this._traceData;
+  }
+
   retriever: BaseRetriever;
 
   combineDocumentsChain: BaseChain;
@@ -97,6 +105,8 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
   questionGeneratorChain: LLMChain;
 
   returnSourceDocuments = false;
+
+  protected _traceData?: any;
 
   constructor(fields: ChatEngineChainInput) {
     super(fields);
@@ -124,6 +134,7 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
 
     let newQuestion = question;
     if (chatHistory.length > 0) {
+      const $$QuestionGeneratorExecutionTime = startPerfMetric('QuestionGeneratorExecutionTime');
       const result = await this.questionGeneratorChain.call(
         {
           question,
@@ -131,6 +142,8 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
         },
         runManager?.getChild('question_generator'),
       );
+      $$QuestionGeneratorExecutionTime();
+
       const keys = Object.keys(result);
       if (keys.length === 1) {
         newQuestion = result[keys[0]];
@@ -140,19 +153,37 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
         );
       }
     }
+    const $$GetRelevantDocumentsExecutionTime = startPerfMetric('GetRelevantDocumentsExecutionTime');
     const docs = await this.retriever.getRelevantDocuments(
       newQuestion,
       runManager?.getChild('retriever'),
     );
+    $$GetRelevantDocumentsExecutionTime();
+
     const inputs = {
       question: newQuestion,
       input_documents: docs,
       chat_history: chatHistory,
     };
+
+    const $$CombineDocumentsExecutionTime = startPerfMetric('CombineDocumentsExecutionTime');
     const result = await this.combineDocumentsChain.call(
       inputs,
       runManager?.getChild('combine_documents'),
     );
+    $$CombineDocumentsExecutionTime();
+
+    this._traceData = {
+      originalQuestion: question,
+      standaloneQuestion: newQuestion,
+      chatHistory,
+      sourceDocuments: docs,
+      inputs,
+      result,
+    };
+
+    logger.debug('Trace data', { traceData: this.traceData });
+
     if (this.returnSourceDocuments) {
       return {
         ...result,
