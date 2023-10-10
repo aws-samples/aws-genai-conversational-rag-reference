@@ -68,6 +68,8 @@ export class Infra {
         "@middy/error-logger",
         "@middy/http-router",
         "@middy/input-output-logger",
+        "case",
+        "cdk-monitoring-constructs",
         "cdk-nag",
         "lodash",
         "pretty-bytes",

@@ -30,9 +30,10 @@ const INTERCEPTORS = interceptors.filter(
 export const handler = createChatMessageHandler(
   ...INTERCEPTORS,
   async ({ input, interceptorContext }) => {
-    const [, logMetrics] = createMetrics({
+    const [metrics, logMetrics] = createMetrics({
       serviceName: process.env.POWERTOOLS_SERVICE_NAME ?? "InferenceEngine",
     });
+    metrics.addDimension("component", "inferenceEngine");
 
     try {
       const $$PreQuery = startPerfMetric("PreQuery");
@@ -45,6 +46,7 @@ export const handler = createChatMessageHandler(
       const question = input.body.question;
       const chatId = input.requestParameters.chatId;
       const chatOptions = input.body.options;
+      metrics.addMetadata("chatId", chatId);
 
       let config: Chat.ChatEngineConfig = {};
       if (_isAdmin && input.body.config) {

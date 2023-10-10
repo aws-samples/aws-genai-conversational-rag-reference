@@ -6,14 +6,7 @@ import {
 } from "@aws/galileo-cdk/lib/ai/predefined";
 import { ApplicationContext } from "@aws/galileo-cdk/lib/core/app";
 import { isBedrockFramework } from "@aws/galileo-sdk/lib/models";
-import {
-  Arn,
-  ArnFormat,
-  CfnOutput,
-  SecretValue,
-  Stack,
-  StackProps,
-} from "aws-cdk-lib";
+import { Arn, ArnFormat, CfnOutput, SecretValue, Stack } from "aws-cdk-lib";
 import { IVpc } from "aws-cdk-lib/aws-ec2";
 import * as iam from "aws-cdk-lib/aws-iam";
 import { ISecret, ReplicaRegion, Secret } from "aws-cdk-lib/aws-secretsmanager";
@@ -21,8 +14,12 @@ import { NagSuppressions } from "cdk-nag";
 import { Construct } from "constructs";
 import { FoundationModels } from "./models";
 import { NetworkingLayer } from "../../networking/layer";
+import {
+  MonitoredStack,
+  MonitoredStackProps,
+} from "src/application/monitoring";
 
-export interface FoundationModelStackProps extends StackProps {
+export interface FoundationModelStackProps extends MonitoredStackProps {
   /**
    * Vcp for the application, which if in the same region as the foundation model stack
    * will be reused. Otherwise if cross-region stacks the foundation stack will create
@@ -50,7 +47,7 @@ export interface FoundationModelStackProps extends StackProps {
   readonly defaultModelId?: string;
 }
 
-export class FoundationModelStack extends Stack {
+export class FoundationModelStack extends MonitoredStack {
   readonly inventory: IFoundationModelInventory;
 
   readonly inventorySecretName: string;
@@ -84,7 +81,15 @@ export class FoundationModelStack extends Stack {
   }
 
   constructor(scope: Construct, id: string, props: FoundationModelStackProps) {
-    super(scope, id, props);
+    super(scope, id, {
+      ...props,
+      monitoring: {
+        ...props.monitoring,
+        monitorStackProps: props.monitoring?.monitorStackProps || {
+          elasticCache: { enabled: false },
+        },
+      },
+    });
 
     this._decoupled = !!props.decoupled;
 

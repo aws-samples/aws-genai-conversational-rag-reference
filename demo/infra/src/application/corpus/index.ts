@@ -4,7 +4,7 @@ import { SecureBucket } from "@aws/galileo-cdk/lib/common";
 import { RDSVectorStore } from "@aws/galileo-cdk/lib/data";
 import { INTERCEPTOR_IAM_ACTIONS } from "api-typescript-interceptors";
 import { OperationLookup } from "api-typescript-runtime";
-import { Duration, NestedStack, NestedStackProps, Size } from "aws-cdk-lib";
+import { Duration, Size } from "aws-cdk-lib";
 import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
 import { IVpc, SubnetType } from "aws-cdk-lib/aws-ec2";
 import { Platform } from "aws-cdk-lib/aws-ecr-assets";
@@ -23,8 +23,9 @@ import { ISecret } from "aws-cdk-lib/aws-secretsmanager";
 import { NagSuppressions } from "cdk-nag";
 import { Construct } from "constructs";
 import { IndexingPipeline, IndexingPipelineOptions } from "./pipeline";
+import { MonitoredNestedStack, MonitoredNestedStackProps } from "../monitoring";
 
-export interface CorpusProps extends NestedStackProps {
+export interface CorpusProps extends MonitoredNestedStackProps {
   readonly vpc: IVpc;
   readonly dockerImagePath: string;
   readonly userPoolId: string;
@@ -33,7 +34,7 @@ export interface CorpusProps extends NestedStackProps {
   readonly autoScaling?: boolean;
 }
 
-export class CorpusStack extends NestedStack {
+export class CorpusStack extends MonitoredNestedStack {
   readonly vectorStore: RDSVectorStore;
   readonly processedDataBucket: IBucket;
 
