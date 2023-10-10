@@ -1,12 +1,12 @@
-import * as path from "node:path";
 import { CloudscapeReactTsWebsiteProject } from "@aws/pdk/cloudscape-react-ts-website";
 import { MonorepoTsProject, NxProject } from "@aws/pdk/monorepo";
+import * as path from "node:path";
 import { javascript } from "projen";
-import { withStorybook } from "../helpers/withStorybook";
-import { Api } from "./api";
+import { TypeScriptModuleResolution } from "projen/lib/javascript";
 import { DEFAULT_RELEASE_BRANCH, VERSIONS } from "../constants";
 import { GalileoSdk } from "../framework";
-import { TypeScriptModuleResolution } from "projen/lib/javascript";
+import { withStorybook } from "../helpers/withStorybook";
+import { Api } from "./api";
 
 export interface WebsiteOptions {
   readonly monorepo: MonorepoTsProject;
@@ -66,6 +66,7 @@ export class Website {
         },
       },
     });
+    this.project.tsconfig?.addInclude("src/**/*.tsx");
     this.project.addGitIgnore("public/api.html");
     this.project.addGitIgnore("runtime-config.*");
     this.project.addGitIgnore("!runtime-config.example.json");

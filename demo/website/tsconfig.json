@@ -39,7 +39,8 @@
   },
   "include": [
     "src/**/*.ts",
-    "src"
+    "src",
+    "src/**/*.tsx"
   ],
   "exclude": []
 }

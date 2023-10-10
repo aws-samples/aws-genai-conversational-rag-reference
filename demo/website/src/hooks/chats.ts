@@ -2,34 +2,30 @@
 PDX-License-Identifier: Apache-2.0 */
 import {
   InfiniteData,
-  QueryFunction,
   UseQueryResult,
-  useInfiniteQuery,
-  useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
 import {
+  ChatMessageSource,
+  CreateChatResponseContent,
+  ListChatMessageSourcesResponseContent,
+  ListChatMessagesRequest,
   ListChatMessagesResponseContent,
   ListChatsResponseContent,
-  useCreateChatMessage,
-  useUpdateChat,
+  useListChatMessages as _useListChatMessages,
+  useListChats as _useListChats,
   useCreateChat,
-  useListChats as useOriginalListChats,
-  CreateChatResponseContent,
+  useCreateChatMessage,
   useDeleteChat,
   useDeleteChatMessage,
   useListChatMessageSources,
-  ListChatMessageSourcesResponseContent,
-  ChatMessageSource,
-  DefaultApiClientContext,
-  ChatMessage,
-  ListChatMessagesRequest,
+  useUpdateChat,
 } from "api-typescript-react-query-hooks";
 import produce from "immer";
 import { last } from "lodash";
-import { useCallback, useContext } from "react";
 
-type ListChatMessagesData = InfiniteData<FetchMessagesResponse>;
+type PaginatedListChatMessagesResponse =
+  InfiniteData<ListChatMessagesResponseContent>;
 
 export const CHAT_MESSAGE_PARAMS: Partial<ListChatMessagesRequest> = {
   ascending: true,
@@ -51,8 +47,8 @@ export const queryKeyGenerators = {
   ],
 };
 
-export function useListChats(): ReturnType<typeof useOriginalListChats> {
-  return useOriginalListChats({
+export function useListChats(): ReturnType<typeof _useListChats> {
+  return _useListChats({
     select: (
       chatsResponse: ListChatsResponseContent
     ): ListChatsResponseContent => {
@@ -94,9 +90,11 @@ export function useCreateChatMutation(
 
       queryClient.setQueryData(
         listChatMessagesQueryKey,
-        (_old: ListChatMessagesData | undefined): ListChatMessagesData => {
+        (
+          _old: PaginatedListChatMessagesResponse | undefined
+        ): PaginatedListChatMessagesResponse => {
           return {
-            pages: [{ data: [], nextCursor: undefined }],
+            pages: [{ chatMessages: [] }],
             pageParams: [null],
           };
         }
@@ -110,10 +108,17 @@ export function useCreateChatMutation(
   return createChat;
 }
 
-type ListChatMessagesDataPage = ListChatMessagesData["pages"][number];
-type ListChatMessagePage =
-  | ListChatMessagesDataPage
-  | ListChatMessagesResponseContent;
+export function useListChatMessages(
+  ...args: Parameters<typeof _useListChatMessages>
+): ReturnType<typeof _useListChatMessages> {
+  return _useListChatMessages(
+    {
+      ...CHAT_MESSAGE_PARAMS,
+      ...args[0],
+    },
+    args[1]
+  );
+}
 
 export function useCreateChatMessageMutation(
   chatId: string,
@@ -131,19 +136,14 @@ export function useCreateChatMessageMutation(
       // listChatMessages query cache
       queryClient.setQueryData(
         listChatMessagesQueryKey,
-        (old: ListChatMessagesData | undefined) => {
+        (old: PaginatedListChatMessagesResponse | undefined) => {
           return produce(old, (draft) => {
             if (question && answer) {
-              const lastPage: ListChatMessagePage | undefined = last(
-                draft?.pages || []
-              ) as any;
+              const lastPage: ListChatMessagesResponseContent | undefined =
+                last(draft?.pages || []) as any;
 
               if (lastPage) {
-                // empty chat (new) page contains "data" while non-empty container "chatMessages"
-                const chatMessages =
-                  ("data" in lastPage && lastPage.data) ||
-                  ("chatMessages" in lastPage && lastPage.chatMessages) ||
-                  undefined;
+                const chatMessages = lastPage.chatMessages;
 
                 if (chatMessages == null) {
                   // unable to inject new chat messages, just reset to resolve
@@ -163,12 +163,11 @@ export function useCreateChatMessageMutation(
                 return {
                   pages: [
                     {
-                      data: [question, answer],
-                      nextCursor: undefined,
+                      chatMessages: [question, answer],
                     },
                   ],
                   pageParams: [null],
-                } as ListChatMessagesData;
+                } as PaginatedListChatMessagesResponse;
               }
 
               onSuccess && onSuccess();
@@ -303,26 +302,20 @@ export function useDeleteChatMessageMutation(
         variables.chatId
       );
 
-      queryClient.setQueryData<ListChatMessagesData>(
+      queryClient.setQueryData<PaginatedListChatMessagesResponse>(
         listChatMessagesQueryKey,
         (old) =>
-          produce(old, (listChatMessagesDraft) => {
-            if (listChatMessagesDraft && listChatMessagesDraft.pages) {
-              for (let page of listChatMessagesDraft.pages) {
-                page.data = page.data.filter(
-                  (message) => message.messageId !== variables.messageId
-                );
+          produce(old, (draft) => {
+            if (draft && draft.pages) {
+              for (let page of draft.pages) {
+                page.chatMessages =
+                  page.chatMessages?.filter(
+                    (message) => message.messageId !== variables.messageId
+                  ) || [];
               }
-            } else if (old && "chatMessages" in old) {
-              const filtered = (old.chatMessages as ChatMessage[]).filter(
-                (v) => v.messageId !== _data.messageId
-              ) as any;
-              return {
-                chatMessages: filtered,
-              } as any;
             }
 
-            return listChatMessagesDraft;
+            return draft;
           })
       );
     },
@@ -348,54 +341,4 @@ export function useMessageSources(
       },
     }
   );
-}
-
-type FetchMessagesResponse = {
-  data: ChatMessage[];
-  nextCursor: string | undefined;
-};
-export function useInfiniteChatMessages(
-  chatId: string,
-  pageSize: number = 100
-) {
-  const key = queryKeyGenerators.listChatMessages(chatId);
-
-  const api = useContext(DefaultApiClientContext);
-  const fetchMessages: QueryFunction<FetchMessagesResponse> = useCallback(
-    async ({ pageParam }) => {
-      const result = await api.listChatMessages({
-        chatId,
-        nextToken: pageParam,
-        pageSize: pageSize,
-        reverse: true,
-        ascending: true,
-      });
-      return {
-        data: result.chatMessages || [],
-        nextCursor: result.nextToken,
-      };
-    },
-    [api]
-  );
-
-  return useInfiniteQuery(key, {
-    queryFn: fetchMessages,
-    retry() {
-      return false;
-    },
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
-  });
-}
-
-// TODO remove once we change over completely to infinite scrolling
-export function useListChatMessages(chatId: string) {
-  const api = useContext(DefaultApiClientContext);
-  const key = queryKeyGenerators.listChatMessages(chatId);
-  async function queryFn(): Promise<ListChatMessagesResponseContent> {
-    // We want messages in reverse order, since results are descending order
-    return api.listChatMessages({ chatId, reverse: true });
-  }
-  return useQuery(key, {
-    queryFn,
-  });
 }
