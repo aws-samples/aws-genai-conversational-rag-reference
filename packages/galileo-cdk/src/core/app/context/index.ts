@@ -11,6 +11,7 @@ import {
   getRootStack,
   safeResourceName as _safeResourceName,
   getPowerToolsEnv as _getPowerToolsEnv,
+  getMetricNamespace as _getMetricNamespace,
 } from '../../../common/utils';
 
 export { IApplicationContext, IApplicationContextKey } from './types';
@@ -36,6 +37,10 @@ export class ApplicationContext implements IApplicationContext {
 
   static getPowerToolsEnv(scope: IConstruct): Record<string, string> {
     return _getPowerToolsEnv(scope, ApplicationContext.of(scope).applicationName);
+  }
+
+  static getMetricNamespace(scope: IConstruct): string {
+    return _getMetricNamespace(scope, ApplicationContext.of(scope).applicationName);
   }
 
   static safeResourceName(

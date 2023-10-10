@@ -44,7 +44,6 @@ export class Application extends Stack {
       geoRestriction,
       adminEmail,
       adminUsername,
-      tooling: enableTooling,
     } = props;
 
     // Deploy will fail if ServiceQuotas are not met based on underlying infra requirements
@@ -101,24 +100,29 @@ export class Application extends Stack {
     this.corpusEtlStateMachineArn = corpus.pipelineStateMachineArn;
     this.corpusProcessedBucketArn = corpus.processedDataBucket.bucketArn;
 
-    const inferenceEngine = new InferenceEngineStack(this, "InferenceEngine", {
-      vpc,
-      chatMessageTable: appData.datastore,
-      chatMessageTableGsiIndexName: appData.gsiIndexName,
-      chatDomain,
-      searchUrl: corpus.similaritySearchUrl,
-      foundationModelInventorySecret: foundationModelInventorySecret,
-      foundationModelPolicyStatements:
-        foundationModelStack.invokeModelsPolicyStatements,
-      // Arn is from other account provided in context, not local deployment
-      // Useful for developer account access to deployed models in their developer accounts without deploying models
-      // Only available in Dev stage and is optional
-      foundationModelCrossAccountRoleArn,
-      adminGroups: [identity.adminGroupName],
-      userPoolClientId: identity.userPoolWebClientId,
-      userPool: identity.userPool,
-      enableAutoScaling: true,
-    }).engine;
+    const inferenceEngineStack = new InferenceEngineStack(
+      this,
+      "InferenceEngine",
+      {
+        vpc,
+        chatMessageTable: appData.datastore,
+        chatMessageTableGsiIndexName: appData.gsiIndexName,
+        chatDomain,
+        searchUrl: corpus.similaritySearchUrl,
+        foundationModelInventorySecret: foundationModelInventorySecret,
+        foundationModelPolicyStatements:
+          foundationModelStack.invokeModelsPolicyStatements,
+        // Arn is from other account provided in context, not local deployment
+        // Useful for developer account access to deployed models in their developer accounts without deploying models
+        // Only available in Dev stage and is optional
+        foundationModelCrossAccountRoleArn,
+        adminGroups: [identity.adminGroupName],
+        userPoolClientId: identity.userPoolWebClientId,
+        userPool: identity.userPool,
+        enableAutoScaling: true,
+      }
+    );
+    const inferenceEngine = inferenceEngineStack.engine;
 
     // Allow inference engine to invoke search url
     corpus.apiUrl.grantInvokeUrl(inferenceEngine.lambda);
@@ -151,7 +155,7 @@ export class Application extends Stack {
     });
 
     // Only add tooling for development stage
-    if (enableTooling === true && isDevStage(this)) {
+    if (props.tooling === true && isDevStage(this)) {
       const tooling = new Tooling(this, "Tooling", {
         vpc,
         domainName: applicationName,

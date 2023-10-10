@@ -8,8 +8,9 @@ import {
 } from '@aws/galileo-sdk/lib/models';
 import { Duration } from 'aws-cdk-lib';
 import { IVpc } from 'aws-cdk-lib/aws-ec2';
+import { pascal } from 'case';
 import { Construct } from 'constructs';
-import { camelCase, startCase } from 'lodash';
+import { startCase } from 'lodash';
 import {
   DEFAULT_PREDEFINED_FOUNDATION_MODEL_LIST,
   FoundationModelIds,
@@ -156,7 +157,7 @@ export class PredefinedFoundationModels extends Construct implements IFoundation
     if (modelsToDeploy.has(FoundationModelIds.BEDROCK)) {
       (bedrockModelIds || [BEDROCK_DEFAULT_MODEL]).forEach(
         (_bedrockModelId) => {
-          const _id = `Bedrock-${camelCase(_bedrockModelId)}`;
+          const _id = `Bedrock-${pascal(_bedrockModelId)}`;
           new BedrockModel(this, _id, {
             modelUUID: BedrockModel.formatUUID(_bedrockModelId),
             modelId: _bedrockModelId,

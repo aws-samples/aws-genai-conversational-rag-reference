@@ -17,15 +17,17 @@ export function getRootStack(scope: IConstruct): Stack {
   return stack;
 }
 
+export const DEFAULT_STAGENAME = 'Sandbox';
+
 /**
- * Get name of stage based on scope
+ * Get name of stage based on scope, or "Sandbox" if not within a stage
  * @param scope
- * @param defaultValue
- * @returns
+ * @param defaultValue - Defaults to "Sandbox"
+ * @returns Stage name or "Sandbox" if not within a stage
  */
 export function getStageName(
   scope: IConstruct,
-  defaultValue?: string,
+  defaultValue: string = DEFAULT_STAGENAME,
 ): string | undefined {
   return Stage.of(scope)?.stageName ?? defaultValue;
 }
@@ -51,15 +53,24 @@ export function stageAwareRemovalPolicy(scope: IConstruct): RemovalPolicy {
     : RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE;
 }
 
+/**
+ * Gets the namespace for metrics based on scope of stage and application anme.
+ * @param scope
+ * @param applicationName
+ * @returns
+ */
+export function getMetricNamespace(scope: IConstruct, applicationName: string): string {
+  return `${getStageName(scope)}-${applicationName}`;
+}
 
 export function getPowerToolsEnv(scope: IConstruct, applicationName: string): Record<string, string> {
-  const stageName = getStageName(scope, 'Sandbox');
   const isDev = isDevStage(scope);
+  const namespace = getMetricNamespace(scope, applicationName);
 
   return {
     LOG_LEVEL: isDev ? 'DEBUG' : 'INFO',
-    POWERTOOLS_SERVICE_NAME: `${stageName}-${applicationName}`,
-    POWERTOOLS_METRICS_NAMESPACE: `${stageName}-${applicationName}`,
+    POWERTOOLS_SERVICE_NAME: namespace,
+    POWERTOOLS_METRICS_NAMESPACE: namespace,
   };
 }
 

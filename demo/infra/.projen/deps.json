@@ -270,6 +270,14 @@
       "type": "runtime"
     },
     {
+      "name": "case",
+      "type": "runtime"
+    },
+    {
+      "name": "cdk-monitoring-constructs",
+      "type": "runtime"
+    },
+    {
       "name": "cdk-nag",
       "type": "runtime"
     },

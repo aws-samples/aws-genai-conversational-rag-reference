@@ -51,6 +51,7 @@ export class GalileoCdk extends AwsCdkConstructLibrary {
         "@types/uuid",
         "aws-lambda",
         "aws-sdk",
+        "case",
         "lodash",
         "pretty-bytes",
         "readline-sync",

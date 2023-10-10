@@ -92,6 +92,8 @@
     "api-typescript-interceptors": "0.0.0",
     "api-typescript-runtime": "0.0.0",
     "aws-cdk-lib": "^2.99.1",
+    "case": "^1.6.3",
+    "cdk-monitoring-constructs": "^6.0.3",
     "cdk-nag": "^2.27.146",
     "constructs": "^10.2.70",
     "corpus-logic": "0.0.0",

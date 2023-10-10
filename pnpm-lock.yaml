@@ -584,6 +584,12 @@ importers:
       aws-cdk-lib:
         specifier: 2.99.1
         version: 2.99.1(constructs@10.2.70)
+      case:
+        specifier: ^1.6.3
+        version: 1.6.3
+      cdk-monitoring-constructs:
+        specifier: ^6.0.3
+        version: 6.0.3(@aws-cdk/aws-apigatewayv2-alpha@2.99.0-alpha.0)(@aws-cdk/aws-redshift-alpha@2.99.0-alpha.0)(aws-cdk-lib@2.99.1)(constructs@10.2.70)
       cdk-nag:
         specifier: ^2.27.146
         version: 2.27.147(aws-cdk-lib@2.99.1)(constructs@10.2.70)
@@ -783,7 +789,7 @@ importers:
         version: 4.35.0(@tanstack/react-query@4.35.0)(react-dom@18.2.0)(react@18.2.0)
       '@tanstack/react-virtual':
         specifier: beta
-        version: 3.0.0-beta.63(react@18.2.0)
+        version: 3.0.0-beta.65(react@18.2.0)
       ace-builds:
         specifier: ^1.24.1
         version: 1.24.1
@@ -1016,6 +1022,9 @@ importers:
       aws-sdk:
         specifier: ^2.1453.0
         version: 2.1453.0
+      case:
+        specifier: ^1.6.3
+        version: 1.6.3
       cdk-nag:
         specifier: ^2.27.147
         version: 2.27.147(aws-cdk-lib@2.99.1)(constructs@10.2.70)
@@ -1494,6 +1503,17 @@ packages:
   /@aws-cdk/asset-node-proxy-agent-v6@2.0.1:
     resolution: {integrity: sha512-DDt4SLdLOwWCjGtltH4VCST7hpOI5DzieuhGZsBpZ+AgJdSI2GCjklCXm0GCTwJG/SolkL5dtQXyUKgg9luBDg==}
 
+  /@aws-cdk/aws-apigatewayv2-alpha@2.99.0-alpha.0(aws-cdk-lib@2.99.1)(constructs@10.2.70):
+    resolution: {integrity: sha512-bYtSCyjsa9h7LVz2n0xbQowV+amztnT5U0K48Lbo18N5u+WswW4TP4wu/xxRcotP1PoiGLeyEt+Lpa757ac3ww==}
+    engines: {node: '>= 14.15.0'}
+    peerDependencies:
+      aws-cdk-lib: 2.99.0
+      constructs: ^10.0.0
+    dependencies:
+      aws-cdk-lib: 2.99.1(constructs@10.2.70)
+      constructs: 10.2.70
+    dev: false
+
   /@aws-cdk/aws-cognito-identitypool-alpha@2.93.0-alpha.0(aws-cdk-lib@2.99.1)(constructs@10.2.70):
     resolution: {integrity: sha512-ZKCtsBaNDUnYXl6g2x45PzSxuXjMyZTzIg3yDWVSUhpvnnMH0nbPvLhAenGXre9Ax+ItKL3Ai4V5LRQWKXQHiA==}
     engines: {node: '>= 14.15.0'}
@@ -1520,6 +1540,17 @@ packages:
     engines: {node: '>= 14.15.0'}
     peerDependencies:
       aws-cdk-lib: 2.99.1
+      constructs: ^10.0.0
+    dependencies:
+      aws-cdk-lib: 2.99.1(constructs@10.2.70)
+      constructs: 10.2.70
+    dev: false
+
+  /@aws-cdk/aws-redshift-alpha@2.99.0-alpha.0(aws-cdk-lib@2.99.1)(constructs@10.2.70):
+    resolution: {integrity: sha512-cn57/nRmkaBRS4P7gQq5medLTyL+LSeMdBzggMkLJr8kyxztTT95w8A1jqaYg5OmKAW2BmUvD8tgQKIr3ZINEg==}
+    engines: {node: '>= 14.15.0'}
+    peerDependencies:
+      aws-cdk-lib: 2.99.0
       constructs: ^10.0.0
     dependencies:
       aws-cdk-lib: 2.99.1(constructs@10.2.70)
@@ -9940,17 +9971,17 @@ packages:
       use-sync-external-store: 1.2.0(react@18.2.0)
     dev: false
 
-  /@tanstack/react-virtual@3.0.0-beta.63(react@18.2.0):
-    resolution: {integrity: sha512-n4aaZs3g9U2oZjFp8dAeT1C2g4rr/3lbCo2qWbD9NquajKnGx7R+EfLBAHJ6pVMmfsTMZ0XCBwkIs7U74R/s0A==}
+  /@tanstack/react-virtual@3.0.0-beta.65(react@18.2.0):
+    resolution: {integrity: sha512-Q21cUoE0C8Oyzy3RAMV+u4BuB+RwIf2/oQRCWksmIBp1PqLEtvXhAldh7v/wUt7WKEkislKDICZAvbYYs7EAyQ==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
-      '@tanstack/virtual-core': 3.0.0-beta.63
+      '@tanstack/virtual-core': 3.0.0-beta.65
       react: 18.2.0
     dev: false
 
-  /@tanstack/virtual-core@3.0.0-beta.63:
-    resolution: {integrity: sha512-KhhfRYSoQpl0y+2axEw+PJZd/e/9p87PDpPompxcXnweNpt9ZHCT/HuNx7MKM9PVY/xzg9xJSWxwnSCrO+d6PQ==}
+  /@tanstack/virtual-core@3.0.0-beta.65:
+    resolution: {integrity: sha512-ObP2pvXBdbivinr7BWDbGqYt4TK8wNzYsOWio+qBkDx5AJFuvqcdJxcCCYnv4dzVTe5ELA1MT4tkt8NB/tnEdA==}
     dev: false
 
   /@testing-library/dom@9.3.1:
@@ -12369,6 +12400,20 @@ packages:
     resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
     dev: false
 
+  /cdk-monitoring-constructs@6.0.3(@aws-cdk/aws-apigatewayv2-alpha@2.99.0-alpha.0)(@aws-cdk/aws-redshift-alpha@2.99.0-alpha.0)(aws-cdk-lib@2.99.1)(constructs@10.2.70):
+    resolution: {integrity: sha512-n7bPt8BPdKd3g5k7+7TWF+WiZSZTTCsxiIJiUzgXvmzRg+zorF2GdFgkQw8PPZlKbCSCK4BwJ+oG5wdqzKiQjw==}
+    peerDependencies:
+      '@aws-cdk/aws-apigatewayv2-alpha': ^2.99.0-alpha.0
+      '@aws-cdk/aws-redshift-alpha': ^2.99.0-alpha.0
+      aws-cdk-lib: ^2.99.0
+      constructs: ^10.0.5
+    dependencies:
+      '@aws-cdk/aws-apigatewayv2-alpha': 2.99.0-alpha.0(aws-cdk-lib@2.99.1)(constructs@10.2.70)
+      '@aws-cdk/aws-redshift-alpha': 2.99.0-alpha.0(aws-cdk-lib@2.99.1)(constructs@10.2.70)
+      aws-cdk-lib: 2.99.1(constructs@10.2.70)
+      constructs: 10.2.70
+    dev: false
+
   /cdk-nag@2.27.147(aws-cdk-lib@2.99.1)(constructs@10.2.70):
     resolution: {integrity: sha512-SjbPc18DDvAz1pnSuFAHxMPeRC1G7+JozK3KhtI60k+21whWquGYkfvM87kHEAWr5nc0okt2InoJRHCiAqSIJA==}
     peerDependencies:
@@ -13910,7 +13955,7 @@ packages:
     dependencies:
       semver: 7.5.4
       shelljs: 0.8.5
-      typescript: 5.3.0-dev.20231005
+      typescript: 5.3.0-dev.20231010
     dev: true
 
   /drange@1.1.1:
@@ -25315,8 +25360,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.3.0-dev.20231005:
-    resolution: {integrity: sha512-Twm3wBauTO94CSWbjXFMpsHsbaOUVssreq6pUo4wr8YsaIp0jim8EeCa9LfawFetQ+P4PODMmiM+uBhhWRVX0Q==}
+  /typescript@5.3.0-dev.20231010:
+    resolution: {integrity: sha512-oSO2cE/D2+ju7rRavL4A/j6tP/s3Y4W7lDK81PaW3MEi1HpeXbRLObHcxA7Y9s2QuES/1P/81i/YKdB0kssg6w==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true

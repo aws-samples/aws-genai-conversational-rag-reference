@@ -194,6 +194,10 @@
       "type": "bundled"
     },
     {
+      "name": "case",
+      "type": "bundled"
+    },
+    {
       "name": "lodash",
       "type": "bundled"
     },
