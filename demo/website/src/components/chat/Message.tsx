@@ -20,6 +20,7 @@ import {
   useMessageSources,
 } from "../../hooks/chats";
 import CopyText from "../buttons/CopyText";
+import { ModalButton } from "../buttons/ModalButton";
 
 type SourceComponentProps = {
   source: ChatMessageSource;
@@ -154,6 +155,9 @@ export default function Message({
 
   let headerText = message.type === "human" ? "You" : "Assistant";
   const time = new Date(message.createdAt).toLocaleString();
+  // TODO: once we persist trace data we can handle this properly; added to ai messages in chat hooks
+  const traceData = (message as any).traceData;
+
   return (
     <div
       style={{
@@ -208,7 +212,24 @@ export default function Message({
           }}
         >
           <h4>{headerText}</h4>
-          <span style={{ color: "#aaa" }}>{time}</span>
+          <span>
+            {traceData && (
+              <ModalButton
+                button={{ variant: "inline-icon", iconName: "bug" }}
+                modal={{
+                  header: "Trace Data",
+                  size: "max",
+                  footer:
+                    "Trace data is only available locally and not persistent",
+                }}
+              >
+                <code style={{ whiteSpace: "pre-wrap" }}>
+                  {JSON.stringify(traceData, null, 2)}
+                </code>
+              </ModalButton>
+            )}
+            <span style={{ color: "#aaa" }}>{time}</span>
+          </span>
         </div>
       </TextContent>
       <div

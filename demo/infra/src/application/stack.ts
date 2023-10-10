@@ -6,7 +6,7 @@ import { IApplicationContext } from "@aws/galileo-cdk/lib/core/app";
 import { CfnOutput, Duration, Stack, StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { FoundationModelStack } from "./ai/foundation-models";
-import { InferenceEngine } from "./ai/inference-engine";
+import { InferenceEngineStack } from "./ai/inference-engine";
 import { CorpusStack } from "./corpus";
 import { AppDataLayer } from "./data";
 import { IdentityLayer } from "./identity";
@@ -101,7 +101,7 @@ export class Application extends Stack {
     this.corpusEtlStateMachineArn = corpus.pipelineStateMachineArn;
     this.corpusProcessedBucketArn = corpus.processedDataBucket.bucketArn;
 
-    const inferenceEngine = new InferenceEngine(this, "InferenceEngine", {
+    const inferenceEngine = new InferenceEngineStack(this, "InferenceEngine", {
       vpc,
       chatMessageTable: appData.datastore,
       chatMessageTableGsiIndexName: appData.gsiIndexName,
@@ -118,7 +118,7 @@ export class Application extends Stack {
       userPoolClientId: identity.userPoolWebClientId,
       userPool: identity.userPool,
       enableAutoScaling: true,
-    });
+    }).engine;
 
     // Allow inference engine to invoke search url
     corpus.apiUrl.grantInvokeUrl(inferenceEngine.lambda);

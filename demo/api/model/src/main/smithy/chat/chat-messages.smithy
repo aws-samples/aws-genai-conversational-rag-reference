@@ -141,7 +141,7 @@ structure CreateChatMessageOutput for CreateChatMessage {
     // List of sources of the message - relevant for AI based messages only
     sources: ChatMessageSources
     // Arbitrary data related to the message
-    data: Any
+    traceData: Any
 }
 
 @idempotent
