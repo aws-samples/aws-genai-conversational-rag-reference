@@ -236,8 +236,7 @@ namespace galileoPrompts {
         value: x,
       })),
       initial: () => {
-        const _initial =
-          context.cache.getItem("defaultModelId")
+        const _initial = context.cache.getItem("defaultModelId");
         if (_initial && availableModelIds.includes(_initial)) {
           return availableModelIds.indexOf(_initial);
         }

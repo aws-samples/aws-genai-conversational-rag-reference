@@ -13,7 +13,7 @@ import {
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 import React, { FC } from "react";
-import { useInfiniteChatMessages } from "./chats";
+import { useListChatMessages } from "./chats";
 
 export const mswServer = setupServer();
 
@@ -70,12 +70,14 @@ describe("useInfiniteChatMessage", () => {
       })
     );
 
-    const { result } = renderHook(() => useInfiniteChatMessages(chatId), {
+    const { result } = renderHook(() => useListChatMessages({ chatId }), {
       wrapper,
     });
 
     await waitFor(() => expect(result.current.status).toBe("success"));
-    const allMessages = result.current.data?.pages.flatMap((d) => d.data);
+    const allMessages = result.current.data?.pages.flatMap(
+      (d) => d.chatMessages
+    );
     expect(allMessages).toStrictEqual(records);
   });
 
@@ -100,12 +102,14 @@ describe("useInfiniteChatMessage", () => {
       })
     );
 
-    const { result } = renderHook(() => useInfiniteChatMessages(chatId), {
+    const { result } = renderHook(() => useListChatMessages({ chatId }), {
       wrapper,
     });
 
     await waitFor(() => expect(result.current.status).toBe("success"));
-    const allMessages = result.current.data?.pages.flatMap((d) => d.data);
+    const allMessages = result.current.data?.pages.flatMap(
+      (d) => d.chatMessages
+    );
     expect(allMessages).toStrictEqual(records);
   });
 
@@ -171,7 +175,7 @@ describe("useInfiniteChatMessage", () => {
     );
 
     const { result } = renderHook(
-      () => useInfiniteChatMessages(chatId, pageSize),
+      () => useListChatMessages({ chatId, pageSize }),
       {
         wrapper,
       }
@@ -179,14 +183,16 @@ describe("useInfiniteChatMessage", () => {
 
     // get the initial result which should be 2 records
     await waitFor(() => expect(result.current.status).toBe("success"));
-    const firstPage = result.current.data?.pages.flatMap((d) => d.data);
+    const firstPage = result.current.data?.pages.flatMap((d) => d.chatMessages);
     expect(firstPage).toStrictEqual(records.slice(0, pageSize));
 
     // fetch the next page
     expect(result.current.hasNextPage).toBe(true);
     await result.current.fetchNextPage();
     await waitFor(() => expect(result.current.isFetching).toBe(false));
-    const secondPage = result.current.data?.pages.flatMap((d) => d.data);
+    const secondPage = result.current.data?.pages.flatMap(
+      (d) => d.chatMessages
+    );
     expect(secondPage).toStrictEqual(records.slice(0, pageSize * 2));
 
     // fetch the last page
@@ -195,7 +201,7 @@ describe("useInfiniteChatMessage", () => {
       await result.current.fetchNextPage();
     });
     await waitFor(() => expect(result.current.isFetching).toBe(false));
-    const lastPage = result.current.data?.pages.flatMap((d) => d.data);
+    const lastPage = result.current.data?.pages.flatMap((d) => d.chatMessages);
     expect(lastPage).toStrictEqual(records.slice(0, pageSize * 3));
 
     expect(result.current.hasNextPage).toBe(false);

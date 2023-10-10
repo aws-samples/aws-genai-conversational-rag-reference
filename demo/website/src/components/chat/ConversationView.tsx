@@ -1,13 +1,10 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import { Alert, Spinner } from "@cloudscape-design/components";
-import {
-  ChatMessage,
-  useListChatMessages,
-} from "api-typescript-react-query-hooks";
+import { ChatMessage } from "api-typescript-react-query-hooks";
 import { forwardRef, useEffect, useMemo } from "react";
 import Message from "./Message";
-import { CHAT_MESSAGE_PARAMS } from "../../hooks/chats";
+import { CHAT_MESSAGE_PARAMS, useListChatMessages } from "../../hooks/chats";
 import EmptyState from "../Empty";
 
 type ConversationViewProps = {
@@ -42,7 +39,11 @@ export const ConversationView = forwardRef(
 
     return (
       <>
-        {error && <Alert type="error">{error.message}</Alert>}
+        {error && (
+          <Alert type="error">
+            {(error as Error).message || String(error)}
+          </Alert>
+        )}
         <div
           ref={ref}
           style={{
