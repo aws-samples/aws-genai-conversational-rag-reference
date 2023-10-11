@@ -68,6 +68,17 @@ monorepo.nx.cacheableOperations.push("generated");
 
 monorepo.package.addPackageResolutions("nth-check@>=2.0.1");
 
+monorepo.setScript(
+  "git-clean:keep-configs",
+  `git clean -xfd ${[
+    "demo/website/public",
+    "packages/galileo-cli/bin/.cache",
+    "demo/infra/cdk.context.json",
+  ]
+    .map((v) => `-e ${v}`)
+    .join(" ")}`
+);
+
 //////////////////////////////////////////////////////////
 // Docs
 //////////////////////////////////////////////////////////
