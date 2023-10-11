@@ -1,3 +1,0 @@
-# Corpus (Architecture - GenAI)
-
-TODO

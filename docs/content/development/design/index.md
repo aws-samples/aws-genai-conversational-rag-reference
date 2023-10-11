@@ -4,4 +4,4 @@ TODO
 
 ## High-Level Architecture
 
-![](../assets/images/galileo-arch.png)
+![](../../assets/images/galileo-arch.png)

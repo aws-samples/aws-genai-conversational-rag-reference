@@ -1,7 +1,7 @@
 ---
 nav:
   - Overview: index.md
-  - Build Pipeline: cicd
+  - Design: design
   - Prompt Development Settings: dev-settings
   - Models: models
   - Corpus: corpus
@@ -9,4 +9,5 @@ nav:
   - Vector Store: vstore
   - API: api
   - Website: website
+  - Documentation: docs
   - Troubleshooting: troubleshooting
