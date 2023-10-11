@@ -1,4 +1,4 @@
-# Dev Settings
+# Prompt Development Settings
 
 --8<-- "development/dev-settings/_/header.md"
 
