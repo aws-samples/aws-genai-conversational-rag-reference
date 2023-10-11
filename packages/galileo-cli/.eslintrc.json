@@ -133,7 +133,8 @@
       2,
       "block",
       "! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.\nPDX-License-Identifier: Apache-2.0 "
-    ]
+    ],
+    "import/no-cycle": "error"
   },
   "overrides": [
     {
