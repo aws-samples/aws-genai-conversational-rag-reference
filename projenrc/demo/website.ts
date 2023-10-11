@@ -1,7 +1,7 @@
 import { CloudscapeReactTsWebsiteProject } from "@aws/pdk/cloudscape-react-ts-website";
 import { MonorepoTsProject, NxProject } from "@aws/pdk/monorepo";
 import * as path from "node:path";
-import { javascript } from "projen";
+import { TextFile, javascript } from "projen";
 import { TypeScriptModuleResolution } from "projen/lib/javascript";
 import { DEFAULT_RELEASE_BRANCH, VERSIONS } from "../constants";
 import { GalileoSdk } from "../framework";
@@ -65,6 +65,13 @@ export class Website {
           moduleResolution: TypeScriptModuleResolution.NODE,
         },
       },
+      rewire: {
+        ignoreWarnings: [
+          {
+            module: "__PLACEHOLDER__",
+          },
+        ],
+      }
     });
     this.project.tsconfig?.addInclude("src/**/*.tsx");
     this.project.addGitIgnore("public/api.html");
@@ -84,5 +91,24 @@ export class Website {
       api.project.documentation.html2!
     );
     withStorybook(this.project);
+
+    // HACK: rewire values must be RegEx but projen only support JSON values
+    const rewireConfig = (this.project.tryFindFile(".projen/react-config-overrides.js") as TextFile);
+    // @ts-ignore -- private
+    const _synthesizeContent = rewireConfig.synthesizeContent.bind(rewireConfig);
+    // @ts-ignore -- protected
+    rewireConfig.synthesizeContent = (_: any) => {
+      const text = _synthesizeContent(_);
+      return text?.replace(JSON.stringify("__PLACEHOLDER__"), "/node_modules\\/(autolinker|ace-builds)/i")
+    }
+
+    // TODO: figure out why these modules started failing on test with ecma import/export errors?
+    this.project.package.addField("jest", {
+      transformIgnorePatterns: [
+        "node_modules\\/(?!\\.pnpm|@aws-northstar\\/\\w+|@cloudscape-design\\/\\w+)\\/.+\\.(js|jsx|mjs|cjs|ts|tsx)$",
+        // defaults
+        '^.+\\.module\\.(css|sass|scss)$'
+      ]
+    });
   }
 }

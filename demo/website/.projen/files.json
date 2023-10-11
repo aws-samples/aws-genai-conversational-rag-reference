@@ -7,6 +7,7 @@
     ".prettierrc.json",
     ".projen/deps.json",
     ".projen/files.json",
+    ".projen/react-config-overrides.js",
     ".projen/tasks.json",
     ".storybook/main.ts",
     ".storybook/preview.ts",

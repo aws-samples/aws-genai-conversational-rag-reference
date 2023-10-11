@@ -9,7 +9,7 @@ import {
 } from "@aws/pdk/type-safe-api";
 import { TypeScriptProject } from "projen/lib/typescript";
 import { DEFAULT_RELEASE_BRANCH, PROJECT_AUTHOR, VERSIONS } from "../constants";
-import { NodePackageManager } from "projen/lib/javascript";
+import { NodePackageManager, TypeScriptModuleResolution } from "projen/lib/javascript";
 
 export interface ApiOptions {
   readonly monorepo: MonorepoTsProject;
@@ -47,6 +47,17 @@ export class Api {
       },
       library: {
         libraries: [Library.TYPESCRIPT_REACT_QUERY_HOOKS],
+        options: {
+          typescriptReactQueryHooks: {
+            tsconfig: {
+              compilerOptions: {
+                module: "ES6",
+                target: "ES6",
+                moduleResolution: TypeScriptModuleResolution.NODE,
+              }
+            }
+          }
+        }
       },
       documentation: {
         formats: [DocumentationFormat.HTML2],
