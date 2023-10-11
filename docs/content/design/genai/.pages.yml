@@ -1,6 +1,0 @@
----
-nav:
-  - Overview: index.md
-  - Inference: inference
-  - Corpus: corpus
-  - Config: config

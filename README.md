@@ -75,7 +75,7 @@ pnpm exec cdk deploy --app cdk.out --require-approval never Dev/Galileo-SampleDa
 
 ## Deploy via CI/CD pipeline
 
-1. Create a CodeCommit repository in your target account/region name "galileo"
+1. Create a CodeCommit repository in your target account/region named "galileo"
 1. Push this git repository to the `mainline` branch
 1. Run `pnpm run deploy:pipeline`
 

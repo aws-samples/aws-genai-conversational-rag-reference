@@ -1,3 +1,0 @@
-# Config (Architecture - GenAI)
-
-TODO

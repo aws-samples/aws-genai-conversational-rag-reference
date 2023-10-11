@@ -1,4 +1,4 @@
-# How RAG (Retrieval Augmented Generation) Apps Work
+# How RAG (Retrieval Augmented Generation) Applications Work
 
 This will not be new information if your are familiar with retrieval augmented generation (RAG) flows. The goal of Galileo is not to re-invent RAG applications, instead it focuses on repeatability, reusability, experimentation, and scalability.
 

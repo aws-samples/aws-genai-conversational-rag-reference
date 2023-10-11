@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Galileo is a reference implementation of a deployable 3-tier retrieval augmented generative application that aims to meet the needs of developers as they seek to rapidly experiment with, deploy, and launch GenAI powered products and services that utilise retrieval augmented generation (RAG). It is implemented in a number of languages, using CDK to define the infrastructure it deploys. It can be optionally deployed with a sample dataset of US Supreme Court decision documents, providing content users can interact with immediately.
+Galileo is a reference implementation of a deployable 3-tier retrieval augmented generative (RAG) application that aims to meet the needs of developers as they seek to rapidly experiment with, deploy, and launch GenAI powered products and services that utilise RAG. It is implemented in a number of languages, using CDK to define the infrastructure it deploys. It can be optionally deployed with a sample dataset of US Supreme Court decision documents, providing content users can interact with immediately.
 
 In the future, we aim to evolve Galileo into a framework of composable generative AI CDK components and project blueprints.
 

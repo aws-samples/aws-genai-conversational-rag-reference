@@ -4,6 +4,6 @@ Galileo was designed 'API-first', with using Smithy and [Type Safe API](https://
 
 ![API List UI](api-explorer-list.png)
 
-![API Explorer Test UI](api-explorer-test.png)
+![API Explorer UI](api-explorer-test.png)
 
 
