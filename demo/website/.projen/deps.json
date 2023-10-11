@@ -150,6 +150,10 @@
       "type": "build"
     },
     {
+      "name": "react-app-rewired",
+      "type": "build"
+    },
+    {
       "name": "react-test-renderer",
       "type": "build"
     },

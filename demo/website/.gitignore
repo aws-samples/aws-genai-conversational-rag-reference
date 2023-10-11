@@ -41,6 +41,7 @@ public/api.json
 /lib
 /dist/
 !/.eslintrc.json
+!/.projen/react-config-overrides.js
 /build/
 public/api.html
 runtime-config.*

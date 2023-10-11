@@ -9,6 +9,7 @@
 /.projen/** linguist-generated
 /.projen/deps.json linguist-generated
 /.projen/files.json linguist-generated
+/.projen/react-config-overrides.js linguist-generated
 /.projen/tasks.json linguist-generated
 /.storybook/main.ts linguist-generated
 /.storybook/preview.ts linguist-generated
