@@ -83,15 +83,6 @@ import { PipelineStack } from "./cicd/pipeline-stack";
         defaults: {
           filterPlan: {
             preset: FilterPreset.COMPACT,
-            focus: {
-              filter: {
-                filter: (store: Graph.Store) => {
-                  return store.stages.find(
-                    (_stage) => _stage.id === devStage.node.id
-                  )!;
-                },
-              },
-            },
             filters: [
               {
                 store: Filters.pruneCustomResources(),
