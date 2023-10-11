@@ -1,11 +1,13 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { MonorepoTsProject, MonorepoTsProjectOptions } from "@aws/pdk/monorepo";
 import fs from "node:fs";
 import path from "node:path";
-import { MonorepoTsProject, MonorepoTsProjectOptions } from "@aws/pdk/monorepo";
 import { JsonFile, Project, javascript } from "projen";
 import { JsiiProject } from "projen/lib/cdk";
 import { Job, JobPermission, JobStep } from "projen/lib/github/workflows-model";
+import { Eslint } from "projen/lib/javascript";
+import { PythonProject } from "projen/lib/python";
 import { TypeScriptProject } from "projen/lib/typescript";
 import { VERSIONS } from "./constants";
 
@@ -32,6 +34,7 @@ export class MonorepoProject extends MonorepoTsProject {
       disableNodeWarnings: true,
       gitignore: [".DS_Store"],
       autoDetectBin: false,
+      vscode: true,
       workspaceConfig: {
         linkLocalWorkspaceBins: true,
       },
@@ -195,8 +198,60 @@ export class MonorepoProject extends MonorepoTsProject {
     }
   }
 
+  configureVscode(): void {
+    if (!this.vscode) return;
+
+    const subprojects: Project[] = [];
+    this.recurseProjects(this, (p) => subprojects.push(p));
+    subprojects.sort((a, b) => (a.outdir < b.outdir ? -1 : 1));
+    const pythonProjects = subprojects.filter(
+      (p) => p instanceof PythonProject
+    );
+
+    this.vscode.settings.addSettings({
+      "search.exclude": {
+        "**/.yarn": true,
+        "**/.pnp.*": true,
+        "**/node_modules/**/*": true,
+        "**/.cache/**/*": true,
+        "**/build/**/*": true,
+      },
+      "prettier.prettierPath": "node_modules/prettier/index.js",
+      "typescript.tsdk": "node_modules/typescript/lib",
+      "typescript.enablePromptUseWorkspaceTsdk": true,
+      "gradle.nestedProjects": true,
+      "python.analysis.extraPaths": pythonProjects.map(
+        (p) => `\${workspaceFolder}/${path.relative(this.outdir, p.outdir)}`
+      ),
+      "typescript.preferences.quoteStyle": "double",
+      "javascript.preferences.quoteStyle": "double",
+    });
+
+    // Eslint
+    this.vscode.settings.addSettings({
+      "eslint.nodePath": "node_modules/eslint/lib",
+      "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact",
+      ],
+      "eslint.workingDirectories": [
+        ...subprojects
+          .filter((p) => Eslint.of(p) != null)
+          .map((p) => "./" + path.relative(this.outdir, p.outdir)),
+      ],
+      "editor.codeActionsOnSave": {
+        "source.fixAll": true,
+        "source.organizeImports": false,
+      },
+    });
+  }
+
   configureEsLint(project: Project) {
-    const isRoot = project === this;
+    const root = this;
+    const isRoot = project === root;
+
     if (project instanceof TypeScriptProject && project.eslint) {
       const dirs = isRoot
         ? this.projectDirs
@@ -209,6 +264,8 @@ export class MonorepoProject extends MonorepoTsProject {
 
       project.eslint.addIgnorePattern("samples/");
       project.eslint.addIgnorePattern("scripts/");
+
+      project.eslint.addRules({ "import/no-cycle": "error" });
 
       const eslintTask = project.tasks.tryFind("eslint");
       if (eslintTask) {
@@ -299,6 +356,7 @@ export class MonorepoProject extends MonorepoTsProject {
     this.recurseProjects(this, this.configJsii.bind(this));
 
     this.configUpgradeDependencies();
+    this.configureVscode();
 
     super.synth();
   }

@@ -61,6 +61,8 @@ export class Api {
     // For now adding to commit so persists.
     this.project.runtime.python!.gitignore.include("README.md");
 
+    monorepo.vscode?.settings.addSetting("smithyLsp.rootPath", "${workspaceRoot}/" +path.relative(monorepo.outdir, this.project.model.outdir))
+
     NxProject.ensure(this.project.model)?.addBuildTargetFiles(
       ["!{projectRoot}/.gradle/**/*"],
       ["{projectRoot}/.api.json", "{projectRoot}/.gradle"]

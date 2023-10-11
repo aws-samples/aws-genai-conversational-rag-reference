@@ -18,6 +18,7 @@
 /.projen/files.json linguist-generated
 /.projen/tasks.json linguist-generated
 /.syncpackrc.json linguist-generated
+/.vscode/settings.json linguist-generated
 /demo/api/generated/documentation/README.md linguist-generated
 /demo/api/generated/infrastructure/README.md linguist-generated
 /demo/api/generated/libraries/README.md linguist-generated

@@ -16,6 +16,7 @@
     ".projen/files.json",
     ".projen/tasks.json",
     ".syncpackrc.json",
+    ".vscode/settings.json",
     "demo/api/generated/documentation/README.md",
     "demo/api/generated/infrastructure/README.md",
     "demo/api/generated/libraries/README.md",
