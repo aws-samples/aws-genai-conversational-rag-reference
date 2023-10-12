@@ -10,7 +10,7 @@ export const CLAUDE_V2_ADAPTER: IModelAdapter = {
       base: {
         // every claude prompt must start with `\n\nHuman: `
         Header: '\n\nHuman: ',
-        // every claude prompt must end with `\n\Assistant: `
+        // every claude prompt must end with `\n\nAssistant: `
         Footer: '\n\nAssistant: ',
         // claude likes tags
         Body: '<system>{{>Instruction}}\n\n{{>Context}}\n\n</system>\n\n{{>Cue}}',
@@ -27,10 +27,6 @@ export const CLAUDE_V2_ADAPTER: IModelAdapter = {
           Cue: 'Followup Question: {{question}}',
           Delimiter: '<dialog>',
           Dialog: '<dialog>\n{{>Messages}}\n\n</dialog>',
-          // prevent stop in dialog
-          AIMessage: '\tAssistant: {{content}}',
-          HumanMessage: '\tHuman: {{content}}',
-          SystemMessage: '\tSystem: {{content}}',
         },
       },
     },

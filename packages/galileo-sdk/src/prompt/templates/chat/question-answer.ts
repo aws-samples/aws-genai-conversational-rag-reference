@@ -6,8 +6,8 @@ import { HandlebarsPromptTemplate, HandlebarsPromptTemplateRuntime, ScopedHandle
 export const CHAT_QUESTION_ANSWER_PARTIALS: ChatTemplatePartials = {
   ...BASE_CHAT_PARTIALS,
   Context: '{{>Corpus}}',
-  Instruction: 'You are a research assistant in the "{{domain}}" domain. Based on the following rules and provided corpus denoted by {{>Delimiter}}, answer the question. \nRules:\n{{>Rules}}',
-  Cue: 'Question: {{question}}\n\nAnswer: ',
+  Instruction: 'You are a research assistant in the "{{domain}}" domain. Based on the following rules and provided corpus {{~>DelimitedBy}}, answer the question. {{>CR}}Rules:{{>LF}}{{>Rules}}',
+  Cue: 'Question: {{question}}{{>LF}}Answer: ',
 } as const;
 
 
