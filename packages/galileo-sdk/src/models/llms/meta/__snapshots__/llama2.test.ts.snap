@@ -1,34 +1,30 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`models/llms/meta/llama2 adapter should render condense prompt 1`] = `
-"Given the following conversational dialog denoted by ''', and the "Followup Question" below, rephrase the "Followup Question" to be a concise standalone question in its original language. Without answering the question, return only the standalone question.
+"Given the following conversational dialog delimited by ''', and the "Followup Question" below, rephrase the "Followup Question" to be a concise standalone question in its original language. Without answering the question, return only the standalone question.
 
 Dialog: '''
 System: A system message
-
 Human: Hi
-
 Assistant: Hello!
 '''
 
 Followup Question: THE QUESTION
-
 Standalone Question: "
 `;
 
 exports[`models/llms/meta/llama2 adapter should render qa prompt 1`] = `
-"You are a research assistant in the "DOMAIN" domain. Based on the following rules and provided corpus denoted by ''', answer the question. 
+"You are a research assistant in the "DOMAIN" domain. Based on the following rules and provided corpus delimited by ''', answer the question. 
+
 Rules:
 1. only use knowledge from the provided corpus to answer the question
 2. always be truthful, honest, unbiased, and unharmful
 3. be concise, do not repeat the question or yourself in the answer
-
 
 Corpus: '''
 THE CORPUS
 '''
 
 Question: THE QUESTION
-
 Answer: "
 `;

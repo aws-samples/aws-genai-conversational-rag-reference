@@ -27,3 +27,19 @@ export const LLAMA2_KWARGS: Kwargs = {
 export const LLAMA2_ENDPOINT_KWARGS: Kwargs = {
   CustomAttributes: 'accept_eula=true',
 };
+
+/*
+Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.
+
+Chat History:
+{{#each chat_history}}
+{{#if (eq type "human")}}Human: {{content}}
+{{~else if (eq type "ai")}}Assistant: {{content}}
+{{~else if (eq type "system")}}System: {{content}}
+{{~else}}{{#if type}}{{type}}: {{/if}}{{content}}
+{{/if}}{{#isnt @last true}}
+{{/isnt}}{{/each}}
+
+Follow Up Input: {{question}}
+Standalone question:
+*/

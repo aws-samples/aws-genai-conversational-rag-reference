@@ -1,52 +1,48 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`prompt/templates/chat question-answer custom rules 1`] = `
-"You are a research assistant in the "DOMAIN" domain. Based on the following rules and provided corpus denoted by ''', answer the question. 
+"You are a research assistant in the "DOMAIN" domain. Based on the following rules and provided corpus delimited by ''', answer the question. 
+
 Rules:
 1. rule 1
 2. rule 2
-
 
 Corpus: '''
 CORPUS
 '''
 
 Question: THE QUESTION
-
 Answer: "
 `;
 
 exports[`prompt/templates/chat question-answer default 1`] = `
-"You are a research assistant in the "DOMAIN" domain. Based on the following rules and provided corpus denoted by ''', answer the question. 
+"You are a research assistant in the "DOMAIN" domain. Based on the following rules and provided corpus delimited by ''', answer the question. 
+
 Rules:
 1. only use knowledge from the provided corpus to answer the question
 2. always be truthful, honest, unbiased, and unharmful
 3. be concise, do not repeat the question or yourself in the answer
 
-
 Corpus: '''
 CORPUS
 '''
 
 Question: THE QUESTION
-
 Answer: "
 `;
 
 exports[`prompt/templates/chat question-answer flatten 1`] = `
-"You are a research assistant in the "{{domain}}" domain. Based on the following rules and provided corpus denoted by ''', answer the question. 
-Rules:
-{{#each rules}}{{add @index 1}}. {{.}}
-{{/each}}
+"You are a research assistant in the "{{domain}}" domain. Based on the following rules and provided corpus delimited by ''', answer the question. 
 
+Rules:
+{{#each rules}}{{add @index 1}}. {{.}}{{#isnt @last true}}
+{{/isnt}}{{/each}}
 
 Corpus: '''
 {{context}}
 '''
 
-
 Question: {{question}}
-
 Answer: "
 `;
 
@@ -56,36 +52,34 @@ exports[`prompt/templates/chat question-answer messages 1`] = `
 
 
 
-You are a research assistant in the "DOMAIN" domain. Based on the following rules and provided corpus denoted by ''', answer the question. 
+You are a research assistant in the "DOMAIN" domain. Based on the following rules and provided corpus delimited by ''', answer the question. 
+
 Rules:
 1. only use knowledge from the provided corpus to answer the question
 2. always be truthful, honest, unbiased, and unharmful
 3. be concise, do not repeat the question or yourself in the answer
-
 
 Corpus: '''
 CORPUS
 '''
 
 Question: THE QUESTION
-
 Answer:         "
 `;
 
 exports[`prompt/templates/chat question-answer partial template overrides 1`] = `
-"<WRAPPER>You are a research assistant in the "DOMAIN" domain. Based on the following rules and provided corpus denoted by ''', answer the question. 
+"<WRAPPER>You are a research assistant in the "DOMAIN" domain. Based on the following rules and provided corpus delimited by ''', answer the question. 
+
 Rules:
 1. only use knowledge from the provided corpus to answer the question
 2. always be truthful, honest, unbiased, and unharmful
 3. be concise, do not repeat the question or yourself in the answer
-
 
 Corpus: '''
 CORPUS
 '''
 
 Question: THE QUESTION
-
 Answer: </WRAPPER>"
 `;
 
@@ -94,18 +88,17 @@ exports[`prompt/templates/chat question-answer wrappers 1`] = `
 
 
 
-<SEQUENCE>You are a research assistant in the "DOMAIN" domain. Based on the following rules and provided corpus denoted by ''', answer the question. 
+<SEQUENCE>You are a research assistant in the "DOMAIN" domain. Based on the following rules and provided corpus delimited by ''', answer the question. 
+
 Rules:
 1. only use knowledge from the provided corpus to answer the question
 2. always be truthful, honest, unbiased, and unharmful
 3. be concise, do not repeat the question or yourself in the answer
-
 
 Corpus: '''
 CORPUS
 '''
 
 Question: THE QUESTION
-
 Answer: </SEQUENCE>        "
 `;
