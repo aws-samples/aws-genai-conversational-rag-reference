@@ -3,25 +3,15 @@
   "root": "demo/infra",
   "targets": {
     "build": {
-      "inputs": [
-        "default",
-        "^default",
-        "!{projectRoot}/cdk.out/**/*"
-      ],
-      "outputs": [
-        "{projectRoot}/dist",
-        "{projectRoot}/lib",
-        "{projectRoot}/build",
-        "{projectRoot}/coverage",
-        "{projectRoot}/test-reports",
-        "{projectRoot}/target",
-        "{projectRoot}/cdk.out",
-        "{projectRoot}/LICENSE_THIRD_PARTY",
-        "{projectRoot}/.jsii"
-      ],
       "dependsOn": [
         "^build"
       ],
+      "inputs": [
+        {
+          "runtime": "date +%s"
+        }
+      ],
+      "outputs": [],
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec projen build",
