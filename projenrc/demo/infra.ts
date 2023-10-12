@@ -164,9 +164,13 @@ export class Infra {
       ]
     });
 
-    NxProject.ensure(this.project).addBuildTargetFiles([
-      "!{projectRoot}/cdk.out/**/*",
-    ]);
+    // infra/cdk.out/assets grows to big to cache, so disabling caching for this package
+    // https://github.com/nrwl/nx/issues/17443#issuecomment-1581537253
+    NxProject.ensure(this.project).setTarget("build", {
+      dependsOn: ["^build"],
+      inputs: [{ runtime: "date +%s" }],
+      outputs: [],
+    })
 
     // Make sure that infra wait for python deps of the lambda handlers it contains
     NxProject.ensure(this.project).addImplicitDependency(
