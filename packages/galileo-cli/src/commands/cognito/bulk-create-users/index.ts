@@ -16,7 +16,7 @@ export default class CognitoBulkCreateUsersCommand extends Command {
 Make sure that the CSV file has the following columns: "username,email,group"
 	`;
   static examples = [
-    "galileo-cli-experimental cognito bulk-create-users --profile=myProfile --region=ap-southeast-1 --csvFile /path/to/users.csv",
+    "galileo-cli cognito bulk-create-users --profile=myProfile --region=ap-southeast-1 --csvFile /path/to/users.csv",
   ];
 
   static flags = cognitoBulkCreateUsersCommandFlags;
