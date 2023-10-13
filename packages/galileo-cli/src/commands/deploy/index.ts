@@ -17,9 +17,9 @@ const ROOT = path.resolve(__dirname, "..", "..", "..", "..", "..");
 export default class DeployCommand extends Command {
   static description = "Deploy Galileo into your AWS account";
   static examples = [
-    "galileo-cli-experimental deploy --profile=myProfile --appRegion=ap-southeast-1 --llmRegion=us-west-2 --build --saveExec --skipConfirmations",
-    "galileo-cli-experimental deploy --dryRun",
-    "galileo-cli-experimental deploy --replay --skipConfirmations",
+    "galileo-cli deploy --profile=myProfile --appRegion=ap-southeast-1 --llmRegion=us-west-2 --build --saveExec --skipConfirmations",
+    "galileo-cli deploy --dryRun",
+    "galileo-cli deploy --replay --skipConfirmations",
   ];
   static flags = deployCommandFlags;
 
@@ -72,6 +72,10 @@ export default class DeployCommand extends Command {
         { onCancel: this.onPromptCancel }
       )
     );
+
+    // set process envs so all child processes will inherit them
+    process.env.AWS_REGION = appRegion;
+    process.env.AWS_PROFILE = profile;
 
     // bedrock-related info
     const includesBedrock = helpers.includesBedrock(foundationModels);

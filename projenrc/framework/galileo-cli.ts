@@ -151,6 +151,9 @@ export class GalileoCli extends TypeScriptAppProject {
       commands: "src/commands",
       hooks,
       plugins: oclifPlugins,
+      topics: {
+        cognito: { description: "Cognito user management" },
+      },
       topicSeparator: " ",
     });
   }

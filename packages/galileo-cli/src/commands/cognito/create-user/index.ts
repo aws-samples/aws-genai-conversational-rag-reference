@@ -12,9 +12,9 @@ import { cognitoCreateUserCommandFlags } from "../flags";
 export default class CognitoCreateUserCommand extends Command {
   static description: "Create a Cognito user";
   static examples = [
-    "galileo-cli-experimental cognito create-user --profile=myProfile --region=ap-southeast-1",
-    "galileo-cli-experimental cognito create-user --email=myUser@example.com --username=myUser",
-    "galileo-cli-experimental cognito create-user --skipConfirmations --profile=myProfile --region=ap-southeast-1 --email=admin@example.com --username=admin --group=Administrators",
+    "galileo-cli cognito create-user --profile=myProfile --region=ap-southeast-1",
+    "galileo-cli cognito create-user --email=myUser@example.com --username=myUser",
+    "galileo-cli cognito create-user --skipConfirmations --profile=myProfile --region=ap-southeast-1 --email=admin@example.com --username=admin --group=Administrators",
   ];
 
   static flags = cognitoCreateUserCommandFlags;
