@@ -152,7 +152,7 @@ export default class DeployCommand extends Command {
       context.cdkContext.get("foundationModelRegion") || appRegion;
 
     const regionsToBootstrap = new Set<string>();
-    new Set<string>([appRegion, modelRegion]).forEach(async (_region) => {
+    for (const _region of new Set<string>([appRegion, modelRegion])) {
       const bootstapInfo = await accountUtils.retrieveCdkBootstrapInfo({
         profile,
         region: _region,
@@ -161,7 +161,7 @@ export default class DeployCommand extends Command {
       if (bootstapInfo == null) {
         regionsToBootstrap.add(_region);
       }
-    });
+    }
 
     if (regionsToBootstrap.size > 0) {
       if (!flags.skipConfirmations) {
