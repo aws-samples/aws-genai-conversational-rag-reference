@@ -45,18 +45,24 @@ export const getCdkBootstrapInfo = async (
     region,
   });
 
-  const ssmParamResp = await client.send(
-    new GetParameterCommand({
-      Name: `/cdk-bootstrap/${options.qualifier ?? DEFAULT_QUALIFIER}/version`,
-    })
-  );
+  try {
+    const ssmParamResp = await client.send(
+      new GetParameterCommand({
+        Name: `/cdk-bootstrap/${
+          options.qualifier ?? DEFAULT_QUALIFIER
+        }/version`,
+      })
+    );
 
-  if (ssmParamResp.Parameter == null) {
+    if (ssmParamResp.Parameter == null) {
+      return;
+    }
+
+    return {
+      version: ssmParamResp.Parameter!.Value!,
+      lastUpdated: ssmParamResp.Parameter!.LastModifiedDate!,
+    };
+  } catch {
     return;
   }
-
-  return {
-    version: ssmParamResp.Parameter!.Value!,
-    lastUpdated: ssmParamResp.Parameter!.LastModifiedDate!,
-  };
 };
