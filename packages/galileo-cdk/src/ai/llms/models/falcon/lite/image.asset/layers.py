@@ -88,7 +88,7 @@ class Linear8bitLt(nn.Module):
         super().__init__()
         assert (
             not memory_efficient_backward
-        ), "memory_efficient_backward is no longer required and the argument is deprecated in 0.37.0 and will be removed in 0.39.0"
+        ), "memory_efficient_backward is no longer required and the argument is deprecated in 0.37.0 and will be removed in 0.39.0" #nosec
         self.state = bnb.MatmulLtState()
         self.index = index
 

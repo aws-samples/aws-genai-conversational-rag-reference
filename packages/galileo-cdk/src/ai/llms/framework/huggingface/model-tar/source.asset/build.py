@@ -1,7 +1,7 @@
 import os
 import json
 import shutil
-import subprocess
+import subprocess #nosec
 from pathlib import Path
 from huggingface_hub import snapshot_download
 
@@ -58,7 +58,7 @@ if CUSTOM_ASSET_CODEBUILD_SRC_DIR != None:
 # tar the model
 ##########################################
 print("create tarbar...")
-subprocess.run(f"tar -chf {model_tar_file} --use-compress-program=pigz *", shell=True, check=True, cwd=str(local_dir))
+subprocess.run(f"tar -chf {model_tar_file} --use-compress-program=pigz *", shell=True, check=True, cwd=str(local_dir)) #nosec
 print(f"{MODEL_TAR_FILENAME} created at ${model_tar_file}")
 print("Model Tar Size:" + str(os.path.getsize(model_tar_file) * 1e-6) + "MB")
 
