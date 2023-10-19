@@ -43,7 +43,8 @@ export default function Sessions({ chats, loading }: SessionsProps) {
           style={{
             width: 300,
             flex: "none",
-            overflow: "scroll",
+            padding: 7,
+            overflow: "auto",
           }}
         >
           <ChatsList
