@@ -9,4 +9,4 @@ os.environ["HF_REPO_ID"] = "sentence-transformers/all-mpnet-base-v2"
 def test_build():
     from .build import model_tar_file
 
-    assert str(model_tar_file) == os.path.join(os.environ["CODEBUILD_SRC_DIR"], "out", "model.tar.gz")
+    assert str(model_tar_file) == os.path.join(os.environ["CODEBUILD_SRC_DIR"], "out", "model.tar.gz") #nosec
