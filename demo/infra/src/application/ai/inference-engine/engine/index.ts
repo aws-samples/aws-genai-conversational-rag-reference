@@ -96,9 +96,10 @@ export class InferenceEngine extends Construct implements IInferenceEngine {
     );
 
     if (isDevStage(this)) {
-      // Grant the function access to assume roles for cross-account model development
-      this.role.attachInlinePolicy(
-        new iam.Policy(this, "FoundationModelCrossAccountPolicy", {
+      const crossAccountDevPolicy = new iam.Policy(
+        this,
+        "FoundationModelCrossAccountPolicy",
+        {
           statements: [
             new iam.PolicyStatement({
               effect: iam.Effect.ALLOW,
@@ -106,7 +107,22 @@ export class InferenceEngine extends Construct implements IInferenceEngine {
               resources: ["*"],
             }),
           ],
-        })
+        }
+      );
+      // Grant the function access to assume roles for cross-account model development
+      this.role.attachInlinePolicy(crossAccountDevPolicy);
+
+      NagSuppressions.addResourceSuppressions(
+        crossAccountDevPolicy,
+        [
+          {
+            id: "AwsPrototyping-IAMNoWildcardPermissions",
+            reason:
+              "used for open-ended dev against dynamically created resources",
+            appliesTo: ["Resource::*"],
+          },
+        ],
+        true
       );
     }
 

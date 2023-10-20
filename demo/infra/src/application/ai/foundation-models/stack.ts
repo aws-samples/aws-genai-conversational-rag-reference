@@ -215,6 +215,17 @@ export class FoundationModelStack extends MonitoredStack {
           }),
         },
       });
+      NagSuppressions.addResourceSuppressions(
+        this._crossAccountRole,
+        [
+          {
+            id: "AwsPrototyping-IAMNoWildcardPermissions",
+            reason:
+              "Actions are scoped. Don't know all SageMaker endpoint names or Bedrock model ids at deployment time",
+          },
+        ],
+        true
+      );
 
       this._secret.grantRead(this._crossAccountRole);
 

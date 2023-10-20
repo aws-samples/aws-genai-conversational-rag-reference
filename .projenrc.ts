@@ -66,7 +66,17 @@ monorepo.nx.setTargetDefault("deploy:app", {
 });
 monorepo.nx.cacheableOperations.push("generated");
 
-monorepo.package.addPackageResolutions("nth-check@>=2.0.1");
+monorepo.package.addPackageResolutions(
+  ...[
+    "nth-check@>=2.0.1",
+    // https://www.npmjs.com/advisories/1092413
+    "semver@>=7.5.2",
+    // https://github.com/advisories/GHSA-m95q-7qp3-xv42
+    "zod@>=3.22.3",
+    // https://github.com/advisories/GHSA-7fh5-64p2-3v2j
+    "postcss@>=8.4.31",
+  ]
+);
 
 monorepo.setScript(
   "git-clean:keep-configs",
