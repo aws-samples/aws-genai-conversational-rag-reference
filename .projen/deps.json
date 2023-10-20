@@ -231,8 +231,23 @@
       "type": "override"
     },
     {
+      "name": "postcss",
+      "version": ">=8.4.31",
+      "type": "override"
+    },
+    {
+      "name": "semver",
+      "version": ">=7.5.2",
+      "type": "override"
+    },
+    {
       "name": "wrap-ansi",
       "version": "^7.0.0",
+      "type": "override"
+    },
+    {
+      "name": "zod",
+      "version": ">=3.22.3",
       "type": "override"
     },
     {

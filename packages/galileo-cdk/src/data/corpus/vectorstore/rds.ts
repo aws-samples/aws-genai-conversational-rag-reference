@@ -194,9 +194,19 @@ export class RDSVectorStore extends Construct {
           reason:
             'Only VPC inbound traffic allowed, should enable this if opening inbound',
         },
-        // { id: "AwsPrototyping-AuroraMySQLPostgresIAMAuth", reason: "Only VPC inbound traffic allowed, should enable this if opening inbound" },
-        // { id: "AwsPrototyping-SecretsManagerRotationEnabled", reason: "Dev stage only" },
-        // { id: "AwsPrototyping-RDSStorageEncrypted", reason: "Dev stage only" },
+        {
+          id: 'AwsPrototyping-AuroraMySQLPostgresIAMAuth',
+          reason:
+            'Only VPC inbound traffic allowed, should enable this if opening inbound',
+        },
+        {
+          id: 'AwsPrototyping-SecretsManagerRotationEnabled',
+          reason: 'Dev stage only',
+        },
+        {
+          id: 'AwsPrototyping-RDSStorageEncrypted',
+          reason: 'Dev stage only',
+        },
       ],
       true,
     );

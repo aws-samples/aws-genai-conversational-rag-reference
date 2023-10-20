@@ -102,7 +102,10 @@
       "aws-cdk-lib": "2.99.1",
       "constructs": "10.2.70",
       "nth-check": ">=2.0.1",
-      "wrap-ansi": "^7.0.0"
+      "postcss": ">=8.4.31",
+      "semver": ">=7.5.2",
+      "wrap-ansi": "^7.0.0",
+      "zod": ">=3.22.3"
     }
   },
   "engines": {

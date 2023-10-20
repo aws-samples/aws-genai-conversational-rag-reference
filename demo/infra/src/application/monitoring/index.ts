@@ -2,6 +2,7 @@
 PDX-License-Identifier: Apache-2.0 */
 import { ApplicationContext } from "@aws/galileo-cdk/src/core/app/context";
 import { NestedStack, NestedStackProps, Stack, StackProps } from "aws-cdk-lib";
+import { Alias } from "aws-cdk-lib/aws-kms";
 import { Topic } from "aws-cdk-lib/aws-sns";
 import { pascal } from "case";
 import {
@@ -59,7 +60,15 @@ class StackMonitor extends Construct {
   constructor(stack: Stack, props: MonitoringOptions) {
     super(stack, "StackMonitor");
 
-    const onAlarmTopic = new Topic(this, "AlarmTopic");
+    const snsKmsKey = Alias.fromAliasName(
+      this,
+      "AwsManagedSnsKmsKey",
+      "alias/aws/sns"
+    );
+
+    const onAlarmTopic = new Topic(this, "AlarmTopic", {
+      masterKey: snsKmsKey,
+    });
 
     const dashboardName =
       props.dashboardName ??
