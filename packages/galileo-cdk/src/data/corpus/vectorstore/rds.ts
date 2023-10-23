@@ -27,12 +27,14 @@ export interface RDSVectorStoreProps {
   readonly removalPolicy?: RemovalPolicy;
   /**
    * Whether to enable mapping of AWS Identity and Access Management (IAM) accounts to database accounts.
+   *
+   * This requires creating users with `rds_iam` role in postgre db - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.DBAccounts.html#UsingWithRDS.IAMDBAuth.DBAccounts.PostgreSQL
    * @default false
    */
   readonly iamAuthentication?: boolean;
   /**
    * Whether to require Transport Layer Security (TLS) for connections.
-   * @default false
+   * @default true
    */
   readonly requireTLS?: boolean;
 
@@ -41,6 +43,17 @@ export interface RDSVectorStoreProps {
    * @default 5432
    */
   readonly port?: number;
+
+  /**
+   * Minimum capacity for serverless cluster; 1 unit = 2GB
+   * @default 1 (2GB)
+   */
+  readonly minCapacity?: 1;
+  /**
+   * Maximum capacity for serverless cluster; 1 unit = 2GB
+   * @default 50 (100GB)
+   */
+  readonly maxCapacity?: 50;
 }
 
 export class RDSVectorStore extends Construct {
@@ -131,7 +144,7 @@ export class RDSVectorStore extends Construct {
     RDSVectorStore.validateEngine(engine);
 
     this.iamAuthentication = props.iamAuthentication ?? false;
-    this.requireTLS = props.requireTLS ?? false;
+    this.requireTLS = props.requireTLS ?? true;
 
     this.cluster = new rds.DatabaseCluster(this, 'Cluster', {
       engine,
@@ -146,15 +159,14 @@ export class RDSVectorStore extends Construct {
       iamAuthentication: this.iamAuthentication,
       storageType: rds.DBClusterStorageType.AURORA_IOPT1,
       storageEncrypted: true,
-      // TODO: Make this configurable
-      serverlessV2MinCapacity: 1, // 2 GB
-      serverlessV2MaxCapacity: 50, // 100 GB
-      // storageEncrypted: true,
+      serverlessV2MinCapacity: props.minCapacity ?? 1,
+      serverlessV2MaxCapacity: props.maxCapacity ?? 50,
       // cloudwatchLogsExports: engine.supportedLogTypes,
       // cloudwatchLogsRetention: RetentionDays.THREE_MONTHS,
     });
 
-    // this.cluster.addRotationSingleUser();
+    // Enable secret rotation - https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_rds-readme.html#rotating-credentials
+    this.cluster.addRotationSingleUser();
 
     // TODO: [enhancement] automatically run `CREATE EXTENSION vector;`
     // @see https://aws.amazon.com/blogs/database/building-ai-powered-search-in-postgresql-using-amazon-sagemaker-and-pgvector/

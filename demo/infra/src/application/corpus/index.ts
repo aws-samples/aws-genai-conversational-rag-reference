@@ -107,7 +107,7 @@ export class CorpusStack extends MonitoredNestedStack {
         }),
       ],
     });
-    this.vectorStore.connectionSecret.grantRead(this.apiLambda);
+    this.vectorStore.grantConnect(this.apiLambda);
     NagSuppressions.addResourceSuppressions(
       this.apiLambda,
       [

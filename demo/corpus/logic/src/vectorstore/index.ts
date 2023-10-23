@@ -29,7 +29,8 @@ export const vectorStoreFactory = async (
     __RDS_CONN__ = await getRDSConnConfig({
       secretId: ENV.RDS_PGVECTOR_STORE_SECRET,
       proxyEndpoint: ENV.RDS_PGVECTOR_PROXY_ENDPOINT,
-      iamAuthentication: ENV.RDS_PGVECTOR_IAM_AUTH,
+      // Since we are using master secret for credentials, we do not use iam auth
+      iamAuthentication: false,
     });
   }
   const dbConfig = PGVectorStore.getDbConfigFromRdsConfig(__RDS_CONN__, ENV.RDS_PGVECTOR_TLS_ENABLED ? 'verify-full' : 'prefer');

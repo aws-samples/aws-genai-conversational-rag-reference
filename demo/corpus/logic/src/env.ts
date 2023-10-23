@@ -66,7 +66,7 @@ export namespace ENV {
   export const RDS_PGVECTOR_STORE_SECRET = process.env.RDS_PGVECTOR_STORE_SECRET!;
   export const RDS_PGVECTOR_PROXY_ENDPOINT = process.env.RDS_PGVECTOR_PROXY_ENDPOINT;
   export const RDS_PGVECTOR_IAM_AUTH = envBool('RDS_PGVECTOR_IAM_AUTH', false);
-  export const RDS_PGVECTOR_TLS_ENABLED = envBool('RDS_PGVECTOR_TLS_ENABLED', false);
+  export const RDS_PGVECTOR_TLS_ENABLED = envBool('RDS_PGVECTOR_TLS_ENABLED', true);
 
   export const EMBEDDING_PORT = parseInt(process.env.EMBEDDING_PORT || '1337');
   export const EMBEDDING_SENTENCE_TRANSFORMER_MODEL = process.env.EMBEDDING_SENTENCE_TRANSFORMER_MODEL || 'all-mpnet-base-v2';

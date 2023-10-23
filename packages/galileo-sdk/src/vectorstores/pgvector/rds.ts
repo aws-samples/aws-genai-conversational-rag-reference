@@ -42,18 +42,19 @@ export async function getRDSConnConfig(input: GetRDSConnConfigInput): Promise<RD
   logger.debug({ message: 'getRDSConnConfig:', input });
   let { host, password, ...rest } = await getRDSConnConfigFromSecret(input.secretId);
 
-  // https://catalog.us-east-1.prod.workshops.aws/workshops/2a5fc82d-2b5f-4105-83c2-91a1b4d7abfe/en-US/3-intermediate/rds-proxy/task3
-  if (input.proxyEndpoint) {
-    host = input.proxyEndpoint;
-  }
-
   if (input.iamAuthentication) {
     const signer = new Signer({
+      // signer must use original host, not proxy endpoint
       hostname: host,
       port: rest.port,
       username: rest.username,
     });
     password = await signer.getAuthToken();
+  }
+
+  // https://catalog.us-east-1.prod.workshops.aws/workshops/2a5fc82d-2b5f-4105-83c2-91a1b4d7abfe/en-US/3-intermediate/rds-proxy/task3
+  if (input.proxyEndpoint) {
+    host = input.proxyEndpoint;
   }
 
   return {
@@ -79,6 +80,6 @@ export function resolveRdsConnProcessEnvs () {
     RDS_PGVECTOR_STORE_SECRET: process.env.RDS_PGVECTOR_STORE_SECRET!,
     RDS_PGVECTOR_PROXY_ENDPOINT: process.env.RDS_PGVECTOR_PROXY_ENDPOINT,
     RDS_PGVECTOR_IAM_AUTH: envBool('RDS_PGVECTOR_IAM_AUTH', false),
-    RDS_PGVECTOR_TLS_ENABLED: envBool('RDS_PGVECTOR_TLS_ENABLED', false),
+    RDS_PGVECTOR_TLS_ENABLED: envBool('RDS_PGVECTOR_TLS_ENABLED', true),
   } as const;
 }
