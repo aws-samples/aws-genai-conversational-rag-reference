@@ -257,11 +257,6 @@
       "import": "./lib/langchain/stores/messages/utils.js",
       "require": "./lib/langchain/stores/messages/utils.cjs"
     },
-    "./lib/langchain/vectorstores/memory": {
-      "types": "./lib/langchain/vectorstores/memory.d.ts",
-      "import": "./lib/langchain/vectorstores/memory.js",
-      "require": "./lib/langchain/vectorstores/memory.cjs"
-    },
     "./lib/models": {
       "types": "./lib/models/index.d.ts",
       "import": "./lib/models/index.js",
