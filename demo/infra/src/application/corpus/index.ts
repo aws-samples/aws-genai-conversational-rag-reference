@@ -24,6 +24,7 @@ import { NagSuppressions } from "cdk-nag";
 import { Construct } from "constructs";
 import { IndexingPipeline, IndexingPipelineOptions } from "./pipeline";
 import { MonitoredNestedStack, MonitoredNestedStackProps } from "../monitoring";
+import { GalileoComponentTags, tagAsComponent } from "../tags";
 
 export interface CorpusProps extends MonitoredNestedStackProps {
   readonly vpc: IVpc;
@@ -64,6 +65,10 @@ export class CorpusStack extends MonitoredNestedStack {
     });
 
     this.processedDataBucket = new SecureBucket(this, "ProcessedDataBucket");
+    tagAsComponent(
+      GalileoComponentTags.CORPUS_INDEXING_BUCKET,
+      this.processedDataBucket
+    );
 
     const cacheTable = new Table(this, "CacheTable", {
       partitionKey: { name: "PK", type: AttributeType.STRING },
@@ -163,6 +168,10 @@ export class CorpusStack extends MonitoredNestedStack {
 
     // add dependency from pipeline stateMachine to apiLambda to make sure image has been deployed
     this.pipeline.stateMachine.node.addDependency(this.apiLambda);
+    tagAsComponent(
+      GalileoComponentTags.CORPUS_INDEXING_STATEMACHINE,
+      this.pipeline.stateMachine
+    );
 
     NagSuppressions.addStackSuppressions(this, [
       {
