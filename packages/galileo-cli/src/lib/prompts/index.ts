@@ -161,7 +161,7 @@ namespace galileoPrompts {
   export const confirmTooling: PromptObject<"tooling"> = {
     type: "confirm",
     name: "tooling",
-    message: "Enable tooling in dev stage (SageMaker Studio)?",
+    message: "Enable tooling in dev stage (SageMaker Studio, PgAdmin)?",
     initial: context.cache.getItem("tooling") ?? false,
   };
 

@@ -158,22 +158,30 @@ export class Application extends Stack {
     if (props.tooling === true && isDevStage(this)) {
       const tooling = new Tooling(this, "Tooling", {
         vpc,
-        domainName: applicationName,
+        sagemakerStudio: {
+          domainName: applicationName,
+        },
+        pgAdmin: {
+          pgSecurityGroup: corpus.vectorStore.securityGroup,
+          adminEmail: adminEmail!,
+        },
       });
-      // Grant the studio user access to application resources for development
-      inferenceEngine.grantInvokeFunctionUrls(tooling.studioUserRole);
-      corpus.pgvectorConnSecret.grantRead(tooling.studioUserRole);
-      corpus.apiUrl.grantInvokeUrl(tooling.studioUserRole);
-      corpus.processedDataBucket.grantReadWrite(tooling.studioUserRole);
-      corpus.pipeline.stateMachine.grantRead(tooling.studioUserRole);
-      corpus.pipeline.stateMachine.grantStartExecution(tooling.studioUserRole);
-      appData.datastore.grantReadWriteData(tooling.studioUserRole);
-      foundationModelInventorySecret.grantRead(tooling.studioUserRole);
-      foundationModelStack.crossAccountRoleArn &&
-        foundationModelStack.grantAssumeCrossAccountRole(
-          tooling.studioUserRole
-        );
-      presentation.grantInvokeApi(tooling.studioUserRole);
+
+      const studioUserRole = tooling.studioUserRole;
+      if (studioUserRole != null) {
+        // Grant the studio user access to application resources for development
+        inferenceEngine.grantInvokeFunctionUrls(studioUserRole);
+        corpus.pgvectorConnSecret.grantRead(studioUserRole);
+        corpus.apiUrl.grantInvokeUrl(studioUserRole);
+        corpus.processedDataBucket.grantReadWrite(studioUserRole);
+        corpus.pipeline.stateMachine.grantRead(studioUserRole);
+        corpus.pipeline.stateMachine.grantStartExecution(studioUserRole);
+        appData.datastore.grantReadWriteData(studioUserRole);
+        foundationModelInventorySecret.grantRead(studioUserRole);
+        foundationModelStack.crossAccountRoleArn &&
+          foundationModelStack.grantAssumeCrossAccountRole(studioUserRole);
+        presentation.grantInvokeApi(studioUserRole);
+      }
     }
 
     new CfnOutput(this, "ApiEndpoint", {
