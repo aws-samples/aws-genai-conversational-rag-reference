@@ -73,7 +73,7 @@ export namespace ENV {
   export const VECTOR_SIZE = parseInt(process.env.VECTOR_SIZE || '768');
   export const CHUNK_SIZE = parseInt(process.env.CHUNK_SIZE || '1000');
   export const CHUNK_OVERLAP = parseInt(process.env.CHUNK_OVERLAP || '100');
-  export const VECTOR_INDEX_LISTS = parseInt(process.env.VECTOR_INDEX_LISTS || '200');
+  export const VECTOR_INDEX_LISTS = parseInt(process.env.VECTOR_INDEX_LISTS || '1000');
   export const PROCESSING_INPUT_LOCAL_PATH = process.env.PROCESSING_INPUT_LOCAL_PATH || '/opt/ml/processing/input_data';
   export const INDEXING_GLOB = process.env.INDEXING_GLOB || '**/*.txt';
 

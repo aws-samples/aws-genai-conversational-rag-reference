@@ -424,8 +424,8 @@ export class IndexingPipeline extends Construct {
     ///////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////
     const runProcessingJobChain = vectorStoreSetupTask
-      .next(sagemakerProcessingJobTask)
-      .next(vectorStoreIndexTask);
+      .next(vectorStoreIndexTask) // indexing before processing to ideally index empty table to be non-blocking
+      .next(sagemakerProcessingJobTask);
 
     const cancelState = new Succeed(this, "Cancelled");
 

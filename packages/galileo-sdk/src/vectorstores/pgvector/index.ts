@@ -25,6 +25,14 @@ export function distanceStrategyFromValue(value: `${DistanceStrategy}`): Distanc
   }
 }
 
+export function indexNameFromStrategy(value: DistanceStrategy): string {
+  switch (value) {
+    case DistanceStrategy.EUCLIDEAN: return 'content_l2_idx';
+    case DistanceStrategy.COSINE: return 'content_cosine_idx';
+    case DistanceStrategy.MAX_INNER_PRODUCT: return 'content_inner_idx';
+  }
+}
+
 export interface IEmbeddingColumns {
   readonly id: string;
   readonly source_location: string;
@@ -257,6 +265,18 @@ export class PGVectorStore extends VectorStore {
     await this._resolveVectorExtensionType(task);
   }
 
+  async tableExists(task?: pg.ITask<any>): Promise<boolean> {
+    const query = "SELECT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = $1)";
+    const result = await (task || this.db).one<{ exists: boolean }>(query, [this.tableName]);
+    return result.exists;
+  }
+
+  async indexExists(distanceStrategy: DistanceStrategy = this.distanceStrategy, task?: pg.ITask<any>): Promise<boolean> {
+    const query = "SELECT EXISTS (SELECT FROM pg_indexes WHERE schemaname = 'public' AND indexname = $1)";
+    const result = await (task || this.db).one<{ exists: boolean }>(query, indexNameFromStrategy(distanceStrategy));
+    return result.exists;
+  }
+
   async createTableIfNotExists(task?: pg.ITask<any>): Promise<void> {
     const query = `CREATE TABLE IF NOT EXISTS ${this.tableName} (${this.embeddingsColumns.id} uuid primary key, ${this.embeddingsColumns.source_location} text, ${this.embeddingsColumns.document} text, ${this.embeddingsColumns.cmetadata} jsonb, ${this.embeddingsColumns.embeddings} vector(${this.vectorSize}));`;
     logger.debug(`createTableIfNotExists: "${query}"`);
@@ -275,21 +295,21 @@ export class PGVectorStore extends VectorStore {
       const CONCURRENTLY = concurrently ? 'CONCURRENTLY' : '';
 
       if (indexes.includes(DistanceStrategy.COSINE)) {
-        await task.query(`CREATE INDEX ${CONCURRENTLY} IF NOT EXISTS content_cosine_idx ON ${this.tableName} USING ivfflat (${this._embeddingColumn} vector_cosine_ops) WITH (lists = ${lists});`);
+        await task.query(`CREATE INDEX ${CONCURRENTLY} IF NOT EXISTS ${indexNameFromStrategy(DistanceStrategy.COSINE)} ON ${this.tableName} USING ivfflat (${this._embeddingColumn} vector_cosine_ops) WITH (lists = ${lists});`);
       } else if (dropOthers) {
-        await task.query(`DROP INDEX ${CONCURRENTLY} IF EXISTS content_cosine_idx;`);
+        await task.query(`DROP INDEX ${CONCURRENTLY} IF EXISTS ${indexNameFromStrategy(DistanceStrategy.COSINE)};`);
       }
 
       if (indexes.includes(DistanceStrategy.EUCLIDEAN)) {
-        await task.query(`CREATE INDEX ${CONCURRENTLY} IF NOT EXISTS content_l2_idx ON ${this.tableName} USING ivfflat (${this._embeddingColumn} vector_l2_ops) WITH (lists = ${lists});`);
+        await task.query(`CREATE INDEX ${CONCURRENTLY} IF NOT EXISTS ${indexNameFromStrategy(DistanceStrategy.EUCLIDEAN)} ON ${this.tableName} USING ivfflat (${this._embeddingColumn} vector_l2_ops) WITH (lists = ${lists});`);
       } else if (dropOthers) {
-        await task.query(`DROP INDEX ${CONCURRENTLY} IF EXISTS content_l2_idx;`);
+        await task.query(`DROP INDEX ${CONCURRENTLY} IF EXISTS ${indexNameFromStrategy(DistanceStrategy.EUCLIDEAN)};`);
       }
 
       if (indexes.includes(DistanceStrategy.MAX_INNER_PRODUCT)) {
-        await task.query(`CREATE INDEX ${CONCURRENTLY} IF NOT EXISTS content_inner_idx ON ${this.tableName} USING ivfflat (${this._embeddingColumn} vector_ip_ops) WITH (lists = ${lists});`);
+        await task.query(`CREATE INDEX ${CONCURRENTLY} IF NOT EXISTS ${indexNameFromStrategy(DistanceStrategy.MAX_INNER_PRODUCT)} ON ${this.tableName} USING ivfflat (${this._embeddingColumn} vector_ip_ops) WITH (lists = ${lists});`);
       } else if (dropOthers) {
-        await task.query(`DROP INDEX ${CONCURRENTLY} IF EXISTS content_inner_idx;`);
+        await task.query(`DROP INDEX ${CONCURRENTLY} IF EXISTS ${indexNameFromStrategy(DistanceStrategy.MAX_INNER_PRODUCT)};`);
       }
 
     });
