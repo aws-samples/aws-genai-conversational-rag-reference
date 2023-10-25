@@ -114,6 +114,7 @@ Class | Method | HTTP request | Description
  - [CreateChatResponseContent](docs/CreateChatResponseContent.md)
  - [DeleteChatMessageResponseContent](docs/DeleteChatMessageResponseContent.md)
  - [DeleteChatResponseContent](docs/DeleteChatResponseContent.md)
+ - [DistanceStrategy](docs/DistanceStrategy.md)
  - [Document](docs/Document.md)
  - [EmbedDocumentsRequestContent](docs/EmbedDocumentsRequestContent.md)
  - [EmbedDocumentsResponseContent](docs/EmbedDocumentsResponseContent.md)

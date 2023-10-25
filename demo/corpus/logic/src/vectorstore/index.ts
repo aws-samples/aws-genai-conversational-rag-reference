@@ -23,7 +23,7 @@ let __RDS_CONN__: RDSConnConfig;
  */
 export const vectorStoreFactory = async (
   embeddings: Embeddings,
-  config?: PGVectorStoreOptions,
+  config?: Partial<PGVectorStoreOptions>,
 ): Promise<VectorStore> => {
   if (__RDS_CONN__ == null) {
     __RDS_CONN__ = await getRDSConnConfig({

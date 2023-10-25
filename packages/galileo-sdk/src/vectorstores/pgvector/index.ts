@@ -17,6 +17,14 @@ export enum DistanceStrategy {
   MAX_INNER_PRODUCT = 'inner',
 }
 
+export function distanceStrategyFromValue(value: `${DistanceStrategy}`): DistanceStrategy {
+  switch (value) {
+    case 'cosine': return DistanceStrategy.COSINE;
+    case 'inner': return DistanceStrategy.MAX_INNER_PRODUCT;
+    default: return DistanceStrategy.EUCLIDEAN;
+  }
+}
+
 export interface IEmbeddingColumns {
   readonly id: string;
   readonly source_location: string;
@@ -343,6 +351,7 @@ export class PGVectorStore extends VectorStore {
     query: number[],
     k: number,
     filter?: this['FilterType'] | undefined,
+    distanceStrategy: DistanceStrategy = this.distanceStrategy,
   ): Promise<[Document<Record<string, any>>, number][]> {
     const where =
       filter && Object.keys(filter).length
@@ -366,17 +375,17 @@ export class PGVectorStore extends VectorStore {
       Record<keyof IEmbeddingColumns | 'distance', any>[]
       >;
       // https://github.com/pgvector/pgvector#distances
-      switch (this.distanceStrategy) {
+      switch (distanceStrategy) {
         case DistanceStrategy.COSINE: {
           queryPromise = this.db.any(
-            `SELECT ${columns}, 1 - ${embeddingColumn} <=> $(embeddings) AS distance FROM ${table} ${where} ORDER BY distance LIMIT $(limit)`,
+            `SELECT ${columns}, 1 - (${embeddingColumn} <=> $(embeddings)) AS distance FROM ${table} ${where} ORDER BY distance LIMIT $(limit)`,
             values,
           );
           break;
         }
         case DistanceStrategy.MAX_INNER_PRODUCT: {
           queryPromise = this.db.any(
-            `SELECT ${columns}, (${embeddingColumn} <-> $(embeddings)) * -1 AS distance FROM ${table} ${where} ORDER BY distance LIMIT $(limit)`,
+            `SELECT ${columns}, (${embeddingColumn} <#> $(embeddings)) * -1 AS distance FROM ${table} ${where} ORDER BY distance LIMIT $(limit)`,
             values,
           );
           break;
