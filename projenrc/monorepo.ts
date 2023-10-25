@@ -1,8 +1,8 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { MonorepoTsProject, MonorepoTsProjectOptions } from "@aws/pdk/monorepo";
 import fs from "node:fs";
 import path from "node:path";
+import { MonorepoTsProject, MonorepoTsProjectOptions } from "@aws/pdk/monorepo";
 import { JsonFile, Project, javascript } from "projen";
 import { JsiiProject } from "projen/lib/cdk";
 import { Job, JobPermission, JobStep } from "projen/lib/github/workflows-model";
