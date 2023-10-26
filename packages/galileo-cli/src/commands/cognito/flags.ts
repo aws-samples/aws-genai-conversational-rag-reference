@@ -32,7 +32,7 @@ const baseFlags: FlagInput<BaseCognitoCommandFlags> = {
   profile: Flags.string({
     aliases: ["p"],
     description:
-      "The profile set up for you AWS CLI (associated with your AWS account",
+      "The profile set up for you AWS CLI (associated with your AWS account)",
   }),
   region: Flags.string({
     aliases: ["r"],
