@@ -5,11 +5,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { parse as csvParse } from "csv-parse/sync";
 import {
+  cognito,
   CreateCognitoUserRequest,
-  listUserPools,
-  bulkCreateCognitoUsers as _bulkCreateCognitoUsers,
-  createCognitoUser as _createCognitoUser,
-  deleteCognitoUser as _deleteCognitoUser,
   DeleteCognitoUserRequest,
   CognitoUserInfo,
 } from "./cognito";
@@ -73,13 +70,13 @@ export namespace accountUtils {
     profile: string,
     region: string
   ) => {
-    return listUserPools(profile, region);
+    return cognito.listUserPools(profile, region);
   };
 
   export const createCognitoUser = async (
     options: CreateCognitoUserRequest
   ) => {
-    return _createCognitoUser(options);
+    return cognito.createCognitoUser(options);
   };
 
   export const bulkCreateCognitoUsers = async (
@@ -118,7 +115,7 @@ export namespace accountUtils {
       });
     }
 
-    await _bulkCreateCognitoUsers({
+    await cognito.bulkCreateCognitoUsers({
       profile,
       region,
       userPoolId,
@@ -129,7 +126,7 @@ export namespace accountUtils {
   export const deleteCognitoUser = async (
     options: DeleteCognitoUserRequest
   ) => {
-    return _deleteCognitoUser(options);
+    return cognito.deleteCognitoUser(options);
   };
 }
 
