@@ -34,7 +34,7 @@ class TestTransformerApp(unittest.TestCase):
     self.assertEqual(response.status_code, 200)
     self.assertEqual(response.headers["Content-Type"], "application/json")
     response_data: EmbedDocumentsResult = json.loads(response.content)
-    self.assertEqual(response_data["model"], f"{SENTENCE_TRANSFORMER_MODEL}::{VECTOR_SIZE}")
+    self.assertEqual(response_data["model"], f"{SENTENCE_TRANSFORMER_MODEL}({VECTOR_SIZE})")
     self.assertEqual(len(response_data["embeddings"]), 2)
 
 if __name__ == '__main__':

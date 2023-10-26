@@ -39,6 +39,7 @@ import {
 import * as tasks from "aws-cdk-lib/aws-stepfunctions-tasks";
 import { NagSuppressions } from "cdk-nag";
 import { Construct } from "constructs";
+import { VectorStoreCreateIndexTask } from "./handlers/task/vectorstore/create-indexes";
 import { State, StatePaths } from "./types";
 
 const PROCESSING_INPUT_LOCAL_PATH = "/opt/ml/processing/input_data";
@@ -302,7 +303,7 @@ export class IndexingPipeline extends Construct {
 
     inputBucket.grantRead(processingJobRole);
     stagingBucket.grantReadWrite(processingJobRole);
-    vectorStore.connectionSecret.grantRead(processingJobRole);
+    vectorStore.grantConnect(processingJobRole);
     cacheTable.grantReadWriteData(processingJobRole);
 
     const dockerImageCode = DockerImageCode.fromImageAsset(
@@ -390,31 +391,15 @@ export class IndexingPipeline extends Construct {
       }
     );
 
-    const vectorStoreIndexTaskLambda = new NodejsFunction(
+    const vectorStoreIndexTask = new VectorStoreCreateIndexTask(
       this,
-      "VectorStoreIndexTaskLambda",
+      "VectorStoreIndexTask",
       {
-        entry: require.resolve("./handlers/task/vectorstore/create-indexes"),
-        runtime: Runtime.NODEJS_18_X,
-        timeout: Duration.minutes(15),
         vpc,
-        vpcSubnets: {
-          subnetType: SubnetType.PRIVATE_WITH_EGRESS,
-        },
-        environment: {
-          ...vectorStore.environment,
-        },
+        vectorStore,
       }
     );
-    vectorStore.grantConnect(vectorStoreIndexTaskLambda);
-    const vectorStoreIndexTask = new tasks.LambdaInvoke(
-      this,
-      "VectorStoreIndexTasK",
-      {
-        lambdaFunction: vectorStoreIndexTaskLambda,
-        resultPath: JsonPath.DISCARD,
-      }
-    );
+    vectorStore.grantConnect(vectorStoreIndexTask.taskRole);
 
     ///////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -424,8 +409,8 @@ export class IndexingPipeline extends Construct {
     ///////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////
     const runProcessingJobChain = vectorStoreSetupTask
-      .next(vectorStoreIndexTask) // indexing before processing to ideally index empty table to be non-blocking
-      .next(sagemakerProcessingJobTask);
+      .next(sagemakerProcessingJobTask)
+      .next(vectorStoreIndexTask.task);
 
     const cancelState = new Succeed(this, "Cancelled");
 

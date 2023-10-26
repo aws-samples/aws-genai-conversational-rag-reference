@@ -4,11 +4,13 @@ import { PGVectorStoreOptions, distanceStrategyFromValue } from '@aws/galileo-sd
 import { corsInterceptor } from 'api-typescript-interceptors';
 import { Document, embedDocumentsHandler, embedQueryHandler, similaritySearchHandler } from 'api-typescript-runtime';
 import { VectorStore } from 'langchain/vectorstores/base';
-import { memoize } from 'lodash';
+import { isEmpty } from 'lodash';
 import * as Embeddings from '../embedding';
 import { vectorStoreFactory } from '../vectorstore';
 
 let __EMBEDDINGS__: Embeddings.LocalEmbeddings;
+const DEFAULT_KEY = 'DEFAULT';
+const VECTOR_STORE_CACHE = new Map<string, VectorStore>();
 
 function getEmbeddings(): Embeddings.LocalEmbeddings {
   if (__EMBEDDINGS__ == null) {
@@ -18,10 +20,19 @@ function getEmbeddings(): Embeddings.LocalEmbeddings {
   return __EMBEDDINGS__;
 }
 
-async function _getVectorStore(config?: Partial<PGVectorStoreOptions>): Promise<VectorStore> {
-  return vectorStoreFactory(getEmbeddings(), config);
+function getVectorStoreCacheKey(config?: Partial<PGVectorStoreOptions>): string {
+  if (config == null || isEmpty(config)) return DEFAULT_KEY;
+  return JSON.stringify(config);
 }
-const getVectorStore = memoize(_getVectorStore);
+
+async function getVectorStore(config?: Partial<PGVectorStoreOptions>): Promise<VectorStore> {
+  const key = getVectorStoreCacheKey(config);
+  const existing = VECTOR_STORE_CACHE.get(key);
+  if (existing) return existing;
+  const store = await vectorStoreFactory(getEmbeddings(), config);
+  VECTOR_STORE_CACHE.set(key, store);
+  return store;
+}
 
 const interceptors = [corsInterceptor] as const;
 

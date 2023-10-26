@@ -61,6 +61,12 @@ export interface ProcessingJobConfig {
 }
 
 export interface VectorStoreManagement {
+  /**
+   * Will delete all entries in vector store (and cache table) for the model before indexing.
+   * - Only available for AUTO and BULK strategy, and will force BULK if auto.
+   * - Will fail for MODIFIED strategy
+   */
+  readonly PurgeData?: boolean;
   readonly IndexesToCreate?: `${DistanceStrategy}` | `${DistanceStrategy}`[];
   readonly DropOtherIndexes?: boolean;
 }

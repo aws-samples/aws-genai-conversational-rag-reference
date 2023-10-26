@@ -179,6 +179,7 @@ export class RDSVectorStore extends Construct {
       requireTLS: this.requireTLS,
       iamAuth: this.iamAuthentication,
       securityGroups: [this.securityGroup],
+
     });
 
     new CfnOutput(this, 'RDSVectorStore-Secret', {

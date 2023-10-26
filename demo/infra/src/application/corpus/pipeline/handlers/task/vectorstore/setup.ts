@@ -14,7 +14,7 @@ async function lambdaHandler(event: State): Promise<State> {
   logger.info({ message: "corpus-logic env", env: ENV });
 
   logger.info("Initializing vector store...");
-  await initializeVectorStore();
+  await initializeVectorStore(event.VectorStoreManagement?.PurgeData);
   logger.info("Vector store successfully initialized");
 
   // pass-through payload;

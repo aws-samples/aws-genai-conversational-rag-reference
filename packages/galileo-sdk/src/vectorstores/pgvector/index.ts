@@ -17,11 +17,17 @@ export enum DistanceStrategy {
   MAX_INNER_PRODUCT = 'inner',
 }
 
-export function distanceStrategyFromValue(value: `${DistanceStrategy}`): DistanceStrategy {
+// PERF: Initial testing with 1.6M vectors with casefile use case resulting in l2 working best
+// inner: 5s, l2: 0.3s, cosine: 5s
+// only l2 is consistently using index, which is obviously why is faster - with same results
+export const DEFAULT_DISTANCE_STRATEGY = DistanceStrategy.EUCLIDEAN;
+
+export function distanceStrategyFromValue(value?: `${DistanceStrategy}`): DistanceStrategy {
   switch (value) {
     case 'cosine': return DistanceStrategy.COSINE;
     case 'inner': return DistanceStrategy.MAX_INNER_PRODUCT;
-    default: return DistanceStrategy.EUCLIDEAN;
+    case 'l2': return DistanceStrategy.EUCLIDEAN;
+    default: return DEFAULT_DISTANCE_STRATEGY;
   }
 }
 
@@ -39,6 +45,14 @@ export interface IEmbeddingColumns {
   readonly document: string;
   readonly cmetadata: string;
   readonly embeddings: string;
+}
+
+interface TableRow {
+  readonly id: string;
+  readonly source_location: string;
+  readonly document: string;
+  readonly cmetadata: Record<string, any>;
+  readonly embeddings: number[];
 }
 
 export type PGVectorDbConfig = Parameters<pg.IMain>[0];
@@ -75,6 +89,9 @@ export interface PGVectorStoreOptions {
    */
   readonly catchSearchErrors?: boolean;
 }
+
+// Persist vector extension oid between instances based on host
+const VECTOR_OID_HOST_MAP = new Map<string, number>();
 
 export class PGVectorStore extends VectorStore {
   static getDbConfigFromRdsConfig(conn: RDSConnConfig, sslmode?: string): Exclude<PGVectorDbConfig, string> {
@@ -214,8 +231,12 @@ export class PGVectorStore extends VectorStore {
         }),
     );
     this.vectorSize = vectorSize;
-    this.distanceStrategy = distanceStrategy ?? DistanceStrategy.EUCLIDEAN;
+    this.distanceStrategy = distanceStrategy ?? DEFAULT_DISTANCE_STRATEGY;
     this.defaultSourceLocation = defaultSourceLocation ?? 'unknown';
+  }
+
+  get host(): string | undefined {
+    return this.db.$pool.options.host;
   }
 
   _vectorstoreType(): string {
@@ -241,6 +262,11 @@ export class PGVectorStore extends VectorStore {
 
   protected async _resolveVectorExtensionType(task?: pg.ITask<any>): Promise<number> {
     if (this._vectorTypeOid == null) {
+      if (this.host && VECTOR_OID_HOST_MAP.has(this.host)) {
+        this._vectorTypeOid = VECTOR_OID_HOST_MAP.get(this.host);
+        this._vectorTypeOid;
+      }
+
       const result = await (task || this.db).oneOrNone<{ oid: number }>(
         'SELECT typname, oid, typarray FROM pg_type WHERE typname = $1',
         ['vector'],
@@ -250,6 +276,7 @@ export class PGVectorStore extends VectorStore {
       }
 
       this._vectorTypeOid = result.oid;
+      this.host && VECTOR_OID_HOST_MAP.set(this.host, result.oid);
 
       this._initVectorTypeParser(this._vectorTypeOid);
     }
@@ -315,40 +342,54 @@ export class PGVectorStore extends VectorStore {
     });
   }
 
+  /**
+   * Efficiently remove all rows from the table and index
+   * @param task
+   */
+  async truncate(task?: pg.ITask<any>): Promise<void> {
+    if (await this.tableExists(task)) {
+      await (task || this.db).query('TRUNCATE $1', [this.tableName]);
+    }
+  }
+
+  /**
+   * Delete all documents based on source location(s). Should be called prior updating a document
+   * in the store to ensure all previous chunks have been removed.
+   * @param sourceLocations List of source locations to remove associated rows for.
+   */
+  async deleteBySourceLocation(...sourceLocations: string[]): Promise<void> {
+    const sourceLocationsSet = new Set<string>(sourceLocations);
+
+    if (sourceLocationsSet.size) {
+      const sourceLocationValues = Array.from(sourceLocationsSet).map(v => `'${v}'`).join(', ');
+      await this.db.query(`DELETE FROM ${this.tableName} WHERE ${this.embeddingsColumns.source_location} IN (${sourceLocationValues})`);
+    }
+  }
+
   async addVectors(
     vectors: number[][],
     documents: Document<Record<string, any>>[],
     _options?: { [x: string]: any } | undefined,
   ): Promise<void | string[]> {
-    const texts = documents.map(v => v.pageContent);
-    const metadatas = documents.map(v => v.metadata);
-    const ids = texts.map(() => randomUUID());
-    const sourceLocations = metadatas.map((v) => v[this.embeddingsColumns.source_location] || this.defaultSourceLocation);
-
-    // delete existing vectors for source_location to prevent duplicates
-    const sourceLocationsSet = new Set(sourceLocations);
-    // do not delete the default source location
-    sourceLocationsSet.delete(this.defaultSourceLocation);
-    if (sourceLocationsSet.size) {
-      const sourceLocationValues = Array.from(sourceLocationsSet).map(v => `'${v}'`).join(', ');
-      await this.db.query(`DELETE FROM ${this.tableName} WHERE ${this.embeddingsColumns.source_location} IN (${sourceLocationValues})`);
-    }
-
-    // list of values - (...), (...), (...)
-    const values: string = texts.reduce((accum, text, i): string => {
-      const cmetadata = metadatas[i];
-      const id = ids[i];
-      const source_location = sourceLocations[i];
+    const rows: TableRow[] = documents.reduce((_entries, doc, i): TableRow[] => {
+      const cmetadata = doc.metadata;
+      const id = randomUUID();
+      const source_location = cmetadata[this.embeddingsColumns.source_location] || this.defaultSourceLocation;
       const embeddings = vectors[i];
-
-      if (i>0) accum += ', ';
-      accum += '\n(' + pg.as.csv({
+      _entries.push({
         id,
         source_location,
-        document: text,
+        document: doc.pageContent,
         cmetadata,
         embeddings,
-      }) + ')';
+      });
+      return _entries;
+    }, [] as TableRow[]);
+
+    // list of values - (...), (...), (...)
+    const values: string = rows.reduce((accum, row, i): string => {
+      if (i > 0) accum += ', ';
+      accum += '\n(' + pg.as.csv(row) + ')';
       return accum;
     }, '');
 
@@ -357,6 +398,7 @@ export class PGVectorStore extends VectorStore {
 
     await this.db.query(query);
   }
+
   async addDocuments(
     documents: Document<Record<string, any>>[],
     options?: { [x: string]: any } | undefined,
@@ -371,8 +413,11 @@ export class PGVectorStore extends VectorStore {
     query: number[],
     k: number,
     filter?: this['FilterType'] | undefined,
-    distanceStrategy: DistanceStrategy = this.distanceStrategy,
+    distanceStrategy?: DistanceStrategy,
   ): Promise<[Document<Record<string, any>>, number][]> {
+    distanceStrategy = this.distanceStrategy ?? DEFAULT_DISTANCE_STRATEGY;
+    logger.debug({ message: 'similaritySearchVectorWithScore()', query, k, filter, distanceStrategy });
+
     const where =
       filter && Object.keys(filter).length
         ? 'WHERE ' +
@@ -392,27 +437,28 @@ export class PGVectorStore extends VectorStore {
 
     try {
       let queryPromise: Promise<
-      Record<keyof IEmbeddingColumns | 'distance', any>[]
+      Record<keyof IEmbeddingColumns | 'score', any>[]
       >;
       // https://github.com/pgvector/pgvector#distances
       switch (distanceStrategy) {
         case DistanceStrategy.COSINE: {
           queryPromise = this.db.any(
-            `SELECT ${columns}, 1 - (${embeddingColumn} <=> $(embeddings)) AS distance FROM ${table} ${where} ORDER BY distance LIMIT $(limit)`,
+            `SELECT ${columns}, 1 - (${embeddingColumn} <=> $(embeddings)) AS score FROM ${table} ${where} ORDER BY score DESC LIMIT $(limit)`,
             values,
           );
           break;
         }
         case DistanceStrategy.MAX_INNER_PRODUCT: {
+          // TODO: consider using https://github.com/pgvector/pgvector#exact-search since we enforce same vector
           queryPromise = this.db.any(
-            `SELECT ${columns}, (${embeddingColumn} <#> $(embeddings)) * -1 AS distance FROM ${table} ${where} ORDER BY distance LIMIT $(limit)`,
+            `SELECT ${columns}, (${embeddingColumn} <#> $(embeddings)) * -1 AS score FROM ${table} ${where} ORDER BY score DESC LIMIT $(limit)`,
             values,
           );
           break;
         }
-        default: {
+        case DistanceStrategy.EUCLIDEAN: {
           queryPromise = this.db.any(
-            `SELECT ${columns}, ${embeddingColumn} <-> $(embeddings) AS distance FROM ${table} ${where} ORDER BY distance LIMIT $(limit)`,
+            `SELECT ${columns}, ${embeddingColumn} <-> $(embeddings) AS score FROM ${table} ${where} ORDER BY score ASC LIMIT $(limit)`,
             values,
           );
           break;
@@ -428,7 +474,7 @@ export class PGVectorStore extends VectorStore {
             pageContent: row.document,
             metadata: row.cmetadata,
           }),
-          Number(row.distance),
+          Number(row.score),
         ];
       });
     } catch (error) {

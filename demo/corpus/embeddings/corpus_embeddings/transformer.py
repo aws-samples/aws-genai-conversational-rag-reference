@@ -43,7 +43,9 @@ def embed_documents(texts: str | List[str], multiprocess: Optional[bool] = None)
   else:
     embeddings = model.encode(texts).tolist()
 
+  model_name = SENTENCE_TRANSFORMER_MODEL.split("/")[-1]
+
   return EmbedDocumentsResult(
     embeddings=embeddings,
-    model=f"{SENTENCE_TRANSFORMER_MODEL}::{VECTOR_SIZE}",
+    model=f"{model_name}({VECTOR_SIZE})",
   )

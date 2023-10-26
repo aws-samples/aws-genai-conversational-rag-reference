@@ -29,12 +29,19 @@ export const CorpusSearch: React.FC = () => {
   const [query, setQuery] = useState<string>("");
   const [count, setCount] = useState<number>(5);
   const [filter, setFilter] = useState<object>({});
+  const [duration, setDuration] = useState<number>();
   const [distanceStrategy, setDistanceStrategy] =
     useState<DistanceStrategy>("l2");
-  const search = useSimilaritySearch();
+  const search = useSimilaritySearch({
+    onSuccess: () => {
+      setDuration;
+    },
+  });
 
-  const onSubmit = useCallback(() => {
-    search.mutate({
+  const onSubmit = useCallback(async () => {
+    const _start = Date.now();
+    setDuration(undefined);
+    await search.mutateAsync({
       withScore: true,
       similaritySearchRequestContent: {
         query,
@@ -43,7 +50,8 @@ export const CorpusSearch: React.FC = () => {
         k: count,
       },
     });
-  }, [search, query, filter, count]);
+    setDuration((Date.now() - _start) / 1000);
+  }, [search, query, filter, count, setDuration]);
 
   return (
     <ContentLayout
@@ -131,7 +139,15 @@ export const CorpusSearch: React.FC = () => {
         </Container>
 
         <Box variant="div">
-          <Header counter={`(${search.data?.documents.length || 0})`}>
+          <Header
+            counter={
+              duration
+                ? `(${
+                    search.data?.documents.length || 0
+                  } documents in ${duration} seconds)`
+                : undefined
+            }
+          >
             Results
           </Header>
           <br />

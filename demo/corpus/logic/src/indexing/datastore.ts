@@ -13,6 +13,7 @@ import {
   DynamoDBDocumentClient,
   GetCommand,
   PutCommand,
+  DeleteCommand,
 } from '@aws-sdk/lib-dynamodb';
 import * as async from 'async';
 import { chunkArray } from './utils';
@@ -291,6 +292,24 @@ export class IndexingCache {
     if (unprocessed.length && attempt < 3) {
       await delay(exponentialBackoff(attempt));
       await this._resolveLastIndexed(unprocessed, attempt + 1);
+    }
+  }
+
+  /**
+   * Deletes the last executed date for the model, which to some degree nullifies
+   * individual entries.
+   * TODO: improve this by also deleting all object values for this model, but that is slow
+   * and might not be necessary for purposes of re-indexing
+   */
+  async resetCache(): Promise<void> {
+    if (await this.getModelLastExecuted()) {
+      await this.ddbDocClient.send(new DeleteCommand({
+        TableName: this.tableName,
+        Key: {
+          PK: this.getModelPK(this.model),
+          SK: 'status',
+        },
+      }));
     }
   }
 }

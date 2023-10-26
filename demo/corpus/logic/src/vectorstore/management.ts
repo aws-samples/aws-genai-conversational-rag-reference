@@ -10,15 +10,20 @@ import { ENV } from '../env';
  * - Add pgvector extension
  * - Create table(s)
  */
-export async function initializeVectorStore() {
+export async function initializeVectorStore(truncate: boolean = false) {
   // We don't need embeddings to initialize so just use fake
   const embeddings = new FakeEmbeddings();
 
   const vectorStore = await vectorStoreFactory(embeddings);
 
   if (vectorStore instanceof PGVectorStore) {
-    await vectorStore.createVectorExtension();
-    await vectorStore.createTableIfNotExists();
+    await vectorStore.db.task('initialize-vector-store', async (task) => {
+      if (truncate) {
+        await vectorStore.truncate(task);
+      }
+      await vectorStore.createVectorExtension(task);
+      await vectorStore.createTableIfNotExists(task);
+    });
   }
 }
 

@@ -2,6 +2,7 @@
 PDX-License-Identifier: Apache-2.0 */
 import fs from 'node:fs/promises';
 import { getLogger } from '@aws/galileo-sdk/lib/common';
+import { PGVectorStore } from '@aws/galileo-sdk/lib/vectorstores';
 import { MetricUnits } from '@aws-lambda-powertools/metrics';
 import { Document } from 'langchain/document';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
@@ -17,7 +18,7 @@ const BATCH_SIZE = ENV.INDEXING_WORKER_BATCH_SIZE || 500;
 const INSERT_MAX = ENV.INDEXING_VECTORSTOR_INSERT_MAX || 1000;
 
 const CHUNK_SIZE = ENV.CHUNK_SIZE ?? 1000;
-const CHUNK_OVERLAP = ENV.CHUNK_OVERLAP ?? 100;
+const CHUNK_OVERLAP = ENV.CHUNK_OVERLAP ?? 200;
 
 logger.info('Configurations', { BATCH_SIZE, INSERT_MAX, CHUNK_SIZE, CHUNK_OVERLAP });
 
@@ -54,15 +55,24 @@ export async function entityToDocuments(entity: IndexEntity): Promise<Document[]
 
 export async function indexEntities(entitiesToIndex: IndexEntity[], cache: IndexingCache, reporter: WorkerReporter) {
   logger.debug({ message: `Indexing ${entitiesToIndex.length} entities`, count: entitiesToIndex.length });
-  const batches = chunkArray(entitiesToIndex, BATCH_SIZE);
-
   const vectorStore = await resolveVectorStore();
 
+  // delete all entities from store before indexing to perform document updates processing
+  if (vectorStore instanceof PGVectorStore) {
+    const sourceLocations = entitiesToIndex.map((v) => v.sourceLocation);
+    await vectorStore.deleteBySourceLocation(...sourceLocations);
+  }
+
+  // process documents in batches
+  const batches = chunkArray(entitiesToIndex, BATCH_SIZE);
   for (const batch of batches) {
     const allDocuments = (await Promise.all(batch.map(entityToDocuments))).flat();
     logger.info(`Derived ${allDocuments.length} documents from ${entitiesToIndex.length} files`);
 
     // Process document inserts in batches
+    // a single "document" might be spread across multiple "insert batches"
+    // so can not clean up a "document" in the vectorstore operation at this stage,
+    // which is why we do it above before chunking
     const documentsChunk = chunkArray(allDocuments, INSERT_MAX);
     for (const documents of documentsChunk) {
       logger.info(`Inserting ${documents.length} documents into vector store`);
