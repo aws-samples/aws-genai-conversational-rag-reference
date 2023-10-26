@@ -10,7 +10,7 @@ import galileoPrompts from "../../../lib/prompts";
 import { cognitoDeleteUserCommandFlags } from "../flags";
 
 export default class CognitoDeleteUserCommand extends Command {
-  static description: "Delete a Cognito user";
+  static description = "Delete a Cognito user";
   static examples = [
     "galileo-cli cognito delete-user",
     "galileo-cli cognito delete-user --skipConfirmations --profile myProfile --region ap-southeast-1 --username myUserName",

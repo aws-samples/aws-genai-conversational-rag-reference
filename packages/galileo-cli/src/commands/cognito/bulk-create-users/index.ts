@@ -10,8 +10,8 @@ import galileoPrompts from "../../../lib/prompts";
 import { cognitoBulkCreateUsersCommandFlags } from "../flags";
 
 export default class CognitoBulkCreateUsersCommand extends Command {
-  static summary: "Bulk create Cognito users from CSV file";
-  static description: `Bulk create Cognito users from CSV file
+  static summary = "Bulk create Cognito users from CSV file";
+  static description = `Bulk create Cognito users from CSV file
 
 Make sure that the CSV file has the following columns: "username,email,group"
 	`;
