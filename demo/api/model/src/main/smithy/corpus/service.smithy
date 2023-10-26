@@ -61,7 +61,7 @@ operation SimilaritySearch {
       k: Integer
       // JSON object with metadata filter to apply to search
       filter: Any
-      // Distance stradegy to use for similar search
+      // Distance strategy to use for similar search
       distanceStrategy: DistanceStrategy
     }
     output:= {

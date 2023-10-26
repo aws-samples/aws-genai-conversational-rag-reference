@@ -1,8 +1,10 @@
 # Overview
 
-!!! warning "Work-In-Progress"
-    This repository is currently a work-in-progress and acts as a living reference. Overtime, this repository will be partially made available via [AWS PDK](https://aws.github.io/aws-pdk) as libraries and constructs become more stable and robust. This repository is expected to remain as an example reference for bootstrapping such a project using the toolkit provided by the [AWS PDK](https://aws.github.io/aws-pdk).
-    
+--8<-- "wip.md"
+--8<-- "aws-genai-llm-chatbot/mention.md"
+--8<-- "disclaimer/third-party-model.md"
+--8<-- "disclaimer/prompt-engineering-template.md"
+
 ## Introduction
 
 Galileo is a reference implementation of a deployable 3-tier retrieval augmented generative (RAG) application that aims to meet the needs of developers as they seek to rapidly experiment with, deploy, and launch GenAI powered products and services that utilise RAG. It is implemented in a number of languages, using CDK to define the infrastructure it deploys. It can be optionally deployed with a sample dataset of US Supreme Court decision documents, providing content users can interact with immediately.

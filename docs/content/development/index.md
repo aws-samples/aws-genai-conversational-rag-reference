@@ -1,7 +1,7 @@
 # Developer Guide
 
-!!! warning "Work-In-Progress"
-    This repository is currently a work-in-progress and acts as a living reference. Overtime, this repository will be partially made available via [AWS PDK](https://aws.github.io/aws-pdk) as libraries and constructs become more stable and robust. This repository is expected to remain as an example reference for bootstrapping such a project using the toolkit provided by the [AWS PDK](https://aws.github.io/aws-pdk).
+--8<-- "wip.md"
+--8<-- "aws-genai-llm-chatbot/mention.md"
 
 This codebase is polyglot monorepo managed by [AWS PDK Monoreop](https://aws.github.io/aws-pdk/developer_guides/nx-monorepo/index.html) which utilizes the following technologies under the hood:
 
