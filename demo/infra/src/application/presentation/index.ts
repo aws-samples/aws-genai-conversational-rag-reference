@@ -22,6 +22,7 @@ import {
   NestedStackProps,
   Reference,
   Stack,
+  Token,
 } from "aws-cdk-lib";
 import { Cors } from "aws-cdk-lib/aws-apigateway";
 import { GeoRestriction } from "aws-cdk-lib/aws-cloudfront";
@@ -251,10 +252,14 @@ export class PresentationStack extends NestedStack {
       // Each value needs to be wrapped with CfnJson to resolve tokens cross-stack, wrapping everything in CfnJson will not work.
       return Object.fromEntries(
         Object.entries(config).map(([key, value]) => {
-          return [
-            key,
-            new CfnJson(this, `RuntimeConfig-${key}`, { value }).value,
-          ];
+          if (Token.isUnresolved(value)) {
+            return [
+              key,
+              new CfnJson(this, `RuntimeConfig-${key}`, { value }).value,
+            ];
+          } else {
+            return [key, value];
+          }
         })
       );
     };
