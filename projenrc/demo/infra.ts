@@ -193,7 +193,7 @@ export class Infra {
 
     this.project.package.setScript(
       "deploy:pipeline",
-      "pnpm exec cdk deploy --app cdk-out --require-approval never PipelineStack"
+      "pnpm exec cdk deploy --app cdk.out --require-approval never PipelineStack"
     );
 
     this.project.package.setScript(
