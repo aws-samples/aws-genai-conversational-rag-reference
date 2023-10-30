@@ -7,7 +7,7 @@ import {
   StartExecutionCommand,
 } from "@aws-sdk/client-sfn";
 import { fromIni } from "@aws-sdk/credential-providers";
-import { checkTagsArray } from "./util";
+import { containsAppComponentTag } from "./util";
 import { GalileoComponentTags } from "../../internals";
 import { CredentialsParams, NameArnTuple, Tag } from "../types";
 
@@ -33,7 +33,7 @@ export namespace stepfunctions {
       );
 
       if (
-        checkTagsArray(
+        containsAppComponentTag(
           tagsResp.tags?.map((t) => <Tag>{ key: t.key!, value: t.value! }) ??
             [],
           GalileoComponentTags.CORPUS_INDEXING_STATEMACHINE
