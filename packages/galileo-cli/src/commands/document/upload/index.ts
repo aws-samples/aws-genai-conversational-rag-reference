@@ -6,9 +6,13 @@ import chalk from "chalk";
 import prompts from "prompts";
 import accountUtils from "../../../lib/account-utils";
 import context from "../../../lib/context";
-import { loadMetadataAndValidate } from "../../../lib/document";
+import { loadDocumentMetadata } from "../../../lib/document";
 import galileoPrompts from "../../../lib/prompts";
-import { DocumentMetadata } from "../../../lib/types";
+import {
+  DocumentMetadata,
+  DocumentMetadataLoaderError,
+  DocumentValidationError,
+} from "../../../lib/types";
 import { documentUploadCommandFlags } from "../flags";
 
 export default class DocumentUploadCommand extends Command {
@@ -42,33 +46,44 @@ export default class DocumentUploadCommand extends Command {
       )
     );
 
-    const { filePath: metadataFile } = context.cachedAnswers(
+    const { filePath: loaderOrMetaFilePath } = context.cachedAnswers(
       await prompts(
         [
           galileoPrompts.filePathPrompt({
             initialVal: flags.metadataFile,
-            what: "metadata file",
+            what: `${chalk.yellowBright(
+              "metadata file"
+            )} or the ${chalk.yellowBright(
+              "the module that loads metadata (js/ts)"
+            )}`,
           }),
         ],
         { onCancel: this.onPromptCancel }
       )
     );
 
-    // make sure that passed metadata conforms with the expected format
-    context.ui.newSpinner().start("Validating metadata");
+    context.ui.newSpinner().start("Loading metadata");
     let documentMetadata: DocumentMetadata | undefined;
+    let metadataFile: string | undefined;
     try {
-      documentMetadata = loadMetadataAndValidate(metadataFile);
-      context.ui.spinner.succeed("Validating metadata: OK");
+      const loadResult = await loadDocumentMetadata(loaderOrMetaFilePath);
+      documentMetadata = loadResult.documentMetadata;
+      metadataFile = loadResult.metadataFile;
     } catch (err) {
-      if (err instanceof Error) {
+      if (err instanceof DocumentValidationError) {
         context.ui.spinner.fail(
           `Error validating metadata: ${chalk.redBright(
             err.message
           )}. Quitting...`
         );
+      } else if (err instanceof DocumentMetadataLoaderError) {
+        context.ui.spinner.fail(
+          `Error while loading metadata with loader: ${chalk.redBright(
+            err.message
+          )}. Quitting...`
+        );
       } else {
-        context.ui.spinner.fail("Error validating metadata. Quitting...");
+        context.ui.spinner.fail("Error loading metadata. Quitting...");
       }
       this.exit(1);
     }

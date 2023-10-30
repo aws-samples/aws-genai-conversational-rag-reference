@@ -21,6 +21,7 @@ Check out the examples provided, additionally here is an example with comments:
 {
   // the root directory that contains all your files
   // if there are no files used, this can be empty string ""
+  // if it's not an absolute path, the relative path will be relative to CWD
   "rootDir": "./",
 
   // metadata object containing key-value pairs, that will be applied to every document that is uploaded
@@ -54,4 +55,51 @@ Check out the examples provided, additionally here is an example with comments:
 
 ## Example external modules to produce metadata required for Galileo CLI uploader
 
-This feature will be added later.
+While using the `document upload` command, you will get a prompt:
+
+`Enter the path to the metadata file or the the module that loads metadate (js/ts) (CWD: xxx):`
+
+The uploader supports two types of inputs, which are described in the following sections.
+
+### 1. Metadata file
+
+You just need to pass in a path to a `metadata.json` and its content will be loaded and validated against the schema (see `Content preparation` section above)
+
+### 2. Metadata loader module
+
+In this case, you can implement your own way of automation. Your script will return either
+
+* the path to a generated `metadata.json` file, or
+* a `DocumentMetadata` object
+
+#### Requirements
+
+In your script, you need to import `DocumentMetadata` and `IMetadataProvider` from the CLI's package, and define a class named `MetadataProvider` that implements `IMetadataProvider`:
+
+```ts
+import { DocumentMetadata, IMetadataProvider } from "../../src"; // or, later: ... from "@aws-galileo/cli"
+
+export class MetadataProvider implements IMetadataProvider {
+  getMetadata(): string | DocumentMetadata {
+
+    // option 1:
+    const metadataFile: string = ...
+    // ... here comes your implementation
+    return metadataFile
+
+    // OR
+    // option 2:
+    const documentMetadata: DocumentMetadata = {
+      // fill out the object
+      ...
+    };
+    return documentMetadata;
+  }
+}
+```
+
+For working examples, you can check [metadata-provider-object.ts](./csv-loader/metadata-provider-object.ts) and [metadata-provider-string.ts](./csv-loader/metadata-provider-string.ts).
+
+The CLI will use the returned `metadata.json` path to load and validate the metadata, or, just take the returned `DocumentMetadata` and upload all documents defined in it.
+
+> Note: make sure that if you're returning a `DocumentMetadata` from your script AND using file references in the `documents` object, `rootDir` is properly defined with an _**absolute path**_.

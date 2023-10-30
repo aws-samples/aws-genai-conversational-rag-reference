@@ -21,9 +21,9 @@ import { CredentialsParams, DocumentMetadata, Tag } from "../types";
 
 export interface UploadDocumentsRequest extends CredentialsParams {
   readonly documentMetadata: DocumentMetadata;
-  readonly metadataFilepath: string;
   readonly uploadBucket: string;
   readonly uploadKeyPrefix: string;
+  readonly metadataFilepath?: string;
 }
 
 export namespace s3 {
@@ -96,9 +96,14 @@ export namespace s3 {
     if (path.isAbsolute(rootDir)) {
       rootDirAbs = rootDir;
     } else {
-      rootDirAbs = path.resolve(
-        path.join(path.dirname(options.metadataFilepath), rootDir)
-      );
+      // rootDir relative to metadata's dir path OR CWD if metadata file not supplied
+      if (options.metadataFilepath) {
+        rootDirAbs = path.resolve(
+          path.join(path.dirname(options.metadataFilepath), rootDir)
+        );
+      } else {
+        rootDirAbs = path.join(process.cwd(), rootDir);
+      }
     }
 
     for (let i = 0; i < docKeys.length; i++) {
