@@ -13,7 +13,7 @@ import {
   helpers,
 } from "../../internals";
 import context from "../context";
-import { DeployModelOptions } from "../types";
+import { DeployModelOptions, NameArnTuple } from "../types";
 
 namespace galileoPrompts {
   export const installDeps: PromptObject = {
@@ -24,7 +24,7 @@ namespace galileoPrompts {
   };
 
   export const confirmExec = (options: {
-    ctx: string;
+    ctx?: string;
     message: string;
   }): PromptObject => {
     const { ctx, message } = options;
@@ -32,7 +32,7 @@ namespace galileoPrompts {
     return {
       type: "confirm",
       name: "confirmed",
-      message: helpers.contextMessage(ctx, message),
+      message: ctx ? helpers.contextMessage(ctx, message) : message,
       initial: true,
     };
   };
@@ -337,8 +337,59 @@ namespace galileoPrompts {
     return {
       type: "text",
       name: "filePath",
-      message: `Enter the path to the ${options?.what ?? "file"}:`,
+      message: `Enter the path to the ${options?.what ?? "file"} (${chalk.grey(
+        `CWD: ${process.cwd()}`
+      )}):`,
       initial: options?.initialVal || context.cache.getItem("filePath"),
+    };
+  };
+
+  export const bucketPicker = (
+    buckets: { bucketName: string }[],
+    initialVal?: string
+  ): PromptObject => {
+    return {
+      type: "select",
+      name: "uploadBucket",
+      message: "Choose the S3 bucket to upload your content to",
+      instructions: chalk.gray(
+        "\n ↑/↓: Highlight option, ←/→/[space]: Toggle selection, a: Toggle all, enter/return: Complete answer"
+      ),
+
+      choices: Object.values(buckets).map((b) => ({
+        title: b.bucketName,
+        value: b.bucketName,
+        selected: initialVal || context.cache.getItem("uploadBucket"),
+      })),
+    };
+  };
+
+  export const sfnPicker = (
+    stepfunctions: NameArnTuple[],
+    initialVal?: string
+  ): PromptObject => {
+    return {
+      type: "select",
+      name: "sfn",
+      message: "Choose the workflow for vector store embedding",
+      instructions: chalk.gray(
+        "\n ↑/↓: Highlight option, ←/→/[space]: Toggle selection, a: Toggle all, enter/return: Complete answer"
+      ),
+
+      choices: Object.values(stepfunctions).map((sfn) => ({
+        title: sfn.name,
+        value: sfn.arn,
+        selected: initialVal || context.cache.getItem("sfn"),
+      })),
+    };
+  };
+
+  export const uploadKeyPrefix = (initialVal?: string): PromptObject => {
+    return {
+      type: "text",
+      name: "uploadKeyPrefix",
+      message: "Set the S3 upload key prefix",
+      initial: initialVal || context.cache.getItem("uploadKeyPrefix"),
     };
   };
 }

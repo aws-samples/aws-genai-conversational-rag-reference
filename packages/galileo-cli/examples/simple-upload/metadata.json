@@ -1,0 +1,26 @@
+{
+  "rootDir": "./",
+  "metadata": {
+    "domain": "example-domain",
+    "collection": "example-collection"
+  },
+  "documents": {
+    "example-file.txt": {
+      "metadata": {
+        "sourceType": "txt-file"
+      }
+    },
+    "exampleContent1": {
+      "pageContent": "This is my example content 1",
+      "metadata": {
+        "sourceType": "on-the-fly-content"
+      }
+    },
+    "exampleContent2": {
+      "pageContent": "This is my example content 2",
+      "metadata": {
+        "sourceType": "on-the-fly-content"
+      }
+    }
+  }
+}

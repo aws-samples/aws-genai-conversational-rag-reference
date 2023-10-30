@@ -109,3 +109,25 @@ FLAGS
 EXAMPLES
   $ galileo-cli cognito bulk-create-users --profile=myProfile --region=ap-southeast-1 --csvFile /path/to/users.csv
 ```
+
+### Document upload
+
+```shell
+$ pnpm run galileo-cli document upload --help
+
+USAGE
+  $ galileo-cli document upload [--profile <value>] [--region <value>] [--bucketName <value>] [--uploadKeyPrefix <value>] [--metadataFile <value>] [--skipConfirmations]
+
+FLAGS
+  --bucketName=<value>       The S3 Bucket you want to upload your documents
+  --metadataFile=<value>     The file path pointing to your metadata.json
+  --profile=<value>          The profile set up for you AWS CLI (associated with your AWS account)
+  --region=<value>           The region you deployed your application
+  --skipConfirmations        Non-interactive mode. (You need to supply all other flags).
+  --uploadKeyPrefix=<value>  The S3 upload key prefix
+
+DESCRIPTION
+  Uploads documents based on passed metadata to the application's S3 bucket
+
+  Upload documents
+```
