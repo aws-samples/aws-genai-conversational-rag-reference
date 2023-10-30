@@ -14,7 +14,7 @@ import { fromIni } from "@aws-sdk/credential-providers";
 import { Upload } from "@aws-sdk/lib-storage";
 import chalk from "chalk";
 import { kebabCase } from "lodash";
-import { checkTagsArray } from "./util";
+import { containsAppComponentTag } from "./util";
 import { GalileoComponentTags } from "../../internals";
 import context from "../context";
 import { CredentialsParams, DocumentMetadata, Tag } from "../types";
@@ -51,7 +51,7 @@ export namespace s3 {
         );
 
         if (
-          checkTagsArray(
+          containsAppComponentTag(
             tagsResp.TagSet?.map(
               (t) => <Tag>{ key: t.Key!, value: t.Value! }
             ) ?? [],
