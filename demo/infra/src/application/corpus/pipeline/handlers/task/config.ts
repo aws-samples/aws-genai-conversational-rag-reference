@@ -43,7 +43,26 @@ async function lambdaHandler(
     baseLocalPath: state.LocalPath,
   });
 
+  let strategy = state.IndexingStrategy;
+
+  if (state.VectorStoreManagement?.PurgeData) {
+    if (strategy === IndexingStrategy.MODIFIED) {
+      throw new Error("PurgeData is not allowed for MODIFIED strategy");
+    }
+    strategy = IndexingStrategy.BULK;
+    await cache.resetCache();
+  }
+
   const lastExecuted = await cache.getModelLastExecuted();
+
+  // If never executed, force bulk
+  if (lastExecuted == null) {
+    strategy = IndexingStrategy.BULK;
+  }
+  // If auto, determine strategy based on execution has run before
+  if (strategy === IndexingStrategy.AUTO) {
+    strategy = lastExecuted ? IndexingStrategy.MODIFIED : IndexingStrategy.BULK;
+  }
 
   const delay = state.SubsequentExecutionDelay ?? 30;
 
@@ -58,16 +77,6 @@ async function lambdaHandler(
       RunSagemakerJob: false,
       RunSagemakerJobReason: `Cancel running job since already run within ${delay} minutes: ${lastExecuted.toISOString()}`,
     };
-  }
-
-  let strategy = state.IndexingStrategy;
-  // If never executed, force bulk
-  if (lastExecuted == null) {
-    strategy = IndexingStrategy.BULK;
-  }
-  // If auto, determine strategy based on execution has run before
-  if (strategy === IndexingStrategy.AUTO) {
-    strategy = lastExecuted ? IndexingStrategy.MODIFIED : IndexingStrategy.BULK;
   }
 
   // Set filter since for non-bulk strategy

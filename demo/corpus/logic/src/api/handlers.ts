@@ -1,13 +1,16 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { PGVectorStoreOptions, distanceStrategyFromValue } from '@aws/galileo-sdk/lib/vectorstores';
 import { corsInterceptor } from 'api-typescript-interceptors';
 import { Document, embedDocumentsHandler, embedQueryHandler, similaritySearchHandler } from 'api-typescript-runtime';
 import { VectorStore } from 'langchain/vectorstores/base';
+import { isEmpty } from 'lodash';
 import * as Embeddings from '../embedding';
 import { vectorStoreFactory } from '../vectorstore';
 
 let __EMBEDDINGS__: Embeddings.LocalEmbeddings;
-let __VECTOR_STORE__: VectorStore;
+const DEFAULT_KEY = 'DEFAULT';
+const VECTOR_STORE_CACHE = new Map<string, VectorStore>();
 
 function getEmbeddings(): Embeddings.LocalEmbeddings {
   if (__EMBEDDINGS__ == null) {
@@ -17,13 +20,18 @@ function getEmbeddings(): Embeddings.LocalEmbeddings {
   return __EMBEDDINGS__;
 }
 
-async function getDefaultVectorStore(): Promise<VectorStore> {
-  if (__VECTOR_STORE__ == null) {
-    // TODO: support configs
-    __VECTOR_STORE__ = await vectorStoreFactory(getEmbeddings(), undefined);
-  }
+function getVectorStoreCacheKey(config?: Partial<PGVectorStoreOptions>): string {
+  if (config == null || isEmpty(config)) return DEFAULT_KEY;
+  return JSON.stringify(config);
+}
 
-  return __VECTOR_STORE__;
+async function getVectorStore(config?: Partial<PGVectorStoreOptions>): Promise<VectorStore> {
+  const key = getVectorStoreCacheKey(config);
+  const existing = VECTOR_STORE_CACHE.get(key);
+  if (existing) return existing;
+  const store = await vectorStoreFactory(getEmbeddings(), config);
+  VECTOR_STORE_CACHE.set(key, store);
+  return store;
 }
 
 const interceptors = [corsInterceptor] as const;
@@ -31,9 +39,18 @@ const interceptors = [corsInterceptor] as const;
 export const similaritySearch = similaritySearchHandler(
   ...interceptors,
   async ({ input }) => {
-    const vectorStore = await getDefaultVectorStore();
+    const { query, k, filter, distanceStrategy } = input.body;
 
-    const { query, k, filter } = input.body;
+    // NB: changing distanceStrategy should only be used for development since
+    // unless the strategy is also indexes as performance will be slower.
+    let vectorStoreConfig: Partial<PGVectorStoreOptions> | undefined;
+    if (distanceStrategy) {
+      vectorStoreConfig = {
+        distanceStrategy: distanceStrategyFromValue(distanceStrategy),
+      };
+    }
+
+    const vectorStore = await getVectorStore(vectorStoreConfig);
 
     if (query == null || query.length < 1) {
       throw new Error('InvalidPayload: query is required');

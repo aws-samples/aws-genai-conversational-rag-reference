@@ -1,5 +1,6 @@
 # Prompt Engineering (Dev Settings)
 
+--8<-- "disclaimer/prompt-engineering-template.md"
 --8<-- "development/dev-settings/_/header.md"
 
 Prompt engineering is crucial in programming for generative AI applications. Sometime a simple tweaking of verbiage or order of statements makes all the difference, while other times the model might require a very bespoke format. To support rapid iterations and rich editing capabilities when developing prompts for different models, the prompt templates for the solution are implemented with [Handlebars](https://handlebarsjs.com/guide/expressions.html#basic-usage){:target="_blank"}. This enable more granular control over rendering of data, such as chat history messages, which may require very specific markup based on the target LLM, along with extensibility and composability of template fragments (or partials). The solution is designed to provide the greatest flexibility without trading off reusability.

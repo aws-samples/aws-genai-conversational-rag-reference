@@ -48,6 +48,10 @@
       "type": "build"
     },
     {
+      "name": "@types/lodash",
+      "type": "build"
+    },
+    {
       "name": "@types/node-fetch",
       "version": "^2",
       "type": "build"
@@ -212,6 +216,10 @@
     {
       "name": "langchain",
       "version": "0.0.157",
+      "type": "runtime"
+    },
+    {
+      "name": "lodash",
       "type": "runtime"
     },
     {

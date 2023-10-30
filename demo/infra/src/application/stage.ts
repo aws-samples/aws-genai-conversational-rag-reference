@@ -1,7 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import { ApplicationContext } from "@aws/galileo-cdk/lib/core/app";
-import { Aspects, Stage, StageProps } from "aws-cdk-lib";
+import { Aspects, Stage, StageProps, Tags } from "aws-cdk-lib";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import { LAMBDA_RECOGNIZE_LAYER_VERSION } from "aws-cdk-lib/cx-api";
 import { NagSuppressions } from "cdk-nag";
@@ -31,6 +31,8 @@ export class ApplicationStage extends Stage {
       supportCrossAccountModelAccess: props?.supportCrossAccountModelAccess,
       ...config,
     });
+
+    Tags.of(this).add("Application", `${this.stageName}/${applicationName}`);
 
     if (config.includeSampleDataset) {
       // EXAMPLE: rudimentary example of deploying dataset into processed bucket to get picked up by the ETL/Indexing job

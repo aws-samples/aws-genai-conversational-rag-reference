@@ -1,0 +1,2 @@
+???+ warning "Work-In-Progress"
+    This repository is currently a work-in-progress and is a sample reference only, expected to be forked. Overtime, this repository will be partially made available via [AWS PDK](https://aws.github.io/aws-pdk) as libraries and constructs become more stable and robust. This repository is expected to remain as an example reference for bootstrapping such a project using the toolkit provided by the [AWS PDK](https://aws.github.io/aws-pdk).

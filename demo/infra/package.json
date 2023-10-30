@@ -25,7 +25,7 @@
     "deploy:app": "pnpm exec cdk deploy --region --app cdk.out --require-approval never Dev/Galileo",
     "deploy:models": "pnpm exec cdk deploy --region --app cdk.out --require-approval never Dev/Galileo/FoundationModelStack",
     "deploy:sample-dataset": "pnpm exec cdk deploy --region --app cdk.out --require-approval never Dev/Galileo-SampleDataset",
-    "deploy:pipeline": "pnpm exec cdk deploy --app cdk-out --require-approval never PipelineStack",
+    "deploy:pipeline": "pnpm exec cdk deploy --app cdk.out --require-approval never PipelineStack",
     "nag": "SKIP_BUNDLING=1 pnpm exec cdk synth --no-staging --strict --quiet"
   },
   "devDependencies": {

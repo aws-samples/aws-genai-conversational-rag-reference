@@ -23,6 +23,8 @@ import { useAppUser, useIsAdmin } from "./Auth";
 import Config from "./config.json";
 import ApiExplorer from "./pages/ApiExplorer";
 import Chat from "./pages/Chat";
+import CorpusSearch from "./pages/CorpusSearch";
+import EmbeddingsTool from "./pages/Embeddings";
 import Settings from "./pages/Settings";
 import {
   useHelpPanel,
@@ -88,6 +90,16 @@ const App: React.FC = () => {
             type: "link",
             href: "/apiExplorer",
           },
+          {
+            text: "Corpus Search",
+            type: "link",
+            href: "/corpus/search",
+          },
+          {
+            text: "Embeddings",
+            type: "link",
+            href: "/corpus/embeddings",
+          },
           // TODO: enable settings once we implement it
           // {
           //   text: "Settings",
@@ -150,6 +162,8 @@ const App: React.FC = () => {
               <Route path={":id"} element={<Chat />} />
             </Route>
             <Route path="/apiExplorer" element={<ApiExplorer />} />
+            <Route path="/corpus/search" element={<CorpusSearch />} />
+            <Route path="/corpus/embeddings" element={<EmbeddingsTool />} />
             <Route path={"/settings"} element={<Settings />} />
             <Route path={"/"} element={<Navigate to="/chat" replace />} />
           </Routes>

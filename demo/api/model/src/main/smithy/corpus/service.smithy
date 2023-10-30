@@ -15,6 +15,12 @@ service CorpusService {
     ]
 }
 
+enum DistanceStrategy {
+  EUCLIDEAN = "l2",
+  COSINE = "cosine",
+  MAX_INNER_PRODUCT = "inner",
+}
+
 structure Document {
     // Document text content
     @required
@@ -51,8 +57,12 @@ operation SimilaritySearch {
 
       @required
       query: String
+      // Number of search results to return
       k: Integer
+      // JSON object with metadata filter to apply to search
       filter: Any
+      // Distance strategy to use for similar search
+      distanceStrategy: DistanceStrategy
     }
     output:= {
       @required

@@ -101,7 +101,7 @@ export default class DeployCommand extends Command {
     const { deployModels, defaultModelId } = context.cachedAnswers(
       await prompts(
         [
-          galileoPrompts.deployModelId(availableModelIds),
+          galileoPrompts.defaultModelId(availableModelIds),
           galileoPrompts.deployModels,
         ],
         { onCancel: this.onPromptCancel }

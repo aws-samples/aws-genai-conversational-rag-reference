@@ -225,7 +225,7 @@ namespace galileoPrompts {
     initial: context.cache.getItem("bedrockEndpointUrl") ?? undefined,
   };
 
-  export const deployModelId = (availableModelIds: string[]): PromptObject => {
+  export const defaultModelId = (availableModelIds: string[]): PromptObject => {
     return {
       type: "select",
       name: "defaultModelId",
@@ -249,27 +249,22 @@ namespace galileoPrompts {
   export const deployModels: PromptObject = {
     type: "select",
     name: "deployModels",
-    message: "Deploy Foundation Models?",
+    message: "Foundation Models Region / Account",
     initial:
       context.cache.getItem("deployModels") ?? DeployModelOptions.SAME_REGION,
     choices: [
       {
-        title: "Yes, in same region as application",
+        title: "Same region as application",
         value: DeployModelOptions.SAME_REGION,
       },
       {
-        title: "Yes, but in different region",
+        title: "Different region",
         value: DeployModelOptions.DIFFERENT_REGION,
       },
       {
-        title: "No, already deployed",
-        value: DeployModelOptions.ALREADY_DEPLOYED,
-      },
-      {
-        title: "No, but link to cross-account stack",
+        title: "Cross-account (advanced)",
         value: DeployModelOptions.CROSS_ACCOUNT,
       },
-      { title: "No", value: DeployModelOptions.NO },
     ],
   };
 
