@@ -31,6 +31,7 @@ export class GalileoCli extends TypeScriptAppProject {
         outDir: undefined,
         target: "ES2022",
       },
+      include: ["src/**/*.ts", "examples/**/*.ts"],
     };
 
     super({
@@ -53,9 +54,14 @@ export class GalileoCli extends TypeScriptAppProject {
         "execa",
         "figlet",
         "ink",
+        "jsonschema",
         "lodash",
         "node-localstorage",
+        "ora",
         "prompts",
+
+        // packages used in examples
+        // ...
       ],
       devDeps: [
         `@aws-sdk/types@^${VERSIONS.AWS_SDK}`,
@@ -64,8 +70,10 @@ export class GalileoCli extends TypeScriptAppProject {
         "@types/clear",
         "@types/csv-parse",
         "@types/execa",
+        "@types/jsonschema",
         "@types/lodash",
         "@types/node-localstorage",
+        "@types/ora",
         "@types/prompts",
         "ts-node",
       ],
@@ -79,7 +87,6 @@ export class GalileoCli extends TypeScriptAppProject {
       publishDryRun: true,
       stability: Stability.EXPERIMENTAL,
       tsconfig,
-      tsconfigDev: tsconfig,
     });
 
     // set `galileo-cli` as bin entry
@@ -153,6 +160,7 @@ export class GalileoCli extends TypeScriptAppProject {
       plugins: oclifPlugins,
       topics: {
         cognito: { description: "Cognito user management" },
+        document: { description: "Document management" },
       },
       topicSeparator: " ",
     });

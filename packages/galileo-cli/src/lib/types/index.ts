@@ -19,3 +19,29 @@ export enum DeployModelOptions {
   CROSS_ACCOUNT = 3,
   NO = 4,
 }
+
+export interface DocumentMetadata {
+  readonly rootDir: string;
+  readonly metadata: {
+    readonly domain: string;
+    [k: string]: string;
+  };
+  readonly documents: {
+    [k: string]: {
+      pageContent?: string;
+      metadata?: {
+        [k: string]: string;
+      };
+    };
+  };
+}
+
+export interface NameArnTuple {
+  readonly name: string;
+  readonly arn: string;
+}
+
+export interface Tag {
+  readonly key: string;
+  readonly value: string;
+}

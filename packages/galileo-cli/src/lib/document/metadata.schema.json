@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Galileo Document Upload Metadata Schema",
+  "type": "object",
+  "properties": {
+    "rootDir": {
+      "type": "string"
+    },
+    "metadata": {
+      "description": "Metadata entries that apply to all documents",
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "properties": {
+        "domain": {
+          "type": "string"
+        }
+      }
+    },
+    "documents": {
+      "description": "Documents to be uploaded",
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "pageContent": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": ["rootDir", "metadata", "documents"]
+}

@@ -30,6 +30,10 @@
       "type": "build"
     },
     {
+      "name": "@types/jsonschema",
+      "type": "build"
+    },
+    {
       "name": "@types/lodash",
       "type": "build"
     },
@@ -40,6 +44,10 @@
     {
       "name": "@types/node",
       "version": "^16",
+      "type": "build"
+    },
+    {
+      "name": "@types/ora",
       "type": "build"
     },
     {
@@ -216,11 +224,19 @@
       "type": "runtime"
     },
     {
+      "name": "jsonschema",
+      "type": "runtime"
+    },
+    {
       "name": "lodash",
       "type": "runtime"
     },
     {
       "name": "node-localstorage",
+      "type": "runtime"
+    },
+    {
+      "name": "ora",
       "type": "runtime"
     },
     {

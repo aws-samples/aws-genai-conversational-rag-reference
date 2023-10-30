@@ -4,6 +4,7 @@ PDX-License-Identifier: Apache-2.0 */
 import path from "node:path";
 import execa from "execa";
 import { JSONStorage } from "node-localstorage";
+import { Ui } from "./ui";
 import {
   IApplicationContextKey,
   ApplicationContext,
@@ -34,6 +35,8 @@ class Context {
 
   public readonly deployStacks: string[] = [];
 
+  public readonly ui: Ui;
+
   public dryRun: boolean = false;
 
   private constructor() {
@@ -51,6 +54,7 @@ class Context {
     );
 
     this.cdkContext = new Map<IApplicationContextKey, CdkContextValue>();
+    this.ui = new Ui();
   }
 
   /**

@@ -16,6 +16,8 @@ import {
   CdkBootstrapInfoRequestOptions,
   getCdkBootstrapInfo,
 } from "./get-bootstrap-info";
+import { UploadDocumentsRequest, s3 } from "./s3";
+import { stepfunctions } from "./sfn";
 import context from "../context";
 import { CredentialsParams } from "../types";
 
@@ -127,6 +129,25 @@ export namespace accountUtils {
     options: DeleteCognitoUserRequest
   ) => {
     return cognito.deleteCognitoUser(options);
+  };
+
+  export const listBuckets = async (credentials: CredentialsParams) => {
+    return s3.listBuckets(credentials);
+  };
+
+  export const uploadDocuments = async (options: UploadDocumentsRequest) => {
+    return s3.uploadDocuments(options);
+  };
+
+  export const listStepfunctions = async (credentials: CredentialsParams) => {
+    return stepfunctions.listStateMachines(credentials);
+  };
+
+  export const triggerWorkflow = async (
+    credentials: CredentialsParams,
+    arn: string
+  ) => {
+    return stepfunctions.triggerWorkflow(credentials, arn);
   };
 }
 
