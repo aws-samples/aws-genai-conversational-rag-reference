@@ -96,6 +96,8 @@ export class GalileoCli extends TypeScriptAppProject {
 
     this.package.addField("private", true);
 
+    this.addGitIgnore("examples/**/generated/**");
+
     // additional setup for `oclif`
     this.setupPackageJsonOclif();
 

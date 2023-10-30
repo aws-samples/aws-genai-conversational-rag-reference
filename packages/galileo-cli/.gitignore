@@ -43,4 +43,5 @@ junit.xml
 /lib
 /dist/
 !/.eslintrc.json
+examples/**/generated/**
 !/project.json

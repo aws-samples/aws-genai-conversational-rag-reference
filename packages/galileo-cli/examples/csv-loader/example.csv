@@ -1,1 +1,7 @@
-TBA
+service,description,serviceType,freeTierType
+"AWS IoT Core","Easily and securely connect devices to the cloud","Internet of Things",
+"AWS IoT Greengrass","Local compute, messaging, and sync for devices","Internet Of Things","12 Months Free"
+"Amazon Bedrock","Build with foundation models","Machine Learning",
+"Amazon Cognito","Identity management for your apps","Security, Identity, & Compliance","Always Free"
+"AWS Lambda","Run code without thinking about servers","Compute","Free Trial"
+"AWS Key Management Service (KMS)","Managed creation and control of encryption keys","Security, Identity, & Compliance","Always Free"

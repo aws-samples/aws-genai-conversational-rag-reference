@@ -1,5 +1,5 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 
-// TBA
-// module loader to procude metadata.json
+export class DocumentValidationError extends Error {}
+export class DocumentMetadataLoaderError extends Error {}

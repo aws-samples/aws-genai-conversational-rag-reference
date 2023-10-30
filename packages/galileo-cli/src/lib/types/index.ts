@@ -1,6 +1,8 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 
+export * from "./errors";
+
 import execa from "execa";
 
 export type ExecaTask = Parameters<typeof execa.commandSync>;
@@ -34,6 +36,11 @@ export interface DocumentMetadata {
       };
     };
   };
+}
+
+export interface LoadDocumentMetadataResult {
+  readonly documentMetadata: DocumentMetadata;
+  readonly metadataFile?: string;
 }
 
 export interface NameArnTuple {
