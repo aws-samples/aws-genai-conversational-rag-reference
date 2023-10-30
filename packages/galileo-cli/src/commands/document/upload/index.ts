@@ -132,7 +132,14 @@ export default class DocumentUploadCommand extends Command {
     );
 
     context.ui.newSpinner().start("Triggering embedding workflow");
-    await accountUtils.triggerWorkflow({ profile, region }, sfn);
+    const executionArn = await accountUtils.triggerWorkflow(
+      { profile, region },
+      sfn
+    );
     context.ui.spinner.succeed();
+
+    console.log(
+      `\nIndexing workflow started. To monitor, \x1B]8;;https://${region}.console.aws.amazon.com/states/home?region=${region}#/v2/executions/details/${executionArn}\x1B\\click this link.\x1B]8;;\x1B\\`
+    );
   }
 }

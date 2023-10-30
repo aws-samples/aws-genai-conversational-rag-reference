@@ -3,10 +3,13 @@ PDX-License-Identifier: Apache-2.0 */
 import {
   SFNClient,
   ListStateMachinesCommand,
+  ListTagsForResourceCommand,
   StartExecutionCommand,
 } from "@aws-sdk/client-sfn";
 import { fromIni } from "@aws-sdk/credential-providers";
-import { CredentialsParams, NameArnTuple } from "../types";
+import { checkTagsArray } from "./util";
+import { GalileoComponentTags } from "../../internals";
+import { CredentialsParams, NameArnTuple, Tag } from "../types";
 
 export namespace stepfunctions {
   export const listStateMachines = async (
@@ -19,11 +22,27 @@ export namespace stepfunctions {
       region: credentials.region,
     });
 
-    const response = await client.send(new ListStateMachinesCommand({}));
-    // TODO: filter by tags
-    return response.stateMachines!.map((sm) => {
-      return { name: sm.name!, arn: sm.stateMachineArn! };
-    });
+    const smResponse = await client.send(new ListStateMachinesCommand({}));
+
+    const sfns: NameArnTuple[] = [];
+    for (const sm of smResponse.stateMachines!) {
+      const tagsResp = await client.send(
+        new ListTagsForResourceCommand({
+          resourceArn: sm.stateMachineArn,
+        })
+      );
+
+      if (
+        checkTagsArray(
+          tagsResp.tags?.map((t) => <Tag>{ key: t.key!, value: t.value! }) ??
+            [],
+          GalileoComponentTags.CORPUS_INDEXING_STATEMACHINE
+        )
+      ) {
+        sfns.push({ name: sm.name!, arn: sm.stateMachineArn! });
+      }
+    }
+    return sfns;
   };
 
   export const triggerWorkflow = async (

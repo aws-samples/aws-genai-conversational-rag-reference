@@ -4,13 +4,20 @@ PDX-License-Identifier: Apache-2.0 */
 // import * as path from "node:path";
 import * as fs from "fs";
 import * as path from "node:path";
-import { ListBucketsCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+  GetBucketTaggingCommand,
+  ListBucketsCommand,
+  S3Client,
+  S3ServiceException,
+} from "@aws-sdk/client-s3";
 import { fromIni } from "@aws-sdk/credential-providers";
 import { Upload } from "@aws-sdk/lib-storage";
 import chalk from "chalk";
 import { kebabCase } from "lodash";
+import { checkTagsArray } from "./util";
+import { GalileoComponentTags } from "../../internals";
 import context from "../context";
-import { CredentialsParams, DocumentMetadata } from "../types";
+import { CredentialsParams, DocumentMetadata, Tag } from "../types";
 
 export interface UploadDocumentsRequest extends CredentialsParams {
   readonly documentMetadata: DocumentMetadata;
@@ -31,8 +38,46 @@ export namespace s3 {
     });
 
     const bucketsResponse = await s3Client.send(new ListBucketsCommand({}));
-    // TODO: add tag checks to return only processedBuckets
-    return bucketsResponse.Buckets!.map((b) => b.Name!);
+
+    const processingBuckets = [];
+    context.ui.spinner.text =
+      "Loading buckets (filtering index processing buckets...)";
+    for (const bucket of bucketsResponse.Buckets!) {
+      try {
+        const tagsResp = await s3Client.send(
+          new GetBucketTaggingCommand({
+            Bucket: bucket.Name,
+          })
+        );
+
+        if (
+          checkTagsArray(
+            tagsResp.TagSet?.map(
+              (t) => <Tag>{ key: t.Key!, value: t.Value! }
+            ) ?? [],
+            GalileoComponentTags.CORPUS_INDEXING_BUCKET
+          )
+        ) {
+          processingBuckets.push(bucket.Name!);
+        }
+      } catch (err: any) {
+        // bucket in another region -- we can ignore it since `region` parameter
+        // represents our application.
+        if (
+          err instanceof S3ServiceException &&
+          err.name === "PermanentRedirect"
+        ) {
+          // `PermanentRedirect` happens when bucket is in a different region
+          // we expect this -> noop
+        } else {
+          // anything else --> log it
+          console.log(`Error: ${JSON.stringify(err, null, 2)}`);
+        }
+      }
+    }
+    context.ui.spinner.text = "Loading buckets";
+
+    return processingBuckets;
   };
 
   export const uploadDocuments = async (options: UploadDocumentsRequest) => {

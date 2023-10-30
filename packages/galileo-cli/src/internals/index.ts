@@ -6,6 +6,8 @@ export * from "../../../galileo-cdk/src/ai/llms/framework/bedrock/ids";
 export * from "../../../galileo-cdk/src/ai/llms/framework/bedrock/utils";
 export * from "../../../galileo-cdk/src/core/app/context";
 
+export * from "../../../../demo/infra/src/application/tags";
+
 import chalk from "chalk";
 import { formatBedrockModelUUID, FoundationModelIds } from ".";
 
