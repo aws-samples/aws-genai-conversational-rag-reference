@@ -199,6 +199,10 @@
       "type": "runtime"
     },
     {
+      "name": "@smithy/property-provider",
+      "type": "runtime"
+    },
+    {
       "name": "chalk",
       "version": "^4",
       "type": "runtime"

@@ -28,8 +28,8 @@
   },
   "include": [
     "src/**/*.ts",
-    "src/**/*.ts",
-    "examples/**/*.ts"
+    "examples/**/*.ts",
+    "bin/*.ts"
   ],
   "exclude": []
 }

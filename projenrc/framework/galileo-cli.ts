@@ -31,7 +31,7 @@ export class GalileoCli extends TypeScriptAppProject {
         outDir: undefined,
         target: "ES2022",
       },
-      include: ["src/**/*.ts", "examples/**/*.ts"],
+      include: ["examples/**/*.ts", "bin/*.ts"],
     };
 
     super({
@@ -44,8 +44,9 @@ export class GalileoCli extends TypeScriptAppProject {
         `@aws-sdk/client-sfn@^${VERSIONS.AWS_SDK}`,
         `@aws-sdk/client-ssm@^${VERSIONS.AWS_SDK}`,
         `@aws-sdk/client-sts@^${VERSIONS.AWS_SDK}`,
-        `@aws-sdk/lib-storage@^${VERSIONS.AWS_SDK}`,
         `@aws-sdk/credential-providers@^${VERSIONS.AWS_SDK}`,
+        `@aws-sdk/lib-storage@^${VERSIONS.AWS_SDK}`,
+        `@smithy/property-provider`,
         "@oclif/core",
         "@oclif/errors",
         "chalk@^4",

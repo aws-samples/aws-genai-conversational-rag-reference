@@ -288,7 +288,7 @@ export class MonorepoProject extends MonorepoTsProject {
           description: "Run eslint against the staged files only",
           steps: [
             {
-              exec: `eslint --fix --no-error-on-unmatched-pattern $(git diff --name-only --relative --staged HEAD . | grep -E '^(.*/)?(${dirs.join(
+              exec: `eslint --fix --no-error-on-unmatched-pattern $(git diff --name-only --relative --staged HEAD . | grep -E '^(${dirs.join(
                 "|"
               )})/.*\.(ts|tsx)$' | xargs)`,
             },

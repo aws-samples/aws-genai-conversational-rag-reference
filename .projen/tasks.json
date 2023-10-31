@@ -152,7 +152,7 @@
       "description": "Run eslint against the staged files only",
       "steps": [
         {
-          "exec": "eslint --fix --no-error-on-unmatched-pattern $(git diff --name-only --relative --staged HEAD . | grep -E '^(.*/)?(projenrc|bin|scripts)/.*.(ts|tsx)$' | xargs)"
+          "exec": "eslint --fix --no-error-on-unmatched-pattern $(git diff --name-only --relative --staged HEAD . | grep -E '^(projenrc|bin|scripts)/.*.(ts|tsx)$' | xargs)"
         }
       ]
     },

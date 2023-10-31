@@ -73,6 +73,7 @@
     "@oclif/plugin-plugins": "^3.8.3",
     "@oclif/plugin-update": "^3.2.4",
     "@oclif/plugin-warn-if-update-available": "^2.1.1",
+    "@smithy/property-provider": "^2.0.10",
     "chalk": "^4",
     "clear": "^0.1.0",
     "csv-parse": "^5.5.0",
