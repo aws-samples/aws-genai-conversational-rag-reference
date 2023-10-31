@@ -3,20 +3,19 @@ PDX-License-Identifier: Apache-2.0 */
 
 // import * as path from "node:path";
 import chalk from "chalk";
-import { isEmpty } from "lodash";
+import { isEmpty, sortBy } from "lodash";
 import prompts, { PromptObject } from "prompts";
 import {
   APPLICATION_CONFIG_JSON,
   ApplicationConfig,
-  BEDROCK_DEFAULT_MODEL,
   BEDROCK_REGION,
-  BedrockModelIds,
   DEFAULT_APPLICATION_NAME,
   DEFAULT_PREDEFINED_FOUNDATION_MODEL_LIST,
   FoundationModelIds,
   SampleDataSets,
   helpers,
 } from "../../internals";
+import { listBedrockTextModels } from "../account-utils/bedrock";
 import context from "../context";
 import { NameArnTuple } from "../types";
 
@@ -291,33 +290,44 @@ namespace galileoPrompts {
       };
     }
 
-    const selectedBedrockModels = new Set<BedrockModelIds>(
-      (context.appConfig.bedrock?.models as any) || [BEDROCK_DEFAULT_MODEL]
+    const selectedBedrockModels = new Set<string>(
+      (context.appConfig.bedrock?.models as any) || []
     );
 
-    const { region, models, endpointUrl } = await prompts([
+    const { region } = await prompts([
       {
         type: "text",
         name: "region",
         message: "Bedrock region",
         initial: context.appConfig.bedrock?.region ?? BEDROCK_REGION,
       },
+    ]);
+
+    const availableTextModels = sortBy(await listBedrockTextModels(region), [
+      "modelId",
+    ]);
+
+    const { models } = await prompts([
       {
         type: "autocompleteMultiselect",
         name: "models",
         message: "Bedrock model ids",
+        hint: chalk.yellow(
+          "\nOnly models with access approved are listed below, see https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html to request access to additional models\n"
+        ),
         min: 1,
         instructions: chalk.gray(
           "↑/↓: Highlight option, ←/→/[space]: Toggle selection, Return to submit"
         ),
-        choices: Object.values(BedrockModelIds)
-          .sort()
-          .map((_id) => ({
-            title: _id,
-            value: _id,
-            selected: selectedBedrockModels.has(_id),
-          })),
+        choices: availableTextModels.map((v) => ({
+          value: v.modelId,
+          title: `${v.providerName} ${v.modelName} (${v.modelId})`,
+          selected: selectedBedrockModels.has(v.modelId),
+        })),
       },
+    ]);
+
+    const { endpointUrl } = await prompts([
       {
         type: "text",
         name: "endpointUrl",

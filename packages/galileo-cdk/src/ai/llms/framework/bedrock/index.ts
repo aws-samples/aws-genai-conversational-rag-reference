@@ -10,10 +10,10 @@ import {
   LLM,
 } from '@aws/galileo-sdk/lib/models';
 import { Construct, IConstruct } from 'constructs';
-import { BEDROCK_REGION } from './ids';
+import { BEDROCK_REGION } from './constants';
 import { formatBedrockModelUUID } from './utils';
 
-export * from './ids';
+export * from './constants';
 
 export interface BedrockModelProps {
   /**

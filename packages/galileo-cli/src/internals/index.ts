@@ -2,7 +2,7 @@
 PDX-License-Identifier: Apache-2.0 */
 
 export * from "../../../galileo-cdk/src/ai/predefined/ids";
-export * from "../../../galileo-cdk/src/ai/llms/framework/bedrock/ids";
+export * from "../../../galileo-cdk/src/ai/llms/framework/bedrock/constants";
 export * from "../../../galileo-cdk/src/ai/llms/framework/bedrock/utils";
 export * from "../../../galileo-cdk/src/core/app/context";
 export * from "../../../../demo/infra/src/application/tags";

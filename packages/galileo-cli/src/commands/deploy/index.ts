@@ -63,6 +63,13 @@ export default class DeployCommand extends Command {
         { onCancel: this.onPromptCancel }
       )
     );
+
+    // set process envs so all child processes will inherit them
+    process.env.AWS_REGION = appRegion;
+    process.env.AWS_PROFILE = profile;
+
+    const account = await accountUtils.retrieveAccount(profile);
+
     context.appConfig.identity.admin =
       await galileoPrompts.adminEmailAndUsername();
 
@@ -83,10 +90,6 @@ export default class DeployCommand extends Command {
 
     context.appConfig.tooling = await galileoPrompts.toolingConfig();
 
-    // set process envs so all child processes will inherit them
-    process.env.AWS_REGION = appRegion;
-    process.env.AWS_PROFILE = profile;
-
     // foundational models -related info
     const availableModelIds = helpers.availableModelIds(
       context.appConfig.llms.predefined.sagemaker,
@@ -99,8 +102,6 @@ export default class DeployCommand extends Command {
     context.appConfig.llms.defaultModel = defaultModelId;
 
     helpers.saveAppConfig(context.appConfig, appConfigPath);
-
-    const account = await accountUtils.retrieveAccount(profile);
 
     if (flags.projen) {
       console.log(chalk.gray("Synthesizing project repository..."));

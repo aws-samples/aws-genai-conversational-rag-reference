@@ -1,7 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import { ApplicationConfig } from './types';
-import { BEDROCK_REGION, BedrockModelIds } from '../../../ai/llms/framework/bedrock/ids';
+import { BEDROCK_REGION } from '../../../ai/llms/framework/bedrock/constants';
 import { FoundationModelIds } from '../../../ai/predefined/ids';
 // NB: Do not import unnecessary deps there as the cli current use this and
 // just needs the ids - otherwise will break cli typecheck build
@@ -20,9 +20,7 @@ export const DEFAULT_APPLICATION_CONFIG: ApplicationConfig = {
   bedrock: {
     enabled: true,
     region: BEDROCK_REGION,
-    models: [
-      BedrockModelIds.ANTHROPIC_CLAUDE_V2,
-    ],
+    models: [],
   },
   llms: {
     defaultModel: FoundationModelIds.FALCON_LITE,
