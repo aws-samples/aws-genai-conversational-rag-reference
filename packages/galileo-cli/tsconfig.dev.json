@@ -30,8 +30,8 @@
     ".projenrc.js",
     "src/**/*.ts",
     "test/**/*.ts",
-    "src/**/*.ts",
-    "examples/**/*.ts"
+    "examples/**/*.ts",
+    "bin/*.ts"
   ],
   "exclude": [
     "node_modules"

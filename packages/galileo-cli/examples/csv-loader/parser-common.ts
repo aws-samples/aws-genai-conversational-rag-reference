@@ -49,5 +49,6 @@ export const parseCsv = (): DocumentMetadata => {
     return docMetadata;
   } catch (err) {
     console.log(JSON.stringify(err));
+    throw err;
   }
 };
