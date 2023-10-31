@@ -2,7 +2,7 @@
 
 > Codename: **Galileo**
 
-> **ATTENTION**: Until this repository is made public, the documentation [github pages](https://aws-samples.github.io/aws-genai-conversational-rag-reference) site will not be available. To view the full documentation at this time, please run `pnpm run docs:serve` and open the URL provided (default http://127.0.0.1:8000)
+> **ATTENTION**: Until this repository is made public, the documentation [github pages](https://aws-samples.github.io/aws-genai-conversational-rag-reference) site will not be available. To view the full documentation at this time, please run `pnpm run docs:serve` and open the URL provided (default <http://127.0.0.1:8000>)
 
 Conversational generative AI applications that provide search and summarisation against a collection of private documents (also known as "retrieval augmented generation" or RAG) are comprised of a number of complex components. These include: an elastic document ingestion pipeline, a special purpose vector store for document embeddings, a performant embeddings inference engine, API access to an aligned large language model, the combined functionality of which is exposed via a user interface that maintains session persistance and is secured with authN. Galileo was created to provide all of these things, integrated into a reference application. The use case of this reference application is a virtual legal research assistant, capable of answering questions against US Supreme Court decisions.
 
@@ -22,19 +22,19 @@ Galileo is:
 _Development Environment:_
 | Tool | Version | Recommendation |
 | --------------------- | ----------- | ---------------------------- |
-| pnpm | >=8.x | https://pnpm.io/installation |
+| pnpm | >=8.x | <https://pnpm.io/installation> |
 | NodeJS | >=18 | Use Node Version Manager ([nvm](https://github.com/nvm-sh/nvm)) |
 | Python | >=3.10,<4 | Use Python Version Manager ([pyenv](https://github.com/pyenv/pyenv)) |
-| Poetry | >=1.5,<2 | https://python-poetry.org/docs/ |
-| AWS CLI | v2 | https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html |
-| Docker<sup>1</sup> | v20+ | https://docs.docker.com/desktop/ |
+| Poetry | >=1.5,<2 | <https://python-poetry.org/docs/> |
+| AWS CLI | v2 | <https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html> |
+| Docker<sup>1</sup> | v20+ | <https://docs.docker.com/desktop/> |
 | JDK | v17+ | [Amazon Corretto 17](https://docs.aws.amazon.com/corretto/latest/corretto-17-ug/downloads-list.html) |
 
 > <sup>1</sup> Docker virtual disk space should have at least 30GB of free space. If you see `no space left on device` error during build, free up space by running `docker system prune -f` and/or increasing the virtual disk size.
 
 _AWS Service Quotas:_
 
-> Ensure the following service quota limits are increased before deploying *based on the models you deploy*. The deployment performs a check and will fail early if limits are not met.
+> Ensure the following service quota limits are increased before deploying _based on the models you deploy_. The deployment performs a check and will fail early if limits are not met.
 
 | Service                                                                                  | Quota                                      | Minimum Applied Value | Usage                    | Region |
 | ---------------------------------------------------------------------------------------- | ------------------------------------------ | --------------------- | ------------------------ | ------ |
@@ -61,7 +61,7 @@ Use the companion cli for deploying the cdk infra
 
 ```sh
 pnpm install
-pnpm run galileo-cli
+pnpm run galileo-cli deploy
 # Follow the prompt from the cli to build and deploy what you want
 ```
 
@@ -159,12 +159,40 @@ To perform this, follow these steps:
 1. For the GitHub repository
 1. Check out your fork locally, your default branch (trunk) will be `mainline`.
 1. When working on a change, checkout a new branch by running: `git checkout -b <semantic_type>/<branch_name>`
-   1. In this instance, _semantic_type_ refers to one of: _fix, feat, build, chore, etc_. Refer to: https://www.conventionalcommits.org/en/v1.0.0-beta.2/#summary
+   1. In this instance, _semantic_type_ refers to one of: _fix, feat, build, chore, etc_. Refer to: <https://www.conventionalcommits.org/en/v1.0.0-beta.2/#summary>
 1. Add commits likes normal via `git commit -am "<semantic_type>: commit msg"`
    1. Recommendation is to use [commitizen](https://github.com/commitizen/cz-cli) to ensure commits follow semantic conventions.
    1. Or run `pnpm run commit`
 1. `git push -u origin <semantic_type>/<branch_name>`
 1. Raise a Pull-Request against primary repository.
+
+## Using Cloud9 as your Galileo Development Environment
+
+In your Galileo development account:
+
+- Cloud9 → Create Environment
+- New EC2 Instance → m5.large + Ubuntu 22.04 + 4h Timeout + AWS Systems Manager
+- Open Cloud 9 IDE for this new environment
+- Follow the resize instructions at <https://ec2spotworkshops.com/ecs-spot-capacity-providers/workshopsetup/resize_ebs.html>, giving your instance EBS volume 300GB (followed by a reboot)
+
+In the Cloud9 instance shell, install some prerequisites:
+
+```bash
+sudo apt update && sudo apt upgrade -y
+nvm install lts/iron
+nvm use lts/iron
+npm i -g pnpm
+wget -O- https://apt.corretto.aws/corretto.key | sudo apt-key add -
+sudo add-apt-repository 'deb https://apt.corretto.aws stable main'
+sudo apt-get update; sudo apt-get install -y java-18-amazon-corretto-jdk
+
+sudo apt install -y python3.11
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 110
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 100
+# NOTE: select python3.11 from the list
+sudo update-alternatives --config python3
+curl -sSL https://install.python-poetry.org | python3 -
+```
 
 ---
 
@@ -207,6 +235,10 @@ You should only import content, such as sample corpus data, from sources that yo
 ### CloudFront Security Policy
 
 When using the default CloudFront domain and certificate (\*.[cloudfront.net](http://cloudfront.net/)), CloudFront automatically sets the security policy to [TLSv1](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/secure-connections-supported-viewer-protocols-ciphers.html). It’s recommended that you use a [custom domain](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/CNAMEs.html) and certificate with the CloudFront distribution and configure it to use use a [Security Policy](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/secure-connections-supported-viewer-protocols-ciphers.html) that does not allow older protocols such as TLS 1.0. Consider using the `TLSv1.2_2021` Security Policy.
+
+### SageMaker AmazonSageMakerFullAccess Policy
+
+AmazonSageMakerFullAccess is required to when you configure the deployment to use the development tools. It is recommended deployments intended for use beyond development and evaulation not include these development tools, as this managed policy is broad. See the [documentation](https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmazonSageMakerFullAccess.html) of this policy for additional details.
 
 ### AWS Well-Architected Framework
 
