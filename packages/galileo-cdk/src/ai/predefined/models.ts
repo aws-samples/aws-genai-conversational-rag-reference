@@ -12,11 +12,10 @@ import { pascal } from 'case';
 import { Construct } from 'constructs';
 import { startCase } from 'lodash';
 import {
-  DEFAULT_PREDEFINED_FOUNDATION_MODEL_LIST,
   FoundationModelIds,
 } from './ids';
+import { ApplicationConfig } from '../../core/app/context/types';
 import {
-  BEDROCK_DEFAULT_MODEL,
   BedrockModel,
 } from '../llms/framework/bedrock';
 import {
@@ -31,13 +30,8 @@ import { Llama2Base13BSageMaker } from '../llms/models/meta';
 
 export { IFoundationModelInventory };
 
-export interface PredefinedFoundationModelsProps {
+export interface PredefinedFoundationModelsProps extends ApplicationConfig {
   readonly vpc: IVpc;
-  readonly foundationModels?: FoundationModelIds[];
-  readonly defaultModelId?: string;
-  readonly bedrockModelIds?: string[];
-  readonly bedrockRegion?: string;
-  readonly bedrockEndpointUrl?: string;
 }
 
 export interface IFoundationModelManager {
@@ -86,20 +80,9 @@ export class PredefinedFoundationModels extends Construct implements IFoundation
   constructor(scope: Construct, id: string, props: PredefinedFoundationModelsProps) {
     super(scope, id);
 
-    // TODO: add endpoints to vpc, will need to setup VPC endpoints for cross-account development
-    const {
-      foundationModels,
-      defaultModelId,
-      bedrockEndpointUrl,
-      bedrockModelIds,
-      bedrockRegion,
-    } = props;
+    this._defaultModelId = props.llms.defaultModel;
 
-    this._defaultModelId = defaultModelId;
-
-    const modelsToDeploy = new Set(
-      foundationModels || DEFAULT_PREDEFINED_FOUNDATION_MODEL_LIST,
-    );
+    const modelsToDeploy = new Set(props.llms.predefined?.sagemaker);
 
     // Pending legal approval on usage
     // const j2Ultra = new AI21Jurassic2Ultra(this, "AI21Jurassic2Ultra", {
@@ -154,16 +137,21 @@ export class PredefinedFoundationModels extends Construct implements IFoundation
     //////////////////////////////////////////////////////////
     // Bedrock - not actual deployments but wire up to the inventory for integration
     //////////////////////////////////////////////////////////
-    if (modelsToDeploy.has(FoundationModelIds.BEDROCK)) {
-      (bedrockModelIds || [BEDROCK_DEFAULT_MODEL]).forEach(
+    if (props.bedrock?.enabled) {
+      if (props.bedrock.models == null || props.bedrock.models.length < 1) {
+        // TODO: temporary until we refactor bedrock model handling to be more runtime baseds
+        throw new Error('Must specific at least 1 bedrock model to enable');
+      }
+
+      (props.bedrock.models).forEach(
         (_bedrockModelId) => {
           const _id = `Bedrock-${pascal(_bedrockModelId)}`;
           new BedrockModel(this, _id, {
             modelUUID: BedrockModel.formatUUID(_bedrockModelId),
             modelId: _bedrockModelId,
             displayName: startCase(_id),
-            region: bedrockRegion,
-            endpointUrl: bedrockEndpointUrl,
+            region: props.bedrock?.region,
+            endpointUrl: props.bedrock?.endpointUrl,
           });
         },
       );

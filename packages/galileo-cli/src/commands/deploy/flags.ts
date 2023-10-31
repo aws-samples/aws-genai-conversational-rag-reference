@@ -5,11 +5,9 @@ import { Flags } from "@oclif/core";
 import { FlagInput } from "@oclif/core/lib/interfaces/parser";
 
 export interface DeployCommandFlags {
-  name: string;
   projen: boolean;
+  config?: string;
   profile?: string;
-  appRegion?: string;
-  llmRegion?: string;
   skipConfirmations: boolean;
   cdkCommand: string;
   cdkRequireApproval: string;
@@ -20,10 +18,6 @@ export interface DeployCommandFlags {
 }
 
 export const deployCommandFlags: FlagInput<DeployCommandFlags> = {
-  name: Flags.string({
-    description: "Application name",
-    default: "Galileo",
-  }),
   projen: Flags.boolean({
     description: "Run projen to synth project",
     default: true,
@@ -34,14 +28,9 @@ export const deployCommandFlags: FlagInput<DeployCommandFlags> = {
     description:
       "The profile set up for your AWS CLI (associated with your AWS account)",
   }),
-  appRegion: Flags.string({
-    aliases: ["app-region"],
-    description: "The region you want to deploy your application",
-    required: false,
-  }),
-  llmRegion: Flags.string({
-    aliases: ["llm-region"],
-    description: "The region you want to deploy/activate your LLM",
+  config: Flags.string({
+    aliases: ["c"],
+    description: "The config.json file to load/store configurations",
     required: false,
   }),
   skipConfirmations: Flags.boolean({

@@ -81,5 +81,21 @@
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
     },
+    {
+      "name": "Galileo CLI (Deploy)",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "--nolazy",
+        "--loader", "tsx",
+        "packages/galileo-cli/bin/galileo-cli.ts",
+        "deploy",
+        "--no-projen",
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
   ]
 }

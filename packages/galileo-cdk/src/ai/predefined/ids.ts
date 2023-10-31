@@ -10,9 +10,6 @@ export enum FoundationModelIds {
   FALCON_OA_7B = 'falcon-oa-7b',
   FALCON_LITE = 'falcon-lite',
 
-  // Bedrock
-  BEDROCK = 'bedrock',
-
   // LLama2
   META_LLAMA2_BASE_13B = 'meta.llama2.base-13b',
 }

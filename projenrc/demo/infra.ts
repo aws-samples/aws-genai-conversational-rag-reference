@@ -12,12 +12,10 @@ import { DEFAULT_RELEASE_BRANCH, VERSIONS } from "../constants";
 import { EULA_ENABLED_CONTEXT } from "../../packages/galileo-cdk/src/ai/llms/framework/eula/context";
 import { IApplicationContext } from "../../packages/galileo-cdk/src/core/app/context";
 import { extractPeerDeps } from "../helpers/extract-peer-deps";
-import { FoundationModelIds } from "../../packages/galileo-cdk/src/ai/predefined/ids";
 
 export interface InfraOptions {
   readonly monorepo: MonorepoTsProject;
   readonly rootOutdir: string;
-  readonly applicationName: string;
   readonly galileoCdkLib: GalileoCdk;
   readonly galileoSdk: GalileoSdk;
   readonly api: Api;
@@ -39,7 +37,6 @@ export class Infra {
       corpus,
       website,
       sample,
-      applicationName,
     } = options;
 
     this.project = new AwsCdkTypeScriptApp({
@@ -71,6 +68,7 @@ export class Infra {
         "case",
         "cdk-monitoring-constructs",
         "cdk-nag",
+        "fs-extra",
         "lodash",
         "pretty-bytes",
         "readline-sync",
@@ -94,6 +92,7 @@ export class Infra {
         `@aws-sdk/types@^${VERSIONS.AWS_SDK}`,
         `@smithy/types@^${VERSIONS.SMITHY_TYPES}`,
         "@types/aws-lambda",
+        "@types/fs-extra",
         "@types/lodash",
         "@types/readline-sync",
         "@types/uuid",
@@ -109,16 +108,6 @@ export class Infra {
         // Indicates if LLM End-User License Agreement verification is enabled
         [EULA_ENABLED_CONTEXT]: false, // TODO: Re-enable EULA for beta
         ...({
-          applicationName,
-          chatDomain: "Legal",
-          includeSampleDataset: true,
-          // FoundationModelRegion: "us-east-1",
-          defaultModelId: FoundationModelIds.FALCON_LITE,
-          foundationModels: [
-            // FoundationModelIds.FALCON_40B,
-            // FoundationModelIds.FALCON_OA_7B,
-            FoundationModelIds.FALCON_LITE,
-          ],
           websiteContentPath: path.relative(
             path.join(options.monorepo.outdir, rootOutdir, "infra"),
             path.join(website.project.outdir, "build")
@@ -152,6 +141,7 @@ export class Infra {
 
       },
     });
+    this.project.gitignore.exclude("config*.json");
     this.project.gitignore.exclude("cdk.context.json");
     this.project.eslint?.addIgnorePattern("cdk.out");
     this.project.eslint?.addIgnorePattern("node_modules");
@@ -176,19 +166,6 @@ export class Infra {
     NxProject.ensure(this.project).addImplicitDependency(
       api.project.runtime.python!,
       corpus.logic
-    );
-
-    this.project.package.setScript(
-      "deploy:app",
-      `pnpm exec cdk deploy --region --app cdk.out --require-approval never Dev/${applicationName}`
-    );
-    this.project.package.setScript(
-      "deploy:models",
-      `pnpm exec cdk deploy --region --app cdk.out --require-approval never Dev/${applicationName}/FoundationModelStack`
-    );
-    this.project.package.setScript(
-      "deploy:sample-dataset",
-      `pnpm exec cdk deploy --region --app cdk.out --require-approval never Dev/${applicationName}-SampleDataset`
     );
 
     this.project.package.setScript(

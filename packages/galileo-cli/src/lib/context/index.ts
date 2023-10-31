@@ -9,6 +9,7 @@ import {
   IApplicationContextKey,
   ApplicationContext,
   helpers,
+  ApplicationConfig,
 } from "../../internals";
 import { CdkContextValue, ExecaCommandReturn, ExecaTask } from "../types";
 
@@ -33,6 +34,8 @@ class Context {
 
   public readonly cdkContext: Map<IApplicationContextKey, CdkContextValue>;
 
+  private _appConfig?: ApplicationConfig;
+
   public readonly deployStacks: string[] = [];
 
   public readonly ui: Ui;
@@ -55,6 +58,15 @@ class Context {
 
     this.cdkContext = new Map<IApplicationContextKey, CdkContextValue>();
     this.ui = new Ui();
+  }
+
+  get appConfig(): ApplicationConfig {
+    if (this._appConfig) return this._appConfig;
+    throw new Error("Must call setter for appConfig before getter");
+  }
+
+  set appConfig(value: ApplicationConfig) {
+    this._appConfig = value;
   }
 
   /**

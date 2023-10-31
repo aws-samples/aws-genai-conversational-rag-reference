@@ -1,6 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import { ApplicationContext } from "@aws/galileo-cdk/lib/core/app";
+import { SampleDataSets } from "@aws/galileo-cdk/lib/core/app/context/types";
 import { Aspects, Stage, StageProps, Tags } from "aws-cdk-lib";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import { LAMBDA_RECOGNIZE_LAYER_VERSION } from "aws-cdk-lib/cx-api";
@@ -24,17 +25,21 @@ export class ApplicationStage extends Stage {
       });
     }
 
-    const config = ApplicationContext.of(this);
-    const { applicationName } = config;
+    const context = ApplicationContext.of(this);
+    const { applicationName, config } = context;
 
     const application = new Application(this, applicationName, {
       supportCrossAccountModelAccess: props?.supportCrossAccountModelAccess,
-      ...config,
+      ...context,
+      config,
     });
 
     Tags.of(this).add("Application", `${this.stageName}/${applicationName}`);
 
-    if (config.includeSampleDataset) {
+    // TODO: remove sample dataset once we have cli uploader working
+    if (
+      config.rag.samples?.datasets.includes(SampleDataSets.SUPREME_COURT_CASES)
+    ) {
       // EXAMPLE: rudimentary example of deploying dataset into processed bucket to get picked up by the ETL/Indexing job
       // Replace/remove this with actual implementation - this is for demonstration purposes only
       const sampleDatasetStack = new SampleDatasetStack(

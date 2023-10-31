@@ -57,6 +57,8 @@ pnpm run galileo-cli
 # Follow the prompt from the cli to build and deploy what you want
 ```
 
+The cli will generate an application configuration file in demo/infra/config.json, which will persist your configuration. You can modify this file and redeploy to change the configuration, or use the cli again.
+
 > `pnpm run galileo-cli --help` for cli help info
 
 ### Manually

@@ -1,11 +1,8 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import {
-  FoundationModelIds,
-  IFoundationModelInventory,
-} from "@aws/galileo-cdk/lib/ai/predefined";
+import { IFoundationModelInventory } from "@aws/galileo-cdk/lib/ai/predefined";
 import { ApplicationContext } from "@aws/galileo-cdk/lib/core/app";
-import { isBedrockFramework } from "@aws/galileo-sdk/lib/models";
+import { ApplicationConfig } from "@aws/galileo-cdk/lib/core/app/context/types";
 import { Arn, ArnFormat, CfnOutput, SecretValue, Stack } from "aws-cdk-lib";
 import { IVpc } from "aws-cdk-lib/aws-ec2";
 import * as iam from "aws-cdk-lib/aws-iam";
@@ -31,20 +28,9 @@ export interface FoundationModelStackProps extends MonitoredStackProps {
    * reusing the foundation model stack from the primary development account to reduce cost and prevent
    * capacity issues with deploying large model instances.
    */
-  readonly crossAccountRole?: boolean;
-  /**
-   * Prevents the stack from automatically creating a dependency from the application stack
-   * to the foundation stack. Useful during development to enable developers to deploy only the
-   * application stack without requiring `--exclusively` parameter which seems to cause
-   * issues with large assets sizes (https://github.com/aws/aws-cdk/issues/24569#issuecomment-1540314365).
-   */
-  readonly decoupled?: boolean;
+  readonly enableCrossAccountRole?: boolean;
 
-  readonly foundationModels?: FoundationModelIds[];
-  readonly bedrockModelIds?: string[];
-  readonly bedrockRegion?: string;
-  readonly bedrockEndpointUrl?: string;
-  readonly defaultModelId?: string;
+  readonly config: ApplicationConfig;
 }
 
 export class FoundationModelStack extends MonitoredStack {
@@ -62,7 +48,7 @@ export class FoundationModelStack extends MonitoredStack {
 
   readonly crossAccountRoleArn?: string;
 
-  private _decoupled: boolean;
+  readonly bedrockEnabled: boolean;
 
   get deployedModelIds(): string[] {
     return Object.keys(this.inventory.models);
@@ -70,14 +56,6 @@ export class FoundationModelStack extends MonitoredStack {
 
   get defaultModelId(): string {
     return this.inventory.defaultModelId;
-  }
-
-  get includesBedrock(): boolean {
-    return (
-      Object.values(this.inventory.models).find((v) =>
-        isBedrockFramework(v.framework)
-      ) != null
-    );
   }
 
   constructor(scope: Construct, id: string, props: FoundationModelStackProps) {
@@ -91,16 +69,9 @@ export class FoundationModelStack extends MonitoredStack {
       },
     });
 
-    this._decoupled = !!props.decoupled;
+    const { applicationVpc, config } = props;
 
-    const {
-      applicationVpc,
-      foundationModels,
-      defaultModelId,
-      bedrockModelIds,
-      bedrockEndpointUrl,
-      bedrockRegion,
-    } = props;
+    this.bedrockEnabled = config.bedrock?.enabled === true;
 
     let vpc: IVpc;
     if (applicationVpc && Stack.of(applicationVpc).region === this.region) {
@@ -113,11 +84,7 @@ export class FoundationModelStack extends MonitoredStack {
 
     const models = new FoundationModels(this, "FoundationModels", {
       vpc,
-      foundationModels,
-      defaultModelId,
-      bedrockModelIds,
-      bedrockRegion,
-      bedrockEndpointUrl,
+      ...config,
     });
 
     const applicationRegion = Stack.of(scope).region;
@@ -167,7 +134,7 @@ export class FoundationModelStack extends MonitoredStack {
       }),
     ];
 
-    if (this.includesBedrock) {
+    if (this.bedrockEnabled) {
       this._invokeModelsPolicyStatements.push(
         new iam.PolicyStatement({
           effect: iam.Effect.ALLOW,
@@ -177,7 +144,7 @@ export class FoundationModelStack extends MonitoredStack {
       );
     }
 
-    if (props.crossAccountRole) {
+    if (props.enableCrossAccountRole) {
       const roleName = ApplicationContext.safeResourceName(
         scope,
         "FoundationModel-CrossAccount"
@@ -271,7 +238,7 @@ export class FoundationModelStack extends MonitoredStack {
     );
 
     // Ensure the primary secret is updated and proxy depends on primary
-    !this._decoupled && Stack.of(scope).addDependency(this);
+    Stack.of(scope).addDependency(this);
 
     return secret;
   }

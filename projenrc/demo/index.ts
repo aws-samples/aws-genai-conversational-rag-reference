@@ -9,7 +9,6 @@ import { Infra } from "./infra";
 export interface DemoOptions {
   readonly monorepo: MonorepoTsProject;
   readonly rootOutdir: string;
-  readonly applicationName: string;
   readonly galileoCdkLib: GalileoCdk;
   readonly galileoSdk: GalileoSdk;
 }
@@ -22,7 +21,7 @@ export class Demo {
   public readonly infra: Infra;
 
   constructor(options: DemoOptions) {
-    const { monorepo, rootOutdir, galileoSdk, galileoCdkLib, applicationName } =
+    const { monorepo, rootOutdir, galileoSdk, galileoCdkLib } =
       options;
 
     const api = new Api({ monorepo, rootOutdir });
@@ -36,7 +35,6 @@ export class Demo {
     this.infra = new Infra({
       monorepo,
       rootOutdir,
-      applicationName,
       api,
       website,
       corpus,
