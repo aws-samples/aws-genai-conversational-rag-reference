@@ -10,7 +10,7 @@ import { helpers } from "../../internals";
 import { accountUtils } from "../../lib/account-utils";
 import context from "../../lib/context";
 import galileoPrompts from "../../lib/prompts";
-import { DeployModelOptions, ExecaTask } from "../../lib/types";
+import { ExecaTask } from "../../lib/types";
 
 const ROOT = path.resolve(__dirname, "..", "..", "..", "..", "..");
 
@@ -29,7 +29,6 @@ export default class DeployCommand extends Command {
 
   async run(): Promise<void> {
     const { flags } = await this.parse(DeployCommand);
-    const applicationName = flags.name;
 
     // this.log("deploy start", flags);
 
@@ -45,17 +44,14 @@ export default class DeployCommand extends Command {
     // check all prerequisities for the successful run
     await this.ensurePrerequisites({ build: flags.build });
 
+    // app config path, where we fetch previous/defaults, and later save config
+    const appConfigPath = await galileoPrompts.appConfigPath(flags.config);
+    context.appConfig = helpers.resolveAppConfig(appConfigPath);
+    const applicationName = await galileoPrompts.applicationName();
+    context.appConfig.app.name = applicationName;
+
     // basic info for the deployment
-    const {
-      profile,
-      appRegion,
-      email,
-      username,
-      deployApp,
-      deploySample,
-      foundationModels,
-      tooling,
-    } = context.cachedAnswers(
+    const { profile, appRegion } = context.cachedAnswers(
       await prompts(
         [
           galileoPrompts.profile(flags.profile),
@@ -63,93 +59,55 @@ export default class DeployCommand extends Command {
             regionType: "app",
             initialVal: flags.appRegion,
           }),
-          ...galileoPrompts.adminEmailAndUsername,
-          galileoPrompts.confirmDeployApp,
-          galileoPrompts.confirmDeploySample,
-          galileoPrompts.confirmTooling,
-          galileoPrompts.foundationModels(),
         ],
         { onCancel: this.onPromptCancel }
       )
     );
+    context.appConfig.identity.admin =
+      await galileoPrompts.adminEmailAndUsername();
+
+    const { foundationModelIds, llmRegion } = await prompts(
+      [galileoPrompts.foundationModelIds(), galileoPrompts.llmRegion()],
+      { onCancel: this.onPromptCancel }
+    );
+    if (llmRegion !== appRegion) {
+      context.appConfig.llms.region = llmRegion;
+    }
+    context.appConfig.llms.predefined = {
+      sagemaker: foundationModelIds,
+    };
+
+    context.appConfig.bedrock = await galileoPrompts.bedrockConfig();
+
+    context.appConfig.rag.samples = await galileoPrompts.sampleConfig();
+
+    context.appConfig.tooling = await galileoPrompts.toolingConfig();
 
     // set process envs so all child processes will inherit them
     process.env.AWS_REGION = appRegion;
     process.env.AWS_PROFILE = profile;
 
-    // bedrock-related info
-    const includesBedrock = helpers.includesBedrock(foundationModels);
-    const { bedrockModelIds, bedrockRegion, bedrockEndpointUrl } =
-      includesBedrock
-        ? context.cachedAnswers(
-            await prompts(
-              [
-                galileoPrompts.bedrockModelIds(),
-                galileoPrompts.bedrockRegion,
-                galileoPrompts.bedrockEndpointUrl,
-              ],
-              { onCancel: this.onPromptCancel }
-            )
-          )
-        : ({} as any);
-
     // foundational models -related info
     const availableModelIds = helpers.availableModelIds(
-      foundationModels,
-      bedrockModelIds
+      context.appConfig.llms.predefined.sagemaker,
+      context.appConfig.bedrock.models
     );
-    const { deployModels, defaultModelId } = context.cachedAnswers(
-      await prompts(
-        [
-          galileoPrompts.defaultModelId(availableModelIds),
-          galileoPrompts.deployModels,
-        ],
-        { onCancel: this.onPromptCancel }
-      )
+    const { defaultModelId } = await prompts(
+      [galileoPrompts.defaultModelId(availableModelIds)],
+      { onCancel: this.onPromptCancel }
     );
+    context.appConfig.llms.defaultModel = defaultModelId;
+
+    helpers.saveAppConfig(context.appConfig, appConfigPath);
 
     const account = await accountUtils.retrieveAccount(profile);
-
-    // collect information for cdkContext and deployStacks
-    if (email?.length && username?.length) {
-      context.cdkContext.set("adminEmail", email);
-      context.cdkContext.set("adminUsername", username);
-    }
-    if (deployApp) {
-      context.deployStacks.push(`Dev/${applicationName}`);
-    }
-    if (deploySample) {
-      context.deployStacks.push(`Dev/${applicationName}-SampleDataset`);
-    }
-    context.cdkContext.set("includeSampleDataset", deploySample as boolean);
-
-    context.cdkContext.set("tooling", tooling as boolean);
-
-    context.cdkContext.set("foundationModels", foundationModels.join(","));
-    defaultModelId && context.cdkContext.set("defaultModelId", defaultModelId);
-
-    if (includesBedrock) {
-      context.cdkContext.set("bedrockModelIds", bedrockModelIds.join(","));
-      context.cdkContext.set("bedrockRegion", bedrockRegion);
-      if (bedrockEndpointUrl && bedrockEndpointUrl.length) {
-        context.cdkContext.set("bedrockEndpointUrl", bedrockEndpointUrl);
-      }
-    }
-
-    // set deploy strategy
-    await this.setDeployModelStrategy({
-      applicationName,
-      appRegion,
-      deployModels,
-    });
 
     if (flags.projen) {
       console.log(chalk.gray("Synthesizing project repository..."));
       context.execCommand("pnpm projen", { cwd: ROOT });
     }
 
-    const modelRegion =
-      context.cdkContext.get("foundationModelRegion") || appRegion;
+    const modelRegion = context.appConfig.llms.region || appRegion;
 
     const regionsToBootstrap = new Set<string>();
     for (const _region of new Set<string>([appRegion, modelRegion])) {
@@ -190,6 +148,9 @@ export default class DeployCommand extends Command {
         regionsToBootstrap,
       });
     }
+
+    context.deployStacks.push(`Dev/${context.appConfig.app.name}`);
+    context.cdkContext.set("configPath", appConfigPath);
 
     const cmdDeploy = this.getDeploymentCommand({
       appRegion,
@@ -305,91 +266,6 @@ export default class DeployCommand extends Command {
       }
     }
     this.exit(0);
-  }
-
-  /**
-   * Set the deployment strategy for app, foundational models and bedrock.
-   * @param options params
-   */
-  async setDeployModelStrategy(options: {
-    readonly applicationName: string;
-    readonly appRegion: string;
-    readonly deployModels: any;
-  }) {
-    const { applicationName, appRegion, deployModels } = options;
-
-    switch (deployModels) {
-      case DeployModelOptions.SAME_REGION: {
-        context.cdkContext.set("foundationModelRegion", appRegion);
-        context.deployStacks.push(
-          `Dev/${applicationName}/FoundationModelStack`
-        );
-        break;
-      }
-      case DeployModelOptions.DIFFERENT_REGION: {
-        const { foundationModelRegion } = context.cachedAnswers(
-          await prompts(
-            galileoPrompts.awsRegion({
-              regionType: "foundationModel",
-              message:
-                "What region do you want to deploy Foundation Models to?",
-            }),
-            { onCancel: this.onPromptCancel }
-          )
-        );
-        context.cdkContext.set("foundationModelRegion", foundationModelRegion);
-        context.deployStacks.push(
-          `Dev/${applicationName}/FoundationModelStack`
-        );
-        break;
-      }
-      case DeployModelOptions.ALREADY_DEPLOYED: {
-        const { foundationModelRegion } = context.cachedAnswers(
-          await prompts(
-            galileoPrompts.awsRegion({
-              regionType: "foundationModel",
-              message:
-                "What region was the Foundation Model stack deployed to?",
-            }),
-            { onCancel: this.onPromptCancel }
-          )
-        );
-        context.cdkContext.set("decoupleStacks", true);
-        context.cdkContext.set("foundationModelRegion", foundationModelRegion);
-        break;
-      }
-      case DeployModelOptions.CROSS_ACCOUNT: {
-        const { foundationModelRegion, crossRegionRoleArn } =
-          context.cachedAnswers(
-            await prompts(
-              [
-                galileoPrompts.awsRegion({
-                  regionType: "foundationModel",
-                  message:
-                    "What region was the Foundation Model stack deployed to in other account?",
-                  initialVal:
-                    context.cache.getItem("foundationModelRegion") ??
-                    "us-east-1",
-                }),
-                galileoPrompts.crossRegionRoleArn(applicationName),
-              ],
-              { onCancel: this.onPromptCancel }
-            )
-          );
-        context.cdkContext.set("decoupleStacks", true);
-        context.cdkContext.set("foundationModelRegion", foundationModelRegion);
-        context.cdkContext.set(
-          "foundationModelCrossAccountRoleArn",
-          crossRegionRoleArn
-        );
-        break;
-      }
-      case DeployModelOptions.NO: {
-        context.cdkContext.set("foundationModelRegion", appRegion);
-        context.cdkContext.set("decoupleStacks", true);
-        break;
-      }
-    }
   }
 
   /**

@@ -1,7 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import { GalileoNagSupression } from "@aws/galileo-cdk/lib/tooling/nag";
-import { CdkGraph, FilterPreset, Filters, Graph } from "@aws/pdk/cdk-graph";
+import { CdkGraph, FilterPreset, Filters } from "@aws/pdk/cdk-graph";
 import { CdkGraphDiagramPlugin } from "@aws/pdk/cdk-graph-plugin-diagram";
 import { AwsPrototypingChecks, PDKNag } from "@aws/pdk/pdk-nag";
 import { Aspects } from "aws-cdk-lib";

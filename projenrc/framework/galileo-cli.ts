@@ -21,9 +21,10 @@ export class GalileoCli extends TypeScriptAppProject {
     // TODO: review this once we're allowing building the CLI
     const tsconfig: TypescriptConfigOptions = {
       compilerOptions: {
-        lib: ["ES2022"],
+        lib: ["ES2022", "DOM"],
         module: "NodeNext",
         moduleResolution: TypeScriptModuleResolution.NODE_NEXT,
+        skipLibCheck: true,
 
         // set these to `undefined` in order to be able to import "external" code
         // currently we're using imports (model ids) from demo/infra
@@ -53,6 +54,7 @@ export class GalileoCli extends TypeScriptAppProject {
         "clear",
         "csv-parse",
         "execa",
+        "fs-extra",
         "figlet",
         "ink",
         "jsonschema",
@@ -72,6 +74,7 @@ export class GalileoCli extends TypeScriptAppProject {
         "@types/csv-parse",
         "@types/execa",
         "@types/jsonschema",
+        "@types/fs-extra",
         "@types/lodash",
         "@types/node-localstorage",
         "@types/ora",

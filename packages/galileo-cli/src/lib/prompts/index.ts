@@ -3,17 +3,22 @@ PDX-License-Identifier: Apache-2.0 */
 
 // import * as path from "node:path";
 import chalk from "chalk";
-import { PromptObject } from "prompts";
+import { isEmpty } from "lodash";
+import prompts, { PromptObject } from "prompts";
 import {
+  APPLICATION_CONFIG_JSON,
+  ApplicationConfig,
   BEDROCK_DEFAULT_MODEL,
   BEDROCK_REGION,
   BedrockModelIds,
+  DEFAULT_APPLICATION_NAME,
   DEFAULT_PREDEFINED_FOUNDATION_MODEL_LIST,
   FoundationModelIds,
+  SampleDataSets,
   helpers,
 } from "../../internals";
 import context from "../context";
-import { DeployModelOptions, NameArnTuple } from "../types";
+import { NameArnTuple } from "../types";
 
 namespace galileoPrompts {
   export const installDeps: PromptObject = {
@@ -64,6 +69,32 @@ namespace galileoPrompts {
     validate: async (value: string) =>
       (value && value.length > 0) || "Profile is required",
   });
+
+  export async function applicationName(): Promise<string> {
+    const { name } = await prompts({
+      type: "text",
+      name: "name",
+      message: "Application Name (stack/resource naming)",
+      initial: context.appConfig.app.name || DEFAULT_APPLICATION_NAME,
+    });
+    return name;
+  }
+
+  export async function appConfigPath(initial?: string): Promise<string> {
+    const { configPath: _value } = await prompts({
+      type: "text",
+      name: "configPath",
+      message: "Config file name?",
+      initial:
+        initial ||
+        context.cache.getItem("appConfigPath") ||
+        APPLICATION_CONFIG_JSON,
+      validate: async (value: string) =>
+        value == null || value.endsWith(".json") || "Profile is required",
+    });
+    context.cache.setItem("appConfigPath", _value);
+    return _value;
+  }
 
   export const awsRegion = (options: {
     regionType?: "app" | "foundationModel" | "bedrock";
@@ -127,53 +158,110 @@ namespace galileoPrompts {
     };
   };
 
-  export const adminEmailAndUsername: PromptObject[] = [
-    email({
-      message:
-        "Administrator email address" +
-        chalk.reset.grey(
-          " Enter email address to automatically create Cognito admin user, otherwise leave blank\n"
-        ),
-    }),
-    {
-      type: (prev) => (prev == null ? false : "text"),
-      name: "username",
-      message: "Administrator username",
-      initial: context.cache.getItem("username") ?? "admin",
-    },
-  ];
+  export async function adminEmailAndUsername(): Promise<
+    undefined | { username: string; email: string }
+  > {
+    const result = await prompts([
+      email({
+        message:
+          "Administrator email address" +
+          chalk.reset.grey(
+            " Enter email address to automatically create Cognito admin user, otherwise leave blank\n"
+          ),
+        initialVal: context.appConfig.identity.admin?.email,
+      }),
+      {
+        type: (prev) => (prev == null ? false : "text"),
+        name: "username",
+        message: "Administrator username",
+        initial: context.appConfig.identity.admin?.username ?? "admin",
+      },
+    ]);
 
-  export const confirmDeployApp: PromptObject = {
-    type: "confirm",
-    name: "deployApp",
-    message: "Deploy main application stack?",
-    initial: context.cache.getItem("deployApp") ?? true,
-  };
+    if (helpers.ifNotEmpty(result.email)) {
+      return {
+        email: result.email,
+        username: result.username,
+      };
+    }
+    return undefined;
+  }
 
   // TODO: remove this and move sample deployment to upload data command
-  export const confirmDeploySample: PromptObject = {
-    type: "confirm",
-    name: "deploySample",
-    message: "Deploy sample dataset?",
-    initial: context.cache.getItem("deploySample") ?? true,
+  export async function sampleConfig(): Promise<
+    ApplicationConfig["rag"]["samples"]
+  > {
+    const { sampleDatasets } = await prompts({
+      name: "sampleDatasets",
+      message: "Deploy sample dataset?",
+      type: "multiselect",
+      instructions: chalk.gray(
+        "\n ↑/↓: Highlight option, ←/→/[space]: Toggle selection, a: Toggle all, enter/return: Complete answer"
+      ),
+      choices: Object.values(SampleDataSets).map((value) => ({
+        title: value,
+        value: value,
+        selected: context.appConfig.rag.samples?.datasets.includes(value),
+      })),
+      min: 0,
+    });
+
+    if (isEmpty(sampleDatasets)) {
+      return undefined;
+    }
+    return {
+      datasets: sampleDatasets,
+    };
+  }
+
+  export async function toolingConfig(): Promise<ApplicationConfig["tooling"]> {
+    const { tooling } = await prompts({
+      name: "tooling",
+      message: "Enable tooling in dev stage (SageMaker Studio, PgAdmin)?",
+      type: "multiselect",
+      instructions: chalk.gray(
+        "\n ↑/↓: Highlight option, ←/→/[space]: Toggle selection, a: Toggle all, enter/return: Complete answer"
+      ),
+      choices: [
+        {
+          title: "sagemakerStudio",
+          value: "sagemakerStudio",
+          selected: context.appConfig.tooling?.sagemakerStudio ?? false,
+        },
+        {
+          title: "pgadmin",
+          value: "pgadmin",
+          selected: context.appConfig.tooling?.pgadmin ?? false,
+        },
+      ],
+      min: 0,
+    });
+
+    return {
+      sagemakerStudio: tooling.includes("sagemakerStudio"),
+      pgadmin: tooling.includes("pgadmin"),
+    };
+  }
+
+  export const llmRegion = (): PromptObject => {
+    return {
+      type: "text",
+      name: "llmRegion",
+      message: "Foundation model region?",
+      initial:
+        context.appConfig.llms.region ?? context.cache.getItem("appRegion"),
+    };
   };
 
-  export const confirmTooling: PromptObject<"tooling"> = {
-    type: "confirm",
-    name: "tooling",
-    message: "Enable tooling in dev stage (SageMaker Studio, PgAdmin)?",
-    initial: context.cache.getItem("tooling") ?? false,
-  };
-
-  export const foundationModels = (): PromptObject => {
+  export const foundationModelIds = (): PromptObject => {
     const selectedFoundationModels = new Set<FoundationModelIds>(
-      context.cache.getItem("foundationModels") ||
+      context.appConfig.llms.predefined?.sagemaker ||
         DEFAULT_PREDEFINED_FOUNDATION_MODEL_LIST
     );
 
     const q: PromptObject = {
       type: "multiselect",
-      name: "foundationModels",
+      name: "foundationModelIds",
       message: "Choose the foundation models to support",
       instructions: chalk.gray(
         "\n ↑/↓: Highlight option, ←/→/[space]: Toggle selection, a: Toggle all, enter/return: Complete answer"
@@ -183,47 +271,68 @@ namespace galileoPrompts {
         value: _id,
         selected: selectedFoundationModels.has(_id),
       })),
-      min: 1,
+      min: 0,
     };
 
     return q;
   };
 
-  export const bedrockModelIds = (): PromptObject => {
+  export async function bedrockConfig() {
+    const { enabled } = await prompts({
+      type: "confirm",
+      name: "enabled",
+      message: "Enable Bedrock?",
+      initial: context.appConfig.bedrock?.enabled ?? true,
+    });
+
+    if (!enabled) {
+      return {
+        enabled: false,
+      };
+    }
+
     const selectedBedrockModels = new Set<BedrockModelIds>(
-      context.cache.getItem("bedrockModelIds") || [BEDROCK_DEFAULT_MODEL]
+      (context.appConfig.bedrock?.models as any) || [BEDROCK_DEFAULT_MODEL]
     );
+
+    const { region, models, endpointUrl } = await prompts([
+      {
+        type: "text",
+        name: "region",
+        message: "Bedrock region",
+        initial: context.appConfig.bedrock?.region ?? BEDROCK_REGION,
+      },
+      {
+        type: "autocompleteMultiselect",
+        name: "models",
+        message: "Bedrock model ids",
+        min: 1,
+        instructions: chalk.gray(
+          "↑/↓: Highlight option, ←/→/[space]: Toggle selection, Return to submit"
+        ),
+        choices: Object.values(BedrockModelIds)
+          .sort()
+          .map((_id) => ({
+            title: _id,
+            value: _id,
+            selected: selectedBedrockModels.has(_id),
+          })),
+      },
+      {
+        type: "text",
+        name: "endpointUrl",
+        message: `Bedrock endpoint url ${chalk.gray("(optional)")}`,
+        initial: context.appConfig.bedrock?.endpointUrl ?? undefined,
+      },
+    ]);
+
     return {
-      type: "autocompleteMultiselect",
-      name: "bedrockModelIds",
-      message: "Bedrock model ids",
-      min: 1,
-      instructions: chalk.gray(
-        "↑/↓: Highlight option, ←/→/[space]: Toggle selection, Return to submit"
-      ),
-      choices: Object.values(BedrockModelIds)
-        .sort()
-        .map((_id) => ({
-          title: _id,
-          value: _id,
-          selected: selectedBedrockModels.has(_id),
-        })),
+      enabled: true,
+      region,
+      models,
+      endpointUrl: helpers.ifNotEmpty(endpointUrl),
     };
-  };
-
-  export const bedrockRegion: PromptObject = {
-    type: "text",
-    name: "bedrockRegion",
-    message: "Bedrock region",
-    initial: context.cache.getItem("bedrockRegion") ?? BEDROCK_REGION,
-  };
-
-  export const bedrockEndpointUrl: PromptObject = {
-    type: "text",
-    name: "bedrockEndpointUrl",
-    message: `Bedrock endpoint url ${chalk.gray("(optional)")}`,
-    initial: context.cache.getItem("bedrockEndpointUrl") ?? undefined,
-  };
+  }
 
   export const defaultModelId = (availableModelIds: string[]): PromptObject => {
     return {
@@ -236,51 +345,13 @@ namespace galileoPrompts {
         value: x,
       })),
       initial: () => {
-        const _initial = context.cache.getItem("defaultModelId");
+        const _initial = context.appConfig.llms.defaultModel;
         if (_initial && availableModelIds.includes(_initial)) {
           return availableModelIds.indexOf(_initial);
         }
 
         return 0;
       },
-    };
-  };
-
-  export const deployModels: PromptObject = {
-    type: "select",
-    name: "deployModels",
-    message: "Foundation Models Region / Account",
-    initial:
-      context.cache.getItem("deployModels") ?? DeployModelOptions.SAME_REGION,
-    choices: [
-      {
-        title: "Same region as application",
-        value: DeployModelOptions.SAME_REGION,
-      },
-      {
-        title: "Different region",
-        value: DeployModelOptions.DIFFERENT_REGION,
-      },
-      {
-        title: "Cross-account (advanced)",
-        value: DeployModelOptions.CROSS_ACCOUNT,
-      },
-    ],
-  };
-
-  export const crossRegionRoleArn = (applicationName: string): PromptObject => {
-    const crossAccountRegex = new RegExp(
-      `arn:aws:iam::\\d{10,12}:role\\/${applicationName}-FoundationModel-CrossAccount-\\w+`
-    );
-
-    return {
-      type: "text",
-      name: "crossRegionRoleArn",
-      message: "What is the cross-account role arn for Foundation Model stack?",
-      initial: context.cache.getItem("crossRegionRoleArn"),
-      validate: async (value: string) =>
-        (value && crossAccountRegex.test(value)) ||
-        `Invalid cross-account arn - expected "${crossAccountRegex.source}"`,
     };
   };
 

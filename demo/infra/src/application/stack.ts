@@ -3,6 +3,7 @@ PDX-License-Identifier: Apache-2.0 */
 import { FoundationModelIds } from "@aws/galileo-cdk/lib/ai/predefined";
 import { ServiceQuotas, isDevStage } from "@aws/galileo-cdk/lib/common";
 import { IApplicationContext } from "@aws/galileo-cdk/lib/core/app";
+import { ApplicationConfig } from "@aws/galileo-cdk/lib/core/app/context/types";
 import { CfnOutput, Duration, Stack, StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { FoundationModelStack } from "./ai/foundation-models";
@@ -16,6 +17,7 @@ import { Tooling } from "./tooling";
 
 export interface ApplicationProps extends StackProps, IApplicationContext {
   readonly supportCrossAccountModelAccess?: boolean;
+  readonly config: ApplicationConfig;
 }
 
 export class Application extends Stack {
@@ -28,22 +30,10 @@ export class Application extends Stack {
 
     const {
       supportCrossAccountModelAccess,
-      // from config...
-      foundationModelRegion,
-      decoupleStacks,
       corpusDockerImagePath,
-      chatDomain,
-      defaultModelId,
-      applicationName,
       websiteContentPath,
       foundationModelCrossAccountRoleArn,
-      foundationModels,
-      bedrockModelIds,
-      bedrockEndpointUrl,
-      bedrockRegion,
-      geoRestriction,
-      adminEmail,
-      adminUsername,
+      config,
     } = props;
 
     // Deploy will fail if ServiceQuotas are not met based on underlying infra requirements
@@ -53,10 +43,10 @@ export class Application extends Stack {
     const { vpc } = new NetworkingStack(this, "Networking");
 
     const identity = new IdentityLayer(this, "IdentityLayer", {
-      adminUser:
-        adminEmail && adminUsername
-          ? { email: adminEmail, username: adminUsername }
-          : undefined,
+      adminUser: config.identity.admin && {
+        email: config.identity.admin?.email,
+        username: config.identity.admin.username,
+      },
     });
 
     const foundationModelStack = new FoundationModelStack(
@@ -66,17 +56,12 @@ export class Application extends Stack {
         env: {
           // [Optional] cross-region model deployment to support capacity/availability constraints on a given region
           // If undefined, will default to application region
-          region: foundationModelRegion,
+          region: config.llms.region,
         },
         // If in same region as application, it will reuse the vpc; otherwise will create its own
         applicationVpc: vpc,
-        crossAccountRole: supportCrossAccountModelAccess,
-        decoupled: decoupleStacks,
-        foundationModels: foundationModels as FoundationModelIds[],
-        defaultModelId,
-        bedrockEndpointUrl,
-        bedrockModelIds,
-        bedrockRegion,
+        enableCrossAccountRole: supportCrossAccountModelAccess,
+        config,
       }
     );
 
@@ -107,7 +92,7 @@ export class Application extends Stack {
         vpc,
         chatMessageTable: appData.datastore,
         chatMessageTableGsiIndexName: appData.gsiIndexName,
-        chatDomain,
+        chatDomain: config.chat.domain,
         searchUrl: corpus.similaritySearchUrl,
         foundationModelInventorySecret: foundationModelInventorySecret,
         foundationModelPolicyStatements:
@@ -140,7 +125,7 @@ export class Application extends Stack {
       userPoolWebClientId: identity.userPoolWebClientId,
       userPoolId: identity.userPoolId,
       // website
-      geoRestriction,
+      geoRestriction: config.website?.geoRestriction,
       websiteContentPath,
       // lambdas
       createChatMessageFn: inferenceEngine.lambda,
@@ -155,16 +140,24 @@ export class Application extends Stack {
     });
 
     // Only add tooling for development stage
-    if (props.tooling === true && isDevStage(this)) {
+    if (
+      (config.tooling?.pgadmin || config.tooling?.sagemakerStudio) &&
+      isDevStage(this)
+    ) {
       const tooling = new Tooling(this, "Tooling", {
         vpc,
-        sagemakerStudio: {
-          domainName: applicationName,
-        },
-        pgAdmin: {
-          pgSecurityGroup: corpus.vectorStore.securityGroup,
-          adminEmail: adminEmail!,
-        },
+        sagemakerStudio: config.tooling.sagemakerStudio
+          ? {
+              domainName: config.app.name,
+            }
+          : undefined,
+        pgAdmin:
+          config.tooling.pgadmin && config.identity.admin?.email
+            ? {
+                pgSecurityGroup: corpus.vectorStore.securityGroup,
+                adminEmail: config.identity.admin.email,
+              }
+            : undefined,
       });
 
       const studioUserRole = tooling.studioUserRole;

@@ -8,7 +8,8 @@
     "inlineSourceMap": true,
     "inlineSources": true,
     "lib": [
-      "ES2022"
+      "ES2022",
+      "DOM"
     ],
     "module": "NodeNext",
     "noEmitOnError": false,
@@ -24,7 +25,8 @@
     "strictPropertyInitialization": true,
     "stripInternal": true,
     "target": "ES2022",
-    "moduleResolution": "nodenext"
+    "moduleResolution": "nodenext",
+    "skipLibCheck": true
   },
   "include": [
     ".projenrc.js",

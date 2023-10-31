@@ -4,7 +4,6 @@ import { GalileoCdk, Demo, GalileoSdk, GalileoCli } from "./projenrc";
 import { MonorepoProject } from "./projenrc/monorepo";
 
 const DEMO_DIR = "demo";
-const DEMO_NAME = "Galileo";
 
 const monorepo = new MonorepoProject({
   devDeps: [
@@ -82,6 +81,7 @@ monorepo.setScript(
   "git-clean:keep-configs",
   `git clean -xfd ${[
     "demo/website/public",
+    "demo/infra/config*.json",
     "packages/galileo-cli/bin/.cache",
     "demo/infra/cdk.context.json",
   ]
@@ -113,7 +113,6 @@ new Demo({
   galileoCdkLib,
   galileoSdk,
   rootOutdir: DEMO_DIR,
-  applicationName: DEMO_NAME,
 });
 
 monorepo.synth();

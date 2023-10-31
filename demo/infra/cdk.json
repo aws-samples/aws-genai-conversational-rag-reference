@@ -4,13 +4,6 @@
     "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
     "repositoryName": "galileo",
     "@aws-galileo/EULA/ENABLED": false,
-    "applicationName": "Galileo",
-    "chatDomain": "Legal",
-    "includeSampleDataset": true,
-    "defaultModelId": "falcon-lite",
-    "foundationModels": [
-      "falcon-lite"
-    ],
     "websiteContentPath": "../website/build",
     "corpusDockerImagePath": "../corpus"
   },

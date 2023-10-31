@@ -35,6 +35,7 @@ export class GalileoCdk extends AwsCdkConstructLibrary {
         `@aws-sdk/client-sfn@^${VERSIONS.AWS_SDK}`,
         `@aws-sdk/lib-dynamodb@^${VERSIONS.AWS_SDK}`,
         `@aws-sdk/types@^${VERSIONS.AWS_SDK}`,
+        "@types/fs-extra",
       ],
       bundledDeps: [
         "@aws-lambda-powertools/logger",
@@ -52,6 +53,7 @@ export class GalileoCdk extends AwsCdkConstructLibrary {
         "aws-lambda",
         "aws-sdk",
         "case",
+        "fs-extra",
         "lodash",
         "pretty-bytes",
         "readline-sync",
