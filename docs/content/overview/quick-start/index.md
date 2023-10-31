@@ -40,6 +40,9 @@ Example, if you only deploy the *Falcon Lite* predefined model, then you only ne
 
 ## Quick Start
 
+!!! tip "Bedrock Model access"
+    --8<-- "development/models/bedrock-models.md"
+
 Quickly deploy the full solution using the following:
 
 > * Make sure docker is running! And with sufficient virtual disk space.

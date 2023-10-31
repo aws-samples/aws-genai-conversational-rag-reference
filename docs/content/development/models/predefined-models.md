@@ -1,5 +1,8 @@
 --8<-- "disclaimer/third-party-model.md"
 
+!!! tip "Bedrock Model access"
+    --8<-- "development/models/bedrock-models.md"
+
 | Provider    | Model       | Instance / Size  | Model Status^1^         | Prompt Status^2^        | Notes                                                                                             |
 | ----------- | ----------- | ---------------- | -------------------- | -------------------- | ------------------------------------------------------------------------------------------------- |
 | `SageMaker` | Falcon Lite | `ml.g5.12xlarge` | :material-check-all: | :material-check-all: | Quite stable and great for general purpose, flexible prompt engineering                           |

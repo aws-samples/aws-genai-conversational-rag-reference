@@ -77,7 +77,7 @@ check "java" "java --version | head -n 1" ">=17" \
   "Recommendation: Use Amazon Corretto 17. See https://docs.aws.amazon.com/corretto/latest/corretto-17-ug/downloads-list.html"
 JAVA_PASS=$?
 
-check "aws" "aws --version" "2.x" \
+check "aws" "aws --version" ">=2.13.23 <3" \
   "Recommendation: AWS CLI v2 is required. See https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html"
 AWS_PASS=$?
 

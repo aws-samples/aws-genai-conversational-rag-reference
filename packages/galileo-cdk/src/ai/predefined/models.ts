@@ -137,12 +137,7 @@ export class PredefinedFoundationModels extends Construct implements IFoundation
     //////////////////////////////////////////////////////////
     // Bedrock - not actual deployments but wire up to the inventory for integration
     //////////////////////////////////////////////////////////
-    if (props.bedrock?.enabled) {
-      if (props.bedrock.models == null || props.bedrock.models.length < 1) {
-        // TODO: temporary until we refactor bedrock model handling to be more runtime baseds
-        throw new Error('Must specific at least 1 bedrock model to enable');
-      }
-
+    if (props.bedrock?.enabled && props.bedrock.models?.length) {
       (props.bedrock.models).forEach(
         (_bedrockModelId) => {
           const _id = `Bedrock-${pascal(_bedrockModelId)}`;
