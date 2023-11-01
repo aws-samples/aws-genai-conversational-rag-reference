@@ -4,5 +4,5 @@ PDX-License-Identifier: Apache-2.0 */
 import { DocumentMetadata } from "../types";
 
 export interface IMetadataProvider {
-  readonly getMetadata: () => string | DocumentMetadata;
+  readonly getMetadata: () => Promise<string | DocumentMetadata>;
 }

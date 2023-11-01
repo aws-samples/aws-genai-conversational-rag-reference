@@ -5,7 +5,7 @@ import { parseCsv } from "./parser-common";
 import { DocumentMetadata, IMetadataProvider } from "../../src";
 
 export class MetadataProvider implements IMetadataProvider {
-  getMetadata(): string | DocumentMetadata {
+  async getMetadata(): Promise<string | DocumentMetadata> {
     // build the metadata
     const docMetadata = parseCsv();
 
