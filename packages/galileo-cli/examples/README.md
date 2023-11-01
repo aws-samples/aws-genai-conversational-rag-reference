@@ -80,7 +80,7 @@ In your script, you need to import `DocumentMetadata` and `IMetadataProvider` fr
 import { DocumentMetadata, IMetadataProvider } from "../../src"; // or, later: ... from "@aws-galileo/cli"
 
 export class MetadataProvider implements IMetadataProvider {
-  getMetadata(): string | DocumentMetadata {
+  async getMetadata(): Promise<string | DocumentMetadata> {
 
     // option 1:
     const metadataFile: string = ...

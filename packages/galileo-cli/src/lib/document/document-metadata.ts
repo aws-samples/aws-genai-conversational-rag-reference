@@ -60,7 +60,7 @@ export const loadDocumentMetadata = async (
       const { MetadataProvider } = await import(loaderOrMetaFilePath);
       const metadataProvider: IMetadataProvider = new MetadataProvider();
 
-      const metadataReturned = metadataProvider.getMetadata();
+      const metadataReturned = await metadataProvider.getMetadata();
 
       if (typeof metadataReturned === "string") {
         metadataFile = metadataReturned;
