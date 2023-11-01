@@ -1,5 +1,9 @@
 {
   "name": "monorepo",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aws-samples/aws-genai-conversational-rag-reference"
+  },
   "scripts": {
     "bootstrap-account": "pnpm exec projen bootstrap-account",
     "build": "pnpm exec projen build",
@@ -114,6 +118,7 @@
   },
   "main": "lib/index.js",
   "license": "Apache-2.0",
+  "homepage": "https://aws-samples.github.io/aws-genai-conversational-rag-reference",
   "version": "0.0.0",
   "types": "lib/index.d.ts",
   "private": true,
