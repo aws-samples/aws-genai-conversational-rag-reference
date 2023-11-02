@@ -197,7 +197,9 @@ export class IndexingCache {
 
   @measurable('IndexingCache-resolveS3Metadata')
   async _resolveS3Metadata(objectKeys: string[]) {
-    logger.info(`Resolving S3 metadata: ${objectKeys.length}`, { count: objectKeys.length });
+    logger.info(`Resolving S3 metadata: ${objectKeys.length}`, {
+      count: objectKeys.length,
+    });
     logger.debug({ message: 'S3 objects keys to resolve', objectKeys });
 
     const task: async.AsyncBooleanIterator<string> = async (_objectKey: string) =>
@@ -336,14 +338,26 @@ async function delay(interval: number) {
   });
 }
 
-function normalizeMetadataKey(key: string): string {
-  return key.replace(/-/g, '_');
-}
+export function normalizeMetadata(metadata: Record<string, string> = {}): Record<string, string> {
+  let metadataNormalized: Record<string, string> = {};
 
-function normalizeMetadata(metadata?: Record<string, string>): Record<string, string> {
-  return Object.fromEntries(
-    Object.entries(metadata || {}).map(([key, value]) => {
-      return [normalizeMetadataKey(key), value];
-    }),
-  );
+  for (const key in metadata) {
+    if (key === 'json-base64') {
+      try {
+        // base64 decode
+        const decodedValue = Buffer.from(metadata[key], 'base64').toString('utf-8');
+        const decodedObject = JSON.parse(decodedValue);
+        metadataNormalized = {
+          ...metadataNormalized,
+          ...decodedObject,
+        };
+      } catch (err: any) {
+        console.log('Error decoding json-base64 field. Skipping...', err.message);
+      }
+    } else {
+      metadataNormalized[key] = metadata[key];
+    }
+  }
+
+  return metadataNormalized;
 }
