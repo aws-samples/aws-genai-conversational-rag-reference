@@ -19,7 +19,10 @@ else
 fi
 
 echo "${cyan}Galileo Prerequisite Check...${reset}"
-uname -a
+echo ""
+# don't print the network node hostname
+SYS_INFO=$(uname -srvmpio)
+echo "${cyan}system: $SYS_INFO${reset}"
 
 # We need pnpm dlx for semver check
 if ! [ -x "$(command -v pnpm)" ]; then
