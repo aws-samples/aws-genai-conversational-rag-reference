@@ -19,7 +19,8 @@
     "exampleContent2": {
       "pageContent": "This is my example content 2",
       "metadata": {
-        "sourceType": "on-the-fly-content"
+        "sourceType": "on-the-fly-content",
+        "json-base64": "eyJjaMOsYSBraMOzYSI6Imdpw6EgdHLhu4siLCJnacOhIHRy4buLIjoiY2jDrGEga2jDs2EifQ=="
       }
     }
   }
