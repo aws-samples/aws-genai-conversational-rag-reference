@@ -15,8 +15,11 @@
     "${workspaceFolder}/demo/api/generated/runtime/python",
     "${workspaceFolder}/demo/corpus/embeddings"
   ],
-  "typescript.preferences.quoteStyle": "double",
-  "javascript.preferences.quoteStyle": "double",
+  "prettier.trailingComma": "all",
+  "prettier.singleQuote": true,
+  "prettier.printWidth": 120,
+  "typescript.preferences.quoteStyle": "single",
+  "javascript.preferences.quoteStyle": "single",
   "eslint.nodePath": "node_modules/eslint/lib",
   "eslint.validate": [
     "javascript",

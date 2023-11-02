@@ -33,6 +33,8 @@ jspm_packages/
 /test-reports/
 junit.xml
 /coverage/
+!/.prettierignore
+!/.prettierrc.json
 !/.npmrc
 !/test/
 !/tsconfig.json

@@ -138,19 +138,20 @@
   },
   "overrides": [
     {
-      "rules": {
-        "quotes": [
-          "error",
-          "double",
-          {
-            "avoidEscape": true
-          }
-        ]
-      },
       "files": [
         "**/*.ts",
         "**/*.tsx"
-      ]
+      ],
+      "rules": {
+        "prettier/prettier": [
+          "error",
+          {
+            "trailingComma": "all",
+            "singleQuote": true,
+            "printWidth": 120
+          }
+        ]
+      }
     }
   ]
 }

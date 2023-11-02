@@ -146,6 +146,22 @@
       "rules": {
         "import/no-extraneous-dependencies": "off"
       }
+    },
+    {
+      "files": [
+        "**/*.ts",
+        "**/*.tsx"
+      ],
+      "rules": {
+        "prettier/prettier": [
+          "error",
+          {
+            "trailingComma": "all",
+            "singleQuote": true,
+            "printWidth": 120
+          }
+        ]
+      }
     }
   ]
 }
