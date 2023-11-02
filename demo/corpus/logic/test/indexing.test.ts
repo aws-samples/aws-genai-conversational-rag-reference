@@ -73,6 +73,7 @@ describe('indexing', () => {
         a: 'a',
         b: 'b',
       },
+      ContentType: 'text/plain',
     } as HeadObjectCommandOutput);
 
     dynamoDBDocumentMock.on(GetCommand).resolves({});
@@ -102,6 +103,7 @@ describe('indexing', () => {
         a: 'a',
         b: 'b',
       },
+      ContentType: 'text/plain',
     } as HeadObjectCommandOutput);
 
     // model last indexed
@@ -148,6 +150,7 @@ describe('indexing', () => {
           a: 'a',
           b: 'b',
         },
+        ContentType: 'text/plain',
       } as HeadObjectCommandOutput);
     });
 
@@ -170,6 +173,36 @@ describe('indexing', () => {
           id: `s3://${INDEXING_BUCKET}/${_file}`,
           timestamp: lastIndexed.toISOString(),
         })),
+      },
+    } as BatchGetCommandOutput);
+
+    dynamoDBDocumentMock.on(BatchWriteCommand).resolves({});
+
+    const count = await require('../src/indexing').main();
+    expect(count).toBe(Object.keys(inputFiles).length / 2);
+  });
+
+  test('content-type filtered', async () => {
+    const _s3Head = s3Mock.on(HeadObjectCommand);
+    Object.keys(inputFiles).forEach((_, i) => {
+      _s3Head.resolvesOnce({
+        $metadata: {},
+        LastModified: new Date(),
+        Metadata: {
+          a: 'a',
+          b: 'b',
+        },
+        ContentType: i % 2 == 0 ? 'text/plain' : 'application/octet-stream',
+      } as HeadObjectCommandOutput);
+    });
+
+    dynamoDBDocumentMock.on(GetCommand).resolves({});
+    dynamoDBDocumentMock.on(PutCommand).resolves({});
+
+    dynamoDBDocumentMock.on(BatchGetCommand).resolves({
+      $metadata: {} as any,
+      Responses: {
+        [INDEXING_CACHE_TABLE]: [],
       },
     } as BatchGetCommandOutput);
 
