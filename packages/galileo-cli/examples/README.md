@@ -14,6 +14,8 @@ The following steps are required:
 * if you want to upload files, they must be in **plain text** format (`.txt`)
 * you need to provide a `metadata.json` which meets the included [schema requirements](../src/lib/document/metadata.schema.json)
 
+### Metadata
+
 Check out the examples provided, additionally here is an example with comments:
 
 ```jsonc
@@ -52,6 +54,38 @@ Check out the examples provided, additionally here is an example with comments:
   }
 }
 ```
+
+#### Metadata with non–US-ASCII characters
+
+We are utilizing S3's [User-defined object metadata](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingMetadata.html#UserMetadata).
+In certain cases, metadata needs to be added that has non–US-ASCII characters (e.g.: metadata defined in other languages).
+
+For this case, we define a _special metadata key_ called `json-base64`, that must have a value of a **base64-encoded string of a JSON-objet containing string-string key-value pairs**.
+
+Example:
+
+```jsonc
+// metadata to add:
+{
+  "chìa khóa": "giá trị", // "key": "value" in Vietnamese
+}
+
+// document metadata:
+{
+  // ...
+  "documents": {
+    "myDocumentKey": {
+      "metadata": {
+        "json-base64": "eyJjaMOsYSBraMOzYSI6Imdpw6EgdHLhu4sifQ==" // Buffer.from(mySpecialCharsMetadata).toString("base64")
+      }
+    }
+  }
+}
+```
+
+During the indexing process, the base64-encoded string will be decoded and the values merged with the other provided metadata.
+
+> Note: Out of the box, the CLI's `document uploader` will not handle this key in any special way. It is up to the developer to implement the encoding (typically in an external module that is loaded by the CLI).
 
 ## Example external modules to produce metadata required for Galileo CLI uploader
 
