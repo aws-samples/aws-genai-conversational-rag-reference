@@ -1,6 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { FOUNDATION_MODEL_INVENTORY_SECRET } from "@aws/galileo-sdk/lib/models";
+import { FOUNDATION_MODEL_INVENTORY_SECRET } from '@aws/galileo-sdk/lib/models';
 
 export interface IProcessEnv {
   SEARCH_URL: string;
@@ -36,13 +36,10 @@ export type ILambdaEnvironment = IProcessEnv & { [key: string]: string };
 
 export const ENV: IProcessEnv = {
   SEARCH_URL: process.env.SEARCH_URL!,
-  [FOUNDATION_MODEL_INVENTORY_SECRET]:
-    process.env[FOUNDATION_MODEL_INVENTORY_SECRET]!,
+  [FOUNDATION_MODEL_INVENTORY_SECRET]: process.env[FOUNDATION_MODEL_INVENTORY_SECRET]!,
   CHAT_MESSAGE_TABLE_NAME: process.env.CHAT_MESSAGE_TABLE_NAME!,
-  CHAT_MESSAGE_TABLE_GSI_INDEX_NAME:
-    process.env.CHAT_MESSAGE_TABLE_GSI_INDEX_NAME!,
+  CHAT_MESSAGE_TABLE_GSI_INDEX_NAME: process.env.CHAT_MESSAGE_TABLE_GSI_INDEX_NAME!,
   ADMIN_GROUPS: process.env.ADMIN_GROUPS!,
   DOMAIN: process.env.DOMAIN!,
-  FOUNDATION_MODEL_CROSS_ACCOUNT_ROLE_ARN:
-    process.env.FOUNDATION_MODEL_CROSS_ACCOUNT_ROLE_ARN,
+  FOUNDATION_MODEL_CROSS_ACCOUNT_ROLE_ARN: process.env.FOUNDATION_MODEL_CROSS_ACCOUNT_ROLE_ARN,
 };

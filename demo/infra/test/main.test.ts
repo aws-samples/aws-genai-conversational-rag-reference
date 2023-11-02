@@ -13,6 +13,6 @@ PDX-License-Identifier: Apache-2.0 */
 //   expect(template.toJSON()).toMatchSnapshot();
 // });
 
-test("passthrough", () => {
+test('passthrough', () => {
   expect(true).toBe(true);
 });

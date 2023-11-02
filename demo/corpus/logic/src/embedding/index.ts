@@ -7,7 +7,7 @@ import { ENV } from '../env';
 
 const logger = getLogger(__dirname);
 
-export type Vector = number[]
+export type Vector = number[];
 
 export const EMBEDDING_URL = `http://localhost:${ENV.EMBEDDING_PORT}/embed-documents`;
 
@@ -19,12 +19,12 @@ export interface EmbedDocumentsRequestContent {
 export interface EmbedDocumentsResponseContent {
   readonly embeddings: Vector[];
   readonly model: string;
-};
+}
 
 export interface EmbedQuearyResponseContent {
   readonly embedding: Vector;
   readonly model: string;
-};
+}
 
 export async function embedDocuments(texts: string[]): Promise<EmbedDocumentsResponseContent> {
   const body: EmbedDocumentsRequestContent = {
@@ -41,7 +41,12 @@ export async function embedDocuments(texts: string[]): Promise<EmbedDocumentsRes
 
   const data = (await response.json()) as EmbedDocumentsResponseContent;
 
-  logger.debug({ message: `Response from embedding server: ${response.status}`, status: response.status, statusText: response.statusText, embeddingsCount: data.embeddings.length });
+  logger.debug({
+    message: `Response from embedding server: ${response.status}`,
+    status: response.status,
+    statusText: response.statusText,
+    embeddingsCount: data.embeddings.length,
+  });
 
   return data;
 }

@@ -21,24 +21,24 @@ type UserOwnedBaseEntity = DDBBaseEntity & {
 };
 
 export type DDBChat = UserOwnedBaseEntity &
-GSI1Keys & {
-  chatId: string;
-  title: string;
-  createdAt: number;
-  entity: 'CHAT';
-};
+  GSI1Keys & {
+    chatId: string;
+    title: string;
+    createdAt: number;
+    entity: 'CHAT';
+  };
 
 export type DDBChatMessage = UserOwnedBaseEntity &
-GSI1Keys & {
-  messageId: string;
-  chatId: string;
-  createdAt: number;
-  entity: 'MESSAGE';
-  data: {
-    content: string;
+  GSI1Keys & {
+    messageId: string;
+    chatId: string;
+    createdAt: number;
+    entity: 'MESSAGE';
+    data: {
+      content: string;
+    };
+    type: 'ai' | 'human';
   };
-  type: 'ai' | 'human';
-};
 
 export type DDBMessageSource = UserOwnedBaseEntity & {
   sourceId: string;
@@ -50,18 +50,12 @@ export type DDBMessageSource = UserOwnedBaseEntity & {
   metadata: Record<string, any>;
 };
 
-export type DDBQueryOutput<EntityType, KeyType> = Omit<
-QueryCommandOutput,
-'Items' | 'LastEvaluatedKey'
-> & {
+export type DDBQueryOutput<EntityType, KeyType> = Omit<QueryCommandOutput, 'Items' | 'LastEvaluatedKey'> & {
   Items?: EntityType[] | undefined;
   LastEvaluatedKey?: KeyType | undefined;
 };
 
-export type DDBUpdateOutput<EntityType> = Omit<
-UpdateCommandOutput,
-'Attributes'
-> & {
+export type DDBUpdateOutput<EntityType> = Omit<UpdateCommandOutput, 'Attributes'> & {
   Attributes?: EntityType | undefined;
 };
 
@@ -98,58 +92,38 @@ export function getChatKey(userId: string, chatId: string = ''): Keys {
   };
 }
 
-export function getChatsByTimeKey(
-  userId: string,
-  timestamp?: string | number,
-): GSI1Keys {
+export function getChatsByTimeKey(userId: string, timestamp?: string | number): GSI1Keys {
   return {
     GSI1PK: `${userId}#CHAT`,
     ...(timestamp ? { GSI1SK: timestamp } : {}),
   };
 }
 
-export function getChatMessageKey(
-  userId: string,
-  messageId: string = '',
-): Keys {
+export function getChatMessageKey(userId: string, messageId: string = ''): Keys {
   return {
     PK: userId,
     SK: `MESSAGE#${messageId}`,
   };
 }
 
-export function getChatMessagesByTimeKey(
-  userId: string,
-  chatId: string,
-  timestamp: string = '',
-): GSI1Keys {
+export function getChatMessagesByTimeKey(userId: string, chatId: string, timestamp: string = ''): GSI1Keys {
   return {
     GSI1PK: `${userId}#CHAT#${chatId}`,
     GSI1SK: `${timestamp}`,
   };
 }
 
-export function getMessageSourceKey(
-  userId: string,
-  messageId: string,
-  sourceKey: string = '',
-): Keys {
+export function getMessageSourceKey(userId: string, messageId: string, sourceKey: string = ''): Keys {
   return {
     PK: userId,
     SK: `SOURCE#${messageId}#${sourceKey}`,
   };
 }
 
-export async function bulkDelete(
-  ddbClient: DynamoDBDocumentClient,
-  tableName: string,
-  keys: Keys[],
-): Promise<void> {
+export async function bulkDelete(ddbClient: DynamoDBDocumentClient, tableName: string, keys: Keys[]): Promise<void> {
   type DeleteRequestItem = Pick<
-  Required<
-  NonNullable<BatchWriteCommandOutput['UnprocessedItems']>
-  >[string][number],
-  'DeleteRequest'
+    Required<NonNullable<BatchWriteCommandOutput['UnprocessedItems']>>[string][number],
+    'DeleteRequest'
   >;
 
   let unprocessed: DeleteRequestItem[] = keys.map((i) => ({
@@ -192,15 +166,8 @@ export async function getAllByPagination<Entity>(client: DynamoDBDocumentClient,
   const paginator = paginateQuery(paginationConfig, commandInput);
 
   for await (const page of paginator) {
-    if (
-      page.Items !== undefined &&
-      Array.isArray(page.Items) &&
-      page.Items.length > 0
-    ) {
-      entities = [
-        ...entities,
-        ...(page.Items as Entity[]),
-      ];
+    if (page.Items !== undefined && Array.isArray(page.Items) && page.Items.length > 0) {
+      entities = [...entities, ...(page.Items as Entity[])];
     }
   }
 

@@ -1,11 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { Tracer } from "@aws-lambda-powertools/tracer";
-import {
-  ChainedRequestInput,
-  OperationResponse,
-  ServerErrorResponseContent,
-} from "api-typescript-runtime";
+import { Tracer } from '@aws-lambda-powertools/tracer';
+import { ChainedRequestInput, OperationResponse, ServerErrorResponseContent } from 'api-typescript-runtime';
 
 const tracer = new Tracer();
 
@@ -21,9 +17,9 @@ export interface ITracerInterceptorContext {
 export const tracerInterceptor = async <
   RequestParameters,
   RequestBody,
-  Response extends OperationResponse<number, any>
+  Response extends OperationResponse<number, any>,
 >(
-  request: ChainedRequestInput<RequestParameters, RequestBody, Response>
+  request: ChainedRequestInput<RequestParameters, RequestBody, Response>,
 ): Promise<Response | OperationResponse<500, ServerErrorResponseContent>> => {
   const segment = tracer.getSegment(); // This is the facade segment (the one that is created by AWS Lambda)
   let subsegment;

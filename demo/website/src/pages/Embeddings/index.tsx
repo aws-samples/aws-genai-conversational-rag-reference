@@ -11,14 +11,14 @@ import {
   Spinner,
   TextContent,
   Textarea,
-} from "@cloudscape-design/components";
-import ContentLayout from "@cloudscape-design/components/content-layout";
-import Header from "@cloudscape-design/components/header";
-import { useEmbedQuery } from "api-typescript-react-query-hooks";
-import { useCallback, useState } from "react";
+} from '@cloudscape-design/components';
+import ContentLayout from '@cloudscape-design/components/content-layout';
+import Header from '@cloudscape-design/components/header';
+import { useEmbedQuery } from 'api-typescript-react-query-hooks';
+import { useCallback, useState } from 'react';
 
 export const EmbeddingsTool: React.FC = () => {
-  const [query, setQuery] = useState<string>("");
+  const [query, setQuery] = useState<string>('');
   const embedQuery = useEmbedQuery();
 
   const onSubmit = useCallback(() => {
@@ -32,10 +32,7 @@ export const EmbeddingsTool: React.FC = () => {
   return (
     <ContentLayout
       header={
-        <Header
-          variant="h1"
-          description="Test embedding results of text against the embedding model"
-        >
+        <Header variant="h1" description="Test embedding results of text against the embedding model">
           Embedding Tool
         </Header>
       }
@@ -52,19 +49,13 @@ export const EmbeddingsTool: React.FC = () => {
             }
           >
             <FormField label="Input Text" description="Enter the text to embed">
-              <Textarea
-                value={query}
-                onChange={({ detail }) => setQuery(detail.value)}
-              />
+              <Textarea value={query} onChange={({ detail }) => setQuery(detail.value)} />
             </FormField>
           </Form>
         </Container>
 
         <Box variant="div">
-          <Header
-            counter={`(${embedQuery.data?.embedding.length || 0})`}
-            info={embedQuery.data?.model}
-          >
+          <Header counter={`(${embedQuery.data?.embedding.length || 0})`} info={embedQuery.data?.model}>
             Results
           </Header>
           <br />
@@ -77,9 +68,7 @@ export const EmbeddingsTool: React.FC = () => {
           )}
 
           <TextContent>
-            <div style={{ whiteSpace: "pre-wrap" }}>
-              {JSON.stringify(embedQuery.data?.embedding, null, 0)}
-            </div>
+            <div style={{ whiteSpace: 'pre-wrap' }}>{JSON.stringify(embedQuery.data?.embedding, null, 0)}</div>
           </TextContent>
         </Box>
       </SpaceBetween>

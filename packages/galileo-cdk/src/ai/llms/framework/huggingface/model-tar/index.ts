@@ -13,12 +13,7 @@ import shortHash = require('shorthash2'); // eslint-disable-line @typescript-esl
 import { IsCompleteFunction } from './handler/isComplete-function';
 import { OnEventFunction } from './handler/onEvent-function';
 import { SourceAsset } from './source-asset';
-import {
-  ResourceProperties,
-  Data,
-  MODEL_TAR_FILE,
-  ARTIFACT_NAME,
-} from './types';
+import { ResourceProperties, Data, MODEL_TAR_FILE, ARTIFACT_NAME } from './types';
 import { SecureBucket } from '../../../../../common';
 
 export interface HFModelTarProps {
@@ -57,9 +52,7 @@ export class HFModelTar extends Construct {
     if (props.snapshotDownloadOptions) {
       environment = {
         ...environment,
-        SNAPSHOT_DOWNLOAD_OPTIONS: JSON.stringify(
-          props.snapshotDownloadOptions,
-        ),
+        SNAPSHOT_DOWNLOAD_OPTIONS: JSON.stringify(props.snapshotDownloadOptions),
       };
     }
 
@@ -69,9 +62,7 @@ export class HFModelTar extends Construct {
         bucketName: customAsset.s3BucketName,
         objectKey: customAsset.s3ObjectKey,
       },
-      EnvironmentVariables:
-        environment &&
-        Object.entries(environment).map(([name, value]) => ({ name, value })),
+      EnvironmentVariables: environment && Object.entries(environment).map(([name, value]) => ({ name, value })),
     };
 
     this.customResource = new CustomResource(this, 'Resource', {
@@ -114,11 +105,7 @@ export class HFModelTarProvider extends Construct {
 
   readonly artifactBucket: s3.Bucket;
 
-  private constructor(
-    scope: IConstruct,
-    id: string,
-    _props?: HFModelTarProviderProps,
-  ) {
+  private constructor(scope: IConstruct, id: string, _props?: HFModelTarProviderProps) {
     super(scope, id);
 
     this.artifactBucket = new SecureBucket(this, 'ArtifactBucket');
@@ -142,7 +129,7 @@ export class HFModelTarProvider extends Construct {
           'runtime-versions': {
             python: '3.11',
           },
-          'commands': [
+          commands: [
             'apt-get update',
             'apt-get install -y tar pigz awscli',
             'pip3 install --upgrade pip',
@@ -154,7 +141,7 @@ export class HFModelTarProvider extends Construct {
         },
       },
       artifacts: {
-        'files': [MODEL_TAR_FILE],
+        files: [MODEL_TAR_FILE],
         'base-directory': ARTIFACT_BASE_DIR,
       },
       cache: {
@@ -177,11 +164,7 @@ export class HFModelTarProvider extends Construct {
         CodeBuildPolicy: new iam.PolicyDocument({
           statements: [
             new iam.PolicyStatement({
-              actions: [
-                'logs:CreateLogGroup',
-                'logs:CreateLogStream',
-                'logs:PutLogEvents',
-              ],
+              actions: ['logs:CreateLogGroup', 'logs:CreateLogStream', 'logs:PutLogEvents'],
               resources: ['*'],
             }),
           ],
@@ -205,9 +188,7 @@ export class HFModelTarProvider extends Construct {
 
     const buildProject = new codebuild.Project(this, 'CodeBuildProject', {
       // change description to with spec hash to force update of project
-      description: `HuggingFace model.tar.gz builder - ${shortHash(
-        JSON.stringify(buildSpec),
-      )}`,
+      description: `HuggingFace model.tar.gz builder - ${shortHash(JSON.stringify(buildSpec))}`,
       buildSpec,
       role: this.buildRole,
       environment: {
@@ -286,13 +267,11 @@ export class HFModelTarProvider extends Construct {
       [
         {
           id: 'AwsPrototyping-IAMNoManagedPolicies',
-          reason:
-            'CDK CustomResource Provider resource used for deployment purposes',
+          reason: 'CDK CustomResource Provider resource used for deployment purposes',
         },
         {
           id: 'AwsPrototyping-IAMNoWildcardPermissions',
-          reason:
-            'CDK CustomResource Provider resource used for deployment purposes',
+          reason: 'CDK CustomResource Provider resource used for deployment purposes',
         },
       ],
       true,

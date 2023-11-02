@@ -143,7 +143,7 @@ export async function createAIChatMessage(
   return {
     response,
     chatMessage,
-    sources: sourcePutRequests.map(v => v.PutRequest.Item),
+    sources: sourcePutRequests.map((v) => v.PutRequest.Item),
   };
 }
 
@@ -174,10 +174,7 @@ export async function listChatMessagesByTime(
   };
   const command = new QueryCommand(input);
 
-  const response = (await documentClient.send(command)) as DDBQueryOutput<
-  DDBChatMessage,
-  AllKeys
-  >;
+  const response = (await documentClient.send(command)) as DDBQueryOutput<DDBChatMessage, AllKeys>;
 
   $$();
   return response;
@@ -220,7 +217,7 @@ export async function getAllChatMessageIds(
   userId: string,
   chatId: string,
 ) {
-  type ChatMessageIds = (Keys & { messageId: string });
+  type ChatMessageIds = Keys & { messageId: string };
   const keys = getChatMessagesByTimeKey(userId, chatId);
 
   const commandInput: QueryCommandInput = {
@@ -246,12 +243,7 @@ export async function deleteChatMessage(
   const keys = getChatMessageKey(userId, messageId);
   keysToDelete.push(keys);
 
-  const messageSourcesResult = await listChatMessageSources(
-    documentClient,
-    tableName,
-    userId,
-    messageId,
-  );
+  const messageSourcesResult = await listChatMessageSources(documentClient, tableName, userId, messageId);
 
   for (const messageSource of messageSourcesResult) {
     keysToDelete.push({

@@ -7,11 +7,13 @@ describe('prompt/templates/chat', () => {
     test('default', async () => {
       const template = new ChatQuestionAnswerPromptTemplate({});
 
-      expect(await template.format({
-        question: 'THE QUESTION',
-        domain: 'DOMAIN',
-        context: 'CORPUS',
-      })).toMatchSnapshot();
+      expect(
+        await template.format({
+          question: 'THE QUESTION',
+          domain: 'DOMAIN',
+          context: 'CORPUS',
+        }),
+      ).toMatchSnapshot();
     });
 
     test('messages', async () => {
@@ -25,11 +27,13 @@ describe('prompt/templates/chat', () => {
         `,
       });
 
-      expect(await template.format({
-        question: 'THE QUESTION',
-        domain: 'DOMAIN',
-        context: 'CORPUS',
-      })).toMatchSnapshot();
+      expect(
+        await template.format({
+          question: 'THE QUESTION',
+          domain: 'DOMAIN',
+          context: 'CORPUS',
+        }),
+      ).toMatchSnapshot();
     });
 
     test('wrappers', async () => {
@@ -42,11 +46,13 @@ describe('prompt/templates/chat', () => {
         `,
       });
 
-      expect(await template.format({
-        question: 'THE QUESTION',
-        domain: 'DOMAIN',
-        context: 'CORPUS',
-      })).toMatchSnapshot();
+      expect(
+        await template.format({
+          question: 'THE QUESTION',
+          domain: 'DOMAIN',
+          context: 'CORPUS',
+        }),
+      ).toMatchSnapshot();
     });
 
     test('should allow complete override of template', async () => {
@@ -54,25 +60,26 @@ describe('prompt/templates/chat', () => {
         template: 'CUSTOM: {{domain}} {{question}} {{context}}',
       });
 
-      expect(await template.format({
-        question: 'THE QUESTION',
-        domain: 'DOMAIN',
-        context: 'CORPUS',
-      })).toBe('CUSTOM: DOMAIN THE QUESTION CORPUS');
+      expect(
+        await template.format({
+          question: 'THE QUESTION',
+          domain: 'DOMAIN',
+          context: 'CORPUS',
+        }),
+      ).toBe('CUSTOM: DOMAIN THE QUESTION CORPUS');
     });
 
     test('custom rules', async () => {
       const template = new ChatQuestionAnswerPromptTemplate({});
 
-      expect(await template.format({
-        question: 'THE QUESTION',
-        domain: 'DOMAIN',
-        context: 'CORPUS',
-        rules: [
-          'rule 1',
-          'rule 2',
-        ],
-      })).toMatchSnapshot();
+      expect(
+        await template.format({
+          question: 'THE QUESTION',
+          domain: 'DOMAIN',
+          context: 'CORPUS',
+          rules: ['rule 1', 'rule 2'],
+        }),
+      ).toMatchSnapshot();
     });
 
     test('partial template overrides', async () => {
@@ -83,11 +90,13 @@ describe('prompt/templates/chat', () => {
         },
       });
 
-      expect(await template.format({
-        question: 'THE QUESTION',
-        domain: 'DOMAIN',
-        context: 'CORPUS',
-      })).toMatchSnapshot();
+      expect(
+        await template.format({
+          question: 'THE QUESTION',
+          domain: 'DOMAIN',
+          context: 'CORPUS',
+        }),
+      ).toMatchSnapshot();
     });
 
     test('flatten', async () => {

@@ -14,50 +14,46 @@ export abstract class BaseSageMakerEmbeddingContentHandler<InputType, OutputType
   /** The MIME type of the response data returned from endpoint */
   abstract accepts: string;
   /**
-	 * Transforms the input to a format that model can accept as the request Body.
-	 * Should return bytes or seekable file like object in the format specified in
-	 * the contentType request header.
-	 */
+   * Transforms the input to a format that model can accept as the request Body.
+   * Should return bytes or seekable file like object in the format specified in
+   * the contentType request header.
+   */
   abstract transformInput(prompt: InputType, modelKwargs: TKwags): Promise<Uint8Array>;
   /**
-	 * Transforms the output from the model to string that the LLM class expects.
-	 */
+   * Transforms the output from the model to string that the LLM class expects.
+   */
   abstract transformOutput(output: Uint8Array): Promise<OutputType>;
 }
 
 /** Content handler for Embedding class. */
-export type SageMakerEmbeddingContentHandler = BaseSageMakerEmbeddingContentHandler<
-string[],
-number[][]
->;
+export type SageMakerEmbeddingContentHandler = BaseSageMakerEmbeddingContentHandler<string[], number[][]>;
 
 export interface SageMakerEndpointEmbeddingsOptions extends EmbeddingsParams {
   /**
-	 * The name of the endpoint from the deployed SageMaker model. Must be unique
-	 * within an AWS Region.
-	 */
+   * The name of the endpoint from the deployed SageMaker model. Must be unique
+   * within an AWS Region.
+   */
   readonly endpointName: string;
   /**
-	 * Options passed to the SageMaker client.
-	 */
+   * Options passed to the SageMaker client.
+   */
   readonly clientOptions: SageMakerRuntimeClientConfig;
   /**
-	 * The content handler class that provides an input and output transform
-	 * functions to handle formats between LLM and the endpoint.
-	 */
+   * The content handler class that provides an input and output transform
+   * functions to handle formats between LLM and the endpoint.
+   */
   readonly contentHandler: SageMakerEmbeddingContentHandler;
   /**
-	 * Key word arguments to pass to the model.
-	 */
+   * Key word arguments to pass to the model.
+   */
   readonly modelKwargs?: TKwags;
   /**
-	 * Optional attributes passed to the InvokeEndpointCommand
-	 */
+   * Optional attributes passed to the InvokeEndpointCommand
+   */
   readonly endpointKwargs?: TKwags;
 }
 
 export class SageMakerEndpointEmbeddings extends Embeddings {
-
   readonly endpointName: string;
   readonly contentHandler: SageMakerEmbeddingContentHandler;
   readonly endpointKwargs?: TKwags;
@@ -69,9 +65,7 @@ export class SageMakerEndpointEmbeddings extends Embeddings {
 
     const regionName = fields.clientOptions.region;
     if (!regionName) {
-      throw new Error(
-        'Please pass a "clientOptions" object with a "region" field to the constructor',
-      );
+      throw new Error('Please pass a "clientOptions" object with a "region" field to the constructor');
     }
 
     const endpointName = fields?.endpointName;
@@ -81,9 +75,7 @@ export class SageMakerEndpointEmbeddings extends Embeddings {
 
     const contentHandler = fields?.contentHandler;
     if (!contentHandler) {
-      throw new Error(
-        'Please pass a "contentHandler" field to the constructor',
-      );
+      throw new Error('Please pass a "contentHandler" field to the constructor');
     }
 
     this.endpointName = fields.endpointName;
@@ -98,9 +90,7 @@ export class SageMakerEndpointEmbeddings extends Embeddings {
     const _chunkSize = chunkSize > texts.length ? texts.length : chunkSize;
 
     for (let i = 0; i < texts.length; i += _chunkSize) {
-      const response = await this._embedding_func(
-        texts.slice(i, i + _chunkSize),
-      );
+      const response = await this._embedding_func(texts.slice(i, i + _chunkSize));
       results.push(...response);
     }
 
@@ -113,10 +103,7 @@ export class SageMakerEndpointEmbeddings extends Embeddings {
   async _embedding_func(texts: string[], options?: any): Promise<number[][]> {
     texts = texts.map((text) => text.replace(/\n/g, ' '));
 
-    const body = await this.contentHandler.transformInput(
-      texts,
-      this.modelKwargs ?? {},
-    );
+    const body = await this.contentHandler.transformInput(texts, this.modelKwargs ?? {});
     const { contentType, accepts } = this.contentHandler;
 
     const response = await this.caller.call(() =>

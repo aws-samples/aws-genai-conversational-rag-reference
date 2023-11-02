@@ -1,17 +1,17 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { ApplicationContext } from "@aws/galileo-cdk/src/core/app/context";
-import { NestedStack, NestedStackProps, Stack, StackProps } from "aws-cdk-lib";
-import { Alias } from "aws-cdk-lib/aws-kms";
-import { Topic } from "aws-cdk-lib/aws-sns";
-import { pascal } from "case";
+import { ApplicationContext } from '@aws/galileo-cdk/src/core/app/context';
+import { NestedStack, NestedStackProps, Stack, StackProps } from 'aws-cdk-lib';
+import { Alias } from 'aws-cdk-lib/aws-kms';
+import { Topic } from 'aws-cdk-lib/aws-sns';
+import { pascal } from 'case';
 import {
   DefaultDashboardFactory,
   MonitoringAspectProps,
   MonitoringFacade,
   SnsAlarmActionStrategy,
-} from "cdk-monitoring-constructs";
-import { Construct } from "constructs";
+} from 'cdk-monitoring-constructs';
+import { Construct } from 'constructs';
 
 export interface MonitoringOptions {
   /**
@@ -58,23 +58,17 @@ class StackMonitor extends Construct {
   readonly facade: MonitoringFacade;
 
   constructor(stack: Stack, props: MonitoringOptions) {
-    super(stack, "StackMonitor");
+    super(stack, 'StackMonitor');
 
-    const snsKmsKey = Alias.fromAliasName(
-      this,
-      "AwsManagedSnsKmsKey",
-      "alias/aws/sns"
-    );
+    const snsKmsKey = Alias.fromAliasName(this, 'AwsManagedSnsKmsKey', 'alias/aws/sns');
 
-    const onAlarmTopic = new Topic(this, "AlarmTopic", {
+    const onAlarmTopic = new Topic(this, 'AlarmTopic', {
       masterKey: snsKmsKey,
     });
 
-    const dashboardName =
-      props.dashboardName ??
-      `${ApplicationContext.getMetricNamespace(stack)}-${stack.node.id}`;
+    const dashboardName = props.dashboardName ?? `${ApplicationContext.getMetricNamespace(stack)}-${stack.node.id}`;
 
-    this.facade = new MonitoringFacade(this, "Monitoring", {
+    this.facade = new MonitoringFacade(this, 'Monitoring', {
       alarmFactoryDefaults: {
         actionsEnabled: false,
         alarmNamePrefix: pascal(this.node.path),
@@ -83,7 +77,7 @@ class StackMonitor extends Construct {
       metricFactoryDefaults: {
         namespace: ApplicationContext.getMetricNamespace(this),
       },
-      dashboardFactory: new DefaultDashboardFactory(this, "Dashboard", {
+      dashboardFactory: new DefaultDashboardFactory(this, 'Dashboard', {
         dashboardNamePrefix: dashboardName,
       }),
     });
@@ -97,7 +91,7 @@ class StackMonitor extends Construct {
           ec2: { enabled: false },
           billing: { enabled: false },
           elasticCache: { enabled: false },
-        }
+        },
       );
     }
   }

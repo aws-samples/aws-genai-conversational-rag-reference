@@ -5,9 +5,7 @@ import { CallbackManagerForChainRun } from 'langchain/callbacks';
 import { BaseChain, ChainInputs, LLMChain, loadQAChain, QAChainParams } from 'langchain/chains';
 import { PromptTemplate } from 'langchain/prompts';
 // import { SerializedChatVectorDBQAChain } from "./serde.js";
-import {
-  ChainValues,
-} from 'langchain/schema';
+import { ChainValues } from 'langchain/schema';
 import { BaseRetriever } from 'langchain/schema/retriever';
 import { getLogger } from '../common/index.js';
 import { startPerfMetric } from '../common/metrics/index.js';
@@ -50,17 +48,9 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
         prompt: PromptTemplate;
       };
       qaChainOptions: QAChainParams;
-    } & Omit<
-    ChatEngineChainInput,
-    'retriever' | 'combineDocumentsChain' | 'questionGeneratorChain'
-    >,
+    } & Omit<ChatEngineChainInput, 'retriever' | 'combineDocumentsChain' | 'questionGeneratorChain'>,
   ): ChatEngineChain {
-    const {
-      qaChainOptions,
-      questionGenerator,
-      verbose,
-      ...rest
-    } = options;
+    const { qaChainOptions, questionGenerator, verbose, ...rest } = options;
 
     const qaChain = loadQAChain(llm, qaChainOptions);
 
@@ -89,9 +79,7 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
   }
 
   get outputKeys() {
-    return this.combineDocumentsChain.outputKeys.concat(
-      this.returnSourceDocuments ? ['sourceDocuments'] : [],
-    );
+    return this.combineDocumentsChain.outputKeys.concat(this.returnSourceDocuments ? ['sourceDocuments'] : []);
   }
 
   get traceData(): any {
@@ -114,15 +102,11 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
     this.combineDocumentsChain = fields.combineDocumentsChain;
     this.questionGeneratorChain = fields.questionGeneratorChain;
     this.inputKey = fields.inputKey ?? this.inputKey;
-    this.returnSourceDocuments =
-      fields.returnSourceDocuments ?? this.returnSourceDocuments;
+    this.returnSourceDocuments = fields.returnSourceDocuments ?? this.returnSourceDocuments;
   }
 
   /** @ignore */
-  async _call(
-    values: ChainValues,
-    runManager?: CallbackManagerForChainRun,
-  ): Promise<ChainValues> {
+  async _call(values: ChainValues, runManager?: CallbackManagerForChainRun): Promise<ChainValues> {
     if (!(this.inputKey in values)) {
       throw new Error(`Question key ${this.inputKey} not found.`);
     }
@@ -148,16 +132,11 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
       if (keys.length === 1) {
         newQuestion = result[keys[0]];
       } else {
-        throw new Error(
-          'Return from llm chain has multiple values, only single values supported.',
-        );
+        throw new Error('Return from llm chain has multiple values, only single values supported.');
       }
     }
     const $$GetRelevantDocumentsExecutionTime = startPerfMetric('GetRelevantDocumentsExecutionTime');
-    const docs = await this.retriever.getRelevantDocuments(
-      newQuestion,
-      runManager?.getChild('retriever'),
-    );
+    const docs = await this.retriever.getRelevantDocuments(newQuestion, runManager?.getChild('retriever'));
     $$GetRelevantDocumentsExecutionTime();
 
     const inputs = {
@@ -167,10 +146,7 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
     };
 
     const $$CombineDocumentsExecutionTime = startPerfMetric('CombineDocumentsExecutionTime');
-    const result = await this.combineDocumentsChain.call(
-      inputs,
-      runManager?.getChild('combine_documents'),
-    );
+    const result = await this.combineDocumentsChain.call(inputs, runManager?.getChild('combine_documents'));
     $$CombineDocumentsExecutionTime();
 
     this._traceData = {

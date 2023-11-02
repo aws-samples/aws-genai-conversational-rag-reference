@@ -55,7 +55,7 @@ export interface ApplicationConfig {
      * Custom name of the application, which derives the stacks names, explicit resource names, and other resource like naming.
      *
      * **WARNING:** Changing with after initial deployment will replace all resourced.
-    */
+     */
     name: string;
   };
   identity: {
@@ -65,12 +65,12 @@ export interface ApplicationConfig {
      */
     admin?: {
       /**
-     * Username of the admin user to create. If undefined, no admin user will be automatically created.
-     */
+       * Username of the admin user to create. If undefined, no admin user will be automatically created.
+       */
       username: string;
       /**
-     * Email of administrator user, which if supplied will auto create the admin user.
-     */
+       * Email of administrator user, which if supplied will auto create the admin user.
+       */
       email: string;
     };
   };
@@ -91,11 +91,11 @@ export interface ApplicationConfig {
      */
     defaultModel?: string;
     /**
-   * Region to deploy the foundation model stack to. Useful for regions with limited service
-   * and/or instance capacity.
-   * @default string Default application region
-   * @experimental
-   */
+     * Region to deploy the foundation model stack to. Useful for regions with limited service
+     * and/or instance capacity.
+     * @default string Default application region
+     * @experimental
+     */
     region?: string;
     predefined?: {
       /**

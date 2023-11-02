@@ -8,14 +8,12 @@ describe('prompt/templates/chat', () => {
     test('default', async () => {
       const template = new ChatCondenseQuestionPromptTemplate({});
 
-      expect(await template.format({
-        question: 'THE QUESTION',
-        chat_history: [
-          new SystemMessage('A system message'),
-          new HumanMessage('Hi'),
-          new AIMessage('Hello!'),
-        ],
-      })).toMatchSnapshot();
+      expect(
+        await template.format({
+          question: 'THE QUESTION',
+          chat_history: [new SystemMessage('A system message'), new HumanMessage('Hi'), new AIMessage('Hello!')],
+        }),
+      ).toMatchSnapshot();
     });
 
     test('messages', async () => {
@@ -29,14 +27,12 @@ describe('prompt/templates/chat', () => {
         `,
       });
 
-      expect(await template.format({
-        question: 'THE QUESTION',
-        chat_history: [
-          new SystemMessage('A system message'),
-          new HumanMessage('Hi'),
-          new AIMessage('Hello!'),
-        ],
-      })).toMatchSnapshot();
+      expect(
+        await template.format({
+          question: 'THE QUESTION',
+          chat_history: [new SystemMessage('A system message'), new HumanMessage('Hi'), new AIMessage('Hello!')],
+        }),
+      ).toMatchSnapshot();
     });
 
     test('wrappers', async () => {
@@ -51,14 +47,12 @@ describe('prompt/templates/chat', () => {
         `,
       });
 
-      expect(await template.format({
-        question: 'THE QUESTION',
-        chat_history: [
-          new SystemMessage('A system message'),
-          new HumanMessage('Hi'),
-          new AIMessage('Hello!'),
-        ],
-      })).toMatchSnapshot();
+      expect(
+        await template.format({
+          question: 'THE QUESTION',
+          chat_history: [new SystemMessage('A system message'), new HumanMessage('Hi'), new AIMessage('Hello!')],
+        }),
+      ).toMatchSnapshot();
     });
 
     test('should allow complete override of template', async () => {
@@ -66,14 +60,12 @@ describe('prompt/templates/chat', () => {
         template: 'CUSTOM',
       });
 
-      expect(await template.format({
-        question: 'THE QUESTION',
-        chat_history: [
-          new SystemMessage('A system message'),
-          new HumanMessage('Hi'),
-          new AIMessage('Hello!'),
-        ],
-      })).toBe('CUSTOM');
+      expect(
+        await template.format({
+          question: 'THE QUESTION',
+          chat_history: [new SystemMessage('A system message'), new HumanMessage('Hi'), new AIMessage('Hello!')],
+        }),
+      ).toBe('CUSTOM');
     });
   });
 });

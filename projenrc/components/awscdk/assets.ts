@@ -1,22 +1,18 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import path from "node:path";
-import { CopyOptions } from "aws-cdk-lib/core/lib/fs";
-import { pascal, constant } from "case";
-import { Component, Project, SourceCode } from "projen";
-import { AutoDiscoverCommonOptions } from "projen/lib/awscdk";
-import { convertToPosixPath } from "projen/lib/awscdk/internal";
-import { AutoDiscoverBase } from "projen/lib/cdk";
-import { Bundler } from "projen/lib/javascript";
-import { renderBundleName } from "projen/lib/javascript/util";
+import path from 'node:path';
+import { CopyOptions } from 'aws-cdk-lib/core/lib/fs';
+import { pascal, constant } from 'case';
+import { Component, Project, SourceCode } from 'projen';
+import { AutoDiscoverCommonOptions } from 'projen/lib/awscdk';
+import { convertToPosixPath } from 'projen/lib/awscdk/internal';
+import { AutoDiscoverBase } from 'projen/lib/cdk';
+import { Bundler } from 'projen/lib/javascript';
+import { renderBundleName } from 'projen/lib/javascript/util';
 
-export const CDK_ASSET_EXT = ".asset";
+export const CDK_ASSET_EXT = '.asset';
 
-export const CDK_ASSET_EXCLUDES = [
-  "test_*",
-  "__pycache__/**/*",
-  ".pytest_cache/**/*",
-];
+export const CDK_ASSET_EXCLUDES = ['test_*', '__pycache__/**/*', '.pytest_cache/**/*'];
 
 export interface CdkCopyAssetOptions extends CopyOptions {
   readonly entrypoint: string;
@@ -32,13 +28,9 @@ export class CdkCopyAsset extends Component {
     const { entrypoint } = options;
 
     const name = options.name ?? renderBundleName(entrypoint);
-    const basePath = path.posix.join(
-      path.dirname(entrypoint),
-      path.basename(entrypoint, CDK_ASSET_EXT)
-    );
+    const basePath = path.posix.join(path.dirname(entrypoint), path.basename(entrypoint, CDK_ASSET_EXT));
     const constructFile = options.constructFile ?? `${basePath}-asset.ts`;
-    const constructName =
-      options.constructName ?? pascal(path.basename(basePath)) + "Asset";
+    const constructName = options.constructName ?? pascal(path.basename(basePath)) + 'Asset';
 
     const bundler = Bundler.of(project)!;
     const assetDir = bundler.bundledir;
@@ -52,32 +44,29 @@ export class CdkCopyAsset extends Component {
     }
 
     const rsyncCmd = [
-      "rsync",
-      "-av",
+      'rsync',
+      '-av',
       ...rsyncArgs,
-      entrypoint + "/", // only content
+      entrypoint + '/', // only content
       dest,
     ];
 
     const task = project.addTask(`bundle:asset:${name}`, {
-      steps: [{ exec: `mkdir -p ${dest}` }, { exec: rsyncCmd.join(" ") }],
+      steps: [{ exec: `mkdir -p ${dest}` }, { exec: rsyncCmd.join(' ') }],
     });
 
-    project.tasks.tryFind("bundle")!.spawn(task);
+    project.tasks.tryFind('bundle')!.spawn(task);
 
     const outfileAbs = path.join(project.outdir, dest);
     const constructAbs = path.join(project.outdir, constructFile);
-    const relativeOutfile = path.relative(
-      path.dirname(constructAbs),
-      outfileAbs
-    );
+    const relativeOutfile = path.relative(path.dirname(constructAbs), outfileAbs);
 
     const src = new SourceCode(project, constructFile);
     if (src.marker) {
       src.line(`// ${src.marker}`);
     }
 
-    const pathConst = constant(constructName + "Path");
+    const pathConst = constant(constructName + 'Path');
 
     /* eslint-disable indent, prettier/prettier */
     src.line("/* eslint-disable */");

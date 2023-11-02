@@ -13,27 +13,23 @@ export class GalileoNagSupression implements IAspect {
         [
           {
             id: 'AwsPrototyping-IAMNoWildcardPermissions',
-            reason:
-              'Service specific action wildcard appendix matches allow list (example `s3:GetObject*`)',
+            reason: 'Service specific action wildcard appendix matches allow list (example `s3:GetObject*`)',
             appliesTo: [{ regex: '/^Action::[^*]+:[^*]{3,}\\*$/g' }],
           },
           {
             id: 'AwsPrototyping-IAMNoWildcardPermissions',
-            reason:
-              'Dynamic Arn resource with wildcard resource name (example `<Resource.Arn>/*`)',
+            reason: 'Dynamic Arn resource with wildcard resource name (example `<Resource.Arn>/*`)',
             appliesTo: [{ regex: '/^Resource::<.*\\.Arn>[:/].*\\*/g' }],
           },
           {
             id: 'AwsPrototyping-IAMNoWildcardPermissions',
-            reason:
-              'Arn resource with at least 4 non-wildcard segments before wildcard',
+            reason: 'Arn resource with at least 4 non-wildcard segments before wildcard',
             appliesTo: [{ regex: '/^Resource::arn:([^*]+[:/]){4,}.*$/gu' }],
           },
           {
             id: 'AwsPrototyping-IAMNoWildcardPermissions',
-            reason:
-              'Intrinsic function used for resource (example `arn:{"Fn::Select...`)',
-            appliesTo: [{ regex: "/^Resource::arn:{(\"|')Fn::.*$/g" }],
+            reason: 'Intrinsic function used for resource (example `arn:{"Fn::Select...`)',
+            appliesTo: [{ regex: '/^Resource::arn:{("|\')Fn::.*$/g' }],
           },
         ],
         true,
@@ -46,18 +42,15 @@ export class GalileoNagSupression implements IAspect {
         [
           {
             id: 'AwsPrototyping-IAMNoManagedPolicies',
-            reason:
-              'Bucket deployment lambda uses basic execution policy for writing to cloudwatch logs',
+            reason: 'Bucket deployment lambda uses basic execution policy for writing to cloudwatch logs',
           },
           {
             id: 'AwsPrototyping-IAMNoWildcardPermissions',
-            reason:
-              'Bucket deployment writes arbitrary data to S3 (ie key not known until deploy time)',
+            reason: 'Bucket deployment writes arbitrary data to S3 (ie key not known until deploy time)',
           },
           {
             id: 'AwsPrototyping-LambdaLatestVersion',
-            reason:
-              'Bucket deployment uses older lambda runtime outside of our control',
+            reason: 'Bucket deployment uses older lambda runtime outside of our control',
           },
         ],
         true,
@@ -80,13 +73,11 @@ export class GalileoNagSupression implements IAspect {
             [
               {
                 id: 'AwsPrototyping-IAMNoManagedPolicies',
-                reason:
-                  'CDK CustomResource Provider resource used for deployment purposes',
+                reason: 'CDK CustomResource Provider resource used for deployment purposes',
               },
               {
                 id: 'AwsPrototyping-IAMNoWildcardPermissions',
-                reason:
-                  'CDK CustomResource Provider resource used for deployment purposes',
+                reason: 'CDK CustomResource Provider resource used for deployment purposes',
               },
             ],
             true,

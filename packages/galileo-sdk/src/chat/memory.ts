@@ -30,10 +30,7 @@ const getValue = (values: InputValues | OutputValues, key?: string) => {
  * If there are multiple output values, the outputKey must be specified.
  * If no outputKey is specified, an error is thrown.
  */
-export const getOutputValue = (
-  outputValues: OutputValues,
-  outputKey?: string,
-) => {
+export const getOutputValue = (outputValues: OutputValues, outputKey?: string) => {
   const value = getValue(outputValues, outputKey);
   if (!value) {
     const keys = Object.keys(outputValues);
@@ -72,7 +69,10 @@ export class ChatEngineHistory extends BufferWindowMemory {
 
   async saveContext(inputValues: InputValues, outputValues: OutputValues): Promise<void> {
     const human: CreateHumanChatMessageResponse = await this.chatHistory.addUserMessage(getInputValue(inputValues));
-    const ai: CreateAIChatMessageResponse = await this.chatHistory.addAIChatMessage(getOutputValue(outputValues, 'text'), outputValues.sourceDocuments || []);
+    const ai: CreateAIChatMessageResponse = await this.chatHistory.addAIChatMessage(
+      getOutputValue(outputValues, 'text'),
+      outputValues.sourceDocuments || [],
+    );
 
     this._turns.push({
       human: human.chatMessage,

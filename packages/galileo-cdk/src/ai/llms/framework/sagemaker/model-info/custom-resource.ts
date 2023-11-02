@@ -14,9 +14,7 @@ export class SageMakerModelInfoProvider extends Construct {
 
   static of(scope: Construct): SageMakerModelInfoProvider {
     const stack = Stack.of(scope);
-    const existing = stack.node.tryFindChild(
-      SageMakerModelInfoProvider.UUID,
-    ) as SageMakerModelInfoProvider | undefined;
+    const existing = stack.node.tryFindChild(SageMakerModelInfoProvider.UUID) as SageMakerModelInfoProvider | undefined;
     if (existing) {
       return existing;
     }
@@ -35,14 +33,7 @@ export class SageMakerModelInfoProvider extends Construct {
       timeout: Duration.minutes(5),
       initialPolicy: [
         new PolicyStatement({
-          actions: [
-            'sagemaker:Describe*',
-            'sagemaker:Get*',
-            'sagemaker:List*',
-            's3:Get*',
-            's3:List*',
-            'iam:PassRole',
-          ],
+          actions: ['sagemaker:Describe*', 'sagemaker:Get*', 'sagemaker:List*', 's3:Get*', 's3:List*', 'iam:PassRole'],
           resources: ['*'],
         }),
       ],
@@ -52,8 +43,7 @@ export class SageMakerModelInfoProvider extends Construct {
       [
         {
           id: 'AwsPrototyping-IAMNoWildcardPermissions',
-          reason:
-            'Specific resources are unknown and actions scoped to read only',
+          reason: 'Specific resources are unknown and actions scoped to read only',
           appliesTo: ['Resource::*'],
         },
       ],
@@ -144,13 +134,12 @@ export class SageMakerModelInfo extends Construct {
     this.modelImageUri = this.customResource.getAttString('ModelImageUri');
     this.modelPackageArn = this.customResource.getAttString('ModelPackageArn');
     this.modelRegion = this.customResource.getAttString('ModelRegion');
-    this.modelInstanceType =
-      this.customResource.getAttString('ModelInstanceType');
+    this.modelInstanceType = this.customResource.getAttString('ModelInstanceType');
     this.modelScriptUri = this.customResource.getAttString('ModelScriptUri');
     (this.imageUriOnly = props.imageUriOnly ?? false),
-    new CfnOutput(this, 'ModelInfo', {
-      value: this.toJson(),
-    });
+      new CfnOutput(this, 'ModelInfo', {
+        value: this.toJson(),
+      });
   }
 
   toJson(indent: number = 2): string {

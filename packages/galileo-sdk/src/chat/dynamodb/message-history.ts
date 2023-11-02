@@ -1,26 +1,13 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import {
-  DynamoDBClient,
-  DynamoDBClientConfig,
-} from '@aws-sdk/client-dynamodb';
-import {
-  DynamoDBDocumentClient,
-} from '@aws-sdk/lib-dynamodb';
+import { DynamoDBClient, DynamoDBClientConfig } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 
 import { Document } from 'langchain/document';
-import {
-  BaseMessage,
-  BaseListChatMessageHistory,
-  HumanMessage,
-  AIMessage,
-  StoredMessage,
-} from 'langchain/schema';
+import { BaseMessage, BaseListChatMessageHistory, HumanMessage, AIMessage, StoredMessage } from 'langchain/schema';
 import * as lib from './lib/index.js';
 import { getLogger } from '../../common/index.js';
-import {
-  mapStoredMessagesToChatMessages,
-} from '../../langchain/stores/messages/utils.js';
+import { mapStoredMessagesToChatMessages } from '../../langchain/stores/messages/utils.js';
 
 const logger = getLogger(__filename);
 
@@ -53,14 +40,7 @@ export class DynamoDBChatMessageHistory extends BaseListChatMessageHistory {
   protected client: DynamoDBClient;
   protected docClient: DynamoDBDocumentClient;
 
-  constructor({
-    tableName,
-    indexName,
-    messagesLimit,
-    userId,
-    chatId,
-    config,
-  }: DynamoDBChatMessageHistoryFields) {
+  constructor({ tableName, indexName, messagesLimit, userId, chatId, config }: DynamoDBChatMessageHistoryFields) {
     super();
     this.tableName = tableName;
     this.indexName = indexName;
@@ -70,7 +50,6 @@ export class DynamoDBChatMessageHistory extends BaseListChatMessageHistory {
 
     this.client = new DynamoDBClient(config ?? {});
     this.docClient = DynamoDBDocumentClient.from(this.client);
-
   }
 
   async getMessages(): Promise<BaseMessage[]> {
@@ -92,17 +71,19 @@ export class DynamoDBChatMessageHistory extends BaseListChatMessageHistory {
       // Need to reverse since in descending order (latest is first)
       Items.reverse();
 
-      return mapStoredMessagesToChatMessages(Items.map((item): StoredMessage => {
-        return {
-          type: item.type,
-          data: {
-            name: undefined,
-            content: item.data.content,
-            role: item.type,
-            additional_kwargs: item,
-          },
-        };
-      }));
+      return mapStoredMessagesToChatMessages(
+        Items.map((item): StoredMessage => {
+          return {
+            type: item.type,
+            data: {
+              name: undefined,
+              content: item.data.content,
+              role: item.type,
+              additional_kwargs: item,
+            },
+          };
+        }),
+      );
     } catch (error) {
       logger.error('Failed to get messages', error as Error);
       return [];

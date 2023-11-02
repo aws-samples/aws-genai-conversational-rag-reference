@@ -1,16 +1,11 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { UserIdentity } from "@aws/pdk/identity";
-import { PDKNag } from "@aws/pdk/pdk-nag";
-import { CfnOutput, Stack } from "aws-cdk-lib";
-import {
-  CfnUserPoolGroup,
-  CfnUserPoolUser,
-  CfnUserPoolUserToGroupAttachment,
-  UserPool,
-} from "aws-cdk-lib/aws-cognito";
-import { IRole } from "aws-cdk-lib/aws-iam";
-import { Construct } from "constructs";
+import { UserIdentity } from '@aws/pdk/identity';
+import { PDKNag } from '@aws/pdk/pdk-nag';
+import { CfnOutput, Stack } from 'aws-cdk-lib';
+import { CfnUserPoolGroup, CfnUserPoolUser, CfnUserPoolUserToGroupAttachment, UserPool } from 'aws-cdk-lib/aws-cognito';
+import { IRole } from 'aws-cdk-lib/aws-iam';
+import { Construct } from 'constructs';
 
 export interface CognitoUserProps {
   readonly username: string;
@@ -36,54 +31,48 @@ export class IdentityLayer extends Construct implements IIdentityLayer {
   constructor(scope: Construct, id: string, props: IdentityLayerProps = {}) {
     super(scope, id);
 
-    this.userIdentity = new UserIdentity(this, "UserIdentity");
+    this.userIdentity = new UserIdentity(this, 'UserIdentity');
     PDKNag.addResourceSuppressionsByPathNoThrow(
       Stack.of(this),
       this.userIdentity.node.path,
       [
         {
-          id: "AwsPrototyping-IAMNoWildcardPermissions",
-          reason: "For SMS access - managed by CDK",
-          appliesTo: ["Resource::*"],
+          id: 'AwsPrototyping-IAMNoWildcardPermissions',
+          reason: 'For SMS access - managed by CDK',
+          appliesTo: ['Resource::*'],
         },
       ],
-      true
+      true,
     );
 
-    this.adminGroup = new CfnUserPoolGroup(this, "AdminGroup", {
+    this.adminGroup = new CfnUserPoolGroup(this, 'AdminGroup', {
       userPoolId: this.userPoolId,
-      description: "Administrator group",
-      groupName: "Administrators",
+      description: 'Administrator group',
+      groupName: 'Administrators',
     });
 
     if (props?.adminUser) {
-      const adminUser = new CfnUserPoolUser(this, "AdminUser", {
+      const adminUser = new CfnUserPoolUser(this, 'AdminUser', {
         userPoolId: this.userPoolId,
-        desiredDeliveryMediums: ["EMAIL"],
+        desiredDeliveryMediums: ['EMAIL'],
         forceAliasCreation: true,
         username: props.adminUser.username,
         userAttributes: [
-          { name: "email_verified", value: "true" },
-          { name: "email", value: props.adminUser.email },
+          { name: 'email_verified', value: 'true' },
+          { name: 'email', value: props.adminUser.email },
         ],
       });
 
-      const adminUserAttachment = new CfnUserPoolUserToGroupAttachment(
-        this,
-        "AdminUserAttachment",
-        {
-          groupName: this.adminGroupName,
-          userPoolId: this.userPoolId,
-          username: adminUser.username!,
-        }
-      );
+      const adminUserAttachment = new CfnUserPoolUserToGroupAttachment(this, 'AdminUserAttachment', {
+        groupName: this.adminGroupName,
+        userPoolId: this.userPoolId,
+        username: adminUser.username!,
+      });
       adminUserAttachment.addDependency(adminUser);
     }
 
-    new CfnOutput(this, "CognitoUserPoolUrl", {
-      value: `https://${
-        Stack.of(this).region
-      }.console.aws.amazon.com/cognito/v2/idp/user-pools/${this.userPoolId}`,
+    new CfnOutput(this, 'CognitoUserPoolUrl', {
+      value: `https://${Stack.of(this).region}.console.aws.amazon.com/cognito/v2/idp/user-pools/${this.userPoolId}`,
     });
   }
 

@@ -16,9 +16,7 @@ interface StoredMessageV1 {
   text: string;
 }
 
-export function mapV1MessageToStoredMessage(
-  message: StoredMessage | StoredMessageV1,
-): StoredMessage {
+export function mapV1MessageToStoredMessage(message: StoredMessage | StoredMessageV1): StoredMessage {
   // TODO: Remove this mapper when we deprecate the old message format.
   if ((message as StoredMessage).data !== undefined) {
     return message as StoredMessage;
@@ -35,9 +33,7 @@ export function mapV1MessageToStoredMessage(
   }
 }
 
-export function mapStoredMessagesToChatMessages(
-  messages: StoredMessage[],
-): BaseMessage[] {
+export function mapStoredMessagesToChatMessages(messages: StoredMessage[]): BaseMessage[] {
   return messages.map((message) => {
     const storedMessage = mapV1MessageToStoredMessage(message);
     switch (storedMessage.type) {
@@ -59,8 +55,6 @@ export function mapStoredMessagesToChatMessages(
   });
 }
 
-export function mapChatMessagesToStoredMessages(
-  messages: BaseMessage[],
-): StoredMessage[] {
+export function mapChatMessagesToStoredMessages(messages: BaseMessage[]): StoredMessage[] {
   return messages.map((message) => message.toDict());
 }

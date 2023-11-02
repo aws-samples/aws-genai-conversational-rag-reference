@@ -16,7 +16,11 @@ export function env(key: keyof NodeJS.ProcessEnv, _default?: string, test_defaul
   return process.env[key] || _default;
 }
 
-export function envBool(key: keyof NodeJS.ProcessEnv, _default: boolean = false, test_default: boolean = false): boolean {
+export function envBool(
+  key: keyof NodeJS.ProcessEnv,
+  _default: boolean = false,
+  test_default: boolean = false,
+): boolean {
   const value = String(env(key, _default ? '1' : '0', test_default ? '1' : '0'));
   return ['yes', 'y', 'true', '1'].includes(value.toLowerCase());
 }

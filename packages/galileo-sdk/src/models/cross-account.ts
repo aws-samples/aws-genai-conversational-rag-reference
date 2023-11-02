@@ -6,7 +6,7 @@ import { getLogger } from '../common/index.js';
 
 const logger = getLogger(__filename);
 
-type AwsCredentialIdentityProvider = ReturnType<typeof fromTemporaryCredentials>
+type AwsCredentialIdentityProvider = ReturnType<typeof fromTemporaryCredentials>;
 
 export function crossAccountCredentials(assumeRole: string): AwsCredentialIdentityProvider {
   return fromTemporaryCredentials({
@@ -25,7 +25,11 @@ export function crossAccountCredentials(assumeRole: string): AwsCredentialIdenti
 export function resolveFoundationModelCredentials(assumeRole?: string): AwsCredentialIdentityProvider | undefined {
   const roleToAssume = assumeRole ?? process.env[FOUNDATION_MODEL_CROSS_ACCOUNT_ROLE_ARN];
   if (roleToAssume && roleToAssume !== '') {
-    logger.info({ message: 'CrossAccount foundation model credentials', key: FOUNDATION_MODEL_CROSS_ACCOUNT_ROLE_ARN, assumeRole: roleToAssume });
+    logger.info({
+      message: 'CrossAccount foundation model credentials',
+      key: FOUNDATION_MODEL_CROSS_ACCOUNT_ROLE_ARN,
+      assumeRole: roleToAssume,
+    });
 
     return crossAccountCredentials(roleToAssume);
   }

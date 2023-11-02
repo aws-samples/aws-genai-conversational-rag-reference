@@ -11,7 +11,7 @@ export type { logMetrics, Metrics, MetricUnits } from '@aws-lambda-powertools/me
  *
  * @returns Callback to disconnect observer
  */
-export const startMetricsObserver = (instance: Metrics): () => void => {
+export const startMetricsObserver = (instance: Metrics): (() => void) => {
   const perfObserver = new PerformanceObserver((items) => {
     items.getEntries().forEach((entry) => {
       if (entry.entryType === 'measure') {
@@ -58,9 +58,7 @@ export function startPerfMetric(metricName: string) {
 }
 
 export function measure(metricName: string) {
-  return function _measure<T extends Promise<any> | ((...args: any[]) => any)>(
-    target: T,
-  ): T {
+  return function _measure<T extends Promise<any> | ((...args: any[]) => any)>(target: T): T {
     if (target instanceof Promise) {
       const stop = startPerfMetric(metricName);
       return target.then((v) => {

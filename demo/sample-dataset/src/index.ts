@@ -2,13 +2,7 @@
 PDX-License-Identifier: Apache-2.0 */
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import {
-  Stack,
-  StackProps,
-  Size,
-  Tags,
-  CfnOutput,
-} from 'aws-cdk-lib';
+import { Stack, StackProps, Size, Tags, CfnOutput } from 'aws-cdk-lib';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
@@ -77,22 +71,18 @@ export class SampleDatasetStack extends Stack {
           );
           metadata[MetadataKeys.AssetKeyPrefix] = assetKeyPrefix;
 
-          const deployment = new s3deploy.BucketDeployment(
-            this,
-            `Dataset_${entity.name}`,
-            {
-              destinationBucket,
-              destinationKeyPrefix: assetKeyPrefix.replace(/^\//, ''),
-              sources: [s3deploy.Source.asset(assetZipPath)],
-              metadata: normalizeMetadata(metadata),
-              // remove root slash as it causes extra nested folder names "/"
-              memoryLimit: size.toMebibytes(),
-              ephemeralStorageSize: size,
-              // Must be false because out zips (parallel deployments) share same dest, they will be fighting over the space otherwise
-              prune: false,
-              role,
-            },
-          );
+          const deployment = new s3deploy.BucketDeployment(this, `Dataset_${entity.name}`, {
+            destinationBucket,
+            destinationKeyPrefix: assetKeyPrefix.replace(/^\//, ''),
+            sources: [s3deploy.Source.asset(assetZipPath)],
+            metadata: normalizeMetadata(metadata),
+            // remove root slash as it causes extra nested folder names "/"
+            memoryLimit: size.toMebibytes(),
+            ephemeralStorageSize: size,
+            // Must be false because out zips (parallel deployments) share same dest, they will be fighting over the space otherwise
+            prune: false,
+            role,
+          });
 
           NagSuppressions.addResourceSuppressions(
             deployment,
@@ -108,23 +98,13 @@ export class SampleDatasetStack extends Stack {
 
           // @ts-ignore - private
           role = deployment.handlerRole;
-        } else if (
-          !entity.name.startsWith('.') &&
-          !entity.name.endsWith('.metadata')
-        ) {
-          throw new Error(
-            `Only zip file assets can be uploaded for dataset: found ${entity.name}`,
-          );
+        } else if (!entity.name.startsWith('.') && !entity.name.endsWith('.metadata')) {
+          throw new Error(`Only zip file assets can be uploaded for dataset: found ${entity.name}`);
         }
       }
     } catch (error) {
-      console.error(
-        `Failed to generate BucketDeployment for dataset assets: ${assetsDir}`,
-        error,
-      );
-      console.warn(
-        `[Tip] Try deleting the ${assetsDir} directory and rebuilding`,
-      );
+      console.error(`Failed to generate BucketDeployment for dataset assets: ${assetsDir}`, error);
+      console.warn(`[Tip] Try deleting the ${assetsDir} directory and rebuilding`);
       throw error;
     }
 
@@ -185,20 +165,15 @@ function addDependencies(resources: Construct[], concurrency: number): void {
 
     // Add dependency from resources in current chunk to resources in previous chunk
     for (let _i = 0; _i < currentChunk.length; _i++) {
-      previousChunk[_i] &&
-        currentChunk[_i].node.addDependency(previousChunk[_i]);
+      previousChunk[_i] && currentChunk[_i].node.addDependency(previousChunk[_i]);
     }
   }
 }
 
-function normalizeMetadata(
-  metadata: Record<string, string>,
-): Record<string, string> {
+function normalizeMetadata(metadata: Record<string, string>): Record<string, string> {
   return Object.fromEntries(
     Object.entries(metadata).map(([key, value]) => {
-      const kebabKey = key
-        .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
-        .replace(/[^a-zA-Z0-0]+/g, '-');
+      const kebabKey = key.replace(/([a-z0-9])([A-Z])/g, '$1-$2').replace(/[^a-zA-Z0-0]+/g, '-');
       return [kebabKey, value];
     }),
   );

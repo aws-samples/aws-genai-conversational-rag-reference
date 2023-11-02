@@ -1,27 +1,19 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { Input, SegmentedControl } from "@cloudscape-design/components";
-import FormField from "@cloudscape-design/components/form-field";
-import SpaceBetween from "@cloudscape-design/components/space-between";
-import { FC } from "react";
-import {
-  ChatEngineConfigSearchType,
-  useChatEngineConfigState,
-} from "../../../../../providers/ChatEngineConfig";
-import CodeEditor from "../../../../code-editor";
-import { formatLabel, toCodeEditorJson } from "../../utils";
+import { Input, SegmentedControl } from '@cloudscape-design/components';
+import FormField from '@cloudscape-design/components/form-field';
+import SpaceBetween from '@cloudscape-design/components/space-between';
+import { FC } from 'react';
+import { ChatEngineConfigSearchType, useChatEngineConfigState } from '../../../../../providers/ChatEngineConfig';
+import CodeEditor from '../../../../code-editor';
+import { formatLabel, toCodeEditorJson } from '../../utils';
 
-const SEARCH_TYPES: ChatEngineConfigSearchType[] = [
-  "similarity",
-  "similarity_score_threshold",
-  "mmr",
-];
+const SEARCH_TYPES: ChatEngineConfigSearchType[] = ['similarity', 'similarity_score_threshold', 'mmr'];
 
 export const SearchSettings: FC = () => {
-  const [searchKwargs, setSearchKwargs] =
-    useChatEngineConfigState("searchKwargs");
-  const [searchType, setSearchType] = useChatEngineConfigState("searchType");
-  const [searchUrl, setSearchUrl] = useChatEngineConfigState("searchUrl");
+  const [searchKwargs, setSearchKwargs] = useChatEngineConfigState('searchKwargs');
+  const [searchType, setSearchType] = useChatEngineConfigState('searchType');
+  const [searchUrl, setSearchUrl] = useChatEngineConfigState('searchUrl');
 
   return (
     <SpaceBetween direction="vertical" size="s">
@@ -33,18 +25,14 @@ export const SearchSettings: FC = () => {
             try {
               setSearchKwargs(JSON.parse(detail.value));
             } catch (error) {
-              console.warn(
-                "Failed to parse `Search Kwargs`",
-                detail.value,
-                error
-              );
+              console.warn('Failed to parse `Search Kwargs`', detail.value, error);
             }
           }}
         />
       </FormField>
       <FormField label="Search URL" stretch>
         <Input
-          value={searchUrl || ""}
+          value={searchUrl || ''}
           onChange={({ detail }) => {
             setSearchUrl(detail.value);
           }}

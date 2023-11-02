@@ -1,26 +1,15 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { ModelAdapter } from "@aws/galileo-sdk/lib/models/adapter";
-import { resolveModelAdapter } from "@aws/galileo-sdk/lib/models/llms/utils";
-import { IModelInfo } from "@aws/galileo-sdk/lib/models/types";
-import {
-  ChatEngineConfig,
-  ChatEngineConfigSearchType,
-} from "api-typescript-react-query-hooks";
-import { isEmpty, merge } from "lodash";
-import React, {
-  PropsWithChildren,
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-} from "react";
-import { useLocation } from "react-router-dom";
-import { useImmer, Updater, DraftFunction } from "use-immer";
-import { useIsAdmin } from "../Auth";
-import { useFoundationModelInventory } from "../hooks/llm-inventory";
+import { ModelAdapter } from '@aws/galileo-sdk/lib/models/adapter';
+import { resolveModelAdapter } from '@aws/galileo-sdk/lib/models/llms/utils';
+import { IModelInfo } from '@aws/galileo-sdk/lib/models/types';
+import { ChatEngineConfig, ChatEngineConfigSearchType } from 'api-typescript-react-query-hooks';
+import { isEmpty, merge } from 'lodash';
+import React, { PropsWithChildren, createContext, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useImmer, Updater, DraftFunction } from 'use-immer';
+import { useIsAdmin } from '../Auth';
+import { useFoundationModelInventory } from '../hooks/llm-inventory';
 
 export type { ChatEngineConfig, ChatEngineConfigSearchType };
 
@@ -33,7 +22,7 @@ export interface ChatEngineConfigActions {
 export type ChatEngineConfigContext = [
   config: ChatEngineConfig,
   updater: Updater<ChatEngineConfig>,
-  actions: ChatEngineConfigActions | undefined
+  actions: ChatEngineConfigActions | undefined,
 ];
 
 const DEFAULT_CONTEXT: ChatEngineConfigContext = [{}, () => {}, undefined];
@@ -41,46 +30,39 @@ const DEFAULT_CONTEXT: ChatEngineConfigContext = [{}, () => {}, undefined];
 /**
  * Context for storing the ChatEngineConfig.
  */
-export const ChatEngineConfigContext =
-  createContext<ChatEngineConfigContext>(DEFAULT_CONTEXT);
+export const ChatEngineConfigContext = createContext<ChatEngineConfigContext>(DEFAULT_CONTEXT);
 
 export const useChatEngineConfig = (): ChatEngineConfigContext => {
   return useContext(ChatEngineConfigContext);
 };
 
 export const useChatEngineConfigState = <P extends keyof ChatEngineConfig>(
-  prop: P
+  prop: P,
 ): [state: ChatEngineConfig[P], updater: Updater<ChatEngineConfig[P]>] => {
   const [config, updateConfig] = useChatEngineConfig();
   const setter: Updater<ChatEngineConfig[P]> = useCallback(
     (value) => {
       updateConfig((draft) => {
-        if (typeof value === "function") {
-          draft[prop] = (value as DraftFunction<ChatEngineConfig[P]>)(
-            draft[prop]
-          );
+        if (typeof value === 'function') {
+          draft[prop] = (value as DraftFunction<ChatEngineConfig[P]>)(draft[prop]);
         } else {
           draft[prop] = value;
         }
       });
     },
-    [updateConfig]
+    [updateConfig],
   );
 
   return [config[prop], setter];
 };
 
-export const useChatEngineConfigModelInfo = (
-  noDefault: boolean = false
-): Partial<IModelInfo> | undefined => {
-  const llmModel: IModelInfo | undefined =
-    useChatEngineConfigState("llmModel")[0];
+export const useChatEngineConfigModelInfo = (noDefault: boolean = false): Partial<IModelInfo> | undefined => {
+  const llmModel: IModelInfo | undefined = useChatEngineConfigState('llmModel')[0];
   const inventory = useFoundationModelInventory();
 
   return useMemo(() => {
     if (inventory) {
-      const uuid =
-        llmModel?.uuid || (noDefault ? undefined : inventory.defaultModelId);
+      const uuid = llmModel?.uuid || (noDefault ? undefined : inventory.defaultModelId);
       const inventoryInfo = uuid ? inventory.models[uuid] : {};
       return merge({}, inventoryInfo, llmModel || {});
     }
@@ -88,15 +70,11 @@ export const useChatEngineConfigModelInfo = (
   }, [inventory, llmModel?.uuid, noDefault]);
 };
 
-export const useChatEngineConfigModelAdapter = (
-  noDefault: boolean = false
-): ModelAdapter | undefined => {
+export const useChatEngineConfigModelAdapter = (noDefault: boolean = false): ModelAdapter | undefined => {
   const modelInfo = useChatEngineConfigModelInfo(noDefault);
 
   return useMemo(() => {
-    return modelInfo
-      ? resolveModelAdapter(modelInfo as any)
-      : new ModelAdapter();
+    return modelInfo ? resolveModelAdapter(modelInfo as any) : new ModelAdapter();
   }, [modelInfo]);
 };
 
@@ -104,9 +82,7 @@ export const useChatEngineConfigModelAdapter = (
  * Sets up the ChatEngineConfig context used to config chat engine config for admins.
  * This provider MUST wrap the <App /> which manages the splitpanel where dev settings are rendered.
  */
-const ChatEngineConfigProvider: React.FC<PropsWithChildren> = ({
-  children,
-}) => {
+const ChatEngineConfigProvider: React.FC<PropsWithChildren> = ({ children }) => {
   // TODO: find better way to retrieve the route path - useParams is empty
   const chatId = useLocation()
     .pathname.match(/chat\/([^/]+)(\/.*)?$/)
@@ -141,24 +117,22 @@ const ChatEngineConfigProvider: React.FC<PropsWithChildren> = ({
         updateConfig(_config || {});
       }
     },
-    [chatId, updateConfig]
+    [chatId, updateConfig],
   );
 
   const copy = useCallback(async () => {
-    return navigator.clipboard.writeText(
-      JSON.stringify(configRef.current, null, 2)
-    );
+    return navigator.clipboard.writeText(JSON.stringify(configRef.current, null, 2));
   }, [configRef]);
 
   const paste = useCallback(async () => {
     try {
       const text = await navigator.clipboard.readText();
-      console.info("Pasting config from clipboard", text);
+      console.info('Pasting config from clipboard', text);
       const _clipboardConfig = JSON.parse(text);
       console.info(_clipboardConfig);
       updateConfig(_clipboardConfig);
     } catch (error) {
-      console.error("Failed to paste config", error);
+      console.error('Failed to paste config', error);
     }
   }, [updateConfig]);
 
@@ -173,9 +147,7 @@ const ChatEngineConfigProvider: React.FC<PropsWithChildren> = ({
   ];
 
   return (
-    <ChatEngineConfigContext.Provider
-      value={isAdmin ? context : DEFAULT_CONTEXT}
-    >
+    <ChatEngineConfigContext.Provider value={isAdmin ? context : DEFAULT_CONTEXT}>
       {children}
     </ChatEngineConfigContext.Provider>
   );
@@ -196,5 +168,5 @@ function storeConfig(chatId: string, config?: ChatEngineConfig) {
 }
 
 function retrieveConfig(chatId: string): ChatEngineConfig {
-  return JSON.parse(localStorage.getItem(persistentKey(chatId)) || "{}");
+  return JSON.parse(localStorage.getItem(persistentKey(chatId)) || '{}');
 }

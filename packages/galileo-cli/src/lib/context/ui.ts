@@ -1,6 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import ora, { Ora } from "ora";
+import ora, { Ora } from 'ora';
 
 export class Ui {
   private _spinner: Ora | null = null;

@@ -51,7 +51,7 @@ export class ChatEngineContext {
     const uuid = modelInfo == null ? undefined : typeof modelInfo === 'string' ? modelInfo : modelInfo.uuid;
     const resolved = await FoundationModelInventory.getModelOrDefault(uuid);
 
-    modelInfo = typeof modelInfo === 'object' ? merge({}, resolved, modelInfo) as IModelInfo : resolved;
+    modelInfo = typeof modelInfo === 'object' ? (merge({}, resolved, modelInfo) as IModelInfo) : resolved;
     logger.info('Resolving model info from inventory', { uuid, modelInfo, resolved });
     return modelInfo as IModelInfo;
   }
@@ -74,7 +74,10 @@ export class ChatEngineContext {
     logger.debug('LLM configuration', { modelInfo, options });
 
     this.adapter = resolveModelAdapter(modelInfo);
-    logger.debug('ModelAdapter:', { isDefault: this.adapter.isDefault, adapter: this.adapter.isDefault ? undefined : this.adapter });
+    logger.debug('ModelAdapter:', {
+      isDefault: this.adapter.isDefault,
+      adapter: this.adapter.isDefault ? undefined : this.adapter,
+    });
 
     if (isSageMakerEndpointFramework(modelInfo.framework)) {
       const { endpointName, endpointRegion, role } = modelInfo.framework;
@@ -130,27 +133,31 @@ export class ChatEngineContext {
       throw new Error(`Model Framework "${modelInfo.framework.type}" is not supported/implemented`);
     }
 
-    this.qaPrompt = new ChatQuestionAnswerPromptTemplate(merge(
-      // defaults
-      {
-        domain: options.domain,
-      },
-      // model specific config
-      this.adapter.prompt?.chat?.questionAnswer,
-      // runtime specific
-      options.qaPrompt,
-    ));
+    this.qaPrompt = new ChatQuestionAnswerPromptTemplate(
+      merge(
+        // defaults
+        {
+          domain: options.domain,
+        },
+        // model specific config
+        this.adapter.prompt?.chat?.questionAnswer,
+        // runtime specific
+        options.qaPrompt,
+      ),
+    );
 
-    this.condenseQuestionPrompt = new ChatCondenseQuestionPromptTemplate(merge(
-      // defaults
-      {
-        domain: options.domain,
-      },
-      // model specific config
-      this.adapter.prompt?.chat?.condenseQuestion,
-      // runtime specific
-      options.condenseQuestionPrompt,
-    ));
+    this.condenseQuestionPrompt = new ChatCondenseQuestionPromptTemplate(
+      merge(
+        // defaults
+        {
+          domain: options.domain,
+        },
+        // model specific config
+        this.adapter.prompt?.chat?.condenseQuestion,
+        // runtime specific
+        options.condenseQuestionPrompt,
+      ),
+    );
 
     logger.debug('Prompts', {
       qaPrompt: this.qaPrompt.serialize(),
@@ -187,8 +194,8 @@ export class ChatEngineContext {
     }
     const textLength = text.length;
     const targetLength = textLength * (this.maxInputLength / tokens);
-    const reduceBy = (textLength - targetLength) + 3; // ... is 3 chars
+    const reduceBy = textLength - targetLength + 3; // ... is 3 chars
     const midPoint = Math.round(textLength / 2);
-    return text.slice(0, Math.floor(midPoint - (reduceBy / 2))) + '...' + text.slice(Math.ceil(midPoint + (reduceBy / 2)));
+    return text.slice(0, Math.floor(midPoint - reduceBy / 2)) + '...' + text.slice(Math.ceil(midPoint + reduceBy / 2));
   }
 }

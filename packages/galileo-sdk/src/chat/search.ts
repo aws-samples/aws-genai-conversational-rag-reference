@@ -2,7 +2,11 @@
 PDX-License-Identifier: Apache-2.0 */
 import { fetch } from 'cross-fetch';
 import { Document } from 'langchain/document';
-import { RemoteLangChainRetrieverParams, RemoteLangChainRetriever, RemoteRetrieverValues } from 'langchain/retrievers/remote';
+import {
+  RemoteLangChainRetrieverParams,
+  RemoteLangChainRetriever,
+  RemoteRetrieverValues,
+} from 'langchain/retrievers/remote';
 import { getLogger } from '../common/index.js';
 
 const logger = getLogger('chat/search');
@@ -55,24 +59,21 @@ export class SearchRetriever extends RemoteLangChainRetriever {
       body: JSON.stringify(body),
     };
     logger.debug('getRelevantDocuments', { query, url: this.url, init });
-    const response = await this.asyncCaller.call(() =>
-      this.fetch(this.url, init),
-    );
+    const response = await this.asyncCaller.call(() => this.fetch(this.url, init));
     if (!response.ok) {
       const error = await responseError(response);
       logger.error('Failed to getRelevantDocuments', { query, url: this.url, init, ...error });
-      throw new Error(
-        `Failed to retrieve documents from ${this.url}: ${response.status} ${response.statusText}`,
-      );
+      throw new Error(`Failed to retrieve documents from ${this.url}: ${response.status} ${response.statusText}`);
     }
     const json = await response.json();
     logger.debug('Successfully retrieved relevant documents', { query, response: json });
     return this.processJsonResponse(json);
   }
-
 }
 
-async function responseError(response: Response): Promise<{ status: number; statusText: string; errorMessage: string }> {
+async function responseError(
+  response: Response,
+): Promise<{ status: number; statusText: string; errorMessage: string }> {
   const { status, statusText } = response;
   try {
     return {

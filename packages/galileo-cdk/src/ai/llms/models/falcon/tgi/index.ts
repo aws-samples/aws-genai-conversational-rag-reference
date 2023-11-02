@@ -1,9 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import {
-  FALCON_ADAPTER,
-  FALCON_MODEL_KWARGS,
-} from '@aws/galileo-sdk/lib/models/llms/openassistant';
+import { FALCON_ADAPTER, FALCON_MODEL_KWARGS } from '@aws/galileo-sdk/lib/models/llms/openassistant';
 import { Construct } from 'constructs';
 import { BaseLLMProps } from '../../../framework/base';
 import { HuggingFaceModel } from '../../../framework/huggingface/base';
@@ -56,9 +53,7 @@ export interface HuggingFaceFalconProps extends BaseLLMProps {
 }
 
 export class HuggingFaceFalcon extends HuggingFaceModel {
-  static numGpuFromInstanceType(
-    instanceType?: HuggingFaceFalconInstances | string,
-  ): number {
+  static numGpuFromInstanceType(instanceType?: HuggingFaceFalconInstances | string): number {
     switch (instanceType) {
       case HuggingFaceFalconInstances.G5_16XLARGE:
         return 1;
@@ -73,12 +68,7 @@ export class HuggingFaceFalcon extends HuggingFaceModel {
   }
 
   constructor(scope: Construct, id: string, props: HuggingFaceFalconProps) {
-    const {
-      modelId,
-      maxInputLength = 2047,
-      maxTotalTokens = 2048,
-      numGpus,
-    } = props;
+    const { modelId, maxInputLength = 2047, maxTotalTokens = 2048, numGpus } = props;
 
     if (maxInputLength >= maxTotalTokens) {
       throw new Error(
@@ -104,16 +94,13 @@ export class HuggingFaceFalcon extends HuggingFaceModel {
       },
       environment: {
         HF_MODEL_ID: modelId,
-        SM_NUM_GPUS: String(
-          numGpus ||
-            HuggingFaceFalcon.numGpuFromInstanceType(props.instanceType),
-        ),
+        SM_NUM_GPUS: String(numGpus || HuggingFaceFalcon.numGpuFromInstanceType(props.instanceType)),
         MAX_INPUT_LENGTH: String(maxInputLength),
         MAX_TOTAL_TOKENS: String(maxTotalTokens),
         ...(props.quantize
           ? {
-            HF_MODEL_QUANTIZE: 'bitsandbytes',
-          }
+              HF_MODEL_QUANTIZE: 'bitsandbytes',
+            }
           : {}),
       },
     });

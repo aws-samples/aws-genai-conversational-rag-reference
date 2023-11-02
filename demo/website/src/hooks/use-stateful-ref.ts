@@ -1,6 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import React, { useRef } from "react";
+import React, { useRef } from 'react';
 
 /**
  * Creates a ref that maintains current value of referenced stateful object.

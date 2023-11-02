@@ -17,9 +17,13 @@ export interface RDSConnConfig {
 
 export async function getRDSConnConfigFromSecret(secretId: string): Promise<RDSConnConfig> {
   const client = new SecretsManagerClient({});
-  const secretJson =(await client.send(new GetSecretValueCommand({
-    SecretId: secretId,
-  }))).SecretString;
+  const secretJson = (
+    await client.send(
+      new GetSecretValueCommand({
+        SecretId: secretId,
+      }),
+    )
+  ).SecretString;
 
   if (secretJson == null) {
     throw new Error(`Failed to retrieve secret string value for ${secretId} - it was empty`);
@@ -75,7 +79,7 @@ export interface IRdsConnProcessEnv {
   RDS_PGVECTOR_TLS_ENABLED?: string;
 }
 
-export function resolveRdsConnProcessEnvs () {
+export function resolveRdsConnProcessEnvs() {
   return {
     RDS_PGVECTOR_STORE_SECRET: process.env.RDS_PGVECTOR_STORE_SECRET!,
     RDS_PGVECTOR_PROXY_ENDPOINT: process.env.RDS_PGVECTOR_PROXY_ENDPOINT,

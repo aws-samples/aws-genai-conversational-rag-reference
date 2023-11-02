@@ -61,7 +61,7 @@ export class ChatEngine {
       chatHistoryTableIndexName,
       search: searchOptions,
       config = {},
-      verbose = (process.env.LOG_LEVEL === 'DEBUG'),
+      verbose = process.env.LOG_LEVEL === 'DEBUG',
     } = options;
 
     if (domain == null || domain.length === 0) {
@@ -76,7 +76,10 @@ export class ChatEngine {
       domain,
       maxNewTokens,
       qaPrompt: typeof config.qaPrompt === 'string' ? { template: config.qaPrompt } : config.qaPrompt,
-      condenseQuestionPrompt: typeof config.condenseQuestionPrompt === 'string' ? { template: config.condenseQuestionPrompt } : config.condenseQuestionPrompt,
+      condenseQuestionPrompt:
+        typeof config.condenseQuestionPrompt === 'string'
+          ? { template: config.condenseQuestionPrompt }
+          : config.condenseQuestionPrompt,
       endpointKwargs: config.llmEndpointKwargs,
       modelKwargs: config.llmModelKwargs,
       verbose,
@@ -142,24 +145,20 @@ export class ChatEngine {
     this.memory = memory;
     this.retriever = retriever;
 
-    this.chain = ChatEngineChain.fromLLM(
-      this.llm,
-      this.retriever,
-      {
+    this.chain = ChatEngineChain.fromLLM(this.llm, this.retriever, {
+      verbose,
+      memory: this.memory,
+      qaChainOptions: {
+        type: 'stuff',
+        prompt: this.qaPrompt,
         verbose,
-        memory: this.memory,
-        qaChainOptions: {
-          type: 'stuff',
-          prompt: this.qaPrompt,
-          verbose,
-        },
-        questionGenerator: {
-          llm: this.llm,
-          prompt: this.condenseQuestionPrompt,
-        },
-        returnSourceDocuments: true,
       },
-    ) as ChatEngineChain;
+      questionGenerator: {
+        llm: this.llm,
+        prompt: this.condenseQuestionPrompt,
+      },
+      returnSourceDocuments: true,
+    }) as ChatEngineChain;
 
     if (!(this.chain instanceof ChatEngineChain)) {
       throw new Error('Chain is not instanceof ChatEngineChain');
@@ -195,7 +194,6 @@ export class ChatEngine {
     }
   }
 }
-
 
 export interface ChatEngineQueryResponse {
   /** The input question text for the query */

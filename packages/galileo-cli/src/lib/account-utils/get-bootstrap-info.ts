@@ -1,7 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { SSMClient, GetParameterCommand } from "@aws-sdk/client-ssm";
-import { fromIni } from "@aws-sdk/credential-providers";
+import { SSMClient, GetParameterCommand } from '@aws-sdk/client-ssm';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 export interface CdkBootstrapInfoRequestOptions {
   readonly profile: string;
@@ -26,7 +26,7 @@ export interface CdkBootstrapInfo {
  * A qualifier lets you avoid resource name clashes when you provision multiple bootstrap
  * stacks in the same environment. The default is hnb659fds (this value has no significance).
  */
-const DEFAULT_QUALIFIER = "hnb659fds";
+const DEFAULT_QUALIFIER = 'hnb659fds';
 
 /**
  * Gets the CDK bootstrap info for an AWS account used by the passed profile
@@ -35,7 +35,7 @@ const DEFAULT_QUALIFIER = "hnb659fds";
  * @returns The bootstrap info, or `undefined` if the account is not bootstrapped.
  */
 export const getCdkBootstrapInfo = async (
-  options: CdkBootstrapInfoRequestOptions
+  options: CdkBootstrapInfoRequestOptions,
 ): Promise<CdkBootstrapInfo | undefined> => {
   const { profile, region } = options;
   const client = new SSMClient({
@@ -48,10 +48,8 @@ export const getCdkBootstrapInfo = async (
   try {
     const ssmParamResp = await client.send(
       new GetParameterCommand({
-        Name: `/cdk-bootstrap/${
-          options.qualifier ?? DEFAULT_QUALIFIER
-        }/version`,
-      })
+        Name: `/cdk-bootstrap/${options.qualifier ?? DEFAULT_QUALIFIER}/version`,
+      }),
     );
 
     if (ssmParamResp.Parameter == null) {

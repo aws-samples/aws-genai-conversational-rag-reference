@@ -44,9 +44,7 @@ export interface BaseLLMProps {
   readonly vpc?: IVpc;
 }
 
-export abstract class BaseLLM
-  extends Construct
-  implements Models.IModelInfoProvider {
+export abstract class BaseLLM extends Construct implements Models.IModelInfoProvider {
   static defaultExecutionRole(scope: Construct): iam.Role {
     const uuid = 'BaseLLM-DefaultExecutionRole';
     const stack = Stack.of(scope);
@@ -138,12 +136,9 @@ export abstract class BaseLLM
           variantName: 'AllTraffic',
           initialInstanceCount: props.instanceCount ?? 1,
           initialVariantWeight: 1,
-          modelDataDownloadTimeoutInSeconds: (
-            props.modelDataDownloadTimeout || Duration.minutes(60)
-          ).toSeconds(),
+          modelDataDownloadTimeoutInSeconds: (props.modelDataDownloadTimeout || Duration.minutes(60)).toSeconds(),
           containerStartupHealthCheckTimeout:
-            props.containerStartupHealthCheckTimeout &&
-            props.containerStartupHealthCheckTimeout.toSeconds(),
+            props.containerStartupHealthCheckTimeout && props.containerStartupHealthCheckTimeout.toSeconds(),
         } as sagemaker.CfnEndpointConfig.ProductionVariantProperty,
       ],
     });

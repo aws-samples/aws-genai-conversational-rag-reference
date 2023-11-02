@@ -2,7 +2,11 @@
 PDX-License-Identifier: Apache-2.0 */
 import { BaseSageMakerContentHandler } from 'langchain/llms/sagemaker_endpoint';
 import { set, get, isEmpty } from 'lodash';
-import { BaseChatTemplatePartials, ChatCondenseQuestionPromptRuntime, ChatQuestionAnswerPromptRuntime } from '../prompt/templates/chat/index.js';
+import {
+  BaseChatTemplatePartials,
+  ChatCondenseQuestionPromptRuntime,
+  ChatQuestionAnswerPromptRuntime,
+} from '../prompt/templates/chat/index.js';
 
 /**
  * @struct
@@ -68,26 +72,31 @@ export interface IPromptAdapter {
 }
 
 export class PromptAdapter implements IPromptAdapter {
-
   readonly chat?: IChatPromptAdapter;
 
   constructor(adapter?: IPromptAdapter) {
     this.chat = {
       base: adapter?.chat?.base,
-      condenseQuestion: adapter?.chat?.base || adapter?.chat?.condenseQuestion ? {
-        ...adapter.chat.condenseQuestion,
-        templatePartials: {
-          ...adapter.chat.base,
-          ...adapter.chat.condenseQuestion?.templatePartials,
-        },
-      } : undefined,
-      questionAnswer: adapter?.chat?.base || adapter?.chat?.questionAnswer ? {
-        ...adapter.chat.questionAnswer,
-        templatePartials: {
-          ...adapter.chat.base,
-          ...adapter.chat.questionAnswer?.templatePartials,
-        },
-      } : undefined,
+      condenseQuestion:
+        adapter?.chat?.base || adapter?.chat?.condenseQuestion
+          ? {
+              ...adapter.chat.condenseQuestion,
+              templatePartials: {
+                ...adapter.chat.base,
+                ...adapter.chat.condenseQuestion?.templatePartials,
+              },
+            }
+          : undefined,
+      questionAnswer:
+        adapter?.chat?.base || adapter?.chat?.questionAnswer
+          ? {
+              ...adapter.chat.questionAnswer,
+              templatePartials: {
+                ...adapter.chat.base,
+                ...adapter.chat.questionAnswer?.templatePartials,
+              },
+            }
+          : undefined,
     };
   }
 }
@@ -127,7 +136,9 @@ export class AdaptedContentHandler extends BaseSageMakerContentHandler<string, s
     this.outputEncoding = adapter?.output?.encoding ?? 'utf-8';
 
     if (this.accepts !== 'application/json' || this.contentType != 'application/json') {
-      throw new Error(`Only "application/json" is supported at this time: ${this.accepts} / ${this.contentType} not implemented`);
+      throw new Error(
+        `Only "application/json" is supported at this time: ${this.accepts} / ${this.contentType} not implemented`,
+      );
     }
   }
 

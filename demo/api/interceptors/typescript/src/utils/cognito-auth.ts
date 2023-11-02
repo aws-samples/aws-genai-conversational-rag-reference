@@ -1,7 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import * as jose from "jose";
-import fetch from "node-fetch";
+import * as jose from 'jose';
+import fetch from 'node-fetch';
 
 // copied and updated a bit from https://github.com/aws-samples/aws-genai-llm-chatbot/blob/c5b8d468f6e940d628d6e15e53900f416db3e578/lib/chatbot-backend/functions/chat-action/common/cognito-auth.ts
 
@@ -81,7 +81,7 @@ export class CognitoAuth {
       });
 
       const payload = result.payload;
-      if (result.payload.token_use !== "id") {
+      if (result.payload.token_use !== 'id') {
         return null;
       }
 

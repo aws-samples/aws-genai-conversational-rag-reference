@@ -1,25 +1,25 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import fs from "node:fs";
-import path from "node:path";
-import { Command } from "@oclif/core";
-import chalk from "chalk";
-import prompts from "prompts";
-import { deployCommandFlags } from "./flags";
-import { helpers } from "../../internals";
-import { accountUtils } from "../../lib/account-utils";
-import context from "../../lib/context";
-import galileoPrompts from "../../lib/prompts";
-import { ExecaTask } from "../../lib/types";
+import fs from 'node:fs';
+import path from 'node:path';
+import { Command } from '@oclif/core';
+import chalk from 'chalk';
+import prompts from 'prompts';
+import { deployCommandFlags } from './flags';
+import { helpers } from '../../internals';
+import { accountUtils } from '../../lib/account-utils';
+import context from '../../lib/context';
+import galileoPrompts from '../../lib/prompts';
+import { ExecaTask } from '../../lib/types';
 
-const ROOT = path.resolve(__dirname, "..", "..", "..", "..", "..");
+const ROOT = path.resolve(__dirname, '..', '..', '..', '..', '..');
 
 export default class DeployCommand extends Command {
-  static description = "Deploy Galileo into your AWS account";
+  static description = 'Deploy Galileo into your AWS account';
   static examples = [
-    "galileo-cli deploy --profile=myProfile --appRegion=ap-southeast-1 --llmRegion=us-west-2 --build --saveExec --skipConfirmations",
-    "galileo-cli deploy --dryRun",
-    "galileo-cli deploy --replay --skipConfirmations",
+    'galileo-cli deploy --profile=myProfile --appRegion=ap-southeast-1 --llmRegion=us-west-2 --build --saveExec --skipConfirmations',
+    'galileo-cli deploy --dryRun',
+    'galileo-cli deploy --replay --skipConfirmations',
   ];
   static flags = deployCommandFlags;
 
@@ -56,12 +56,12 @@ export default class DeployCommand extends Command {
         [
           galileoPrompts.profile(flags.profile),
           galileoPrompts.awsRegion({
-            regionType: "app",
+            regionType: 'app',
             initialVal: flags.appRegion,
           }),
         ],
-        { onCancel: this.onPromptCancel }
-      )
+        { onCancel: this.onPromptCancel },
+      ),
     );
 
     // set process envs so all child processes will inherit them
@@ -70,12 +70,11 @@ export default class DeployCommand extends Command {
 
     const account = await accountUtils.retrieveAccount(profile);
 
-    context.appConfig.identity.admin =
-      await galileoPrompts.adminEmailAndUsername();
+    context.appConfig.identity.admin = await galileoPrompts.adminEmailAndUsername();
 
     const { foundationModelIds, llmRegion } = await prompts(
       [galileoPrompts.foundationModelIds(), galileoPrompts.llmRegion()],
-      { onCancel: this.onPromptCancel }
+      { onCancel: this.onPromptCancel },
     );
     if (llmRegion !== appRegion) {
       context.appConfig.llms.region = llmRegion;
@@ -93,19 +92,18 @@ export default class DeployCommand extends Command {
     // foundational models -related info
     const availableModelIds = helpers.availableModelIds(
       context.appConfig.llms.predefined.sagemaker,
-      context.appConfig.bedrock.models
+      context.appConfig.bedrock.models,
     );
-    const { defaultModelId } = await prompts(
-      [galileoPrompts.defaultModelId(availableModelIds)],
-      { onCancel: this.onPromptCancel }
-    );
+    const { defaultModelId } = await prompts([galileoPrompts.defaultModelId(availableModelIds)], {
+      onCancel: this.onPromptCancel,
+    });
     context.appConfig.llms.defaultModel = defaultModelId;
 
     helpers.saveAppConfig(context.appConfig, appConfigPath);
 
     if (flags.projen) {
-      console.log(chalk.gray("Synthesizing project repository..."));
-      context.execCommand("pnpm projen", { cwd: ROOT });
+      console.log(chalk.gray('Synthesizing project repository...'));
+      context.execCommand('pnpm projen', { cwd: ROOT });
     }
 
     const modelRegion = context.appConfig.llms.region || appRegion;
@@ -129,15 +127,13 @@ export default class DeployCommand extends Command {
             galileoPrompts.confirmBootstrapRegions({
               regions: Array.from(regionsToBootstrap),
               account,
-            })
-          )
+            }),
+          ),
         );
 
         if (!bootstrapRegions) {
           console.error(
-            chalk.redBright(
-              "Account must be bootstrapped in all regions to be used, before deployment. Quitting..."
-            )
+            chalk.redBright('Account must be bootstrapped in all regions to be used, before deployment. Quitting...'),
           );
           this.exit();
         }
@@ -151,7 +147,7 @@ export default class DeployCommand extends Command {
     }
 
     context.deployStacks.push(`Dev/${context.appConfig.app.name}`);
-    context.cdkContext.set("configPath", appConfigPath);
+    context.cdkContext.set('configPath', appConfigPath);
 
     const cmdDeploy = this.getDeploymentCommand({
       appRegion,
@@ -169,7 +165,7 @@ export default class DeployCommand extends Command {
             description: `Execute the following command in ${account}?`,
             cmd: cmdDeploy,
           }),
-          { onCancel: this.onPromptCancel }
+          { onCancel: this.onPromptCancel },
         )
       ).confirmed
     ) {
@@ -179,7 +175,7 @@ export default class DeployCommand extends Command {
         context.saveExecTasks();
       }
 
-      console.info(chalk.bold.greenBright("Success!"));
+      console.info(chalk.bold.greenBright('Success!'));
     }
   }
 
@@ -191,34 +187,26 @@ export default class DeployCommand extends Command {
   async ensurePrerequisites(options: { build: boolean }) {
     const { build } = options;
 
-    if (!fs.existsSync(path.join(ROOT, "node_modules"))) {
-      const { installDeps } = context.cachedAnswers(
-        await prompts(galileoPrompts.installDeps)
-      );
+    if (!fs.existsSync(path.join(ROOT, 'node_modules'))) {
+      const { installDeps } = context.cachedAnswers(await prompts(galileoPrompts.installDeps));
 
       if (!installDeps) {
-        console.error(
-          chalk.redBright("Project dependencies must be installed. Quitting...")
-        );
+        console.error(chalk.redBright('Project dependencies must be installed. Quitting...'));
         this.exit();
       }
 
-      context.execCommand("pnpm install --frozen-lockfile", {
+      context.execCommand('pnpm install --frozen-lockfile', {
         cwd: ROOT,
-        stdio: "inherit",
+        stdio: 'inherit',
       });
     }
 
     if (build) {
       // make sure docker is running
       try {
-        context.execCommand("docker info");
+        context.execCommand('docker info');
       } catch (error) {
-        console.error(
-          chalk.redBright(
-            "Docker must be running - please start docker and retry"
-          )
-        );
+        console.error(chalk.redBright('Docker must be running - please start docker and retry'));
         this.exit();
       }
     }
@@ -230,24 +218,23 @@ export default class DeployCommand extends Command {
    * @param skipConfirmations whether to skip confirmation prompt
    */
   async executeReplay(skipConfirmations: boolean) {
-    const replayTasks: ExecaTask[] | undefined =
-      context.cache.getItem("replayTasks");
+    const replayTasks: ExecaTask[] | undefined = context.cache.getItem('replayTasks');
 
     if (replayTasks == null) {
-      this.log(chalk.redBright("No last tasks stored to execute. Quitting..."));
+      this.log(chalk.redBright('No last tasks stored to execute. Quitting...'));
       this.exit();
     }
 
     console.info(
       helpers.commandMessage(
-        "LAST",
-        "Replay the last task(s):",
+        'LAST',
+        'Replay the last task(s):',
         replayTasks
           .map((_task: ExecaTask) => {
-            return chalk.gray("→ ") + _task[0];
+            return chalk.gray('→ ') + _task[0];
           })
-          .join("\n")
-      )
+          .join('\n'),
+      ),
     );
 
     if (
@@ -255,10 +242,10 @@ export default class DeployCommand extends Command {
       (
         await prompts(
           galileoPrompts.confirmExec({
-            ctx: "REPLAY",
-            message: "Execute?",
+            ctx: 'REPLAY',
+            message: 'Execute?',
           }),
-          { onCancel: this.onPromptCancel }
+          { onCancel: this.onPromptCancel },
         )
       ).confirmed
     ) {
@@ -274,9 +261,9 @@ export default class DeployCommand extends Command {
    */
   executeBuild(build: boolean) {
     build &&
-      context.execCommand("pnpm build", {
+      context.execCommand('pnpm build', {
         cwd: path.join(ROOT),
-        stdio: "inherit",
+        stdio: 'inherit',
       });
   }
 
@@ -297,7 +284,7 @@ export default class DeployCommand extends Command {
     for (const [key, value] of context.cdkContext.entries()) {
       cmd += ` -c "${key}=${value}"`;
     }
-    cmd += " " + context.deployStacks.join(" ");
+    cmd += ' ' + context.deployStacks.join(' ');
 
     return cmd;
   }
@@ -306,34 +293,26 @@ export default class DeployCommand extends Command {
     skipConfirmations && console.info(`Executing \`${cmd}\``);
 
     context.execCommand(`pnpm exec ${cmd}`, {
-      cwd: path.join(ROOT, "demo/infra"),
-      stdio: "inherit",
+      cwd: path.join(ROOT, 'demo/infra'),
+      stdio: 'inherit',
     });
   }
 
-  async executeCdkBootstrap(options: {
-    account: string;
-    profile: string;
-    regionsToBootstrap: Set<string>;
-  }) {
+  async executeCdkBootstrap(options: { account: string; profile: string; regionsToBootstrap: Set<string> }) {
     const { account, profile, regionsToBootstrap } = options;
     const { cloudformationExecutionPolicies } = context.cachedAnswers(
       await prompts(galileoPrompts.cloudformationExecutionPolicies, {
         onCancel: this.onPromptCancel,
-      })
+      }),
     );
 
-    const bootstrapCmd = `cdk bootstrap --profile ${profile} ${[
-      ...regionsToBootstrap,
-    ]
+    const bootstrapCmd = `cdk bootstrap --profile ${profile} ${[...regionsToBootstrap]
       .map((r) => `aws://${account}/${r}`)
-      .join(
-        " "
-      )} --cloudformation-execution-policies "${cloudformationExecutionPolicies}"`;
+      .join(' ')} --cloudformation-execution-policies "${cloudformationExecutionPolicies}"`;
 
     context.execCommand(`pnpm exec ${bootstrapCmd} --app cdk.out`, {
-      cwd: path.join(ROOT, "demo/infra"),
-      stdio: "inherit",
+      cwd: path.join(ROOT, 'demo/infra'),
+      stdio: 'inherit',
     });
   }
 }

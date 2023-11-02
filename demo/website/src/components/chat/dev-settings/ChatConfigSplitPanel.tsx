@@ -6,43 +6,41 @@ import {
   Header,
   SplitPanelProps,
   StatusIndicator,
-} from "@cloudscape-design/components";
-import { CancelableEventHandler } from "@cloudscape-design/components/internal/events";
-import { isEmpty } from "lodash";
-import { FC, useCallback, useMemo } from "react";
-import { ChatConfigForm } from "./ChatConfigForm";
-import { useIsAdmin } from "../../../Auth";
-import { ManagedSplitPanel } from "../../../providers/AppLayoutProvider/managed-content";
-import { useChatEngineConfig } from "../../../providers/ChatEngineConfig";
+} from '@cloudscape-design/components';
+import { CancelableEventHandler } from '@cloudscape-design/components/internal/events';
+import { isEmpty } from 'lodash';
+import { FC, useCallback, useMemo } from 'react';
+import { ChatConfigForm } from './ChatConfigForm';
+import { useIsAdmin } from '../../../Auth';
+import { ManagedSplitPanel } from '../../../providers/AppLayoutProvider/managed-content';
+import { useChatEngineConfig } from '../../../providers/ChatEngineConfig';
 
 export const ChatConfigSplitPanel: FC = () => {
   const isAdmin = useIsAdmin();
   const [config, , actions] = useChatEngineConfig();
 
-  const onAction = useCallback<
-    CancelableEventHandler<ButtonDropdownProps.ItemClickDetails>
-  >(
+  const onAction = useCallback<CancelableEventHandler<ButtonDropdownProps.ItemClickDetails>>(
     ({ detail }) => {
       switch (detail.id) {
-        case "copy": {
+        case 'copy': {
           actions?.copy().catch(console.error);
           break;
         }
-        case "paste": {
+        case 'paste': {
           actions?.paste().catch(console.error);
           break;
         }
-        case "reset": {
+        case 'reset': {
           actions?.reset();
           break;
         }
-        case "clear": {
+        case 'clear': {
           actions?.reset(true);
           break;
         }
       }
     },
-    [actions]
+    [actions],
   );
 
   const header = useMemo(
@@ -55,10 +53,10 @@ export const ChatConfigSplitPanel: FC = () => {
             ariaLabel="Settings Menu"
             onItemClick={onAction}
             items={[
-              { id: "copy", text: "copy", iconName: "download" },
-              { id: "paste", text: "paste", iconName: "upload" },
-              { id: "reset", text: "reset", iconName: "refresh" },
-              { id: "clear", text: "clear", iconName: "remove" },
+              { id: 'copy', text: 'copy', iconName: 'download' },
+              { id: 'paste', text: 'paste', iconName: 'upload' },
+              { id: 'reset', text: 'reset', iconName: 'refresh' },
+              { id: 'clear', text: 'clear', iconName: 'remove' },
             ]}
           />
         }
@@ -73,7 +71,7 @@ export const ChatConfigSplitPanel: FC = () => {
         Chat Settings
       </Header>
     ),
-    [config, actions]
+    [config, actions],
   );
 
   const splitPanelProps = useMemo<SplitPanelProps | false>(
@@ -81,10 +79,10 @@ export const ChatConfigSplitPanel: FC = () => {
       isAdmin && {
         header: header as any,
         children: <ChatConfigForm />,
-        closeBehavior: "collapse",
+        closeBehavior: 'collapse',
         hidePreferencesButton: true,
       },
-    [isAdmin, header]
+    [isAdmin, header],
   );
 
   if (!isAdmin || !splitPanelProps) {

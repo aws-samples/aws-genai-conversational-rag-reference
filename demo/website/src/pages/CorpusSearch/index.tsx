@@ -15,23 +15,19 @@ import {
   Spinner,
   TextContent,
   Textarea,
-} from "@cloudscape-design/components";
-import ContentLayout from "@cloudscape-design/components/content-layout";
-import Header from "@cloudscape-design/components/header";
-import {
-  DistanceStrategy,
-  useSimilaritySearch,
-} from "api-typescript-react-query-hooks";
-import { useCallback, useState } from "react";
-import CodeEditor from "../../components/code-editor";
+} from '@cloudscape-design/components';
+import ContentLayout from '@cloudscape-design/components/content-layout';
+import Header from '@cloudscape-design/components/header';
+import { DistanceStrategy, useSimilaritySearch } from 'api-typescript-react-query-hooks';
+import { useCallback, useState } from 'react';
+import CodeEditor from '../../components/code-editor';
 
 export const CorpusSearch: React.FC = () => {
-  const [query, setQuery] = useState<string>("");
+  const [query, setQuery] = useState<string>('');
   const [count, setCount] = useState<number>(5);
   const [filter, setFilter] = useState<object>({});
   const [duration, setDuration] = useState<number>();
-  const [distanceStrategy, setDistanceStrategy] =
-    useState<DistanceStrategy>("l2");
+  const [distanceStrategy, setDistanceStrategy] = useState<DistanceStrategy>('l2');
   const search = useSimilaritySearch({
     onSuccess: () => {
       setDuration;
@@ -56,10 +52,7 @@ export const CorpusSearch: React.FC = () => {
   return (
     <ContentLayout
       header={
-        <Header
-          variant="h1"
-          description="Search the corpus for similar documents"
-        >
+        <Header variant="h1" description="Search the corpus for similar documents">
           Corpus Search
         </Header>
       }
@@ -75,20 +68,11 @@ export const CorpusSearch: React.FC = () => {
               </SpaceBetween>
             }
           >
-            <FormField
-              label="Search Query"
-              description="Enter the text used to search for similar documents"
-            >
-              <Textarea
-                value={query}
-                onChange={({ detail }) => setQuery(detail.value)}
-              />
+            <FormField label="Search Query" description="Enter the text used to search for similar documents">
+              <Textarea value={query} onChange={({ detail }) => setQuery(detail.value)} />
             </FormField>
 
-            <ExpandableSection
-              headerText="Options"
-              headerDescription="Adjust number of documents and filters"
-            >
+            <ExpandableSection headerText="Options" headerDescription="Adjust number of documents and filters">
               <SpaceBetween direction="vertical" size="m">
                 <FormField
                   label="Number of Documents"
@@ -108,20 +92,15 @@ export const CorpusSearch: React.FC = () => {
                 >
                   <SegmentedControl
                     selectedId={distanceStrategy}
-                    onChange={({ detail }) =>
-                      setDistanceStrategy(detail.selectedId as DistanceStrategy)
-                    }
+                    onChange={({ detail }) => setDistanceStrategy(detail.selectedId as DistanceStrategy)}
                     options={[
-                      { text: "Euclidean", id: "l2" },
-                      { text: "Cosine", id: "cosine" },
-                      { text: "Inner", id: "inner" },
+                      { text: 'Euclidean', id: 'l2' },
+                      { text: 'Cosine', id: 'cosine' },
+                      { text: 'Inner', id: 'inner' },
                     ]}
                   />
                 </FormField>
-                <FormField
-                  label="Filter"
-                  description="Enter filter object to narrow search"
-                >
+                <FormField label="Filter" description="Enter filter object to narrow search">
                   <CodeEditor
                     value={JSON.stringify(filter, null, 2)}
                     onDelayedChange={({ detail }) => {
@@ -140,13 +119,7 @@ export const CorpusSearch: React.FC = () => {
 
         <Box variant="div">
           <Header
-            counter={
-              duration
-                ? `(${
-                    search.data?.documents.length || 0
-                  } documents in ${duration} seconds)`
-                : undefined
-            }
+            counter={duration ? `(${search.data?.documents.length || 0} documents in ${duration} seconds)` : undefined}
           >
             Results
           </Header>
@@ -164,32 +137,25 @@ export const CorpusSearch: React.FC = () => {
               <Container
                 key={i}
                 header={
-                  <Header
-                    variant="h3"
-                    description={`Score: ${document.score} (distance)`}
-                  >
+                  <Header variant="h3" description={`Score: ${document.score} (distance)`}>
                     Document {i + 1}
                   </Header>
                 }
                 footer={
                   <ExpandableSection headerText="Metadata" variant="footer">
                     <Grid>
-                      {Object.entries(document.metadata).map(
-                        ([label, value], j) => (
-                          <div key={j}>
-                            <Box variant="awsui-key-label">{label}</Box>
-                            <div>{String(value)}</div>
-                          </div>
-                        )
-                      )}
+                      {Object.entries(document.metadata).map(([label, value], j) => (
+                        <div key={j}>
+                          <Box variant="awsui-key-label">{label}</Box>
+                          <div>{String(value)}</div>
+                        </div>
+                      ))}
                     </Grid>
                   </ExpandableSection>
                 }
               >
                 <TextContent>
-                  <div style={{ whiteSpace: "pre-wrap" }}>
-                    {document.pageContent}
-                  </div>
+                  <div style={{ whiteSpace: 'pre-wrap' }}>{document.pageContent}</div>
                 </TextContent>
               </Container>
             ))}

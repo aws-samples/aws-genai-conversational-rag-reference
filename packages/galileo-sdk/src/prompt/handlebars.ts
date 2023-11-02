@@ -1,17 +1,12 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import {
-  comparison as comparisonHelpers,
-  string as stringHelpers,
-  math as mathHelpers,
-} from 'handlebars-helpers-lite';
+import { comparison as comparisonHelpers, string as stringHelpers, math as mathHelpers } from 'handlebars-helpers-lite';
 import '../langchain/patch.js';
 import { PromptTemplate, PromptTemplateInput } from 'langchain/prompts';
 import { InputValues, PartialValues } from 'langchain/schema';
 import { merge } from 'lodash';
 import { Handlebars } from 'safe-handlebars/dist/handlebars.js';
 import { allowUnsafeEval } from 'safe-handlebars/dist/utils.js';
-
 
 // Extract the keys of required properties
 type RequiredKeys<T> = {
@@ -23,7 +18,7 @@ type OptionalKeys<T> = {
   [K in keyof T]-?: {} extends Pick<T, K> ? K : never;
 }[keyof T];
 
-type Inverse<T> = Partial<Pick<T, RequiredKeys<T>>> & Required<Pick<T, OptionalKeys<T>>>
+type Inverse<T> = Partial<Pick<T, RequiredKeys<T>>> & Required<Pick<T, OptionalKeys<T>>>;
 
 export type HandlebarsTemplatePartials = { [K: string]: Handlebars.Template<any> | undefined };
 
@@ -42,27 +37,35 @@ export interface HandlebarsPromptTemplateInput<
 export interface ScopedHandlebarsPromptTemplateInput<
   TemplatePartials extends HandlebarsTemplatePartials,
   InputVariables extends InputValues,
-  PartialVariables extends object = Inverse<InputVariables>
-> extends Partial<Omit<
-  HandlebarsPromptTemplateInput<TemplatePartials, InputVariables>,
-  'inputVariables' | 'templatePartials' | 'partialVariables'
-  >> {
+  PartialVariables extends object = Inverse<InputVariables>,
+> extends Partial<
+    Omit<
+      HandlebarsPromptTemplateInput<TemplatePartials, InputVariables>,
+      'inputVariables' | 'templatePartials' | 'partialVariables'
+    >
+  > {
   readonly templatePartials?: Partial<TemplatePartials>;
   readonly partialVariables?: Partial<PartialVariables>;
 }
 
-export type HandlebarsPromptTemplateRuntime<T extends { [K: string]: any }> = Partial<Pick<T, 'template' | 'templatePartials' | 'partialVariables'>>
+export type HandlebarsPromptTemplateRuntime<T extends { [K: string]: any }> = Partial<
+  Pick<T, 'template' | 'templatePartials' | 'partialVariables'>
+>;
 
 export class HandlebarsPromptTemplate<
-  TemplatePartials extends HandlebarsTemplatePartials,
-  InputVariables extends InputValues,
-  PartialVariables extends object = Inverse<InputVariables>,
-  TInput extends HandlebarsPromptTemplateInput<TemplatePartials, InputVariables, PartialVariables>
-  = HandlebarsPromptTemplateInput<TemplatePartials, InputVariables, PartialVariables>,
-  TSerialized extends TInput & { _type: string } = TInput & { _type: string },
-> extends PromptTemplate<InputVariables, any>
-  implements HandlebarsPromptTemplateInput<TemplatePartials, InputVariables, PartialVariables> {
-
+    TemplatePartials extends HandlebarsTemplatePartials,
+    InputVariables extends InputValues,
+    PartialVariables extends object = Inverse<InputVariables>,
+    TInput extends HandlebarsPromptTemplateInput<
+      TemplatePartials,
+      InputVariables,
+      PartialVariables
+    > = HandlebarsPromptTemplateInput<TemplatePartials, InputVariables, PartialVariables>,
+    TSerialized extends TInput & { _type: string } = TInput & { _type: string },
+  >
+  extends PromptTemplate<InputVariables, any>
+  implements HandlebarsPromptTemplateInput<TemplatePartials, InputVariables, PartialVariables>
+{
   static async deserialize(data: any) {
     if (!data.template) {
       throw new Error('Prompt template must have a template');
@@ -116,9 +119,7 @@ export class HandlebarsPromptTemplate<
     return render(allValues, merge({}, this.runtimeOptions, options));
   }
 
-  async mergePartialAndUserVariables(
-    userVariables: InputValues,
-  ): Promise<InputValues & PartialVariables> {
+  async mergePartialAndUserVariables(userVariables: InputValues): Promise<InputValues & PartialVariables> {
     const partialVariables: PartialVariables = this.partialVariables ?? {};
 
     // TODO: support partial callback

@@ -24,18 +24,25 @@ export const DEFAULT_DISTANCE_STRATEGY = DistanceStrategy.EUCLIDEAN;
 
 export function distanceStrategyFromValue(value?: `${DistanceStrategy}`): DistanceStrategy {
   switch (value) {
-    case 'cosine': return DistanceStrategy.COSINE;
-    case 'inner': return DistanceStrategy.MAX_INNER_PRODUCT;
-    case 'l2': return DistanceStrategy.EUCLIDEAN;
-    default: return DEFAULT_DISTANCE_STRATEGY;
+    case 'cosine':
+      return DistanceStrategy.COSINE;
+    case 'inner':
+      return DistanceStrategy.MAX_INNER_PRODUCT;
+    case 'l2':
+      return DistanceStrategy.EUCLIDEAN;
+    default:
+      return DEFAULT_DISTANCE_STRATEGY;
   }
 }
 
 export function indexNameFromStrategy(value: DistanceStrategy): string {
   switch (value) {
-    case DistanceStrategy.EUCLIDEAN: return 'content_l2_idx';
-    case DistanceStrategy.COSINE: return 'content_cosine_idx';
-    case DistanceStrategy.MAX_INNER_PRODUCT: return 'content_inner_idx';
+    case DistanceStrategy.EUCLIDEAN:
+      return 'content_l2_idx';
+    case DistanceStrategy.COSINE:
+      return 'content_cosine_idx';
+    case DistanceStrategy.MAX_INNER_PRODUCT:
+      return 'content_inner_idx';
   }
 }
 
@@ -153,13 +160,10 @@ export class PGVectorStore extends VectorStore {
           try {
             await this._resolveVectorExtensionType();
 
-            logger.info(
-              'Successfully connected to pgvector database: %s',
-              {
-                host: client.host,
-                vectorOid: this._vectorTypeOid,
-              },
-            );
+            logger.info('Successfully connected to pgvector database: %s', {
+              host: client.host,
+              vectorOid: this._vectorTypeOid,
+            });
           } catch (error) {
             // Connection might be intentionally before extension is added, so not throwing
             logger.warn('Failed to initialize connection and setup vector store type', error as Error);
@@ -179,27 +183,109 @@ export class PGVectorStore extends VectorStore {
         });
       },
       task({ ctx, query, params }) {
-        const { finish, duration, start, result, success, useCount, isTX, level, txLevel, inTransaction, connected } = ctx;
+        const { finish, duration, start, result, success, useCount, isTX, level, txLevel, inTransaction, connected } =
+          ctx;
         if (finish) {
           if (success) {
-            logger.debug({ message: 'Task finished', level, txLevel, inTransaction, connected, isTX, useCount, duration, success, result, query: truncate(query), params });
+            logger.debug({
+              message: 'Task finished',
+              level,
+              txLevel,
+              inTransaction,
+              connected,
+              isTX,
+              useCount,
+              duration,
+              success,
+              result,
+              query: truncate(query),
+              params,
+            });
           } else {
-            logger.warn({ message: 'Task failed', level, txLevel, inTransaction, connected, isTX, useCount, duration, success, result, query: truncate(query), params }, result as Error);
+            logger.warn(
+              {
+                message: 'Task failed',
+                level,
+                txLevel,
+                inTransaction,
+                connected,
+                isTX,
+                useCount,
+                duration,
+                success,
+                result,
+                query: truncate(query),
+                params,
+              },
+              result as Error,
+            );
           }
         } else {
-          logger.debug({ message: 'Task started', level, txLevel, inTransaction, connected, isTX, useCount, start, query: truncate(query), params });
+          logger.debug({
+            message: 'Task started',
+            level,
+            txLevel,
+            inTransaction,
+            connected,
+            isTX,
+            useCount,
+            start,
+            query: truncate(query),
+            params,
+          });
         }
       },
       transact({ ctx, query, params }) {
-        const { finish, duration, start, result, success, useCount, isTX, level, txLevel, inTransaction, connected } = ctx;
+        const { finish, duration, start, result, success, useCount, isTX, level, txLevel, inTransaction, connected } =
+          ctx;
         if (finish) {
           if (success) {
-            logger.debug({ message: 'Transaction finished', level, txLevel, inTransaction, connected, isTX, useCount, duration, success, result, query: truncate(query), params });
+            logger.debug({
+              message: 'Transaction finished',
+              level,
+              txLevel,
+              inTransaction,
+              connected,
+              isTX,
+              useCount,
+              duration,
+              success,
+              result,
+              query: truncate(query),
+              params,
+            });
           } else {
-            logger.warn({ message: 'Transaction failed', level, txLevel, inTransaction, connected, isTX, useCount, duration, success, result, query: truncate(query), params }, result as Error);
+            logger.warn(
+              {
+                message: 'Transaction failed',
+                level,
+                txLevel,
+                inTransaction,
+                connected,
+                isTX,
+                useCount,
+                duration,
+                success,
+                result,
+                query: truncate(query),
+                params,
+              },
+              result as Error,
+            );
           }
         } else {
-          logger.debug({ message: 'Transaction started', level, txLevel, inTransaction, connected, isTX, useCount, start, query: truncate(query), params });
+          logger.debug({
+            message: 'Transaction started',
+            level,
+            txLevel,
+            inTransaction,
+            connected,
+            isTX,
+            useCount,
+            start,
+            query: truncate(query),
+            params,
+          });
         }
       },
       error: (error, e) => {
@@ -245,16 +331,12 @@ export class PGVectorStore extends VectorStore {
 
   protected _initVectorTypeParser(oid: number) {
     if (this.pgp.pg.types.getTypeParser(oid) == null) {
-      this.pgp.pg.types.setTypeParser(
-        oid,
-        'text',
-        function (value) {
-          return value
-            .substring(1, value.length - 1)
-            .split(',')
-            .map((v) => parseFloat(v));
-        },
-      );
+      this.pgp.pg.types.setTypeParser(oid, 'text', function (value) {
+        return value
+          .substring(1, value.length - 1)
+          .split(',')
+          .map((v) => parseFloat(v));
+      });
     }
 
     return this.pgp.pg.types.getTypeParser(oid);
@@ -298,7 +380,10 @@ export class PGVectorStore extends VectorStore {
     return result.exists;
   }
 
-  async indexExists(distanceStrategy: DistanceStrategy = this.distanceStrategy, task?: pg.ITask<any>): Promise<boolean> {
+  async indexExists(
+    distanceStrategy: DistanceStrategy = this.distanceStrategy,
+    task?: pg.ITask<any>,
+  ): Promise<boolean> {
     const query = "SELECT EXISTS (SELECT FROM pg_indexes WHERE schemaname = 'public' AND indexname = $1)";
     const result = await (task || this.db).one<{ exists: boolean }>(query, indexNameFromStrategy(distanceStrategy));
     return result.exists;
@@ -316,29 +401,41 @@ export class PGVectorStore extends VectorStore {
     dropOthers: boolean = false,
     concurrently: boolean = true,
   ): Promise<void> {
-
     await this.db.task('create-indexes', async (task) => {
       indexes ??= [this.distanceStrategy];
       const CONCURRENTLY = concurrently ? 'CONCURRENTLY' : '';
 
       if (indexes.includes(DistanceStrategy.COSINE)) {
-        await task.query(`CREATE INDEX ${CONCURRENTLY} IF NOT EXISTS ${indexNameFromStrategy(DistanceStrategy.COSINE)} ON ${this.tableName} USING ivfflat (${this._embeddingColumn} vector_cosine_ops) WITH (lists = ${lists});`);
+        await task.query(
+          `CREATE INDEX ${CONCURRENTLY} IF NOT EXISTS ${indexNameFromStrategy(DistanceStrategy.COSINE)} ON ${
+            this.tableName
+          } USING ivfflat (${this._embeddingColumn} vector_cosine_ops) WITH (lists = ${lists});`,
+        );
       } else if (dropOthers) {
         await task.query(`DROP INDEX ${CONCURRENTLY} IF EXISTS ${indexNameFromStrategy(DistanceStrategy.COSINE)};`);
       }
 
       if (indexes.includes(DistanceStrategy.EUCLIDEAN)) {
-        await task.query(`CREATE INDEX ${CONCURRENTLY} IF NOT EXISTS ${indexNameFromStrategy(DistanceStrategy.EUCLIDEAN)} ON ${this.tableName} USING ivfflat (${this._embeddingColumn} vector_l2_ops) WITH (lists = ${lists});`);
+        await task.query(
+          `CREATE INDEX ${CONCURRENTLY} IF NOT EXISTS ${indexNameFromStrategy(DistanceStrategy.EUCLIDEAN)} ON ${
+            this.tableName
+          } USING ivfflat (${this._embeddingColumn} vector_l2_ops) WITH (lists = ${lists});`,
+        );
       } else if (dropOthers) {
         await task.query(`DROP INDEX ${CONCURRENTLY} IF EXISTS ${indexNameFromStrategy(DistanceStrategy.EUCLIDEAN)};`);
       }
 
       if (indexes.includes(DistanceStrategy.MAX_INNER_PRODUCT)) {
-        await task.query(`CREATE INDEX ${CONCURRENTLY} IF NOT EXISTS ${indexNameFromStrategy(DistanceStrategy.MAX_INNER_PRODUCT)} ON ${this.tableName} USING ivfflat (${this._embeddingColumn} vector_ip_ops) WITH (lists = ${lists});`);
+        await task.query(
+          `CREATE INDEX ${CONCURRENTLY} IF NOT EXISTS ${indexNameFromStrategy(DistanceStrategy.MAX_INNER_PRODUCT)} ON ${
+            this.tableName
+          } USING ivfflat (${this._embeddingColumn} vector_ip_ops) WITH (lists = ${lists});`,
+        );
       } else if (dropOthers) {
-        await task.query(`DROP INDEX ${CONCURRENTLY} IF EXISTS ${indexNameFromStrategy(DistanceStrategy.MAX_INNER_PRODUCT)};`);
+        await task.query(
+          `DROP INDEX ${CONCURRENTLY} IF EXISTS ${indexNameFromStrategy(DistanceStrategy.MAX_INNER_PRODUCT)};`,
+        );
       }
-
     });
   }
 
@@ -361,8 +458,12 @@ export class PGVectorStore extends VectorStore {
     const sourceLocationsSet = new Set<string>(sourceLocations);
 
     if (sourceLocationsSet.size) {
-      const sourceLocationValues = Array.from(sourceLocationsSet).map(v => `'${v}'`).join(', ');
-      await this.db.query(`DELETE FROM ${this.tableName} WHERE ${this.embeddingsColumns.source_location} IN (${sourceLocationValues})`);
+      const sourceLocationValues = Array.from(sourceLocationsSet)
+        .map((v) => `'${v}'`)
+        .join(', ');
+      await this.db.query(
+        `DELETE FROM ${this.tableName} WHERE ${this.embeddingsColumns.source_location} IN (${sourceLocationValues})`,
+      );
     }
   }
 
@@ -403,7 +504,7 @@ export class PGVectorStore extends VectorStore {
     documents: Document<Record<string, any>>[],
     options?: { [x: string]: any } | undefined,
   ): Promise<void | string[]> {
-    const texts = documents.map(v => v.pageContent);
+    const texts = documents.map((v) => v.pageContent);
     const vectors = await this.embeddings.embedDocuments(texts);
 
     return this.addVectors(vectors, documents, options);
@@ -436,9 +537,7 @@ export class PGVectorStore extends VectorStore {
     };
 
     try {
-      let queryPromise: Promise<
-      Record<keyof IEmbeddingColumns | 'score', any>[]
-      >;
+      let queryPromise: Promise<Record<keyof IEmbeddingColumns | 'score', any>[]>;
       // https://github.com/pgvector/pgvector#distances
       switch (distanceStrategy) {
         case DistanceStrategy.COSINE: {

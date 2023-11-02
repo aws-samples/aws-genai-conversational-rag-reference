@@ -36,10 +36,7 @@ function getModelDataUrl(artifactLocation: string): string {
   return `${artifactLocation}/${MODEL_TAR_FILE}`;
 }
 
-export async function onEvent(
-  event: CdkCustomResourceEvent,
-  _context: Context,
-): Promise<CdkCustomResourceResponse> {
+export async function onEvent(event: CdkCustomResourceEvent, _context: Context): Promise<CdkCustomResourceResponse> {
   logger.debug({ message: 'Event:', event });
 
   switch (event.RequestType) {
@@ -67,9 +64,7 @@ export async function onEvent(
         ],
       };
       logger.debug('StartBuildCommand:Input:', { input: buildCommandInput });
-      const response = await client.send(
-        new StartBuildCommand(buildCommandInput),
-      );
+      const response = await client.send(new StartBuildCommand(buildCommandInput));
 
       logger.debug({ message: 'StartBuildCommand:response', response });
 

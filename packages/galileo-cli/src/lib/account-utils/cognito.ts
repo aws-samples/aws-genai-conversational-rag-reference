@@ -9,10 +9,10 @@ import {
   ListUserPoolsCommand,
   AdminDisableUserCommand,
   AdminDeleteUserCommand,
-} from "@aws-sdk/client-cognito-identity-provider";
-import { fromIni } from "@aws-sdk/credential-providers";
-import chalk from "chalk";
-import { CredentialsParams } from "../types";
+} from '@aws-sdk/client-cognito-identity-provider';
+import { fromIni } from '@aws-sdk/credential-providers';
+import chalk from 'chalk';
+import { CredentialsParams } from '../types';
 
 export interface CognitoUserInfo {
   readonly email: string;
@@ -20,16 +20,11 @@ export interface CognitoUserInfo {
   readonly group?: string;
 }
 
-export interface CreateCognitoUserRequest
-  extends CredentialsParams,
-    CognitoUserInfo {
+export interface CreateCognitoUserRequest extends CredentialsParams, CognitoUserInfo {
   readonly userPoolId: string;
 }
 
-export type DeleteCognitoUserRequest = Omit<
-  CreateCognitoUserRequest,
-  "group" | "email"
->;
+export type DeleteCognitoUserRequest = Omit<CreateCognitoUserRequest, 'group' | 'email'>;
 
 export interface BulkCreateCognitoUsersRequest extends CredentialsParams {
   readonly users: CognitoUserInfo[];
@@ -46,7 +41,7 @@ export namespace cognito {
     const userpoolsResp = await client.send(
       new ListUserPoolsCommand({
         MaxResults: 50,
-      })
+      }),
     );
 
     return userpoolsResp.UserPools?.map((up) => ({
@@ -55,9 +50,7 @@ export namespace cognito {
     }));
   };
 
-  export const createCognitoUser = async (
-    options: CreateCognitoUserRequest
-  ) => {
+  export const createCognitoUser = async (options: CreateCognitoUserRequest) => {
     const client = new CognitoIdentityProviderClient({
       credentials: fromIni({ profile: options.profile }),
       region: options.region,
@@ -66,33 +59,30 @@ export namespace cognito {
     const createUserResp = await client.send(
       new AdminCreateUserCommand({
         ForceAliasCreation: true,
-        DesiredDeliveryMediums: ["EMAIL"],
+        DesiredDeliveryMediums: ['EMAIL'],
         UserAttributes: [
           {
-            Name: "email",
+            Name: 'email',
             Value: options.email,
           },
           {
-            Name: "email_verified",
-            Value: "true",
+            Name: 'email_verified',
+            Value: 'true',
           },
         ],
         Username: options.username,
         UserPoolId: options.userPoolId,
-      })
+      }),
     );
 
-    console.log(
-      "User successfully created.",
-      createUserResp.User?.UserCreateDate
-    );
+    console.log('User successfully created.', createUserResp.User?.UserCreateDate);
 
     if (options.group != null) {
       const groupResp = await client.send(
         new GetGroupCommand({
           GroupName: options.group,
           UserPoolId: options.userPoolId,
-        })
+        }),
       );
 
       if (groupResp.Group == null) {
@@ -104,20 +94,16 @@ export namespace cognito {
           GroupName: options.group!,
           Username: options.username,
           UserPoolId: options.userPoolId,
-        })
+        }),
       );
 
       console.log(
-        `User ${chalk.magentaBright(
-          options.username
-        )} added to ${chalk.magentaBright(options.group)} user group.`
+        `User ${chalk.magentaBright(options.username)} added to ${chalk.magentaBright(options.group)} user group.`,
       );
     }
   };
 
-  export const bulkCreateCognitoUsers = async (
-    options: BulkCreateCognitoUsersRequest
-  ) => {
+  export const bulkCreateCognitoUsers = async (options: BulkCreateCognitoUsersRequest) => {
     const client = new CognitoIdentityProviderClient({
       credentials: fromIni({ profile: options.profile }),
       region: options.region,
@@ -128,26 +114,23 @@ export namespace cognito {
       const createUserResp = await client.send(
         new AdminCreateUserCommand({
           ForceAliasCreation: true,
-          DesiredDeliveryMediums: ["EMAIL"],
+          DesiredDeliveryMediums: ['EMAIL'],
           UserAttributes: [
             {
-              Name: "email",
+              Name: 'email',
               Value: user.email,
             },
             {
-              Name: "email_verified",
-              Value: "true",
+              Name: 'email_verified',
+              Value: 'true',
             },
           ],
           Username: user.username,
           UserPoolId: options.userPoolId,
-        })
+        }),
       );
 
-      console.log(
-        `[${idx}] User successfully created.`,
-        createUserResp.User?.UserCreateDate
-      );
+      console.log(`[${idx}] User successfully created.`, createUserResp.User?.UserCreateDate);
 
       if (user.group != null) {
         await client.send(
@@ -155,13 +138,11 @@ export namespace cognito {
             GroupName: user.group!,
             Username: user.username,
             UserPoolId: options.userPoolId,
-          })
+          }),
         );
 
         console.log(
-          `[${idx}] User ${chalk.magentaBright(
-            user.username
-          )} added to ${chalk.magentaBright(user.group)} user group.`
+          `[${idx}] User ${chalk.magentaBright(user.username)} added to ${chalk.magentaBright(user.group)} user group.`,
         );
       }
 
@@ -169,9 +150,7 @@ export namespace cognito {
     }
   };
 
-  export const deleteCognitoUser = async (
-    options: DeleteCognitoUserRequest
-  ) => {
+  export const deleteCognitoUser = async (options: DeleteCognitoUserRequest) => {
     const client = new CognitoIdentityProviderClient({
       credentials: fromIni({ profile: options.profile }),
       region: options.region,
@@ -181,7 +160,7 @@ export namespace cognito {
       new AdminDisableUserCommand({
         Username: options.username,
         UserPoolId: options.userPoolId,
-      })
+      }),
     );
     console.log(`${options.username} disabled.`);
 
@@ -189,7 +168,7 @@ export namespace cognito {
       new AdminDeleteUserCommand({
         Username: options.username,
         UserPoolId: options.userPoolId,
-      })
+      }),
     );
 
     console.log(`${options.username} deleted.`);

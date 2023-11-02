@@ -3,15 +3,29 @@ PDX-License-Identifier: Apache-2.0 */
 // @ts-ignore
 import type {} from '@types/jest';
 import { TextEncoder } from 'util';
-import { InvokeEndpointCommand, InvokeEndpointCommandOutput, SageMakerRuntimeClient } from '@aws-sdk/client-sagemaker-runtime';
+import {
+  InvokeEndpointCommand,
+  InvokeEndpointCommandOutput,
+  SageMakerRuntimeClient,
+} from '@aws-sdk/client-sagemaker-runtime';
 import { GetSecretValueCommand, SecretsManagerClient } from '@aws-sdk/client-secrets-manager';
-import { BatchWriteCommand, DynamoDBDocumentClient, PutCommand, QueryCommandOutput, QueryCommand } from '@aws-sdk/lib-dynamodb';
+import {
+  BatchWriteCommand,
+  DynamoDBDocumentClient,
+  PutCommand,
+  QueryCommandOutput,
+  QueryCommand,
+} from '@aws-sdk/lib-dynamodb';
 import { mockClient } from 'aws-sdk-client-mock';
 
 import * as chatDDBLib from '../../src/chat/dynamodb/lib/index.js';
 import { ChatEngine, ChatEngineFromOption } from '../../src/chat/engine.js';
 import { ChatTurn } from '../../src/chat/memory.js';
-import { ModelFramework, FOUNDATION_MODEL_INVENTORY_SECRET, IFoundationModelInventory } from '../../src/models/index.js';
+import {
+  ModelFramework,
+  FOUNDATION_MODEL_INVENTORY_SECRET,
+  IFoundationModelInventory,
+} from '../../src/models/index.js';
 
 // const dynamoDBMock = mockClient(DynamoDBClient);
 const dynamoDBDocumentMock = mockClient(DynamoDBDocumentClient);
@@ -82,17 +96,26 @@ describe('chat/engine', () => {
     });
     dynamoDBDocumentMock.on(BatchWriteCommand).resolves({});
     // combine inference
-    sageMakerRuntimeMock.on(InvokeEndpointCommand)
+    sageMakerRuntimeMock
+      .on(InvokeEndpointCommand)
       .resolvesOnce({
-        Body: new TextEncoder().encode(JSON.stringify([{
-          generated_text: 'LLM combine response',
-        }])),
+        Body: new TextEncoder().encode(
+          JSON.stringify([
+            {
+              generated_text: 'LLM combine response',
+            },
+          ]),
+        ),
         $metadata: {},
       } as InvokeEndpointCommandOutput)
       .resolvesOnce({
-        Body: new TextEncoder().encode(JSON.stringify([{
-          generated_text: answer,
-        }])),
+        Body: new TextEncoder().encode(
+          JSON.stringify([
+            {
+              generated_text: answer,
+            },
+          ]),
+        ),
         $metadata: {},
       } as InvokeEndpointCommandOutput);
 
@@ -105,7 +128,6 @@ describe('chat/engine', () => {
       search: {
         url: 'http://localhost:1337',
         fetch: async (input, init): Promise<Response> => {
-
           const content = JSON.stringify({
             documents: [
               {
@@ -142,11 +164,13 @@ describe('chat/engine', () => {
     const result = await engine.query(question);
     expect(result.question).toBe(question);
     expect(result.answer).toBe(answer);
-    expect(result.turn).toEqual(expect.objectContaining({
-      ai: expect.anything(),
-      human: expect.anything(),
-      sources: expect.anything(),
-    } as ChatTurn));
+    expect(result.turn).toEqual(
+      expect.objectContaining({
+        ai: expect.anything(),
+        human: expect.anything(),
+        sources: expect.anything(),
+      } as ChatTurn),
+    );
     expect(Array.isArray(result.turn.sources)).toBeTruthy();
   });
 });

@@ -4,8 +4,6 @@ type TextPromptDisplayProps = {
   text: string;
 };
 
-export default function TextPromptDisplayProps({
-  text = "",
-}: TextPromptDisplayProps) {
+export default function TextPromptDisplayProps({ text = '' }: TextPromptDisplayProps) {
   return <p>{text}</p>;
 }
