@@ -1,7 +1,8 @@
 ## Description
 <!--- Describe your changes in detail -->
 
-* **Does this PR introduce a breaking change?** (What changes might users need to make in their application due to this PR?)
+**Does this PR introduce a breaking change?**  
+_(What changes might users need to make in their application due to this PR?)_
 <!-- Describe the breaking change and reasoning -->
 <!-- Does this require a migration guide? -->
 
@@ -16,10 +17,11 @@
 * **What environment was this tested on?**
 <!-- Please run `pnpm run prerequisite-check` and paste output here -->
 
-## Screenshots (if appropriate):
+## Screenshots (if appropriate)
 <!-- Add screenshots here -->
 
 ## PR Checklist
+
 * [ ] Have you added/updated documentation?
 * [ ] Have you written new tests for your core changes, as applicable?
 * [ ] Have you successfully ran build and tests with your changes locally?
