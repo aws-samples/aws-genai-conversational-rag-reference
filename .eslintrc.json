@@ -141,6 +141,22 @@
   "overrides": [
     {
       "files": [
+        "**/*.ts",
+        "**/*.tsx"
+      ],
+      "rules": {
+        "prettier/prettier": [
+          "error",
+          {
+            "trailingComma": "all",
+            "singleQuote": true,
+            "printWidth": 120
+          }
+        ]
+      }
+    },
+    {
+      "files": [
         ".projenrc.ts"
       ],
       "rules": {

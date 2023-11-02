@@ -1,13 +1,13 @@
-import * as path from "node:path";
-import { MonorepoTsProject, NxProject } from "@aws/pdk/monorepo";
-import { NxPythonProject } from "../components/python";
-import { DEFAULT_RELEASE_BRANCH, PROJECT_AUTHOR, VERSIONS } from "../constants";
-import { TypeScriptProject } from "projen/lib/typescript";
-import { Project } from "projen";
-import { GalileoSdk } from "../framework";
-import { NodePackageManager } from "projen/lib/javascript";
-import { Stability } from "projen/lib/cdk";
-import { Api } from "./api";
+import * as path from 'node:path';
+import { MonorepoTsProject, NxProject } from '@aws/pdk/monorepo';
+import { NxPythonProject } from '../components/python';
+import { DEFAULT_RELEASE_BRANCH, PROJECT_AUTHOR, VERSIONS } from '../constants';
+import { TypeScriptProject } from 'projen/lib/typescript';
+import { Project } from 'projen';
+import { GalileoSdk } from '../framework';
+import { NodePackageManager } from 'projen/lib/javascript';
+import { Stability } from 'projen/lib/cdk';
+import { Api } from './api';
 
 export interface CorpusOptions {
   readonly monorepo: MonorepoTsProject;
@@ -31,64 +31,65 @@ export class Corpus {
     const parent = new Project({
       ...PROJECT_AUTHOR,
       parent: monorepo,
-      outdir: path.join(rootOutdir, "corpus"),
-      name: "corpus",
+      outdir: path.join(rootOutdir, 'corpus'),
+      name: 'corpus',
     });
 
     const embeddings = new NxPythonProject({
       ...PROJECT_AUTHOR,
       parent,
-      outdir: "embeddings",
-      name: "corpus-embeddings",
-      moduleName: "corpus_embeddings",
-      version: "0.0.0",
+      outdir: 'embeddings',
+      name: 'corpus-embeddings',
+      moduleName: 'corpus_embeddings',
+      version: '0.0.0',
       deps: [
-        "python@>=3.8.1,<4.0",
-        "sentence-transformers@^2.2.2",
-        "typing_extensions@~4.3.0",
+        'python@>=3.8.1,<4.0',
+        'sentence-transformers@^2.2.2',
+        'typing_extensions@~4.3.0',
         // https://github.com/pytorch/pytorch/issues/100974
-        "torch@2.0.0",
+        'torch@2.0.0',
         `transformers@{extras = ["torch"], version = "^4.31.0"}`,
       ],
-      devDeps: ["pytest@^7.3.2", "pytest-watch@^4.2.0"],
+      devDeps: ['pytest@^7.3.2', 'pytest-watch@^4.2.0'],
       dockerfile: false,
     });
 
     const logic = new TypeScriptProject({
       ...PROJECT_AUTHOR,
       parent,
+      prettier: true,
       defaultReleaseBranch: DEFAULT_RELEASE_BRANCH,
-      outdir: "logic",
-      name: "corpus-logic",
+      outdir: 'logic',
+      name: 'corpus-logic',
       packageManager: NodePackageManager.PNPM,
       stability: Stability.EXPERIMENTAL,
       package: false,
       deps: [
-        "@aws-lambda-powertools/logger",
-        "@aws-lambda-powertools/metrics",
-        "@aws-lambda-powertools/parameters",
+        '@aws-lambda-powertools/logger',
+        '@aws-lambda-powertools/metrics',
+        '@aws-lambda-powertools/parameters',
         `langchain@${VERSIONS.LANGCHAIN}`, // not semver so need to pin
-        "@middy/core",
-        "@middy/error-logger",
-        "@middy/http-router",
-        "@middy/input-output-logger",
-        "async",
-        "dotenv",
-        "fast-glob",
-        "lodash",
-        "node-fetch@^2",
+        '@middy/core',
+        '@middy/error-logger',
+        '@middy/http-router',
+        '@middy/input-output-logger',
+        'async',
+        'dotenv',
+        'fast-glob',
+        'lodash',
+        'node-fetch@^2',
         api.apiInterceptorsTs.package.packageName,
         api.project.runtime.typescript!.package.packageName,
         galileoSdk.package.packageName,
       ],
       devDeps: [
-        "@aws-sdk/types",
-        "@types/async",
-        "@types/aws-lambda",
-        "@types/lodash",
-        "@types/node-fetch@^2",
-        "@types/uuid",
-        "aws-sdk-client-mock",
+        '@aws-sdk/types',
+        '@types/async',
+        '@types/aws-lambda',
+        '@types/lodash',
+        '@types/node-fetch@^2',
+        '@types/uuid',
+        'aws-sdk-client-mock',
       ],
       peerDeps: [
         `@aws-sdk/client-dynamodb@^${VERSIONS.AWS_SDK}`,
@@ -114,14 +115,14 @@ export class Corpus {
       },
     });
     NxProject.ensure(logic).addImplicitDependency(embeddings);
-    logic.gitignore.exclude(".docker-dist");
-    const bundleTask = logic.addTask("bundle", {
+    logic.gitignore.exclude('.docker-dist');
+    const bundleTask = logic.addTask('bundle', {
       steps: [
         {
-          exec: "pnpm dlx esbuild src/api/index.ts --bundle --sourcemap --platform=node --target=node18 --outfile=.docker-dist/api.js",
+          exec: 'pnpm dlx esbuild src/api/index.ts --bundle --sourcemap --platform=node --target=node18 --outfile=.docker-dist/api.js',
         },
         {
-          exec: "pnpm dlx esbuild src/indexing/index.ts --bundle --sourcemap --platform=node --target=node18 --outfile=.docker-dist/indexing.js",
+          exec: 'pnpm dlx esbuild src/indexing/index.ts --bundle --sourcemap --platform=node --target=node18 --outfile=.docker-dist/indexing.js',
         },
       ],
     });
@@ -133,8 +134,8 @@ export class Corpus {
 
     NxProject.ensure(parent).addImplicitDependency(embeddings, logic);
 
-    parent.addTask("install", {
-      exec: "poetry update",
+    parent.addTask('install', {
+      exec: 'poetry update',
       cwd: path.relative(parent.outdir, embeddings.outdir),
     });
 
@@ -142,7 +143,7 @@ export class Corpus {
     monorepo.addWorkspacePackages(
       ...parent.subprojects.map((p) => {
         return path.relative(monorepo.outdir, p.outdir);
-      })
+      }),
     );
   }
 }

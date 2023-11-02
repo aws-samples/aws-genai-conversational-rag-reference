@@ -1,12 +1,12 @@
-import { CloudscapeReactTsWebsiteProject } from "@aws/pdk/cloudscape-react-ts-website";
-import { MonorepoTsProject, NxProject } from "@aws/pdk/monorepo";
-import * as path from "node:path";
-import { TextFile, javascript } from "projen";
-import { TypeScriptModuleResolution } from "projen/lib/javascript";
-import { DEFAULT_RELEASE_BRANCH, VERSIONS } from "../constants";
-import { GalileoSdk } from "../framework";
-import { withStorybook } from "../helpers/withStorybook";
-import { Api } from "./api";
+import { CloudscapeReactTsWebsiteProject } from '@aws/pdk/cloudscape-react-ts-website';
+import { MonorepoTsProject, NxProject } from '@aws/pdk/monorepo';
+import * as path from 'node:path';
+import { TextFile, javascript } from 'projen';
+import { TypeScriptModuleResolution } from 'projen/lib/javascript';
+import { DEFAULT_RELEASE_BRANCH, VERSIONS } from '../constants';
+import { GalileoSdk } from '../framework';
+import { withStorybook } from '../helpers/withStorybook';
+import { Api } from './api';
 
 export interface WebsiteOptions {
   readonly monorepo: MonorepoTsProject;
@@ -25,38 +25,38 @@ export class Website {
       typeSafeApi: api.project,
       packageManager: javascript.NodePackageManager.PNPM,
       parent: monorepo,
-      outdir: path.join(rootOutdir, "website"),
+      prettier: true,
+      outdir: path.join(rootOutdir, 'website'),
       defaultReleaseBranch: DEFAULT_RELEASE_BRANCH,
       npmignoreEnabled: false,
-      prettier: true,
-      name: "website",
+      name: 'website',
       deps: [
-        "@cloudscape-design/collection-hooks",
-        "@tanstack/react-query-devtools",
-        "@tanstack/react-query",
-        "@tanstack/react-virtual@beta",
-        "ace-builds",
-        "immer",
-        "jwt-decode",
+        '@cloudscape-design/collection-hooks',
+        '@tanstack/react-query-devtools',
+        '@tanstack/react-query',
+        '@tanstack/react-virtual@beta',
+        'ace-builds',
+        'immer',
+        'jwt-decode',
         `langchain@${VERSIONS.LANGCHAIN}`, // not semver so need to pin
-        "lodash",
-        "nanoid",
-        "react-collapsed",
-        "react-intersection-observer",
-        "react-markdown",
-        "use-immer",
-        "usehooks-ts",
+        'lodash',
+        'nanoid',
+        'react-collapsed',
+        'react-intersection-observer',
+        'react-markdown',
+        'use-immer',
+        'usehooks-ts',
         api.project.library.typescriptReactQueryHooks!.package.packageName,
         galileoSdk.package.packageName,
       ],
       devDeps: [
-        "@faker-js/faker",
-        "@testing-library/react-hooks",
-        "@types/jest",
-        "@types/lodash",
-        "msw-storybook-addon",
-        "msw",
-        "react-test-renderer",
+        '@faker-js/faker',
+        '@testing-library/react-hooks',
+        '@types/jest',
+        '@types/lodash',
+        'msw-storybook-addon',
+        'msw',
+        'react-test-renderer',
       ],
       tsconfigDev: {
         compilerOptions: {
@@ -68,47 +68,46 @@ export class Website {
       rewire: {
         ignoreWarnings: [
           {
-            module: "__PLACEHOLDER__",
+            module: '__PLACEHOLDER__',
           },
         ],
-      }
+      },
     });
-    this.project.tsconfig?.addInclude("src/**/*.tsx");
-    this.project.addGitIgnore("public/api.html");
-    this.project.addGitIgnore("runtime-config.*");
-    this.project.addGitIgnore("!runtime-config.example.json");
+    this.project.tsconfig?.addInclude('src/**/*.tsx');
+    this.project.addGitIgnore('public/api.html');
+    this.project.addGitIgnore('runtime-config.*');
+    this.project.addGitIgnore('!runtime-config.example.json');
     const apiHtml = path.relative(
       this.project.outdir,
-      path.join(api.project.documentation.html2!.outdir, "index.html")
+      path.join(api.project.documentation.html2!.outdir, 'index.html'),
     );
     this.project.preCompileTask.prependExec(`cp ${apiHtml} public/api.html`, {
       condition: `[ -f "${apiHtml}" ]`,
     });
     // Only warn on errors during development - https://create-react-app.dev/docs/advanced-configuration
-    this.project.tasks.tryFind("dev")?.env("ESLINT_NO_DEV_ERRORS", "true");
-    this.project.tasks.tryFind("dev")?.env("TSC_COMPILE_ON_ERROR", "true");
-    NxProject.ensure(this.project).addImplicitDependency(
-      api.project.documentation.html2!
-    );
+    this.project.tasks.tryFind('dev')?.env('ESLINT_NO_DEV_ERRORS', 'true');
+    this.project.tasks.tryFind('dev')?.env('TSC_COMPILE_ON_ERROR', 'true');
+    NxProject.ensure(this.project).addImplicitDependency(api.project.documentation.html2!);
     withStorybook(this.project);
 
     // HACK: rewire values must be RegEx but projen only support JSON values
-    const rewireConfig = (this.project.tryFindFile(".projen/react-config-overrides.js") as TextFile);
-    // @ts-ignore -- private
-    const _synthesizeContent = rewireConfig.synthesizeContent.bind(rewireConfig);
+    const rewireConfig = this.project.tryFindFile('.projen/react-config-overrides.js') as TextFile;
+    const _synthesizeContent =
+      // @ts-ignore -- private
+      rewireConfig.synthesizeContent.bind(rewireConfig);
     // @ts-ignore -- protected
     rewireConfig.synthesizeContent = (_: any) => {
       const text = _synthesizeContent(_);
-      return text?.replace(JSON.stringify("__PLACEHOLDER__"), "/node_modules\\/(autolinker|ace-builds)/i")
-    }
+      return text?.replace(JSON.stringify('__PLACEHOLDER__'), '/node_modules\\/(autolinker|ace-builds)/i');
+    };
 
     // TODO: figure out why these modules started failing on test with ecma import/export errors?
-    this.project.package.addField("jest", {
+    this.project.package.addField('jest', {
       transformIgnorePatterns: [
-        "node_modules\\/(?!\\.pnpm|@aws-northstar\\/\\w+|@cloudscape-design\\/\\w+)\\/.+\\.(js|jsx|mjs|cjs|ts|tsx)$",
+        'node_modules\\/(?!\\.pnpm|@aws-northstar\\/\\w+|@cloudscape-design\\/\\w+)\\/.+\\.(js|jsx|mjs|cjs|ts|tsx)$',
         // defaults
-        '^.+\\.module\\.(css|sass|scss)$'
-      ]
+        '^.+\\.module\\.(css|sass|scss)$',
+      ],
     });
   }
 }
