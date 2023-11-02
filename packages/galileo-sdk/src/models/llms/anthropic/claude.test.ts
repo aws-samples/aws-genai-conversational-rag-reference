@@ -15,25 +15,25 @@ describe('models/llms/anthropic/claude', () => {
       const template = new ChatQuestionAnswerPromptTemplate({
         ...adapter.prompt?.chat?.questionAnswer,
       });
-      expect(await template.format({
-        question: 'THE QUESTION',
-        domain: 'DOMAIN',
-        context: 'THE CORPUS',
-      })).toMatchSnapshot();
+      expect(
+        await template.format({
+          question: 'THE QUESTION',
+          domain: 'DOMAIN',
+          context: 'THE CORPUS',
+        }),
+      ).toMatchSnapshot();
     });
 
     test('should render condense prompt', async () => {
       const template = new ChatCondenseQuestionPromptTemplate({
         ...adapter.prompt?.chat?.condenseQuestion,
       });
-      expect(await template.format({
-        question: 'THE QUESTION',
-        chat_history: [
-          new SystemMessage('A system message'),
-          new HumanMessage('Hi'),
-          new AIMessage('Hello!'),
-        ],
-      })).toMatchSnapshot();
+      expect(
+        await template.format({
+          question: 'THE QUESTION',
+          chat_history: [new SystemMessage('A system message'), new HumanMessage('Hi'), new AIMessage('Hello!')],
+        }),
+      ).toMatchSnapshot();
     });
   });
 });

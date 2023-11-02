@@ -1,14 +1,14 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { SecureBucket } from "@aws/galileo-cdk/lib/common";
-import { RDSVectorStore } from "@aws/galileo-cdk/lib/data";
-import { INTERCEPTOR_IAM_ACTIONS } from "api-typescript-interceptors";
-import { OperationLookup } from "api-typescript-runtime";
-import { Duration, Size } from "aws-cdk-lib";
-import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
-import { IVpc, SubnetType } from "aws-cdk-lib/aws-ec2";
-import { Platform } from "aws-cdk-lib/aws-ecr-assets";
-import * as iam from "aws-cdk-lib/aws-iam";
+import { SecureBucket } from '@aws/galileo-cdk/lib/common';
+import { RDSVectorStore } from '@aws/galileo-cdk/lib/data';
+import { INTERCEPTOR_IAM_ACTIONS } from 'api-typescript-interceptors';
+import { OperationLookup } from 'api-typescript-runtime';
+import { Duration, Size } from 'aws-cdk-lib';
+import { AttributeType, BillingMode, Table } from 'aws-cdk-lib/aws-dynamodb';
+import { IVpc, SubnetType } from 'aws-cdk-lib/aws-ec2';
+import { Platform } from 'aws-cdk-lib/aws-ecr-assets';
+import * as iam from 'aws-cdk-lib/aws-iam';
 import {
   Alias,
   Architecture,
@@ -17,14 +17,14 @@ import {
   FunctionUrl,
   FunctionUrlAuthType,
   InvokeMode,
-} from "aws-cdk-lib/aws-lambda";
-import { IBucket } from "aws-cdk-lib/aws-s3";
-import { ISecret } from "aws-cdk-lib/aws-secretsmanager";
-import { NagSuppressions } from "cdk-nag";
-import { Construct } from "constructs";
-import { IndexingPipeline, IndexingPipelineOptions } from "./pipeline";
-import { MonitoredNestedStack, MonitoredNestedStackProps } from "../monitoring";
-import { GalileoComponentTags, tagAsComponent } from "../tags";
+} from 'aws-cdk-lib/aws-lambda';
+import { IBucket } from 'aws-cdk-lib/aws-s3';
+import { ISecret } from 'aws-cdk-lib/aws-secretsmanager';
+import { NagSuppressions } from 'cdk-nag';
+import { Construct } from 'constructs';
+import { IndexingPipeline, IndexingPipelineOptions } from './pipeline';
+import { MonitoredNestedStack, MonitoredNestedStackProps } from '../monitoring';
+import { GalileoComponentTags, tagAsComponent } from '../tags';
 
 export interface CorpusProps extends MonitoredNestedStackProps {
   readonly vpc: IVpc;
@@ -60,33 +60,27 @@ export class CorpusStack extends MonitoredNestedStack {
   constructor(scope: Construct, id: string, props: CorpusProps) {
     super(scope, id, props);
 
-    this.vectorStore = new RDSVectorStore(this, "VectorStore", {
+    this.vectorStore = new RDSVectorStore(this, 'VectorStore', {
       vpc: props.vpc,
     });
 
-    this.processedDataBucket = new SecureBucket(this, "ProcessedDataBucket");
-    tagAsComponent(
-      GalileoComponentTags.CORPUS_INDEXING_BUCKET,
-      this.processedDataBucket
-    );
+    this.processedDataBucket = new SecureBucket(this, 'ProcessedDataBucket');
+    tagAsComponent(GalileoComponentTags.CORPUS_INDEXING_BUCKET, this.processedDataBucket);
 
-    const cacheTable = new Table(this, "CacheTable", {
-      partitionKey: { name: "PK", type: AttributeType.STRING },
-      sortKey: { name: "SK", type: AttributeType.STRING },
+    const cacheTable = new Table(this, 'CacheTable', {
+      partitionKey: { name: 'PK', type: AttributeType.STRING },
+      sortKey: { name: 'SK', type: AttributeType.STRING },
       billingMode: BillingMode.PAY_PER_REQUEST,
     });
 
-    const dockerImageCode = DockerImageCode.fromImageAsset(
-      props.dockerImagePath,
-      {
-        platform: Platform.LINUX_AMD64,
-        cmd: ["lambda", "api.handler"],
-        // TODO: consider defining "embedding model" in context/props and passing to docker build here
-      }
-    );
+    const dockerImageCode = DockerImageCode.fromImageAsset(props.dockerImagePath, {
+      platform: Platform.LINUX_AMD64,
+      cmd: ['lambda', 'api.handler'],
+      // TODO: consider defining "embedding model" in context/props and passing to docker build here
+    });
 
-    this.apiLambda = new DockerImageFunction(this, "ApiLambda", {
-      description: "Corpus api lambda",
+    this.apiLambda = new DockerImageFunction(this, 'ApiLambda', {
+      description: 'Corpus api lambda',
       vpc: props.vpc,
       vpcSubnets: {
         subnetType: SubnetType.PRIVATE_WITH_EGRESS,
@@ -101,14 +95,14 @@ export class CorpusStack extends MonitoredNestedStack {
         ...this.vectorStore.environment,
         USER_POOL_CLIENT_ID: props.userPoolClientId,
         USER_POOL_ID: props.userPoolId,
-        TRANSFORMER_CACHE: "/tmp/.cache",
+        TRANSFORMER_CACHE: '/tmp/.cache',
       },
       initialPolicy: [
         new iam.PolicyStatement({
-          sid: "ApiInterceptors",
+          sid: 'ApiInterceptors',
           effect: iam.Effect.ALLOW,
           actions: [...INTERCEPTOR_IAM_ACTIONS],
-          resources: ["*"],
+          resources: ['*'],
         }),
       ],
     });
@@ -117,24 +111,23 @@ export class CorpusStack extends MonitoredNestedStack {
       this.apiLambda,
       [
         {
-          id: "AwsPrototyping-IAMNoManagedPolicies",
-          reason:
-            "AWS lambda managed execution policy is least privilege and permits logging",
+          id: 'AwsPrototyping-IAMNoManagedPolicies',
+          reason: 'AWS lambda managed execution policy is least privilege and permits logging',
         },
         {
-          id: "AwsPrototyping-IAMNoWildcardPermissions",
-          reason: "Needed for API interception",
+          id: 'AwsPrototyping-IAMNoWildcardPermissions',
+          reason: 'Needed for API interception',
         },
       ],
-      true
+      true,
     );
 
     let alias: Alias | undefined;
     if (props.autoScaling) {
       // https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_lambda-readme.html#autoscaling
       const version = this.apiLambda.currentVersion;
-      alias = new Alias(this, "ApiLambdaAlias", {
-        aliasName: "prod",
+      alias = new Alias(this, 'ApiLambdaAlias', {
+        aliasName: 'prod',
         version,
       });
 
@@ -147,17 +140,17 @@ export class CorpusStack extends MonitoredNestedStack {
       });
     }
 
-    this.apiUrl = new FunctionUrl(this, "ApiFunctionUrl", {
+    this.apiUrl = new FunctionUrl(this, 'ApiFunctionUrl', {
       authType: FunctionUrlAuthType.AWS_IAM,
       function: alias || this.apiLambda,
       cors: {
-        allowedHeaders: ["*"],
-        allowedOrigins: ["*"],
+        allowedHeaders: ['*'],
+        allowedOrigins: ['*'],
       },
       invokeMode: InvokeMode.BUFFERED,
     });
 
-    this.pipeline = new IndexingPipeline(this, "Pipeline", {
+    this.pipeline = new IndexingPipeline(this, 'Pipeline', {
       dockerImagePath: props.dockerImagePath,
       cacheTable,
       vpc: props.vpc,
@@ -168,15 +161,12 @@ export class CorpusStack extends MonitoredNestedStack {
 
     // add dependency from pipeline stateMachine to apiLambda to make sure image has been deployed
     this.pipeline.stateMachine.node.addDependency(this.apiLambda);
-    tagAsComponent(
-      GalileoComponentTags.CORPUS_INDEXING_STATEMACHINE,
-      this.pipeline.stateMachine
-    );
+    tagAsComponent(GalileoComponentTags.CORPUS_INDEXING_STATEMACHINE, this.pipeline.stateMachine);
 
     NagSuppressions.addStackSuppressions(this, [
       {
-        id: "CdkNagValidationFailure",
-        reason: "Suppressing errors due to dynamic tasks",
+        id: 'CdkNagValidationFailure',
+        reason: 'Suppressing errors due to dynamic tasks',
       },
     ]);
   }

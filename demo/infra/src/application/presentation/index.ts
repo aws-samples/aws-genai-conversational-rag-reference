@@ -1,49 +1,26 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { FOUNDATION_MODEL_INVENTORY_SECRET } from "@aws/galileo-sdk/lib/models/env";
-import { PDKNag } from "@aws/pdk/pdk-nag";
-import { StaticWebsite, StaticWebsiteOrigin } from "@aws/pdk/static-website";
-import {
-  Authorizers,
-  Integrations,
-  TypeSafeApiIntegration,
-} from "@aws/pdk/type-safe-api";
-import {
-  Api as TypeSafeApi,
-  ApiIntegrations,
-  MockIntegrations,
-} from "api-typescript-infra";
-import { INTERCEPTOR_IAM_ACTIONS } from "api-typescript-interceptors";
-import { OperationConfig } from "api-typescript-runtime";
-import {
-  ArnFormat,
-  CfnJson,
-  NestedStack,
-  NestedStackProps,
-  Reference,
-  Stack,
-  Token,
-} from "aws-cdk-lib";
-import { Cors } from "aws-cdk-lib/aws-apigateway";
-import { GeoRestriction } from "aws-cdk-lib/aws-cloudfront";
-import { ITable } from "aws-cdk-lib/aws-dynamodb";
-import { IVpc } from "aws-cdk-lib/aws-ec2";
-import {
-  Effect,
-  IGrantable,
-  Policy,
-  PolicyStatement,
-} from "aws-cdk-lib/aws-iam";
-import { Function, IFunction, Runtime } from "aws-cdk-lib/aws-lambda";
-import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
-import { ISecret } from "aws-cdk-lib/aws-secretsmanager";
-import { NagSuppressions } from "cdk-nag";
-import { Construct } from "constructs";
-import { IIdentityLayer } from "../identity";
+import { FOUNDATION_MODEL_INVENTORY_SECRET } from '@aws/galileo-sdk/lib/models/env';
+import { PDKNag } from '@aws/pdk/pdk-nag';
+import { StaticWebsite, StaticWebsiteOrigin } from '@aws/pdk/static-website';
+import { Authorizers, Integrations, TypeSafeApiIntegration } from '@aws/pdk/type-safe-api';
+import { Api as TypeSafeApi, ApiIntegrations, MockIntegrations } from 'api-typescript-infra';
+import { INTERCEPTOR_IAM_ACTIONS } from 'api-typescript-interceptors';
+import { OperationConfig } from 'api-typescript-runtime';
+import { ArnFormat, CfnJson, NestedStack, NestedStackProps, Reference, Stack, Token } from 'aws-cdk-lib';
+import { Cors } from 'aws-cdk-lib/aws-apigateway';
+import { GeoRestriction } from 'aws-cdk-lib/aws-cloudfront';
+import { ITable } from 'aws-cdk-lib/aws-dynamodb';
+import { IVpc } from 'aws-cdk-lib/aws-ec2';
+import { Effect, IGrantable, Policy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { Function, IFunction, Runtime } from 'aws-cdk-lib/aws-lambda';
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
+import { ISecret } from 'aws-cdk-lib/aws-secretsmanager';
+import { NagSuppressions } from 'cdk-nag';
+import { Construct } from 'constructs';
+import { IIdentityLayer } from '../identity';
 
-export interface PresentationStackProps
-  extends NestedStackProps,
-    IIdentityLayer {
+export interface PresentationStackProps extends NestedStackProps, IIdentityLayer {
   readonly websiteContentPath: string;
   readonly geoRestriction?: string | string[] | GeoRestriction;
   readonly datastore: ITable;
@@ -72,65 +49,52 @@ export class PresentationStack extends NestedStack {
     super(scope, id, props);
 
     const listChatsFn = new NodejsFunction(this, `listChats-Lambda`, {
-      handler: "handler",
+      handler: 'handler',
       runtime: Runtime.NODEJS_18_X,
-      entry: require.resolve("./lambdas/chat/listChats"),
+      entry: require.resolve('./lambdas/chat/listChats'),
     });
     const createChatFn = new NodejsFunction(this, `createChat-Lambda`, {
-      handler: "handler",
+      handler: 'handler',
       runtime: Runtime.NODEJS_18_X,
-      entry: require.resolve("./lambdas/chat/createChat"),
+      entry: require.resolve('./lambdas/chat/createChat'),
     });
 
     const updateChatFn = new NodejsFunction(this, `updateChat-Lambda`, {
-      handler: "handler",
+      handler: 'handler',
       runtime: Runtime.NODEJS_18_X,
-      entry: require.resolve("./lambdas/chat/updateChat"),
+      entry: require.resolve('./lambdas/chat/updateChat'),
     });
 
     const deleteChatFn = new NodejsFunction(this, `deleteChat-Lambda`, {
-      handler: "handler",
+      handler: 'handler',
       runtime: Runtime.NODEJS_18_X,
-      entry: require.resolve("./lambdas/chat/deleteChat"),
+      entry: require.resolve('./lambdas/chat/deleteChat'),
     });
 
-    const listChatMessagesFn = new NodejsFunction(
-      this,
-      `listChatMessages-Lambda`,
-      {
-        handler: "handler",
-        runtime: Runtime.NODEJS_18_X,
-        entry: require.resolve("./lambdas/chat/listChatMessages"),
-      }
-    );
+    const listChatMessagesFn = new NodejsFunction(this, `listChatMessages-Lambda`, {
+      handler: 'handler',
+      runtime: Runtime.NODEJS_18_X,
+      entry: require.resolve('./lambdas/chat/listChatMessages'),
+    });
 
-    const deleteChatMessageFn = new NodejsFunction(
-      this,
-      `deleteChatMessage-Lambda`,
-      {
-        handler: "handler",
-        runtime: Runtime.NODEJS_18_X,
-        entry: require.resolve("./lambdas/chat/deleteChatMessage"),
-      }
-    );
+    const deleteChatMessageFn = new NodejsFunction(this, `deleteChatMessage-Lambda`, {
+      handler: 'handler',
+      runtime: Runtime.NODEJS_18_X,
+      entry: require.resolve('./lambdas/chat/deleteChatMessage'),
+    });
 
-    const listChatMessageSourcesFn = new NodejsFunction(
-      this,
-      `listChatMessageSources-Lambda`,
-      {
-        handler: "handler",
-        runtime: Runtime.NODEJS_18_X,
-        entry: require.resolve("./lambdas/chat/listChatMessageSources"),
-      }
-    );
+    const listChatMessageSourcesFn = new NodejsFunction(this, `listChatMessageSources-Lambda`, {
+      handler: 'handler',
+      runtime: Runtime.NODEJS_18_X,
+      entry: require.resolve('./lambdas/chat/listChatMessageSources'),
+    });
 
     const llmInventoryFn = new NodejsFunction(this, `llmInventory-Lambda`, {
-      handler: "handler",
+      handler: 'handler',
       runtime: Runtime.NODEJS_18_X,
-      entry: require.resolve("./lambdas/llm/inventory"),
+      entry: require.resolve('./lambdas/llm/inventory'),
       environment: {
-        [FOUNDATION_MODEL_INVENTORY_SECRET]:
-          props.foundationModelInventorySecret.secretName,
+        [FOUNDATION_MODEL_INVENTORY_SECRET]: props.foundationModelInventorySecret.secretName,
       },
     });
     props.foundationModelInventorySecret.grantRead(llmInventoryFn);
@@ -150,7 +114,7 @@ export class PresentationStack extends NestedStack {
     const corpusApiIntegration = Integrations.lambda(props.corpusApiFn);
 
     // Create the API
-    this.typesafeApi = new TypeSafeApi(this, "Api", {
+    this.typesafeApi = new TypeSafeApi(this, 'Api', {
       defaultAuthorizer: Authorizers.iam(),
       corsOptions: {
         allowOrigins: Cors.ALL_ORIGINS,
@@ -188,50 +152,48 @@ export class PresentationStack extends NestedStack {
       // interceptor access (identity)
       lambda.addToRolePolicy(
         new PolicyStatement({
-          sid: "ApiInterceptors",
+          sid: 'ApiInterceptors',
           effect: Effect.ALLOW,
           // TODO: the action and resources required should be handled by the api-typescript-interceptors package
           actions: [...INTERCEPTOR_IAM_ACTIONS],
           resources: [
             Stack.of(this).formatArn({
-              resource: "userpool",
+              resource: 'userpool',
               resourceName: props.userPoolId,
-              service: "cognito-idp",
+              service: 'cognito-idp',
               arnFormat: ArnFormat.SLASH_RESOURCE_NAME,
             }),
           ],
-        })
+        }),
       );
       // table
-      lambda.addEnvironment("TABLE_NAME", props.datastore.tableName);
-      lambda.addEnvironment("GSI_INDEX_NAME", props.datastoreIndex);
+      lambda.addEnvironment('TABLE_NAME', props.datastore.tableName);
+      lambda.addEnvironment('GSI_INDEX_NAME', props.datastoreIndex);
       props.datastore.grantReadWriteData(lambda);
       NagSuppressions.addResourceSuppressions(
         this,
         [
           {
-            id: "AwsPrototyping-IAMNoManagedPolicies",
-            reason:
-              "AWS lambda basic execution role is acceptable since it allows for logging",
+            id: 'AwsPrototyping-IAMNoManagedPolicies',
+            reason: 'AWS lambda basic execution role is acceptable since it allows for logging',
           },
           {
-            id: "AwsPrototyping-IAMNoWildcardPermissions",
-            reason:
-              "Actions are scoped. Resource is scoped to specific DDB resource, /index/* is required",
+            id: 'AwsPrototyping-IAMNoWildcardPermissions',
+            reason: 'Actions are scoped. Resource is scoped to specific DDB resource, /index/* is required',
           },
         ],
-        true
+        true,
       );
     });
 
-    const policy = new Policy(this, "ApiAuthenticatedRolePolicy", {
+    const policy = new Policy(this, 'ApiAuthenticatedRolePolicy', {
       roles: [props.authenticatedUserRole],
       statements: [
         // Grant authenticated users in user pool "execute-api" permissions
         new PolicyStatement({
           effect: Effect.ALLOW,
-          actions: ["execute-api:Invoke"],
-          resources: [this.typesafeApi.api.arnForExecuteApi("*", "/*", "*")],
+          actions: ['execute-api:Invoke'],
+          resources: [this.typesafeApi.api.arnForExecuteApi('*', '/*', '*')],
         }),
       ],
     });
@@ -239,32 +201,27 @@ export class PresentationStack extends NestedStack {
       policy,
       [
         {
-          id: "AwsPrototyping-IAMNoWildcardPermissions",
-          reason: "needed for greedy api resource paths",
+          id: 'AwsPrototyping-IAMNoWildcardPermissions',
+          reason: 'needed for greedy api resource paths',
         },
       ],
-      true
+      true,
     );
 
-    const createRuntimeConfig = <T extends Record<string, string>>(
-      config: T
-    ): Record<string, Reference> => {
+    const createRuntimeConfig = <T extends Record<string, string>>(config: T): Record<string, Reference> => {
       // Each value needs to be wrapped with CfnJson to resolve tokens cross-stack, wrapping everything in CfnJson will not work.
       return Object.fromEntries(
         Object.entries(config).map(([key, value]) => {
           if (Token.isUnresolved(value)) {
-            return [
-              key,
-              new CfnJson(this, `RuntimeConfig-${key}`, { value }).value,
-            ];
+            return [key, new CfnJson(this, `RuntimeConfig-${key}`, { value }).value];
           } else {
             return [key, value];
           }
-        })
+        }),
       );
     };
 
-    this.website = new StaticWebsite(this, "StaticWebsite", {
+    this.website = new StaticWebsite(this, 'StaticWebsite', {
       websiteContentPath: props.websiteContentPath,
       runtimeOptions: {
         // Must wrap in CfnJson to resolve the cross-stack tokens (export/import)
@@ -291,10 +248,10 @@ export class PresentationStack extends NestedStack {
         this.website.cloudFrontDistribution.node.defaultChild!.node.path,
         [
           {
-            id: "AwsPrototyping-CloudFrontDistributionGeoRestrictions",
-            reason: "geo restrictions not applicable to this use case",
+            id: 'AwsPrototyping-CloudFrontDistributionGeoRestrictions',
+            reason: 'geo restrictions not applicable to this use case',
           },
-        ]
+        ],
       );
     }
   }
@@ -303,21 +260,19 @@ export class PresentationStack extends NestedStack {
     return grantable.grantPrincipal.addToPrincipalPolicy(
       new PolicyStatement({
         effect: Effect.ALLOW,
-        actions: ["execute-api:Invoke"],
-        resources: [this.typesafeApi.api.arnForExecuteApi("*", "/*", "*")],
-      })
+        actions: ['execute-api:Invoke'],
+        resources: [this.typesafeApi.api.arnForExecuteApi('*', '/*', '*')],
+      }),
     );
   }
 
   /** @internal */
-  _resolveGeoRestriction(
-    value?: string | string[] | GeoRestriction
-  ): GeoRestriction | undefined {
+  _resolveGeoRestriction(value?: string | string[] | GeoRestriction): GeoRestriction | undefined {
     if (value == null || value instanceof GeoRestriction) {
       return value;
     }
 
-    if (typeof value === "string") {
+    if (typeof value === 'string') {
       value = [value];
     }
 

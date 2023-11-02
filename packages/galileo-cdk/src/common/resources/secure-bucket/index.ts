@@ -1,12 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 
-import {
-  BlockPublicAccess,
-  Bucket,
-  BucketEncryption,
-  BucketProps,
-} from 'aws-cdk-lib/aws-s3';
+import { BlockPublicAccess, Bucket, BucketEncryption, BucketProps } from 'aws-cdk-lib/aws-s3';
 import { NagSuppressions } from 'cdk-nag';
 import { Construct, IConstruct } from 'constructs';
 import { getRootStack, isDevStage, stageAwareRemovalPolicy } from '../../utils';
@@ -28,27 +23,21 @@ export interface SecureBucketProps extends BucketProps {
 }
 
 export class SecureBucket extends Bucket {
-  static readonly SERVER_ACCESS_LOGS_BUCKET_UUID =
-    'SecureBucket-ServerAccessLogs_TEBvxboJ5D';
+  static readonly SERVER_ACCESS_LOGS_BUCKET_UUID = 'SecureBucket-ServerAccessLogs_TEBvxboJ5D';
 
   static serverAccessLogsOf(scope: IConstruct): SecureBucket {
     const rootStack = getRootStack(scope);
-    const existing = rootStack.node.tryFindChild(
-      SecureBucket.SERVER_ACCESS_LOGS_BUCKET_UUID,
-    ) as SecureBucket | undefined;
+    const existing = rootStack.node.tryFindChild(SecureBucket.SERVER_ACCESS_LOGS_BUCKET_UUID) as
+      | SecureBucket
+      | undefined;
     if (existing) {
       return existing;
     }
 
-    return new SecureBucket(
-      rootStack,
-      SecureBucket.SERVER_ACCESS_LOGS_BUCKET_UUID,
-      {
-        disableServerAccessLogs: true,
-        disableServerAccessLogsReason:
-          'Access logging bucket does not require access logging',
-      },
-    );
+    return new SecureBucket(rootStack, SecureBucket.SERVER_ACCESS_LOGS_BUCKET_UUID, {
+      disableServerAccessLogs: true,
+      disableServerAccessLogsReason: 'Access logging bucket does not require access logging',
+    });
   }
 
   constructor(scope: Construct, id: string, props?: SecureBucketProps) {
@@ -72,11 +61,7 @@ export class SecureBucket extends Bucket {
           : `${scope.node.path}/${id}/server-access-logs/`,
     });
 
-    if (
-      !props?.serverAccessLogsBucket &&
-      !props?.serverAccessLogsPrefix &&
-      props?.disableServerAccessLogs
-    ) {
+    if (!props?.serverAccessLogsBucket && !props?.serverAccessLogsPrefix && props?.disableServerAccessLogs) {
       const reason = props.disableServerAccessLogsReason;
       if (reason == null) {
         throw new Error(

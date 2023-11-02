@@ -53,9 +53,7 @@ async function delay(milliseconds: number): Promise<void> {
   });
 }
 
-async function getAllServiceQuotas(
-  serviceCode: string,
-): Promise<ServiceQuota[]> {
+async function getAllServiceQuotas(serviceCode: string): Promise<ServiceQuota[]> {
   const serviceQuotas: ServiceQuota[] = [];
   let nextToken: string | undefined = undefined;
   let i = 0;
@@ -92,9 +90,7 @@ export const handler = async (event: Event): Promise<Response> => {
     case 'Create':
     case 'Update': {
       const reportOnly = event.ResourceProperties.ReportOnly === 'true';
-      const requirements = JSON.parse(
-        event.ResourceProperties.ServiceQuotaRequirements,
-      ) as ServiceQuotaRequirement[];
+      const requirements = JSON.parse(event.ResourceProperties.ServiceQuotaRequirements) as ServiceQuotaRequirement[];
       const serviceCodes = new Set(requirements.map((v) => v.serviceCode));
       const lookup: Record<string, ServiceQuota[]> = Object.fromEntries(
         await Promise.all(
@@ -106,17 +102,13 @@ export const handler = async (event: Event): Promise<Response> => {
       );
       logger.info({
         message: 'Fetch service quotes',
-        lookup: Object.fromEntries(
-          Object.entries(lookup).map(([key, value]) => [key, value.length]),
-        ),
+        lookup: Object.fromEntries(Object.entries(lookup).map(([key, value]) => [key, value.length])),
       });
 
       const report: ReportItem[] = [];
 
       for (const requirement of requirements) {
-        const quota = lookup[requirement.serviceCode]?.find(
-          (_quota) => _quota.QuotaName === requirement.quotaName,
-        );
+        const quota = lookup[requirement.serviceCode]?.find((_quota) => _quota.QuotaName === requirement.quotaName);
         if (quota == null) {
           logger.error({
             message: `Invalid ServiceQuota requirements: ServiceCode=${requirement.serviceCode}, QuotaName=${requirement.quotaName}`,
@@ -129,8 +121,7 @@ export const handler = async (event: Event): Promise<Response> => {
             reason: 'Invalid serviceCode and/or quotaName',
           });
         } else {
-          const region =
-            process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;
+          const region = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;
           const quotaUrl = `https://${region}.console.aws.amazon.com/servicequotas/home/services/${quota.ServiceCode}/quotas/${quota.QuotaCode}`;
 
           if (quota.Value && quota.Value >= requirement.minimumValue) {
@@ -158,9 +149,7 @@ export const handler = async (event: Event): Promise<Response> => {
       logger.info({ message: 'Results:', report, failed, failedCount });
 
       if (failedCount) {
-        const error = new Error(
-          `Unmet ServiceQuota requirements: ${JSON.stringify(failed, null, 2)}`,
-        );
+        const error = new Error(`Unmet ServiceQuota requirements: ${JSON.stringify(failed, null, 2)}`);
         if (reportOnly) {
           logger.warn(`[ReportOnly] ${error.message}`, error);
 

@@ -25,10 +25,7 @@ export const DEFAULT_STAGENAME = 'Sandbox';
  * @param defaultValue - Defaults to "Sandbox"
  * @returns Stage name or "Sandbox" if not within a stage
  */
-export function getStageName(
-  scope: IConstruct,
-  defaultValue: string = DEFAULT_STAGENAME,
-): string | undefined {
+export function getStageName(scope: IConstruct, defaultValue: string = DEFAULT_STAGENAME): string | undefined {
   return Stage.of(scope)?.stageName ?? defaultValue;
 }
 
@@ -48,9 +45,7 @@ export function isDevStage(scope: IConstruct): boolean {
  * - Otherwise, `RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE`
  */
 export function stageAwareRemovalPolicy(scope: IConstruct): RemovalPolicy {
-  return isDevStage(scope)
-    ? RemovalPolicy.DESTROY
-    : RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE;
+  return isDevStage(scope) ? RemovalPolicy.DESTROY : RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE;
 }
 
 /**

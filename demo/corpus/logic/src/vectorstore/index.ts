@@ -1,13 +1,8 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import { PGVectorStore, PGVectorStoreOptions } from '@aws/galileo-sdk/lib/vectorstores';
-import {
-  RDSConnConfig,
-  getRDSConnConfig,
-} from '@aws/galileo-sdk/lib/vectorstores/pgvector/rds';
-import {
-  normalizePostgresTableName,
-} from '@aws/galileo-sdk/lib/vectorstores/pgvector/utils';
+import { RDSConnConfig, getRDSConnConfig } from '@aws/galileo-sdk/lib/vectorstores/pgvector/rds';
+import { normalizePostgresTableName } from '@aws/galileo-sdk/lib/vectorstores/pgvector/utils';
 import { Embeddings } from 'langchain/embeddings/base';
 import { VectorStore } from 'langchain/vectorstores/base';
 import { ENV } from '../env';
@@ -33,7 +28,10 @@ export const vectorStoreFactory = async (
       iamAuthentication: false,
     });
   }
-  const dbConfig = PGVectorStore.getDbConfigFromRdsConfig(__RDS_CONN__, ENV.RDS_PGVECTOR_TLS_ENABLED ? 'verify-full' : 'prefer');
+  const dbConfig = PGVectorStore.getDbConfigFromRdsConfig(
+    __RDS_CONN__,
+    ENV.RDS_PGVECTOR_TLS_ENABLED ? 'verify-full' : 'prefer',
+  );
 
   const vectorSize = Number(ENV.VECTOR_SIZE);
 

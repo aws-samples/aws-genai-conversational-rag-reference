@@ -5,19 +5,15 @@ import {
   ListUsersCommand,
   UserType,
   AdminListGroupsForUserCommand,
-} from "@aws-sdk/client-cognito-identity-provider";
-import {
-  ChainedRequestInput,
-  OperationResponse,
-  ServerErrorResponseContent,
-} from "api-typescript-runtime";
-import type { APIGatewayProxyEvent } from "aws-lambda";
-import NodeCache from "node-cache";
-import { CognitoAuth } from "../utils";
-import { ApiResponse } from "../utils/api-response";
+} from '@aws-sdk/client-cognito-identity-provider';
+import { ChainedRequestInput, OperationResponse, ServerErrorResponseContent } from 'api-typescript-runtime';
+import type { APIGatewayProxyEvent } from 'aws-lambda';
+import NodeCache from 'node-cache';
+import { CognitoAuth } from '../utils';
+import { ApiResponse } from '../utils/api-response';
 
 export interface CallingIdentity {
-  identityType: "COGNITO" | "SIGV4";
+  identityType: 'COGNITO' | 'SIGV4';
   username: string;
   identityId: string;
   email?: string;
@@ -58,26 +54,20 @@ export interface IdentityInterceptorEnvironment {
   readonly USER_POOL_CLIENT_ID?: string;
 }
 
-export const COGNITO_IDTOKEN_HEADER = "x-cognito-idtoken";
+export const COGNITO_IDTOKEN_HEADER = 'x-cognito-idtoken';
 
 export const IDENTITY_INTERCEPTOR_IAM_ACTIONS = [
-  "cognito-idp:ListUsers",
-  "cognito-idp:AdminListGroupsForUser",
+  'cognito-idp:ListUsers',
+  'cognito-idp:AdminListGroupsForUser',
 ] as const;
 
 /**
  * Convert a cognito user to a calling identity
  */
-export const cognitoUserToCallingIdentity = (
-  user: UserType,
-  groups: string[]
-): CallingIdentity => {
-  const attributes = Object.fromEntries(
-    user.Attributes?.map(({ Name, Value }) => [Name?.toLowerCase(), Value]) ||
-      []
-  );
+export const cognitoUserToCallingIdentity = (user: UserType, groups: string[]): CallingIdentity => {
+  const attributes = Object.fromEntries(user.Attributes?.map(({ Name, Value }) => [Name?.toLowerCase(), Value]) || []);
 
-  const identityId = attributes.sub || user.Username || "unknown";
+  const identityId = attributes.sub || user.Username || 'unknown';
   const username = user.Username || identityId;
 
   return {
@@ -85,7 +75,7 @@ export const cognitoUserToCallingIdentity = (
     username,
     identityId,
     email: attributes.email,
-    identityType: "COGNITO",
+    identityType: 'COGNITO',
     preferredUsername: attributes.preferred_username,
     givenName: attributes.family_name,
     familyName: attributes.given_name,
@@ -96,54 +86,43 @@ export const cognitoUserToCallingIdentity = (
  * Retrieve the more specific cognito caller when the sigv4 signed request comes from a cognito identity
  * @param event api gateway lambda event
  */
-const getCognitoCallerIdentity = async (
-  event: APIGatewayProxyEvent
-): Promise<CallingIdentity | undefined> => {
-  let cognitoAuthenticationProvider: string | null =
-    event?.requestContext?.identity?.cognitoAuthenticationProvider;
+const getCognitoCallerIdentity = async (event: APIGatewayProxyEvent): Promise<CallingIdentity | undefined> => {
+  let cognitoAuthenticationProvider: string | null = event?.requestContext?.identity?.cognitoAuthenticationProvider;
 
   if (cognitoAuthenticationProvider == null) {
     if (COGNITO_IDTOKEN_HEADER in event.headers) {
       try {
         const idToken = event.headers[COGNITO_IDTOKEN_HEADER];
 
-        if (
-          "USER_POOL_CLIENT_ID" in process.env &&
-          "USER_POOL_ID" in process.env
-        ) {
+        if ('USER_POOL_CLIENT_ID' in process.env && 'USER_POOL_ID' in process.env) {
           if (idToken) {
-            const cachedCallingIdentity =
-              userCache.get<CallingIdentity>(idToken);
+            const cachedCallingIdentity = userCache.get<CallingIdentity>(idToken);
 
             if (cachedCallingIdentity) {
               return cachedCallingIdentity;
             }
 
             const cognitoIdentity = await new CognitoAuth({
-              region: (process.env.AWS_REGION ||
-                process.env.AWS_DEFAULT_REGION)!,
+              region: (process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION)!,
               userPoolClientId: process.env.USER_POOL_CLIENT_ID!,
               userPoolId: process.env.USER_POOL_ID!,
             }).verify(idToken);
 
             if (cognitoIdentity) {
-              const username = cognitoIdentity["cognito:username"] as string;
+              const username = cognitoIdentity['cognito:username'] as string;
               const identityId = cognitoIdentity.sub as string;
-              const groups = (cognitoIdentity["cognito:groups"] ||
-                []) as string[];
+              const groups = (cognitoIdentity['cognito:groups'] || []) as string[];
 
               const callingIdentity: CallingIdentity = {
                 idToken,
-                identityType: "COGNITO",
+                identityType: 'COGNITO',
                 username: username,
                 groups: groups,
                 identityId: identityId,
                 email: cognitoIdentity.email as string | undefined,
                 givenName: cognitoIdentity.givenName as string | undefined,
                 familyName: cognitoIdentity.familyName as string | undefined,
-                preferredUsername: cognitoIdentity.preferred_username as
-                  | string
-                  | undefined,
+                preferredUsername: cognitoIdentity.preferred_username as string | undefined,
               };
 
               userCache.set<CallingIdentity>(idToken, callingIdentity);
@@ -153,19 +132,16 @@ const getCognitoCallerIdentity = async (
           }
         }
       } catch (error) {
-        console.error(
-          `Failed to verify ${COGNITO_IDTOKEN_HEADER} token`,
-          error
-        );
+        console.error(`Failed to verify ${COGNITO_IDTOKEN_HEADER} token`, error);
         return undefined;
       }
     }
   }
 
   if (cognitoAuthenticationProvider) {
-    const providerParts = cognitoAuthenticationProvider.split(":");
+    const providerParts = cognitoAuthenticationProvider.split(':');
     const subjectId = providerParts[providerParts.length - 1];
-    const providerSourceParts = providerParts[0].split("/");
+    const providerSourceParts = providerParts[0].split('/');
     const userPoolId = providerSourceParts[providerSourceParts.length - 1];
 
     const cachedCallingIdentity = userCache.get<CallingIdentity>(subjectId);
@@ -181,13 +157,11 @@ const getCognitoCallerIdentity = async (
         UserPoolId: userPoolId,
         Limit: 1,
         Filter: `sub="${subjectId}"`,
-      })
+      }),
     );
 
     if (!Users || Users.length !== 1) {
-      throw new Error(
-        `No user found with subjectId ${subjectId} in pool ${userPoolId}`
-      );
+      throw new Error(`No user found with subjectId ${subjectId} in pool ${userPoolId}`);
     }
 
     const user = Users[0];
@@ -199,12 +173,10 @@ const getCognitoCallerIdentity = async (
           UserPoolId: userPoolId,
           Limit: 50,
           Username: user.Username,
-        })
+        }),
       );
       if (Groups && Groups.length > 0) {
-        groups = Groups.map((v) => v.GroupName).filter(
-          (v) => v == null
-        ) as string[];
+        groups = Groups.map((v) => v.GroupName).filter((v) => v == null) as string[];
       }
     } catch (error) {
       console.error(error);
@@ -223,9 +195,7 @@ const getCognitoCallerIdentity = async (
  * Retrieve the caller for a sigv4 signed request
  * @param event api gateway lambda event
  */
-const getSigv4CallerIdentity = (
-  event: APIGatewayProxyEvent
-): CallingIdentity | undefined => {
+const getSigv4CallerIdentity = (event: APIGatewayProxyEvent): CallingIdentity | undefined => {
   const identity = event?.requestContext?.identity || {};
   if (identity.userArn && identity.user) {
     return {
@@ -234,7 +204,7 @@ const getSigv4CallerIdentity = (
       // make use of that, to delegate authentication of users to the other system.
       username: identity.user,
       identityId: identity.userArn,
-      identityType: "SIGV4",
+      identityType: 'SIGV4',
     };
   }
 
@@ -248,21 +218,17 @@ const getSigv4CallerIdentity = (
 export const identityInterceptor = async <
   RequestParameters,
   RequestBody,
-  Response extends OperationResponse<number, any>
+  Response extends OperationResponse<number, any>,
 >(
-  request: ChainedRequestInput<RequestParameters, RequestBody, Response>
+  request: ChainedRequestInput<RequestParameters, RequestBody, Response>,
 ): Promise<Response | OperationResponse<403, ServerErrorResponseContent>> => {
   const { event } = request;
-  const callingIdentity =
-    (await getCognitoCallerIdentity(event)) || getSigv4CallerIdentity(event);
+  const callingIdentity = (await getCognitoCallerIdentity(event)) || getSigv4CallerIdentity(event);
 
   if (!callingIdentity) {
-    console.error(
-      `Could not determine authenticated caller`,
-      JSON.stringify(event)
-    );
+    console.error(`Could not determine authenticated caller`, JSON.stringify(event));
     return ApiResponse.notAuthorized({
-      errorMessage: "You are not authorized to perform this operation",
+      errorMessage: 'You are not authorized to perform this operation',
     });
   }
 

@@ -28,9 +28,7 @@ export const DKR_ECR_REGION = {
   'us-west-2': '763104351884',
 } as const;
 
-export function isSupportedRegion(
-  region: string,
-): region is keyof typeof DKR_ECR_REGION {
+export function isSupportedRegion(region: string): region is keyof typeof DKR_ECR_REGION {
   return region in DKR_ECR_REGION;
 }
 
@@ -52,10 +50,7 @@ export function isGpuInstance(instanceType: string): boolean {
  * - g5
  * - p4d
  */
-export function numGpuFromInstanceType(
-  instanceType: string,
-  defaultValue: number = 1,
-): number {
+export function numGpuFromInstanceType(instanceType: string, defaultValue: number = 1): number {
   if (isGpuInstance(instanceType)) {
     instanceType = instanceType.toLowerCase();
     const [family, size] = instanceType.split('.');

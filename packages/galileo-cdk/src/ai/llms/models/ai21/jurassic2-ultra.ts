@@ -15,8 +15,7 @@ export enum AI21Jurassic2UltraInstanceType {
   MAX_CONTEXT_8191 = 'ml.p4d.24xlarge',
 }
 
-export interface AI21Jurassic2UltraProps
-  extends Omit<BaseLLMProps, 'modelId' | 'instanceType'> {
+export interface AI21Jurassic2UltraProps extends Omit<BaseLLMProps, 'modelId' | 'instanceType'> {
   readonly modelUUID: string;
   readonly instanceType: AI21Jurassic2UltraInstanceType;
   readonly instanceCount?: number;
@@ -37,17 +36,12 @@ export class AI21Jurassic2Ultra extends BaseLLM {
 
     if (!(region in AI21Jurassic2UltraModelPackageMap)) {
       throw new Error(
-        `${
-          this.constructor.name
-        } does not support region ${region}: [${Object.keys(
+        `${this.constructor.name} does not support region ${region}: [${Object.keys(
           AI21Jurassic2UltraModelPackageMap,
         ).join(',')}]`,
       );
     }
-    const modePackageArn =
-      AI21Jurassic2UltraModelPackageMap[
-        region as keyof typeof AI21Jurassic2UltraModelPackageMap
-      ];
+    const modePackageArn = AI21Jurassic2UltraModelPackageMap[region as keyof typeof AI21Jurassic2UltraModelPackageMap];
 
     this.model = new sagemaker.CfnModel(this, 'Model', {
       executionRoleArn: this.role.roleArn,

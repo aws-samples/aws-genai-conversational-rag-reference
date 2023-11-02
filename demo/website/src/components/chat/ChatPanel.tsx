@@ -1,13 +1,13 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import Header from "@cloudscape-design/components/header";
-import { Chat } from "api-typescript-react-query-hooks";
-import { useCallback, useRef } from "react";
-import DeleteChatButton from "./components/DeleteChatButton";
-import HumanInputForm from "./components/HumanInputForm";
-import { ConversationView } from "./ConversationView";
-import { useUpdateChatMutation } from "../../hooks/chats";
-import InlineEditor from "../InlineEditor";
+import Header from '@cloudscape-design/components/header';
+import { Chat } from 'api-typescript-react-query-hooks';
+import { useCallback, useRef } from 'react';
+import DeleteChatButton from './components/DeleteChatButton';
+import HumanInputForm from './components/HumanInputForm';
+import { ConversationView } from './ConversationView';
+import { useUpdateChatMutation } from '../../hooks/chats';
+import InlineEditor from '../InlineEditor';
 
 type SessionChatProps = {
   chat: Chat;
@@ -36,8 +36,8 @@ export default function ChatPanel(props: SessionChatProps) {
   return (
     <div
       style={{
-        display: "flex",
-        flexDirection: "column",
+        display: 'flex',
+        flexDirection: 'column',
         gap: 16,
         flex: 1,
       }}
@@ -51,12 +51,12 @@ export default function ChatPanel(props: SessionChatProps) {
       {/* Dialog */}
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
+          display: 'flex',
+          flexDirection: 'column',
           flex: 1,
-          justifySelf: "stretch",
-          alignSelf: "stretch",
-          overflow: "hidden",
+          justifySelf: 'stretch',
+          alignSelf: 'stretch',
+          overflow: 'hidden',
         }}
       >
         <ConversationView ref={conversationRef} chatId={props.chat.chatId} />

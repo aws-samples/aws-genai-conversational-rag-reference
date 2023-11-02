@@ -3,15 +3,29 @@ PDX-License-Identifier: Apache-2.0 */
 // @ts-ignore
 import type {} from '@types/jest';
 import { TextEncoder } from 'util';
-import { InvokeEndpointCommand, InvokeEndpointCommandOutput, SageMakerRuntimeClient } from '@aws-sdk/client-sagemaker-runtime';
+import {
+  InvokeEndpointCommand,
+  InvokeEndpointCommandOutput,
+  SageMakerRuntimeClient,
+} from '@aws-sdk/client-sagemaker-runtime';
 import { GetSecretValueCommand, SecretsManagerClient } from '@aws-sdk/client-secrets-manager';
-import { BatchWriteCommand, DynamoDBDocumentClient, PutCommand, QueryCommandOutput, QueryCommand } from '@aws-sdk/lib-dynamodb';
+import {
+  BatchWriteCommand,
+  DynamoDBDocumentClient,
+  PutCommand,
+  QueryCommandOutput,
+  QueryCommand,
+} from '@aws-sdk/lib-dynamodb';
 import { mockClient } from 'aws-sdk-client-mock';
 
 import * as chatDDBLib from '../../src/chat/dynamodb/lib/index.js';
 import { ChatEngine, ChatEngineFromOption } from '../../src/chat/engine.js';
 import { ChatTurn } from '../../src/chat/memory.js';
-import { ModelFramework, FOUNDATION_MODEL_INVENTORY_SECRET, IFoundationModelInventory } from '../../src/models/index.js';
+import {
+  ModelFramework,
+  FOUNDATION_MODEL_INVENTORY_SECRET,
+  IFoundationModelInventory,
+} from '../../src/models/index.js';
 
 // const dynamoDBMock = mockClient(DynamoDBClient);
 const dynamoDBDocumentMock = mockClient(DynamoDBDocumentClient);
@@ -57,10 +71,12 @@ describe('integ/bedrock', () => {
               prompt: {
                 chat: {
                   questionAnswer: {
-                    template: 'Human: <system>You are a research assistant in the \"{{domain}}\" domain. Based on the following rules contained in <rules> tags and provided corpus contained in <corpus> tags, answer the question. \n\n<rules>\n{{#each rules}}{{add @index 1}}. {{.}}\n{{/each}}\n</rules>\n\n</system>\n\n<corpus>\n{{context}}\n</corpus>\n\nQuestion: {{question}}\n\nAssistant: ',
+                    template:
+                      'Human: <system>You are a research assistant in the "{{domain}}" domain. Based on the following rules contained in <rules> tags and provided corpus contained in <corpus> tags, answer the question. \n\n<rules>\n{{#each rules}}{{add @index 1}}. {{.}}\n{{/each}}\n</rules>\n\n</system>\n\n<corpus>\n{{context}}\n</corpus>\n\nQuestion: {{question}}\n\nAssistant: ',
                   },
                   condenseQuestion: {
-                    template: 'Human: <system>Given the following conversational dialog contained in <dialog> tags, and the \"Followup Question\" below, rephrase the \"Followup Question\" to be a concise standalone question in its original language. Without answering the question, return only the standalone question.\n</system>\n\n<dialog>\n{{#each chat_history}}\n{{~#if (eq type \"human\")}}User: {{content}}\n{{~else if (eq type \"ai\")}}You: {{content}}\n{{~else if (eq type \"system\")}}System: {{content}}\n{{~else}}{{#if type}}{{type}}: {{/if}}{{content}}\n{{/if}}\n\n{{/each}}\n</dialog>\n\nFollowup Question: {{question}}\n\nAssistant: ',
+                    template:
+                      'Human: <system>Given the following conversational dialog contained in <dialog> tags, and the "Followup Question" below, rephrase the "Followup Question" to be a concise standalone question in its original language. Without answering the question, return only the standalone question.\n</system>\n\n<dialog>\n{{#each chat_history}}\n{{~#if (eq type "human")}}User: {{content}}\n{{~else if (eq type "ai")}}You: {{content}}\n{{~else if (eq type "system")}}System: {{content}}\n{{~else}}{{#if type}}{{type}}: {{/if}}{{content}}\n{{/if}}\n\n{{/each}}\n</dialog>\n\nFollowup Question: {{question}}\n\nAssistant: ',
                   },
                 },
               },
@@ -96,17 +112,26 @@ describe('integ/bedrock', () => {
     });
     dynamoDBDocumentMock.on(BatchWriteCommand).resolves({});
     // combine inference
-    sageMakerRuntimeMock.on(InvokeEndpointCommand)
+    sageMakerRuntimeMock
+      .on(InvokeEndpointCommand)
       .resolvesOnce({
-        Body: new TextEncoder().encode(JSON.stringify([{
-          generated_text: 'LLM combine response',
-        }])),
+        Body: new TextEncoder().encode(
+          JSON.stringify([
+            {
+              generated_text: 'LLM combine response',
+            },
+          ]),
+        ),
         $metadata: {},
       } as InvokeEndpointCommandOutput)
       .resolvesOnce({
-        Body: new TextEncoder().encode(JSON.stringify([{
-          generated_text: answer,
-        }])),
+        Body: new TextEncoder().encode(
+          JSON.stringify([
+            {
+              generated_text: answer,
+            },
+          ]),
+        ),
         $metadata: {},
       } as InvokeEndpointCommandOutput);
 
@@ -119,7 +144,6 @@ describe('integ/bedrock', () => {
       search: {
         url: 'http://localhost:1337',
         fetch: async (input, init): Promise<Response> => {
-
           const content = JSON.stringify({
             documents: [
               {
@@ -156,11 +180,13 @@ describe('integ/bedrock', () => {
     const result = await engine.query(question);
     expect(result.question).toBe(question);
     expect(result.answer).toBe(answer);
-    expect(result.turn).toEqual(expect.objectContaining({
-      ai: expect.anything(),
-      human: expect.anything(),
-      sources: expect.anything(),
-    } as ChatTurn));
+    expect(result.turn).toEqual(
+      expect.objectContaining({
+        ai: expect.anything(),
+        human: expect.anything(),
+        sources: expect.anything(),
+      } as ChatTurn),
+    );
     expect(Array.isArray(result.turn.sources)).toBeTruthy();
   });
 });

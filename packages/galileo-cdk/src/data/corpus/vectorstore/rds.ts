@@ -63,9 +63,7 @@ export class RDSVectorStore extends Construct {
         if (engine.engineVersion == null) {
           throw new Error('Must use explicit version for RDS cluster engine');
         }
-        const [major, minor] = engine.engineVersion.majorVersion
-          .split('.')
-          .map(parseInt);
+        const [major, minor] = engine.engineVersion.majorVersion.split('.').map(parseInt);
         // https://aws.amazon.com/about-aws/whats-new/2023/07/amazon-aurora-postgresql-pgvector-vector-storage-similarity-search/
         if (major > 15) return;
         if (
@@ -81,9 +79,7 @@ export class RDSVectorStore extends Construct {
         return;
       }
       default: {
-        throw new Error(
-          `Engine type must be "aurora-postgressql"; ${engine.engineType} is not supported`,
-        );
+        throw new Error(`Engine type must be "aurora-postgressql"; ${engine.engineType} is not supported`);
       }
     }
   }
@@ -179,7 +175,6 @@ export class RDSVectorStore extends Construct {
       requireTLS: this.requireTLS,
       iamAuth: this.iamAuthentication,
       securityGroups: [this.securityGroup],
-
     });
 
     new CfnOutput(this, 'RDSVectorStore-Secret', {
@@ -195,8 +190,7 @@ export class RDSVectorStore extends Construct {
       [
         {
           id: 'AwsPrototyping-EC2RestrictedCommonPorts',
-          reason:
-            'Default port is required for proxy; and cluster is in isolated subnet.',
+          reason: 'Default port is required for proxy; and cluster is in isolated subnet.',
         },
         {
           id: 'AwsPrototyping-EC2RestrictedInbound',
@@ -204,13 +198,11 @@ export class RDSVectorStore extends Construct {
         },
         {
           id: 'AwsPrototyping-EC2RestrictedSSH',
-          reason:
-            'Only VPC inbound traffic allowed, should enable this if opening inbound',
+          reason: 'Only VPC inbound traffic allowed, should enable this if opening inbound',
         },
         {
           id: 'AwsPrototyping-AuroraMySQLPostgresIAMAuth',
-          reason:
-            'Only VPC inbound traffic allowed, should enable this if opening inbound',
+          reason: 'Only VPC inbound traffic allowed, should enable this if opening inbound',
         },
         {
           id: 'AwsPrototyping-SecretsManagerRotationEnabled',

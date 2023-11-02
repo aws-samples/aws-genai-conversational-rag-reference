@@ -10,7 +10,8 @@ import { EULA_ACKNOWLEDGED_CONTEXT, EULA_ENABLED_CONTEXT } from './context';
 
 export * from './context';
 
-const DISCLAIMER = 'By using this script, you agree that you will be deploying {models}, each a third-party model (“Third-Party Model”) into your specified user account. AWS does not own and does not exercise any control over these Third-Party Models. You should perform your own independent assessment, and take measures to ensure that you comply with your own specific quality control practices and standards, and the local rules, laws, regulations, licenses and terms of use that apply to you, your content, and the Third-Party Models, and any outputs from the Third-Party Models. AWS does not make any representations or warranties regarding the Third-Party Models.';
+const DISCLAIMER =
+  'By using this script, you agree that you will be deploying {models}, each a third-party model (“Third-Party Model”) into your specified user account. AWS does not own and does not exercise any control over these Third-Party Models. You should perform your own independent assessment, and take measures to ensure that you comply with your own specific quality control practices and standards, and the local rules, laws, regulations, licenses and terms of use that apply to you, your content, and the Third-Party Models, and any outputs from the Third-Party Models. AWS does not make any representations or warranties regarding the Third-Party Models.';
 
 let PROCESS_ACK: string | undefined = undefined;
 
@@ -42,9 +43,7 @@ export class ModelEULA extends Construct {
 
     const acknowledged = getEULAContext(this) || [];
 
-    const unacknowledged = models.filter(
-      (_model) => !acknowledged.includes(_model),
-    );
+    const unacknowledged = models.filter((_model) => !acknowledged.includes(_model));
 
     const serializedModels = JSON.stringify(models);
     if (unacknowledged.length && serializedModels !== PROCESS_ACK) {
@@ -74,9 +73,7 @@ export class ModelEULA extends Construct {
       storeEULAContext(this, models);
     }
 
-    Annotations.of(this).addInfo(
-      `[Model EULA] Acknowledged: ${acknowledged.join(', ')}`,
-    );
+    Annotations.of(this).addInfo(`[Model EULA] Acknowledged: ${acknowledged.join(', ')}`);
   }
 }
 
@@ -96,9 +93,7 @@ export function storeEULAContext(scope: Construct, models: string[]): void {
 function getContextJson(): Record<string, unknown> {
   let contextJson: Record<string, unknown> = {};
   if (fs.existsSync(CONTEXT_JSON_FILE)) {
-    contextJson = JSON.parse(
-      fs.readFileSync(CONTEXT_JSON_FILE, { encoding: 'utf-8' }),
-    );
+    contextJson = JSON.parse(fs.readFileSync(CONTEXT_JSON_FILE, { encoding: 'utf-8' }));
   }
 
   return contextJson;

@@ -130,7 +130,6 @@ export const BASE_CHAT_PARTIALS: BaseChatTemplatePartials = {
   // determine "context" based on either corpus (qa) or dialog (condense)
   // This is a helper to support cross-prompt scaffolding with common body
   Context: '{{#if context}}{{>Corpus}}{{/if}}{{#if chat_history}}{{>Dialog}}{{/if}}',
-
 } as const;
 
 export interface ChatTemplatePartials extends BaseChatTemplatePartials {

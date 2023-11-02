@@ -30,42 +30,24 @@ export class SageMakerStudio extends Construct {
       description: 'Allow tcp traffic self-ref',
       allowAllOutbound: true,
     });
-    vpcSecurityGroup.addIngressRule(
-      vpcSecurityGroup,
-      ec2.Port.allTcp(),
-      'self-ref',
-    );
+    vpcSecurityGroup.addIngressRule(vpcSecurityGroup, ec2.Port.allTcp(), 'self-ref');
 
-    const vpcepSecurityGroup = new ec2.SecurityGroup(
-      this,
-      'VPCEPSecurityGroup',
-      {
-        vpc: props.vpc,
-        description: 'Allow https from vpc sg',
-        allowAllOutbound: true,
-      },
-    );
-    vpcepSecurityGroup.addIngressRule(
-      vpcSecurityGroup,
-      ec2.Port.tcp(443),
-      'https from vpc sg',
-    );
+    const vpcepSecurityGroup = new ec2.SecurityGroup(this, 'VPCEPSecurityGroup', {
+      vpc: props.vpc,
+      description: 'Allow https from vpc sg',
+      allowAllOutbound: true,
+    });
+    vpcepSecurityGroup.addIngressRule(vpcSecurityGroup, ec2.Port.tcp(443), 'https from vpc sg');
 
     new ec2.InterfaceVpcEndpoint(this, 'SM API VPC Endpoint', {
       vpc: props.vpc,
-      service: new ec2.InterfaceVpcEndpointService(
-        `com.amazonaws.${region}.sagemaker.api`,
-        443,
-      ),
+      service: new ec2.InterfaceVpcEndpointService(`com.amazonaws.${region}.sagemaker.api`, 443),
       privateDnsEnabled: true,
     });
 
     new ec2.InterfaceVpcEndpoint(this, 'Studio VPC Endpoint', {
       vpc: props.vpc,
-      service: new ec2.InterfaceVpcEndpointService(
-        `aws.sagemaker.${region}.studio`,
-        443,
-      ),
+      service: new ec2.InterfaceVpcEndpointService(`aws.sagemaker.${region}.studio`, 443),
       privateDnsEnabled: true,
     });
 
@@ -113,11 +95,7 @@ export class SageMakerStudio extends Construct {
       value: `${this.domain.attrUrl}/jupyter/default`,
     });
     new CfnOutput(this, 'StudioUsers', {
-      value: JSON.stringify(
-        Object.fromEntries(
-          Object.entries(this.users).map(([k, v]) => [k, v.attrUserProfileArn]),
-        ),
-      ),
+      value: JSON.stringify(Object.fromEntries(Object.entries(this.users).map(([k, v]) => [k, v.attrUserProfileArn]))),
     });
 
     if (isDevStage(this)) {
@@ -126,8 +104,7 @@ export class SageMakerStudio extends Construct {
         [
           {
             id: 'AwsPrototyping-EC2RestrictedSSH',
-            reason:
-              '[Dev Stage] VPC inbound traffic only, will address before suppressing beyond dev stage.',
+            reason: '[Dev Stage] VPC inbound traffic only, will address before suppressing beyond dev stage.',
           },
           {
             id: 'AwsPrototyping-EC2RestrictedInbound',
@@ -135,8 +112,7 @@ export class SageMakerStudio extends Construct {
           },
           {
             id: 'AwsPrototyping-EC2RestrictedCommonPorts',
-            reason:
-              '[Dev Stage] VPC inbound traffic only, will address before suppressing beyond dev stage.',
+            reason: '[Dev Stage] VPC inbound traffic only, will address before suppressing beyond dev stage.',
           },
         ],
       );

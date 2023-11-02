@@ -25,26 +25,24 @@ export const DEFAULT_APPLICATION_CONFIG: ApplicationConfig = {
   llms: {
     defaultModel: FoundationModelIds.FALCON_LITE,
     predefined: {
-      sagemaker: [
-        FoundationModelIds.FALCON_LITE,
-      ],
+      sagemaker: [FoundationModelIds.FALCON_LITE],
     },
   },
   rag: {
-  // TODO: placeholder for when we support multiple rag engines
-  //   engines: {
-  //     aurora: {
-  //       enabled: true,
-  //     },
-  //   },
-  // TODO: placeholder for followup PR to define embedding models in config
-  //   embeddingsModels: [
-  //     {
-  //       provider: 'sagemaker',
-  //       dimensions: 768,
-  //       name: 'sentence-transformers/all-mpnet-base-v2',
-  //       default: true,
-  //     },
-  //   ],
+    // TODO: placeholder for when we support multiple rag engines
+    //   engines: {
+    //     aurora: {
+    //       enabled: true,
+    //     },
+    //   },
+    // TODO: placeholder for followup PR to define embedding models in config
+    //   embeddingsModels: [
+    //     {
+    //       provider: 'sagemaker',
+    //       dimensions: 768,
+    //       name: 'sentence-transformers/all-mpnet-base-v2',
+    //       default: true,
+    //     },
+    //   ],
   },
 };

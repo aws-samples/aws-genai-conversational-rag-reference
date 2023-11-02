@@ -1,12 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import {
-  Annotations,
-  CustomResource,
-  Duration,
-  Lazy,
-  Stack,
-} from 'aws-cdk-lib';
+import { Annotations, CustomResource, Duration, Lazy, Stack } from 'aws-cdk-lib';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Provider } from 'aws-cdk-lib/custom-resources';
 import { NagSuppressions } from 'cdk-nag';
@@ -36,19 +30,14 @@ export class ServiceQuotas extends Construct implements IDependable {
     );
   }
 
-  static addRequirement(
-    scope: IConstruct,
-    requirement: ServiceQuotaRequirement,
-    addDependency: boolean = true,
-  ): void {
+  static addRequirement(scope: IConstruct, requirement: ServiceQuotaRequirement, addDependency: boolean = true): void {
     const serviceQuota = ServiceQuotas.of(scope);
     serviceQuota.addRequirement(requirement);
     addDependency && scope.node.addDependency(serviceQuota);
   }
 
   /** @internal */
-  protected readonly _requirements: Map<string, ServiceQuotaRequirement> =
-    new Map();
+  protected readonly _requirements: Map<string, ServiceQuotaRequirement> = new Map();
 
   protected _reportOnly: boolean = false;
 
@@ -72,13 +61,11 @@ export class ServiceQuotas extends Construct implements IDependable {
       [
         {
           id: 'AwsPrototyping-IAMNoManagedPolicies',
-          reason:
-            'AWS lambda basic execution role is acceptable since it allows for logging',
+          reason: 'AWS lambda basic execution role is acceptable since it allows for logging',
         },
         {
           id: 'AwsPrototyping-IAMNoWildcardPermissions',
-          reason:
-            'The handler will not know in advance which quotas it needs to list',
+          reason: 'The handler will not know in advance which quotas it needs to list',
           appliesTo: ['Resource::*'],
         },
       ],
@@ -95,13 +82,11 @@ export class ServiceQuotas extends Construct implements IDependable {
       [
         {
           id: 'AwsPrototyping-IAMNoManagedPolicies',
-          reason:
-            'AWS lambda basic execution role is acceptable since it allows for logging',
+          reason: 'AWS lambda basic execution role is acceptable since it allows for logging',
         },
         {
           id: 'AwsPrototyping-IAMNoWildcardPermissions',
-          reason:
-            'The handler will not know in advance which quotas it needs to list',
+          reason: 'The handler will not know in advance which quotas it needs to list',
           appliesTo: ['Resource::*'],
         },
       ],
@@ -127,9 +112,7 @@ export class ServiceQuotas extends Construct implements IDependable {
       },
     });
 
-    Annotations.of(this).addInfo(
-      `ServiceQuotaRequirements: ${requirementsToken}`,
-    );
+    Annotations.of(this).addInfo(`ServiceQuotaRequirements: ${requirementsToken}`);
   }
 
   get dependencyRoots(): IConstruct[] {

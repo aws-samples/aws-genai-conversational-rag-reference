@@ -1,13 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import { CfnOutput } from 'aws-cdk-lib';
-import {
-  ISecurityGroup,
-  Port,
-  SecurityGroup,
-  SubnetType,
-  IVpc,
-} from 'aws-cdk-lib/aws-ec2';
+import { ISecurityGroup, Port, SecurityGroup, SubnetType, IVpc } from 'aws-cdk-lib/aws-ec2';
 import {
   Cluster,
   ContainerImage,
@@ -165,8 +159,7 @@ export class PgAdmin extends Construct {
     NagSuppressions.addResourceSuppressions(this, [
       {
         id: 'AwsPrototyping-EC2RestrictedCommonPorts',
-        reason:
-          'PG port is required for the security group; and the RDS cluster is in isolated subnet.',
+        reason: 'PG port is required for the security group; and the RDS cluster is in isolated subnet.',
       },
     ]);
   }

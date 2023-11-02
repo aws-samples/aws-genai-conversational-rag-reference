@@ -1,20 +1,17 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { IFoundationModelInventory } from "@aws/galileo-cdk/lib/ai/predefined";
-import { ApplicationContext } from "@aws/galileo-cdk/lib/core/app";
-import { ApplicationConfig } from "@aws/galileo-cdk/lib/core/app/context/types";
-import { Arn, ArnFormat, CfnOutput, SecretValue, Stack } from "aws-cdk-lib";
-import { IVpc } from "aws-cdk-lib/aws-ec2";
-import * as iam from "aws-cdk-lib/aws-iam";
-import { ISecret, ReplicaRegion, Secret } from "aws-cdk-lib/aws-secretsmanager";
-import { NagSuppressions } from "cdk-nag";
-import { Construct } from "constructs";
-import { FoundationModels } from "./models";
-import { NetworkingLayer } from "../../networking/layer";
-import {
-  MonitoredStack,
-  MonitoredStackProps,
-} from "src/application/monitoring";
+import { IFoundationModelInventory } from '@aws/galileo-cdk/lib/ai/predefined';
+import { ApplicationContext } from '@aws/galileo-cdk/lib/core/app';
+import { ApplicationConfig } from '@aws/galileo-cdk/lib/core/app/context/types';
+import { Arn, ArnFormat, CfnOutput, SecretValue, Stack } from 'aws-cdk-lib';
+import { IVpc } from 'aws-cdk-lib/aws-ec2';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import { ISecret, ReplicaRegion, Secret } from 'aws-cdk-lib/aws-secretsmanager';
+import { NagSuppressions } from 'cdk-nag';
+import { Construct } from 'constructs';
+import { FoundationModels } from './models';
+import { NetworkingLayer } from '../../networking/layer';
+import { MonitoredStack, MonitoredStackProps } from 'src/application/monitoring';
 
 export interface FoundationModelStackProps extends MonitoredStackProps {
   /**
@@ -79,10 +76,10 @@ export class FoundationModelStack extends MonitoredStack {
       vpc = applicationVpc;
     } else {
       // TODO: Need to setup vpc links for cross-region?
-      vpc = new NetworkingLayer(this, "Networking").vpc;
+      vpc = new NetworkingLayer(this, 'Networking').vpc;
     }
 
-    const models = new FoundationModels(this, "FoundationModels", {
+    const models = new FoundationModels(this, 'FoundationModels', {
       vpc,
       ...config,
     });
@@ -90,13 +87,10 @@ export class FoundationModelStack extends MonitoredStack {
     const applicationRegion = Stack.of(scope).region;
     this.isCrossRegion = applicationRegion !== this.region;
 
-    this.inventorySecretName = ApplicationContext.safeResourceName(
-      this,
-      "FoundationModelInventory"
-    );
+    this.inventorySecretName = ApplicationContext.safeResourceName(this, 'FoundationModelInventory');
     this.inventory = models.inventory;
 
-    this._secret = new InventorySecret(this, "ModelInventorySecret", {
+    this._secret = new InventorySecret(this, 'ModelInventorySecret', {
       inventory: this.inventory,
       secretName: this.inventorySecretName,
       replicaRegions: this.isCrossRegion
@@ -111,24 +105,24 @@ export class FoundationModelStack extends MonitoredStack {
       this._secret,
       [
         {
-          id: "AwsPrototyping-SecretsManagerRotationEnabled",
-          reason: "non-secrets used for x-region deployment",
+          id: 'AwsPrototyping-SecretsManagerRotationEnabled',
+          reason: 'non-secrets used for x-region deployment',
         },
       ],
-      true
+      true,
     );
 
     this._invokeModelsPolicyStatements = [
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
-        actions: ["sagemaker:InvokeEndpoint", "sagemaker:DescribeEndpoint"],
+        actions: ['sagemaker:InvokeEndpoint', 'sagemaker:DescribeEndpoint'],
         resources: [
           Stack.of(this).formatArn({
-            service: "sagemaker",
-            resource: "endpoint",
+            service: 'sagemaker',
+            resource: 'endpoint',
             // [Security] Unable to scope to endpoint name due to cross-environment without coupling stacks unnecessarily
-            resourceName: "*",
-            region: "*",
+            resourceName: '*',
+            region: '*',
           }),
         ],
       }),
@@ -138,40 +132,30 @@ export class FoundationModelStack extends MonitoredStack {
       this._invokeModelsPolicyStatements.push(
         new iam.PolicyStatement({
           effect: iam.Effect.ALLOW,
-          actions: ["bedrock:Invoke*"],
-          resources: ["*"],
-        })
+          actions: ['bedrock:Invoke*'],
+          resources: ['*'],
+        }),
       );
     }
 
     if (props.enableCrossAccountRole) {
-      const roleName = ApplicationContext.safeResourceName(
-        scope,
-        "FoundationModel-CrossAccount"
-      );
-      this._crossAccountRole = new iam.Role(this, "CrossAccountRole", {
+      const roleName = ApplicationContext.safeResourceName(scope, 'FoundationModel-CrossAccount');
+      this._crossAccountRole = new iam.Role(this, 'CrossAccountRole', {
         roleName,
         // Developers will add account trust policies to the role via the console.
         assumedBy: new iam.AccountRootPrincipal(),
-        description:
-          "Cross-account role for foundation model inventory and invocation",
+        description: 'Cross-account role for foundation model inventory and invocation',
         inlinePolicies: {
           Secrets: new iam.PolicyDocument({
             statements: [
               new iam.PolicyStatement({
                 effect: iam.Effect.ALLOW,
-                actions: [
-                  "secretsmanager:GetSecretValue",
-                  "secretsmanager:DescribeSecret",
-                ],
+                actions: ['secretsmanager:GetSecretValue', 'secretsmanager:DescribeSecret'],
                 resources: [
                   // Region agnostic arn for the secret to support cross-region replication version
                   Arn.format({
-                    ...Stack.of(this).splitArn(
-                      this._secret.secretArn,
-                      ArnFormat.COLON_RESOURCE_NAME
-                    ),
-                    region: "*",
+                    ...Stack.of(this).splitArn(this._secret.secretArn, ArnFormat.COLON_RESOURCE_NAME),
+                    region: '*',
                   }),
                 ],
               }),
@@ -186,33 +170,33 @@ export class FoundationModelStack extends MonitoredStack {
         this._crossAccountRole,
         [
           {
-            id: "AwsPrototyping-IAMNoWildcardPermissions",
+            id: 'AwsPrototyping-IAMNoWildcardPermissions',
             reason:
               "Actions are scoped. Don't know all SageMaker endpoint names or Bedrock model ids at deployment time",
           },
         ],
-        true
+        true,
       );
 
       this._secret.grantRead(this._crossAccountRole);
 
       this.crossAccountRoleArn = this.formatArn({
-        service: "iam",
-        resource: "role",
+        service: 'iam',
+        resource: 'role',
         resourceName: roleName,
-        region: "",
+        region: '',
       });
 
-      new CfnOutput(this, "FoundationModelCrossAccountRole", {
+      new CfnOutput(this, 'FoundationModelCrossAccountRole', {
         value: this._crossAccountRole.roleArn,
       });
     }
 
-    new CfnOutput(this, "ModelInventorySecretName", {
+    new CfnOutput(this, 'ModelInventorySecretName', {
       value: this.inventorySecretName,
     });
 
-    new CfnOutput(this, "ModelInventorySecretArn", {
+    new CfnOutput(this, 'ModelInventorySecretArn', {
       value: this._secret.secretArn,
     });
   }
@@ -224,18 +208,12 @@ export class FoundationModelStack extends MonitoredStack {
 
   proxyInventorySecret(scope: Construct): ISecret {
     const uuid = `FoundationModelStack-InventorySecret-${this.inventorySecretName}`;
-    const existing = Stack.of(scope).node.tryFindChild(uuid) as
-      | ISecret
-      | undefined;
+    const existing = Stack.of(scope).node.tryFindChild(uuid) as ISecret | undefined;
     if (existing) {
       return existing;
     }
 
-    const secret = Secret.fromSecretNameV2(
-      Stack.of(scope),
-      uuid,
-      this.inventorySecretName
-    );
+    const secret = Secret.fromSecretNameV2(Stack.of(scope), uuid, this.inventorySecretName);
 
     // Ensure the primary secret is updated and proxy depends on primary
     Stack.of(scope).addDependency(this);
@@ -248,12 +226,12 @@ export class FoundationModelStack extends MonitoredStack {
       grantable.grantPrincipal.addToPrincipalPolicy(
         new iam.PolicyStatement({
           effect: iam.Effect.ALLOW,
-          actions: ["sts:AssumeRole"],
+          actions: ['sts:AssumeRole'],
           resources: [this.crossAccountRoleArn],
-        })
+        }),
       );
     } else {
-      throw new Error("CrossAccountRole is not enabled");
+      throw new Error('CrossAccountRole is not enabled');
     }
   }
 }
@@ -269,11 +247,9 @@ class InventorySecret extends Secret {
     super(scope, id, {
       secretName: props.secretName,
       description:
-        "Foundation model inventory config for referencing models by deterministic id throughout the solution",
+        'Foundation model inventory config for referencing models by deterministic id throughout the solution',
       replicaRegions: props.replicaRegions,
-      secretStringValue: SecretValue.unsafePlainText(
-        JSON.stringify(props.inventory, null, 2)
-      ),
+      secretStringValue: SecretValue.unsafePlainText(JSON.stringify(props.inventory, null, 2)),
     });
   }
 }

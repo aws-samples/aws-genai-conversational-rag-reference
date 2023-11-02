@@ -69,7 +69,8 @@ export namespace ENV {
   export const RDS_PGVECTOR_TLS_ENABLED = envBool('RDS_PGVECTOR_TLS_ENABLED', true);
 
   export const EMBEDDING_PORT = parseInt(process.env.EMBEDDING_PORT || '1337');
-  export const EMBEDDING_SENTENCE_TRANSFORMER_MODEL = process.env.EMBEDDING_SENTENCE_TRANSFORMER_MODEL || 'all-mpnet-base-v2';
+  export const EMBEDDING_SENTENCE_TRANSFORMER_MODEL =
+    process.env.EMBEDDING_SENTENCE_TRANSFORMER_MODEL || 'all-mpnet-base-v2';
   export const VECTOR_SIZE = parseInt(process.env.VECTOR_SIZE || '768');
   export const CHUNK_SIZE = parseInt(process.env.CHUNK_SIZE || '1000');
   export const CHUNK_OVERLAP = parseInt(process.env.CHUNK_OVERLAP || '200');
@@ -77,14 +78,15 @@ export namespace ENV {
   export const PROCESSING_INPUT_LOCAL_PATH = process.env.PROCESSING_INPUT_LOCAL_PATH || '/opt/ml/processing/input_data';
   export const INDEXING_GLOB = process.env.INDEXING_GLOB || '**/*.txt';
 
-  export const EMBEDDING_TABLENAME = normalizePostgresTableName(`${EMBEDDING_SENTENCE_TRANSFORMER_MODEL}_${VECTOR_SIZE}`);
+  export const EMBEDDING_TABLENAME = normalizePostgresTableName(
+    `${EMBEDDING_SENTENCE_TRANSFORMER_MODEL}_${VECTOR_SIZE}`,
+  );
 
   export const INDEXING_SKIP_DELTA_CHECK = envBool('INDEXING_SKIP_DELTA_CHECK', false);
 
   export const INDEXING_WORKER_COUNT = parseInt(process.env.INDEXING_WORKER_COUNT || '2');
   export const INDEXING_WORKER_BATCH_SIZE = parseInt(process.env.INDEXING_WORKER_BATCH_SIZE || '500');
   export const INDEXING_VECTORSTOR_INSERT_MAX = parseInt(process.env.INDEXING_VECTORSTOR_INSERT_MAX || '1000');
-
 }
 
 console.debug('process.env:', JSON.stringify(process.env, null, 2));

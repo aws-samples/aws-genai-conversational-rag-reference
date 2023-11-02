@@ -1,17 +1,12 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 
-import path from "node:path";
-import execa from "execa";
-import { JSONStorage } from "node-localstorage";
-import { Ui } from "./ui";
-import {
-  IApplicationContextKey,
-  ApplicationContext,
-  helpers,
-  ApplicationConfig,
-} from "../../internals";
-import { CdkContextValue, ExecaCommandReturn, ExecaTask } from "../types";
+import path from 'node:path';
+import execa from 'execa';
+import { JSONStorage } from 'node-localstorage';
+import { Ui } from './ui';
+import { IApplicationContextKey, ApplicationContext, helpers, ApplicationConfig } from '../../internals';
+import { CdkContextValue, ExecaCommandReturn, ExecaTask } from '../types';
 
 class Context {
   // singleton ---
@@ -44,16 +39,7 @@ class Context {
 
   private constructor() {
     this.cache = new JSONStorage(
-      path.join(
-        __dirname,
-        "..",
-        "..",
-        "..",
-        "bin",
-        ".cache",
-        "localstorage",
-        String(ApplicationContext.MAJOR_VERSION)
-      )
+      path.join(__dirname, '..', '..', '..', 'bin', '.cache', 'localstorage', String(ApplicationContext.MAJOR_VERSION)),
     );
 
     this.cdkContext = new Map<IApplicationContextKey, CdkContextValue>();
@@ -62,7 +48,7 @@ class Context {
 
   get appConfig(): ApplicationConfig {
     if (this._appConfig) return this._appConfig;
-    throw new Error("Must call setter for appConfig before getter");
+    throw new Error('Must call setter for appConfig before getter');
   }
 
   set appConfig(value: ApplicationConfig) {
@@ -89,14 +75,14 @@ class Context {
     this.execTasks.push(args);
 
     if (this.dryRun) {
-      console.log(helpers.contextMessage("DRYRUN", args[0]));
+      console.log(helpers.contextMessage('DRYRUN', args[0]));
       return;
     }
     return execa.commandSync(...args);
   }
 
   saveExecTasks() {
-    this.cache.setItem("replayTasks", this.execTasks);
+    this.cache.setItem('replayTasks', this.execTasks);
   }
 }
 

@@ -8,7 +8,4 @@ const [metrics, logMetric] = createMetrics({
   serviceName: process.env.POWERTOOLS_SERVICE_NAME ?? 'Corpus',
 });
 
-export {
-  metrics,
-  logMetric,
-};
+export { metrics, logMetric };

@@ -7,7 +7,7 @@ import {
   ServerErrorResponseContent,
   NotAuthorizedErrorResponseContent,
   ServerTemporaryErrorResponseContent,
-} from "api-typescript-runtime";
+} from 'api-typescript-runtime';
 
 /**
  * Helpers for constructing api responses
@@ -25,7 +25,7 @@ export class ApiResponse {
    * A response which indicates a client error
    */
   public static badRequest = (
-    body: ClientErrorResponseContent
+    body: ClientErrorResponseContent,
   ): OperationResponse<400, ClientErrorResponseContent> => ({
     statusCode: 400,
     body,
@@ -35,7 +35,7 @@ export class ApiResponse {
    * A response which indicates the requested resource was not found
    */
   public static notFound = (
-    body: NotFoundErrorResponseContent
+    body: NotFoundErrorResponseContent,
   ): OperationResponse<404, NotFoundErrorResponseContent> => ({
     statusCode: 404,
     body,
@@ -45,7 +45,7 @@ export class ApiResponse {
    * A response which indicates the caller is not authorised to perform the operation or access the resource
    */
   public static notAuthorized = (
-    body: NotAuthorizedErrorResponseContent
+    body: NotAuthorizedErrorResponseContent,
   ): OperationResponse<403, NotFoundErrorResponseContent> => ({
     statusCode: 403,
     body,
@@ -55,7 +55,7 @@ export class ApiResponse {
    * A response to indicate a server error
    */
   public static internalFailure = (
-    body: ServerErrorResponseContent
+    body: ServerErrorResponseContent,
   ): OperationResponse<500, ServerErrorResponseContent> => ({
     statusCode: 500,
     body,
@@ -65,7 +65,7 @@ export class ApiResponse {
    * A response to indicate a temporary server error, for example failure to acquire a lock
    */
   public static temporaryFailure = (
-    body: ServerTemporaryErrorResponseContent
+    body: ServerTemporaryErrorResponseContent,
   ): OperationResponse<503, ServerTemporaryErrorResponseContent> => ({
     statusCode: 503,
     body,

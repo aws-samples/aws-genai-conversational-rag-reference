@@ -5,16 +5,14 @@ import {
   ListStateMachinesCommand,
   ListTagsForResourceCommand,
   StartExecutionCommand,
-} from "@aws-sdk/client-sfn";
-import { fromIni } from "@aws-sdk/credential-providers";
-import { containsAppComponentTag } from "./util";
-import { GalileoComponentTags } from "../../internals";
-import { CredentialsParams, NameArnTuple, Tag } from "../types";
+} from '@aws-sdk/client-sfn';
+import { fromIni } from '@aws-sdk/credential-providers';
+import { containsAppComponentTag } from './util';
+import { GalileoComponentTags } from '../../internals';
+import { CredentialsParams, NameArnTuple, Tag } from '../types';
 
 export namespace stepfunctions {
-  export const listStateMachines = async (
-    credentials: CredentialsParams
-  ): Promise<NameArnTuple[]> => {
+  export const listStateMachines = async (credentials: CredentialsParams): Promise<NameArnTuple[]> => {
     const client = new SFNClient({
       credentials: fromIni({
         profile: credentials.profile,
@@ -29,14 +27,13 @@ export namespace stepfunctions {
       const tagsResp = await client.send(
         new ListTagsForResourceCommand({
           resourceArn: sm.stateMachineArn,
-        })
+        }),
       );
 
       if (
         containsAppComponentTag(
-          tagsResp.tags?.map((t) => <Tag>{ key: t.key!, value: t.value! }) ??
-            [],
-          GalileoComponentTags.CORPUS_INDEXING_STATEMACHINE
+          tagsResp.tags?.map((t) => <Tag>{ key: t.key!, value: t.value! }) ?? [],
+          GalileoComponentTags.CORPUS_INDEXING_STATEMACHINE,
         )
       ) {
         sfns.push({ name: sm.name!, arn: sm.stateMachineArn! });
@@ -45,10 +42,7 @@ export namespace stepfunctions {
     return sfns;
   };
 
-  export const triggerWorkflow = async (
-    credentials: CredentialsParams,
-    arn: string
-  ) => {
+  export const triggerWorkflow = async (credentials: CredentialsParams, arn: string) => {
     const client = new SFNClient({
       credentials: fromIni({
         profile: credentials.profile,
@@ -59,7 +53,7 @@ export namespace stepfunctions {
     const result = await client.send(
       new StartExecutionCommand({
         stateMachineArn: arn,
-      })
+      }),
     );
 
     return result.executionArn;

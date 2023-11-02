@@ -7,8 +7,10 @@ import { BaseLLMProps } from '../../framework';
 import { SageMakerLLM } from '../../framework/sagemaker';
 
 export const LLAMA2_13B_SAGEMAKER_PACKAGE_ARN = {
-  'ap-southeast-1': 'arn:aws:sagemaker:ap-southeast-1:192199979996:model-package/llama2-13b-v4-c4de6690de6132cb962827bec6ef6811',
-  'ap-southeast-2': 'arn:aws:sagemaker:ap-southeast-2:666831318237:model-package/llama2-13b-v4-c4de6690de6132cb962827bec6ef6811',
+  'ap-southeast-1':
+    'arn:aws:sagemaker:ap-southeast-1:192199979996:model-package/llama2-13b-v4-c4de6690de6132cb962827bec6ef6811',
+  'ap-southeast-2':
+    'arn:aws:sagemaker:ap-southeast-2:666831318237:model-package/llama2-13b-v4-c4de6690de6132cb962827bec6ef6811',
   'eu-west-1': 'arn:aws:sagemaker:eu-west-1:985815980388:model-package/llama2-13b-v4-c4de6690de6132cb962827bec6ef6811',
   'us-east-1': 'arn:aws:sagemaker:us-east-1:865070037744:model-package/llama2-13b-v4-c4de6690de6132cb962827bec6ef6811',
   'us-east-2': 'arn:aws:sagemaker:us-east-2:057799348421:model-package/llama2-13b-v4-c4de6690de6132cb962827bec6ef6811',
@@ -18,7 +20,7 @@ export const LLAMA2_13B_SAGEMAKER_PACKAGE_ARN = {
 export function resolveLlama2Base13BPackageArn(scope: IConstruct): string {
   return new CfnMapping(scope, 'Llama2Base13BPackageMapping', {
     lazy: true,
-    mapping: Object.fromEntries(Object.entries(LLAMA2_13B_SAGEMAKER_PACKAGE_ARN).map(([key, arn]) => [key, ({ arn })])),
+    mapping: Object.fromEntries(Object.entries(LLAMA2_13B_SAGEMAKER_PACKAGE_ARN).map(([key, arn]) => [key, { arn }])),
   }).findInMap(Stack.of(scope).region, 'arn');
 }
 

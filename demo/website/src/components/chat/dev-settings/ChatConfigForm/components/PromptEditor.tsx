@@ -5,25 +5,15 @@ import {
   ChatCondenseQuestionPromptTemplateInputValues,
   ChatQuestionAnswerPromptTemplate,
   ChatQuestionAnswerPromptTemplateInputValues,
-} from "@aws/galileo-sdk/lib/prompt/templates/chat";
-import {
-  Box,
-  Button,
-  Header,
-  Popover,
-  SpaceBetween,
-  Table,
-  Toggle,
-} from "@cloudscape-design/components";
-import Grid from "@cloudscape-design/components/grid";
-import { Ace } from "ace-builds";
-import { isEmpty } from "lodash";
-import { useState, useEffect, FC, useRef, useCallback } from "react";
-import CodeEditor, { AceEditor } from "../../../../code-editor";
+} from '@aws/galileo-sdk/lib/prompt/templates/chat';
+import { Box, Button, Header, Popover, SpaceBetween, Table, Toggle } from '@cloudscape-design/components';
+import Grid from '@cloudscape-design/components/grid';
+import { Ace } from 'ace-builds';
+import { isEmpty } from 'lodash';
+import { useState, useEffect, FC, useRef, useCallback } from 'react';
+import CodeEditor, { AceEditor } from '../../../../code-editor';
 
-type PromptTemplateClasses =
-  | typeof ChatCondenseQuestionPromptTemplate
-  | typeof ChatQuestionAnswerPromptTemplate;
+type PromptTemplateClasses = typeof ChatCondenseQuestionPromptTemplate | typeof ChatQuestionAnswerPromptTemplate;
 
 export type PromptEditorInputValues = { [key: string]: any };
 
@@ -34,7 +24,7 @@ export interface PromptEditorProps<
     | ChatCondenseQuestionPromptTemplateInputValues
     | ChatQuestionAnswerPromptTemplateInputValues = PTC extends typeof ChatCondenseQuestionPromptTemplate
     ? ChatCondenseQuestionPromptTemplateInputValues
-    : ChatQuestionAnswerPromptTemplateInputValues
+    : ChatQuestionAnswerPromptTemplateInputValues,
 > {
   readonly value?: string | T;
   readonly promptCls: PTC;
@@ -44,19 +34,15 @@ export interface PromptEditorProps<
 }
 
 function interpPropValueToCode(value: any): string {
-  if (value == null || isEmpty(value)) return "";
-  if (typeof value === "string") return value;
-  return value.template || "";
+  if (value == null || isEmpty(value)) return '';
+  if (typeof value === 'string') return value;
+  return value.template || '';
 }
 
 export const PromptEditor: FC<PromptEditorProps> = (props) => {
-  const [value, setValue] = useState<string>(() =>
-    interpPropValueToCode(props.value)
-  );
+  const [value, setValue] = useState<string>(() => interpPropValueToCode(props.value));
   const defaultTemplateRef = useRef<string>();
-  const [inputValues, setInputValues] = useState<
-    (typeof props)["defaultInputValues"]
-  >(props.defaultInputValues || {});
+  const [inputValues, setInputValues] = useState<(typeof props)['defaultInputValues']>(props.defaultInputValues || {});
   const [completions, setCompletions] = useState<Ace.Completion[]>();
   const [showConfig, setShowConfig] = useState<boolean>(false);
   const editorRef = useRef<InstanceType<AceEditor> | null>(null);
@@ -64,8 +50,8 @@ export const PromptEditor: FC<PromptEditorProps> = (props) => {
 
   useEffect(() => {
     if (editorRef.current) {
-      editorRef.current.setOption("enableBasicAutocompletion", true);
-      editorRef.current.setOption("enableLiveAutocompletion", true);
+      editorRef.current.setOption('enableBasicAutocompletion', true);
+      editorRef.current.setOption('enableLiveAutocompletion', true);
     }
   }, [editorRef.current]);
 
@@ -84,12 +70,7 @@ export const PromptEditor: FC<PromptEditorProps> = (props) => {
 
     if (prompt.templatePartials != null && !isEmpty(prompt.templatePartials)) {
       setPartials(
-        Object.fromEntries(
-          Object.entries(prompt.templatePartials).map(([_key, _value]) => [
-            _key,
-            String(_value),
-          ])
-        )
+        Object.fromEntries(Object.entries(prompt.templatePartials).map(([_key, _value]) => [_key, String(_value)])),
       );
     } else {
       setPartials(undefined);
@@ -99,22 +80,20 @@ export const PromptEditor: FC<PromptEditorProps> = (props) => {
   // Update editor auto completion based on template partials
   useEffect(() => {
     if (partials && !isEmpty(partials)) {
-      const _completions = Object.entries(partials).flatMap(
-        ([_key, _value]): Ace.Completion[] => {
-          return [
-            {
-              meta: "Prompt:Partial",
-              caption: `{{>${_key}}}`,
-              value: `{{>${_key}}}`,
-            },
-            {
-              meta: "Prompt:Partial:Content",
-              caption: `{{>${_key}}}...`,
-              value: String(_value),
-            },
-          ];
-        }
-      );
+      const _completions = Object.entries(partials).flatMap(([_key, _value]): Ace.Completion[] => {
+        return [
+          {
+            meta: 'Prompt:Partial',
+            caption: `{{>${_key}}}`,
+            value: `{{>${_key}}}`,
+          },
+          {
+            meta: 'Prompt:Partial:Content',
+            caption: `{{>${_key}}}...`,
+            value: String(_value),
+          },
+        ];
+      });
       setCompletions(_completions);
     } else {
       setCompletions(undefined);
@@ -143,11 +122,11 @@ export const PromptEditor: FC<PromptEditorProps> = (props) => {
         props.onChange(_value);
       }
     },
-    [props.onChange]
+    [props.onChange],
   );
 
   // preview rendering
-  const [preview, setPreview] = useState<string>("Loading...");
+  const [preview, setPreview] = useState<string>('Loading...');
   useEffect(() => {
     (async () => {
       try {
@@ -188,10 +167,7 @@ export const PromptEditor: FC<PromptEditorProps> = (props) => {
         <SpaceBetween direction="horizontal" size="s">
           <Guide templatePartials={partials} inputValues={inputValues} />
 
-          <Toggle
-            checked={showConfig}
-            onChange={({ detail }) => setShowConfig(detail.checked)}
-          >
+          <Toggle checked={showConfig} onChange={({ detail }) => setShowConfig(detail.checked)}>
             Edit preview data
           </Toggle>
         </SpaceBetween>
@@ -200,8 +176,8 @@ export const PromptEditor: FC<PromptEditorProps> = (props) => {
       <Box>
         <div
           style={{
-            whiteSpace: "pre-wrap",
-            backgroundColor: "#efefef",
+            whiteSpace: 'pre-wrap',
+            backgroundColor: '#efefef',
             padding: 5,
           }}
         >
@@ -226,23 +202,20 @@ const Guide: FC<{
         size="large"
         triggerType="text"
         content={
-          <div style={{ overflow: "scroll", height: 300, zIndex: 99999999 }}>
+          <div style={{ overflow: 'scroll', height: 300, zIndex: 99999999 }}>
             <Box>
               <Table
                 variant="borderless"
                 wrapLines
                 stickyHeader
                 header={
-                  <Header
-                    headingTagOverride="h5"
-                    description="Predefined handlebars template partials: {{>Name}}"
-                  >
+                  <Header headingTagOverride="h5" description="Predefined handlebars template partials: {{>Name}}">
                     Template Partials
                   </Header>
                 }
                 columnDefinitions={[
-                  { header: "Name", cell: (item) => item[0], width: 150 },
-                  { header: "Value", cell: (item) => <code>{item[1]}</code> },
+                  { header: 'Name', cell: (item) => item[0], width: 150 },
+                  { header: 'Value', cell: (item) => <code>{item[1]}</code> },
                 ]}
                 items={Object.entries(templatePartials || {})}
               />

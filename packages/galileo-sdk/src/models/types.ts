@@ -11,7 +11,7 @@ export enum ModelFramework {
   BEDROCK = 'Bedrock',
 }
 
-export type ModelFrameworks = `${ModelFramework}`
+export type ModelFrameworks = `${ModelFramework}`;
 
 export interface ISageMakerEndpointModelFramework {
   readonly type: ModelFramework.SAGEMAKER_ENDPOINT;
@@ -72,7 +72,9 @@ export interface IModelInfo {
   readonly adapter?: IModelAdapter;
 }
 
-export function isSageMakerEndpointFramework(framework?: IModelFramework): framework is ISageMakerEndpointModelFramework {
+export function isSageMakerEndpointFramework(
+  framework?: IModelFramework,
+): framework is ISageMakerEndpointModelFramework {
   return framework?.type === ModelFramework.SAGEMAKER_ENDPOINT;
 }
 

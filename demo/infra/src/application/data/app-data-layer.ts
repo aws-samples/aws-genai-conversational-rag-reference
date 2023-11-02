@@ -1,17 +1,14 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import {
-  isDevStage,
-  stageAwareRemovalPolicy,
-} from "@aws/galileo-cdk/lib/common";
-import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
-import { Construct } from "constructs";
+import { isDevStage, stageAwareRemovalPolicy } from '@aws/galileo-cdk/lib/common';
+import { AttributeType, BillingMode, Table } from 'aws-cdk-lib/aws-dynamodb';
+import { Construct } from 'constructs';
 
 export interface AppDataLayerProps {}
 
 export class AppDataLayer extends Construct {
   readonly datastore: Table;
-  readonly gsiIndexName = "GSI1";
+  readonly gsiIndexName = 'GSI1';
 
   constructor(scope: Construct, id: string, _props?: AppDataLayerProps) {
     super(scope, id);
@@ -19,13 +16,13 @@ export class AppDataLayer extends Construct {
     const dev = isDevStage(this);
 
     // Create the datastore for the CRUD operations
-    this.datastore = new Table(this, "Datastore", {
+    this.datastore = new Table(this, 'Datastore', {
       partitionKey: {
-        name: "PK",
+        name: 'PK',
         type: AttributeType.STRING,
       },
       sortKey: {
-        name: "SK",
+        name: 'SK',
         type: AttributeType.STRING,
       },
       billingMode: BillingMode.PAY_PER_REQUEST,
@@ -36,11 +33,11 @@ export class AppDataLayer extends Construct {
     this.datastore.addGlobalSecondaryIndex({
       indexName: this.gsiIndexName,
       partitionKey: {
-        name: "GSI1PK",
+        name: 'GSI1PK',
         type: AttributeType.STRING,
       },
       sortKey: {
-        name: "GSI1SK",
+        name: 'GSI1SK',
         type: AttributeType.STRING,
       },
     });

@@ -5,7 +5,15 @@ import type {} from '@types/jest';
 import { logger } from '@aws/galileo-sdk/lib/common';
 import { normalizePostgresTableName } from '@aws/galileo-sdk/lib/vectorstores/pgvector/utils';
 import { HeadObjectCommand, HeadObjectCommandOutput, S3Client } from '@aws-sdk/client-s3';
-import { BatchGetCommand, BatchGetCommandOutput, BatchWriteCommand, DynamoDBDocumentClient, GetCommand, GetCommandOutput, PutCommand } from '@aws-sdk/lib-dynamodb';
+import {
+  BatchGetCommand,
+  BatchGetCommandOutput,
+  BatchWriteCommand,
+  DynamoDBDocumentClient,
+  GetCommand,
+  GetCommandOutput,
+  PutCommand,
+} from '@aws-sdk/lib-dynamodb';
 import { mockClient } from 'aws-sdk-client-mock';
 import { FakeEmbeddings } from 'langchain/embeddings/fake';
 import { MemoryVectorStore } from 'langchain/vectorstores/memory';
@@ -34,7 +42,6 @@ jest.mock('../src/vectorstore', () => ({
 }));
 
 const inputFiles = Object.fromEntries([...Array(100).keys()].map((_, i) => [`file-${i}.txt`, `Content #${i}`]));
-
 
 describe('indexing', () => {
   beforeAll(() => {
@@ -90,7 +97,7 @@ describe('indexing', () => {
 
     s3Mock.on(HeadObjectCommand).resolves({
       $metadata: {},
-      LastModified: new Date(Date.now() - (720 * 1000)),
+      LastModified: new Date(Date.now() - 720 * 1000),
       Metadata: {
         a: 'a',
         b: 'b',
@@ -130,7 +137,7 @@ describe('indexing', () => {
     s3Mock.reset();
 
     const currentDate = new Date();
-    const lastIndexed = new Date(Date.now() - (720 * 1000));
+    const lastIndexed = new Date(Date.now() - 720 * 1000);
 
     const _s3Head = s3Mock.on(HeadObjectCommand);
     Object.keys(inputFiles).forEach((_, i) => {

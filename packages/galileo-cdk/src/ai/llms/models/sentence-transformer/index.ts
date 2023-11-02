@@ -7,8 +7,7 @@ import { BaseLLMProps } from '../../framework/base';
 import { HuggingFaceModel } from '../../framework/huggingface/base';
 import { HFModelTar } from '../../framework/huggingface/model-tar';
 
-export interface HuggingFaceSentenceTransformerProps
-  extends Omit<BaseLLMProps, 'modelId'> {
+export interface HuggingFaceSentenceTransformerProps extends Omit<BaseLLMProps, 'modelId'> {
   readonly modelTarBucket: Bucket;
   readonly modelTarBucketKeyPrefix?: string;
   /**
@@ -19,11 +18,7 @@ export interface HuggingFaceSentenceTransformerProps
 }
 
 export class HuggingFaceSentenceTransformer extends HuggingFaceModel {
-  constructor(
-    scope: Construct,
-    id: string,
-    props: HuggingFaceSentenceTransformerProps,
-  ) {
+  constructor(scope: Construct, id: string, props: HuggingFaceSentenceTransformerProps) {
     const { hfModelId } = props;
 
     let hfRepoId = hfModelId;

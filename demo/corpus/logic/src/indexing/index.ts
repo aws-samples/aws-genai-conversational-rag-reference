@@ -61,7 +61,7 @@ export const processDocumentsInParallel = async (entitiesToIndex: IndexEntity[])
   const reporter: WorkerReporter = {
     onEntitiesIndexed(count) {
       completed += count;
-      const percentComplete = Math.round(completed / total * 100);
+      const percentComplete = Math.round((completed / total) * 100);
       logger.info(`[Progress] ${percentComplete}% (${formatNumber(completed)} / ${formatNumber(total)}`);
     },
   };

@@ -1,18 +1,13 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 
-export * from "./errors";
+export * from './errors';
 
-import execa from "execa";
+import execa from 'execa';
 
 export type ExecaTask = Parameters<typeof execa.commandSync>;
 export type ExecaCommandReturn = ReturnType<typeof execa.commandSync>;
-export type CdkContextValue =
-  | string
-  | string[]
-  | number
-  | boolean
-  | { [key: string]: CdkContextValue };
+export type CdkContextValue = string | string[] | number | boolean | { [key: string]: CdkContextValue };
 
 export interface CredentialsParams {
   readonly profile: string;

@@ -1,15 +1,19 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import { BASE_CHAT_PARTIALS, ChatTemplatePartials } from './base.js';
-import { HandlebarsPromptTemplate, HandlebarsPromptTemplateRuntime, ScopedHandlebarsPromptTemplateInput } from '../../handlebars.js';
+import {
+  HandlebarsPromptTemplate,
+  HandlebarsPromptTemplateRuntime,
+  ScopedHandlebarsPromptTemplateInput,
+} from '../../handlebars.js';
 
 export const CHAT_QUESTION_ANSWER_PARTIALS: ChatTemplatePartials = {
   ...BASE_CHAT_PARTIALS,
   Context: '{{>Corpus}}',
-  Instruction: 'You are a research assistant in the "{{domain}}" domain. Based on the following rules and provided corpus {{~>DelimitedBy}}, answer the question. {{>CR}}Rules:{{>LF}}{{>Rules}}',
+  Instruction:
+    'You are a research assistant in the "{{domain}}" domain. Based on the following rules and provided corpus {{~>DelimitedBy}}, answer the question. {{>CR}}Rules:{{>LF}}{{>Rules}}',
   Cue: 'Question: {{question}}{{>LF}}Answer: ',
 } as const;
-
 
 export interface ChatQuestionAnswerPromptTemplateInputValues {
   readonly domain: string;
@@ -18,14 +22,16 @@ export interface ChatQuestionAnswerPromptTemplateInputValues {
   readonly rules?: string[];
 }
 
-export type ChatQuestionAnswerPromptTemplateInput =
-  ScopedHandlebarsPromptTemplateInput<ChatTemplatePartials, ChatQuestionAnswerPromptTemplateInputValues>;
-export type ChatQuestionAnswerPromptRuntime =
-  HandlebarsPromptTemplateRuntime<ChatQuestionAnswerPromptTemplateInput>;
+export type ChatQuestionAnswerPromptTemplateInput = ScopedHandlebarsPromptTemplateInput<
+  ChatTemplatePartials,
+  ChatQuestionAnswerPromptTemplateInputValues
+>;
+export type ChatQuestionAnswerPromptRuntime = HandlebarsPromptTemplateRuntime<ChatQuestionAnswerPromptTemplateInput>;
 
-export class ChatQuestionAnswerPromptTemplate extends
-  HandlebarsPromptTemplate<ChatTemplatePartials, ChatQuestionAnswerPromptTemplateInputValues> {
-
+export class ChatQuestionAnswerPromptTemplate extends HandlebarsPromptTemplate<
+  ChatTemplatePartials,
+  ChatQuestionAnswerPromptTemplateInputValues
+> {
   static async deserialize(data: any) {
     return new ChatQuestionAnswerPromptTemplate(data);
   }

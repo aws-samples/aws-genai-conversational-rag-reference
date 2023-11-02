@@ -8,20 +8,20 @@ import {
   isBedrockFramework,
   IModelFramework,
   ModelFramework,
-} from "@aws/galileo-sdk/lib/models/types";
-import { Container, Header, Link } from "@cloudscape-design/components";
-import FormField from "@cloudscape-design/components/form-field";
-import Input from "@cloudscape-design/components/input";
-import SegmentedControl from "@cloudscape-design/components/segmented-control";
-import SpaceBetween from "@cloudscape-design/components/space-between";
-import { WritableDraft } from "immer/dist/internal";
-import { get, has, isEmpty, merge, set } from "lodash";
-import { FC, useEffect } from "react";
-import { Updater } from "use-immer";
-import { FormFieldSet } from "./FormFieldSet";
-import { ModelSelector } from "./ModelSelector";
-import { useFoundationModelInventory } from "../../../../../hooks/llm-inventory";
-import { DeepPartial } from "../../../../../types/utils";
+} from '@aws/galileo-sdk/lib/models/types';
+import { Container, Header, Link } from '@cloudscape-design/components';
+import FormField from '@cloudscape-design/components/form-field';
+import Input from '@cloudscape-design/components/input';
+import SegmentedControl from '@cloudscape-design/components/segmented-control';
+import SpaceBetween from '@cloudscape-design/components/space-between';
+import { WritableDraft } from 'immer/dist/internal';
+import { get, has, isEmpty, merge, set } from 'lodash';
+import { FC, useEffect } from 'react';
+import { Updater } from 'use-immer';
+import { FormFieldSet } from './FormFieldSet';
+import { ModelSelector } from './ModelSelector';
+import { useFoundationModelInventory } from '../../../../../hooks/llm-inventory';
+import { DeepPartial } from '../../../../../types/utils';
 
 export interface ICustomModel extends DeepPartial<IModelInfo> {
   isCustom: true;
@@ -33,10 +33,7 @@ export type CustomModelEditorProps = {
   updateValue: Updater<ICustomModel>;
 };
 
-export const CustomModelEditor: FC<CustomModelEditorProps> = ({
-  value,
-  updateValue,
-}: CustomModelEditorProps) => {
+export const CustomModelEditor: FC<CustomModelEditorProps> = ({ value, updateValue }: CustomModelEditorProps) => {
   const inventory = useFoundationModelInventory();
 
   // pre-populate fields with predefined model
@@ -83,13 +80,10 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = ({
 
         <FormField label="Framework" stretch>
           <SegmentedControl
-            selectedId={
-              value.framework?.type || ModelFramework.SAGEMAKER_ENDPOINT
-            }
+            selectedId={value.framework?.type || ModelFramework.SAGEMAKER_ENDPOINT}
             onChange={({ detail }) =>
               updateValue((x) => {
-                const _framework = (x.framework ??
-                  {}) as WritableDraft<IModelFramework>;
+                const _framework = (x.framework ?? {}) as WritableDraft<IModelFramework>;
                 _framework.type = detail.selectedId as any;
               })
             }
@@ -102,17 +96,13 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = ({
         </FormField>
 
         {isSageMakerEndpointFramework(value.framework as any) && (
-          <FormFieldSet
-            label="SageMaker"
-            description="Settings specific to Amazon SageMaker model integration"
-          >
+          <FormFieldSet label="SageMaker" description="Settings specific to Amazon SageMaker model integration">
             <FormField label="SageMaker Endpoint Name" stretch>
               <Input
-                value={get(value.framework, "endpointName", "")}
+                value={get(value.framework, 'endpointName', '')}
                 onChange={({ detail }) => {
                   updateValue((x) => {
-                    const _framework = (x.framework ??
-                      {}) as WritableDraft<ISageMakerEndpointModelFramework>;
+                    const _framework = (x.framework ?? {}) as WritableDraft<ISageMakerEndpointModelFramework>;
                     _framework.endpointName = detail.value;
                   });
                 }}
@@ -120,11 +110,10 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = ({
             </FormField>
             <FormField label="SageMaker Endpoint Region" stretch>
               <Input
-                value={get(value.framework, "endpointRegion", "")}
+                value={get(value.framework, 'endpointRegion', '')}
                 onChange={({ detail }) => {
                   updateValue((x) => {
-                    const _framework = (x.framework ??
-                      {}) as WritableDraft<ISageMakerEndpointModelFramework>;
+                    const _framework = (x.framework ?? {}) as WritableDraft<ISageMakerEndpointModelFramework>;
                     _framework.endpointRegion = detail.value;
                   });
                 }}
@@ -134,17 +123,13 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = ({
         )}
 
         {isBedrockFramework(value.framework as any) && (
-          <FormFieldSet
-            label="Bedrock"
-            description="Settings specific to Amazon Bedrock model integration"
-          >
+          <FormFieldSet label="Bedrock" description="Settings specific to Amazon Bedrock model integration">
             <FormField label="Bedrock Model" stretch>
               <Input
-                value={get(value.framework, "modelId", "")}
+                value={get(value.framework, 'modelId', '')}
                 onChange={({ detail }) => {
                   updateValue((x) => {
-                    const _framework = (x.framework ??
-                      {}) as WritableDraft<IBedrockFramework>;
+                    const _framework = (x.framework ?? {}) as WritableDraft<IBedrockFramework>;
                     _framework.modelId = detail.value;
                   });
                 }}
@@ -152,27 +137,21 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = ({
             </FormField>
             <FormField label="Bedrock Region" stretch>
               <Input
-                value={get(value.framework, "region", "")}
+                value={get(value.framework, 'region', '')}
                 onChange={({ detail }) => {
                   updateValue((x) => {
-                    const _framework = (x.framework ??
-                      {}) as WritableDraft<IBedrockFramework>;
+                    const _framework = (x.framework ?? {}) as WritableDraft<IBedrockFramework>;
                     _framework.region = detail.value;
                   });
                 }}
               />
             </FormField>
-            <FormField
-              label="Bedrock Endpoint Url"
-              stretch
-              constraintText="Only the domain, do not include https://"
-            >
+            <FormField label="Bedrock Endpoint Url" stretch constraintText="Only the domain, do not include https://">
               <Input
-                value={get(value.framework, "endpointUrl", "")}
+                value={get(value.framework, 'endpointUrl', '')}
                 onChange={({ detail }) => {
                   updateValue((x) => {
-                    const _framework = (x.framework ??
-                      {}) as WritableDraft<IBedrockFramework>;
+                    const _framework = (x.framework ?? {}) as WritableDraft<IBedrockFramework>;
                     if (isEmpty(detail.value)) {
                       _framework.endpointUrl = undefined;
                     } else {
@@ -185,17 +164,10 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = ({
           </FormFieldSet>
         )}
 
-        <FormFieldSet
-          label="Cross-Account"
-          description="Settings to support cross-account models"
-        >
-          <FormField
-            label="Assume Role"
-            description="Role Arn to assume for cross-account development"
-            stretch
-          >
+        <FormFieldSet label="Cross-Account" description="Settings to support cross-account models">
+          <FormField label="Assume Role" description="Role Arn to assume for cross-account development" stretch>
             <Input
-              value={value.framework?.role || ""}
+              value={value.framework?.role || ''}
               onChange={({ detail }) => {
                 updateValue((x) => {
                   if (isEmpty(detail.value)) {
@@ -211,30 +183,19 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = ({
 
         {/* Model and Endpoint Kwargs are configurable in main form, so would be redundant here for development */}
 
-        <FormFieldSet
-          label="Constraints"
-          description="Specify the token constraints for this particular model"
-        >
+        <FormFieldSet label="Constraints" description="Specify the token constraints for this particular model">
           <FormField label="Constraint: Max Input Length" stretch>
             <Input
               type="number"
-              value={String(value.constraints?.maxInputLength || "")}
+              value={String(value.constraints?.maxInputLength || '')}
               onChange={({ detail }) => {
                 updateValue((x) => {
                   if (isEmpty(detail.value)) {
-                    if (has<ICustomModel>(x, "constraints.maxInputLength")) {
-                      set<ICustomModel>(
-                        x,
-                        "constraints.maxInputLength",
-                        undefined
-                      );
+                    if (has<ICustomModel>(x, 'constraints.maxInputLength')) {
+                      set<ICustomModel>(x, 'constraints.maxInputLength', undefined);
                     }
                   } else {
-                    set<ICustomModel>(
-                      x,
-                      "constraints.maxInputLength",
-                      parseInt(detail.value)
-                    );
+                    set<ICustomModel>(x, 'constraints.maxInputLength', parseInt(detail.value));
                   }
                 });
               }}
@@ -244,23 +205,15 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = ({
           <FormField label="Constraint: Max Total Tokens" stretch>
             <Input
               type="number"
-              value={String(value.constraints?.maxTotalTokens || "")}
+              value={String(value.constraints?.maxTotalTokens || '')}
               onChange={({ detail }) => {
                 updateValue((x) => {
                   if (isEmpty(detail.value)) {
-                    if (has<ICustomModel>(x, "constraints.maxTotalTokens")) {
-                      set<ICustomModel>(
-                        x,
-                        "constraints.maxTotalTokens",
-                        undefined
-                      );
+                    if (has<ICustomModel>(x, 'constraints.maxTotalTokens')) {
+                      set<ICustomModel>(x, 'constraints.maxTotalTokens', undefined);
                     }
                   } else {
-                    set<ICustomModel>(
-                      x,
-                      "constraints.maxTotalTokens",
-                      parseInt(detail.value)
-                    );
+                    set<ICustomModel>(x, 'constraints.maxTotalTokens', parseInt(detail.value));
                   }
                 });
               }}
@@ -287,28 +240,15 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = ({
             constraintText="Default to `text_inputs`"
           >
             <Input
-              value={value.adapter?.contentHandler?.input?.promptKey || ""}
+              value={value.adapter?.contentHandler?.input?.promptKey || ''}
               onChange={({ detail }) => {
                 updateValue((x) => {
                   if (isEmpty(detail.value)) {
-                    if (
-                      has<ICustomModel>(
-                        x,
-                        "adapter.contentHandler.input.promptKey"
-                      )
-                    ) {
-                      set<ICustomModel>(
-                        x,
-                        "adapter.contentHandler.input.promptKey",
-                        undefined
-                      );
+                    if (has<ICustomModel>(x, 'adapter.contentHandler.input.promptKey')) {
+                      set<ICustomModel>(x, 'adapter.contentHandler.input.promptKey', undefined);
                     }
                   } else {
-                    set<ICustomModel>(
-                      x,
-                      "adapter.contentHandler.input.promptKey",
-                      detail.value
-                    );
+                    set<ICustomModel>(x, 'adapter.contentHandler.input.promptKey', detail.value);
                   }
                 });
               }}
@@ -321,28 +261,15 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = ({
             constraintText="Defaults to spreading the model kwargs on input root."
           >
             <Input
-              value={value.adapter?.contentHandler?.input?.modelKwargsKey || ""}
+              value={value.adapter?.contentHandler?.input?.modelKwargsKey || ''}
               onChange={({ detail }) => {
                 updateValue((x) => {
                   if (isEmpty(detail.value)) {
-                    if (
-                      has<ICustomModel>(
-                        x,
-                        "adapter.contentHandler.input.modelKwargsKey"
-                      )
-                    ) {
-                      set<ICustomModel>(
-                        x,
-                        "adapter.contentHandler.input.modelKwargsKey",
-                        undefined
-                      );
+                    if (has<ICustomModel>(x, 'adapter.contentHandler.input.modelKwargsKey')) {
+                      set<ICustomModel>(x, 'adapter.contentHandler.input.modelKwargsKey', undefined);
                     }
                   } else {
-                    set<ICustomModel>(
-                      x,
-                      "adapter.contentHandler.input.modelKwargsKey",
-                      detail.value
-                    );
+                    set<ICustomModel>(x, 'adapter.contentHandler.input.modelKwargsKey', detail.value);
                   }
                 });
               }}
@@ -355,28 +282,15 @@ export const CustomModelEditor: FC<CustomModelEditorProps> = ({
             constraintText="Defaults to `[0].generated_text`"
           >
             <Input
-              value={value.adapter?.contentHandler?.output?.jsonpath || ""}
+              value={value.adapter?.contentHandler?.output?.jsonpath || ''}
               onChange={({ detail }) => {
                 updateValue((x) => {
                   if (isEmpty(detail.value)) {
-                    if (
-                      has<ICustomModel>(
-                        x,
-                        "adapter.contentHandler.output.jsonpath"
-                      )
-                    ) {
-                      set<ICustomModel>(
-                        x,
-                        "adapter.contentHandler.output.jsonpath",
-                        undefined
-                      );
+                    if (has<ICustomModel>(x, 'adapter.contentHandler.output.jsonpath')) {
+                      set<ICustomModel>(x, 'adapter.contentHandler.output.jsonpath', undefined);
                     }
                   } else {
-                    set<ICustomModel>(
-                      x,
-                      "adapter.contentHandler.output.jsonpath",
-                      detail.value
-                    );
+                    set<ICustomModel>(x, 'adapter.contentHandler.output.jsonpath', detail.value);
                   }
                 });
               }}

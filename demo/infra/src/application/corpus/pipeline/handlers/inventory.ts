@@ -1,14 +1,10 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { getLogger } from "@aws/galileo-sdk/lib/common";
-import {
-  S3Client,
-  ListObjectsV2Command,
-  PutObjectCommand,
-} from "@aws-sdk/client-s3";
-import prettyBytes from "pretty-bytes";
+import { getLogger } from '@aws/galileo-sdk/lib/common';
+import { S3Client, ListObjectsV2Command, PutObjectCommand } from '@aws-sdk/client-s3';
+import prettyBytes from 'pretty-bytes';
 
-const logger = getLogger("inventory");
+const logger = getLogger('inventory');
 
 export interface BucketInventoryDetails {
   /** Bucket name */
@@ -55,7 +51,7 @@ export interface BucketInventoryFilter {
 export async function getBucketInventory(
   bucket: string,
   prefix?: string,
-  filter?: BucketInventoryFilter
+  filter?: BucketInventoryFilter,
 ): Promise<BucketInventory> {
   const client = new S3Client();
 
@@ -67,7 +63,7 @@ export async function getBucketInventory(
     since = new Date(since);
   }
 
-  logger.info("Get bucket inventory", { bucket, prefix, filter, since });
+  logger.info('Get bucket inventory', { bucket, prefix, filter, since });
 
   do {
     // @ts-ignore - 'NextContinuationToken' implicitly has type 'any'
@@ -76,7 +72,7 @@ export async function getBucketInventory(
         Bucket: bucket,
         Prefix: prefix,
         ContinuationToken: nextToken,
-      })
+      }),
     );
 
     nextToken = NextContinuationToken;
@@ -117,7 +113,7 @@ export async function getBucketInventory(
     size: prettyBytes(totalBytes),
   };
 
-  logger.info("Bucket Inventory successfully defined", { details });
+  logger.info('Bucket Inventory successfully defined', { details });
 
   return {
     ...details,
@@ -130,30 +126,24 @@ export type BucketInventoryManifestFile = [{ prefix: string }, ...string[]];
 
 export function convertBucketInventoryToManifest(
   inventory: BucketInventory,
-  include?: Set<string>
+  include?: Set<string>,
 ): BucketInventoryManifestFile {
-  const prefix = (inventory.prefix ?? "").replace(/^\\/, "");
+  const prefix = (inventory.prefix ?? '').replace(/^\\/, '');
 
-  const contents =
-    include == null
-      ? inventory.contents
-      : inventory.contents.filter((v) => include.has(v.Key));
+  const contents = include == null ? inventory.contents : inventory.contents.filter((v) => include.has(v.Key));
 
-  return [
-    { prefix: `s3://${inventory.bucket}/${prefix}` },
-    ...contents.map((v) => v.Key),
-  ];
+  return [{ prefix: `s3://${inventory.bucket}/${prefix}` }, ...contents.map((v) => v.Key)];
 }
 
 export async function saveBucketInventoryManifest(
   inventory: BucketInventory,
   toBucket: string,
   toKey: string,
-  include?: Set<string>
+  include?: Set<string>,
 ): Promise<string> {
   const manifest = convertBucketInventoryToManifest(inventory, include);
 
-  toKey = toKey.replace(/^\/+/, ""); // remove head slash(s)
+  toKey = toKey.replace(/^\/+/, ''); // remove head slash(s)
 
   const bodyContent = JSON.stringify(manifest, null, 2);
 
@@ -163,8 +153,8 @@ export async function saveBucketInventoryManifest(
       Bucket: toBucket,
       Key: toKey,
       Body: bodyContent,
-      ContentType: "application/json",
-    })
+      ContentType: 'application/json',
+    }),
   );
 
   return `s3://${toBucket}/${toKey}`;

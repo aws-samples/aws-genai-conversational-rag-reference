@@ -76,14 +76,10 @@ export async function indexEntities(entitiesToIndex: IndexEntity[], cache: Index
     const documentsChunk = chunkArray(allDocuments, INSERT_MAX);
     for (const documents of documentsChunk) {
       logger.info(`Inserting ${documents.length} documents into vector store`);
-      await measure('VectorStore_addDocuments')(
-        vectorStore.addDocuments(documents),
-      );
+      await measure('VectorStore_addDocuments')(vectorStore.addDocuments(documents));
     }
 
-    await measure('VectorStore_updateLastIndexed')(
-      cache.updateLastIndexed(batch.map((v) => v.sourceLocation)),
-    );
+    await measure('VectorStore_updateLastIndexed')(cache.updateLastIndexed(batch.map((v) => v.sourceLocation)));
 
     reporter.onEntitiesIndexed(batch.length);
   }

@@ -1,10 +1,10 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { CognitoAuth, useCognitoAuthContext } from "@aws-northstar/ui";
-import { User as AppUser } from "@aws-northstar/ui/components/AppLayout/components/NavHeader";
-import ErrorMessage from "@aws-northstar/ui/components/CognitoAuth/components/ErrorMessage";
-import Spinner from "@cloudscape-design/components/spinner";
-import jwt_decode from "jwt-decode";
+import { CognitoAuth, useCognitoAuthContext } from '@aws-northstar/ui';
+import { User as AppUser } from '@aws-northstar/ui/components/AppLayout/components/NavHeader';
+import ErrorMessage from '@aws-northstar/ui/components/CognitoAuth/components/ErrorMessage';
+import Spinner from '@cloudscape-design/components/spinner';
+import jwt_decode from 'jwt-decode';
 import React, {
   FC,
   PropsWithChildren,
@@ -14,8 +14,8 @@ import React, {
   useEffect,
   useMemo,
   useState,
-} from "react";
-import Config from "./config.json";
+} from 'react';
+import Config from './config.json';
 
 export interface RuntimeContext {
   readonly apiUrl: string;
@@ -36,14 +36,12 @@ export interface RuntimeContext {
 /**
  * Context for storing the runtimeContext.
  */
-export const RuntimeConfigContext = createContext<RuntimeContext | undefined>(
-  undefined
-);
+export const RuntimeConfigContext = createContext<RuntimeContext | undefined>(undefined);
 
 export const useRuntimeConfig = () => {
   const context = useContext(RuntimeConfigContext);
   if (context == null) {
-    throw new Error("RuntimeConfig context is not provided");
+    throw new Error('RuntimeConfig context is not provided');
   }
   return context;
 };
@@ -55,32 +53,23 @@ export const useRuntimeConfig = () => {
  * the runtime-config.json must have the following properties configured: [region, userPoolId, userPoolWebClientId, identityPoolId].
  */
 const Auth: React.FC<any> = ({ children }) => {
-  const [runtimeContext, setRuntimeContext] = useState<
-    RuntimeContext | undefined
-  >();
+  const [runtimeContext, setRuntimeContext] = useState<RuntimeContext | undefined>();
   const [error, setError] = useState<string | undefined>();
 
   useEffect(() => {
-    fetch("/runtime-config.json")
+    fetch('/runtime-config.json')
       .then((response) => {
         return response.json();
       })
       .then((runtimeCtx) => {
-        if (
-          runtimeCtx.region &&
-          runtimeCtx.userPoolId &&
-          runtimeCtx.userPoolWebClientId &&
-          runtimeCtx.identityPoolId
-        ) {
+        if (runtimeCtx.region && runtimeCtx.userPoolId && runtimeCtx.userPoolWebClientId && runtimeCtx.identityPoolId) {
           setRuntimeContext(runtimeCtx as RuntimeContext);
         } else {
-          setError(
-            "runtime-config.json should have region, userPoolId, userPoolWebClientId & identityPoolId."
-          );
+          setError('runtime-config.json should have region, userPoolId, userPoolWebClientId & identityPoolId.');
         }
       })
       .catch(() => {
-        setError("No runtime-config.json detected");
+        setError('No runtime-config.json detected');
       });
   }, [setRuntimeContext]);
 
@@ -123,9 +112,7 @@ const UserContext = createContext<IUserContext | undefined>(undefined);
 export const useUserContext = (): IUserContext => {
   const context = useContext(UserContext);
   if (context == null) {
-    throw new Error(
-      "UserContextProvider is not define or has not yet resolved"
-    );
+    throw new Error('UserContextProvider is not define or has not yet resolved');
   }
   return context;
 };
@@ -171,7 +158,7 @@ export const UserContextProvider: FC<PropsWithChildren> = ({ children }) => {
     const _session = await getAuthenticatedUserSession();
     const _idToken = _session?.getIdToken().getJwtToken();
     if (_idToken == null) {
-      throw new Error("Missing cognito user session");
+      throw new Error('Missing cognito user session');
     }
     if (_idToken !== idToken) {
       setIdToken(_idToken);
@@ -193,21 +180,21 @@ export const UserContextProvider: FC<PropsWithChildren> = ({ children }) => {
     }
 
     const claims: any = jwt_decode(idToken);
-    const groups = claims["cognito:groups"] || [];
-    const isAdmin = groups.includes("Administrators");
+    const groups = claims['cognito:groups'] || [];
+    const isAdmin = groups.includes('Administrators');
 
     const user: IUserContext = {
       getIdToken,
       claims,
       groups,
       isAdmin,
-      username: claims["cognito:username"],
+      username: claims['cognito:username'],
       email: claims.email,
       givenName: claims.given_name,
       familyName: claims.family_name,
     };
 
-    console.debug("CognitoAuth user details updated:", user);
+    console.debug('CognitoAuth user details updated:', user);
 
     return user;
   }, [idToken, getIdToken]);
@@ -216,9 +203,7 @@ export const UserContextProvider: FC<PropsWithChildren> = ({ children }) => {
     return <Spinner size="large" />;
   }
 
-  return (
-    <UserContext.Provider value={userContext}>{children}</UserContext.Provider>
-  );
+  return <UserContext.Provider value={userContext}>{children}</UserContext.Provider>;
 };
 
 export default Auth;

@@ -1,15 +1,15 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { GalileoNagSupression } from "@aws/galileo-cdk/lib/tooling/nag";
-import { CdkGraph, FilterPreset, Filters } from "@aws/pdk/cdk-graph";
-import { CdkGraphDiagramPlugin } from "@aws/pdk/cdk-graph-plugin-diagram";
-import { AwsPrototypingChecks, PDKNag } from "@aws/pdk/pdk-nag";
-import { Aspects } from "aws-cdk-lib";
-import { BUNDLING_STACKS } from "aws-cdk-lib/cx-api";
-import { ManualApprovalStep } from "aws-cdk-lib/pipelines";
-import { NagSuppressions } from "cdk-nag";
-import { ApplicationStage } from "./application/stage";
-import { PipelineStack } from "./cicd/pipeline-stack";
+import { GalileoNagSupression } from '@aws/galileo-cdk/lib/tooling/nag';
+import { CdkGraph, FilterPreset, Filters } from '@aws/pdk/cdk-graph';
+import { CdkGraphDiagramPlugin } from '@aws/pdk/cdk-graph-plugin-diagram';
+import { AwsPrototypingChecks, PDKNag } from '@aws/pdk/pdk-nag';
+import { Aspects } from 'aws-cdk-lib';
+import { BUNDLING_STACKS } from 'aws-cdk-lib/cx-api';
+import { ManualApprovalStep } from 'aws-cdk-lib/pipelines';
+import { NagSuppressions } from 'cdk-nag';
+import { ApplicationStage } from './application/stage';
+import { PipelineStack } from './cicd/pipeline-stack';
 
 /* eslint-disable @typescript-eslint/no-floating-promises */
 (async () => {
@@ -18,23 +18,23 @@ import { PipelineStack } from "./cicd/pipeline-stack";
   });
 
   if (process.env.SKIP_BUNDLING) {
-    console.warn("SKIPPING BUNDLING");
+    console.warn('SKIPPING BUNDLING');
     app.node.setContext(BUNDLING_STACKS, []);
   }
 
   Aspects.of(app).add(new GalileoNagSupression());
 
-  const pipelineStack = new PipelineStack(app, "PipelineStack", {
+  const pipelineStack = new PipelineStack(app, 'PipelineStack', {
     env: {
       account: process.env.CDK_DEFAULT_ACCOUNT!,
       region: process.env.CDK_DEFAULT_REGION!,
     },
   });
 
-  const stageContext = app.node.tryGetContext("stages") || {};
+  const stageContext = app.node.tryGetContext('stages') || {};
 
   // Dev Stage
-  const devStage = new ApplicationStage(app, "Dev", {
+  const devStage = new ApplicationStage(app, 'Dev', {
     env: {
       account: process.env.CDK_DEFAULT_ACCOUNT!,
       region: process.env.CDK_DEFAULT_REGION!,
@@ -47,7 +47,7 @@ import { PipelineStack } from "./cicd/pipeline-stack";
   pipelineStack.pipeline.addStage(devStage);
 
   // Staging Stage - very basic example of staged release with manual approval
-  const stagingStage = new ApplicationStage(app, "Staging", {
+  const stagingStage = new ApplicationStage(app, 'Staging', {
     env: {
       account: process.env.CDK_DEFAULT_ACCOUNT!,
       region: process.env.CDK_DEFAULT_REGION!,
@@ -55,9 +55,7 @@ import { PipelineStack } from "./cicd/pipeline-stack";
     },
     stageContext: stageContext.staging,
   });
-  pipelineStack.pipeline
-    .addStage(stagingStage)
-    .addPre(new ManualApprovalStep("Promote"));
+  pipelineStack.pipeline.addStage(stagingStage).addPre(new ManualApprovalStep('Promote'));
   // Add Integration tests here to "Staging" stage
 
   // Prod Stage... add additional stages like production here...
@@ -68,11 +66,11 @@ import { PipelineStack } from "./cicd/pipeline-stack";
     pipelineStack.pipeline,
     [
       {
-        id: "AwsPrototyping-CodeBuildProjectPrivilegedModeDisabled",
-        reason: "Privileged mode required for docker image builds",
+        id: 'AwsPrototyping-CodeBuildProjectPrivilegedModeDisabled',
+        reason: 'Privileged mode required for docker image builds',
       },
     ],
-    true
+    true,
   );
 
   // [Optional] Additional reporting and tooling provided by CdkGraph such as automatically generating diagrams
@@ -94,19 +92,19 @@ import { PipelineStack } from "./cicd/pipeline-stack";
                       if (node.isDestroyed) return;
 
                       switch (node.id) {
-                        case "CDKMetadata": {
+                        case 'CDKMetadata': {
                           node.mutateDestroy();
                           return;
                         }
-                        case "WebsiteAcl": {
+                        case 'WebsiteAcl': {
                           node.mutateDestroy();
                           return;
                         }
-                        case "WebsiteDeployment": {
+                        case 'WebsiteDeployment': {
                           node.mutateDestroy();
                           return;
                         }
-                        case "WebACLAssociation": {
+                        case 'WebACLAssociation': {
                           const _parent = node.parent!;
                           node.mutateHoist(_parent.parent!);
                           _parent.mutateDestroy();
@@ -114,22 +112,15 @@ import { PipelineStack } from "./cicd/pipeline-stack";
                         }
                       }
 
-                      if (node.constructInfoFqn === "aws-cdk-lib.CfnJson") {
+                      if (node.constructInfoFqn === 'aws-cdk-lib.CfnJson') {
                         node.mutateDestroy();
                         return;
                       }
-                      if (
-                        node.constructInfoFqn ===
-                        "aws-cdk-lib.aws_s3_deployment.BucketDeployment"
-                      ) {
+                      if (node.constructInfoFqn === 'aws-cdk-lib.aws_s3_deployment.BucketDeployment') {
                         node.mutateDestroy();
                         return;
                       }
-                      if (
-                        node.constructInfoFqn?.startsWith(
-                          "aws-cdk-lib.aws_stepfunctions."
-                        )
-                      ) {
+                      if (node.constructInfoFqn?.startsWith('aws-cdk-lib.aws_stepfunctions.')) {
                         node.mutateCollapseToParent();
                         return;
                       }

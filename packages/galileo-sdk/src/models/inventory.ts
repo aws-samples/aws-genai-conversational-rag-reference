@@ -13,7 +13,7 @@ export interface IModelInfoProvider {
   readonly modelInfo: IModelInfo;
 }
 
-export function isModelInfoProvider (value: any): value is IModelInfoProvider {
+export function isModelInfoProvider(value: any): value is IModelInfoProvider {
   return 'modelInfo' in value;
 }
 
@@ -23,7 +23,6 @@ export interface IFoundationModelInventory {
   readonly models: FoundationModelRecord;
   readonly defaultModelId: string;
 }
-
 
 export class FoundationModelInventory {
   static async inventory(): Promise<IFoundationModelInventory> {
@@ -75,5 +74,4 @@ export class FoundationModelInventory {
   }
 
   private static __INVENTORY__?: IFoundationModelInventory;
-
 }

@@ -1,27 +1,27 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { NorthStarThemeProvider } from "@aws-northstar/ui";
-import React from "react";
-import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-import App from "./App";
-import Auth from "./Auth";
-import { ApiProvider } from "./providers/ApiProvider";
-import { AppLayoutProvider } from "./providers/AppLayoutProvider";
-import ChatEngineConfigProvider from "./providers/ChatEngineConfig";
-import { FlagsProvider } from "./providers/FlagsProvider";
-import reportWebVitals from "./reportWebVitals";
-import "./styles.css";
+import { NorthStarThemeProvider } from '@aws-northstar/ui';
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import App from './App';
+import Auth from './Auth';
+import { ApiProvider } from './providers/ApiProvider';
+import { AppLayoutProvider } from './providers/AppLayoutProvider';
+import ChatEngineConfigProvider from './providers/ChatEngineConfig';
+import { FlagsProvider } from './providers/FlagsProvider';
+import reportWebVitals from './reportWebVitals';
+import './styles.css';
 
 if (process.env.REACT_APP_ENABLE_MOCKS) {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { worker } = require("./mocks/browser");
+  const { worker } = require('./mocks/browser');
   worker.start({
-    onUnhandledRequest: "bypass",
+    onUnhandledRequest: 'bypass',
   });
 }
 
-createRoot(document.getElementById("root")!).render(
+createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <NorthStarThemeProvider>
       <BrowserRouter>
@@ -38,7 +38,7 @@ createRoot(document.getElementById("root")!).render(
         </Auth>
       </BrowserRouter>
     </NorthStarThemeProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
 
 // If you want to start measuring performance in your app, pass a function

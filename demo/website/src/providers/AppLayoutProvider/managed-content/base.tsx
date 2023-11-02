@@ -1,6 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { last } from "lodash";
+import { last } from 'lodash';
 import {
   FC,
   PropsWithChildren,
@@ -11,8 +11,8 @@ import {
   useEffect,
   useMemo,
   useState,
-} from "react";
-import { useDebounce } from "usehooks-ts";
+} from 'react';
+import { useDebounce } from 'usehooks-ts';
 
 export type Content = ReactNode;
 export type ManagedAppLayoutContent = [uuid: string, content: Content];
@@ -26,11 +26,9 @@ export interface IManagedAppLayoutContentContext {
 
 export function managedContentFactory<
   Props extends PropsWithChildren,
-  TProps extends PropsWithChildren<{ uuid: string }> = Props & { uuid: string }
+  TProps extends PropsWithChildren<{ uuid: string }> = Props & { uuid: string },
 >(Component: React.ComponentType<Props>) {
-  const Context = createContext<IManagedAppLayoutContentContext | undefined>(
-    undefined
-  );
+  const Context = createContext<IManagedAppLayoutContentContext | undefined>(undefined);
 
   const Provider: FC<PropsWithChildren> = ({ children }) => {
     const [items, setItems] = useState<ManagedAppLayoutContentList>([]);
@@ -46,14 +44,14 @@ export function managedContentFactory<
           }
         });
       },
-      [setItems]
+      [setItems],
     );
 
     const removeContent = useCallback(
       (uuid: string) => {
         setItems((current) => current.filter(([_uuid]) => _uuid !== uuid));
       },
-      [setItems]
+      [setItems],
     );
 
     const active = useDebounce(last(last(items)), 50);
@@ -63,7 +61,7 @@ export function managedContentFactory<
         addContent,
         removeContent,
       }),
-      [active]
+      [active],
     );
 
     return <Context.Provider value={context}>{children}</Context.Provider>;
@@ -72,7 +70,7 @@ export function managedContentFactory<
   function useHook() {
     const context = useContext(Context);
     if (context == null) {
-      throw new Error("Must wrap in provider");
+      throw new Error('Must wrap in provider');
     }
     return context;
   }
@@ -82,7 +80,7 @@ export function managedContentFactory<
     const content = useMemo(
       // @ts-ignore
       () => <Component {...(props as unknown as Props)} />,
-      [uuid, props]
+      [uuid, props],
     );
 
     useEffect(() => {

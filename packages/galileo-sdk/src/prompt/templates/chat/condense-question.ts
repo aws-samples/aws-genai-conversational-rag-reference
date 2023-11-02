@@ -2,12 +2,17 @@
 PDX-License-Identifier: Apache-2.0 */
 import { BaseMessage } from 'langchain/schema';
 import { BASE_CHAT_PARTIALS, ChatTemplatePartials } from './base.js';
-import { HandlebarsPromptTemplate, HandlebarsPromptTemplateRuntime, ScopedHandlebarsPromptTemplateInput } from '../../handlebars.js';
+import {
+  HandlebarsPromptTemplate,
+  HandlebarsPromptTemplateRuntime,
+  ScopedHandlebarsPromptTemplateInput,
+} from '../../handlebars.js';
 
 export const CHAT_CONDENSE_QUESTION_PARTIALS: ChatTemplatePartials = {
   ...BASE_CHAT_PARTIALS,
   Context: '{{>Dialog}}',
-  Instruction: 'Given the following conversational dialog {{~>DelimitedBy}}, and the "Followup Question" below, rephrase the "Followup Question" to be a concise standalone question in its original language. Without answering the question, return only the standalone question.',
+  Instruction:
+    'Given the following conversational dialog {{~>DelimitedBy}}, and the "Followup Question" below, rephrase the "Followup Question" to be a concise standalone question in its original language. Without answering the question, return only the standalone question.',
   Cue: 'Followup Question: {{question}}{{>LF}}Standalone Question: ',
 } as const;
 
@@ -16,14 +21,17 @@ export interface ChatCondenseQuestionPromptTemplateInputValues {
   readonly question: string;
 }
 
-export type ChatCondenseQuestionPromptTemplateInput =
-  ScopedHandlebarsPromptTemplateInput<ChatTemplatePartials, ChatCondenseQuestionPromptTemplateInputValues>;
+export type ChatCondenseQuestionPromptTemplateInput = ScopedHandlebarsPromptTemplateInput<
+  ChatTemplatePartials,
+  ChatCondenseQuestionPromptTemplateInputValues
+>;
 export type ChatCondenseQuestionPromptRuntime =
   HandlebarsPromptTemplateRuntime<ChatCondenseQuestionPromptTemplateInput>;
 
-export class ChatCondenseQuestionPromptTemplate extends
-  HandlebarsPromptTemplate<ChatTemplatePartials, ChatCondenseQuestionPromptTemplateInputValues> {
-
+export class ChatCondenseQuestionPromptTemplate extends HandlebarsPromptTemplate<
+  ChatTemplatePartials,
+  ChatCondenseQuestionPromptTemplateInputValues
+> {
   static async deserialize(data: any) {
     return new ChatCondenseQuestionPromptTemplate(data);
   }

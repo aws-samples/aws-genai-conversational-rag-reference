@@ -11,21 +11,11 @@ import { IVpc } from 'aws-cdk-lib/aws-ec2';
 import { pascal } from 'case';
 import { Construct } from 'constructs';
 import { startCase } from 'lodash';
-import {
-  FoundationModelIds,
-} from './ids';
+import { FoundationModelIds } from './ids';
 import { ApplicationConfig } from '../../core/app/context/types';
-import {
-  BedrockModel,
-} from '../llms/framework/bedrock';
-import {
-  FalconLite,
-  FalconLiteInstances,
-} from '../llms/models/falcon/lite';
-import {
-  HuggingFaceFalcon,
-  HuggingFaceFalconInstances,
-} from '../llms/models/falcon/tgi';
+import { BedrockModel } from '../llms/framework/bedrock';
+import { FalconLite, FalconLiteInstances } from '../llms/models/falcon/lite';
+import { HuggingFaceFalcon, HuggingFaceFalconInstances } from '../llms/models/falcon/tgi';
 import { Llama2Base13BSageMaker } from '../llms/models/meta';
 
 export { IFoundationModelInventory };
@@ -53,9 +43,7 @@ export class PredefinedFoundationModels extends Construct implements IFoundation
 
   get modelProviders(): IModelInfoProvider[] {
     // find all models defined
-    return this.node.children.filter(
-      isModelInfoProvider,
-    ) as unknown[] as IModelInfoProvider[];
+    return this.node.children.filter(isModelInfoProvider) as unknown[] as IModelInfoProvider[];
   }
 
   get inventory(): IFoundationModelInventory {
@@ -138,18 +126,16 @@ export class PredefinedFoundationModels extends Construct implements IFoundation
     // Bedrock - not actual deployments but wire up to the inventory for integration
     //////////////////////////////////////////////////////////
     if (props.bedrock?.enabled && props.bedrock.models?.length) {
-      (props.bedrock.models).forEach(
-        (_bedrockModelId) => {
-          const _id = `Bedrock-${pascal(_bedrockModelId)}`;
-          new BedrockModel(this, _id, {
-            modelUUID: BedrockModel.formatUUID(_bedrockModelId),
-            modelId: _bedrockModelId,
-            displayName: startCase(_id),
-            region: props.bedrock?.region,
-            endpointUrl: props.bedrock?.endpointUrl,
-          });
-        },
-      );
+      props.bedrock.models.forEach((_bedrockModelId) => {
+        const _id = `Bedrock-${pascal(_bedrockModelId)}`;
+        new BedrockModel(this, _id, {
+          modelUUID: BedrockModel.formatUUID(_bedrockModelId),
+          modelId: _bedrockModelId,
+          displayName: startCase(_id),
+          region: props.bedrock?.region,
+          endpointUrl: props.bedrock?.endpointUrl,
+        });
+      });
     }
 
     // NB: add additional LLM/FoundationModels here to deploy

@@ -1,26 +1,20 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 
-import { FormField, Input } from "@cloudscape-design/components";
-import Box from "@cloudscape-design/components/box";
-import Button from "@cloudscape-design/components/button";
-import ColumnLayout from "@cloudscape-design/components/column-layout";
-import Container from "@cloudscape-design/components/container";
-import ContentLayout from "@cloudscape-design/components/content-layout";
-import Header from "@cloudscape-design/components/header";
-import Link from "@cloudscape-design/components/link";
-import SpaceBetween from "@cloudscape-design/components/space-between";
-import Textarea from "@cloudscape-design/components/textarea";
-import { ReactNode } from "react";
+import { FormField, Input } from '@cloudscape-design/components';
+import Box from '@cloudscape-design/components/box';
+import Button from '@cloudscape-design/components/button';
+import ColumnLayout from '@cloudscape-design/components/column-layout';
+import Container from '@cloudscape-design/components/container';
+import ContentLayout from '@cloudscape-design/components/content-layout';
+import Header from '@cloudscape-design/components/header';
+import Link from '@cloudscape-design/components/link';
+import SpaceBetween from '@cloudscape-design/components/space-between';
+import Textarea from '@cloudscape-design/components/textarea';
+import { ReactNode } from 'react';
 
 // import * as api from "api-typescript-react-query-hooks";
-const ValueWithLabel = ({
-  label,
-  children,
-}: {
-  label: string;
-  children?: ReactNode;
-}) => (
+const ValueWithLabel = ({ label, children }: { label: string; children?: ReactNode }) => (
   <div>
     <Box variant="awsui-key-label">{label}</Box>
     <div>{children}</div>
@@ -65,18 +59,12 @@ const Settings: React.FC = () => {
         >
           <ColumnLayout columns={2} borders="vertical">
             <SpaceBetween size="l">
-              <ValueWithLabel label="Active LLM Name">
-                Flan T5 - XXL
-              </ValueWithLabel>
+              <ValueWithLabel label="Active LLM Name">Flan T5 - XXL</ValueWithLabel>
               <ValueWithLabel label="Source Corpus Size">2G</ValueWithLabel>
             </SpaceBetween>
             <SpaceBetween size="l">
-              <ValueWithLabel label="Last Source Update">
-                12:00am - 01/06/2023
-              </ValueWithLabel>
-              <ValueWithLabel label="Last Update Duration">
-                00:23:57
-              </ValueWithLabel>
+              <ValueWithLabel label="Last Source Update">12:00am - 01/06/2023</ValueWithLabel>
+              <ValueWithLabel label="Last Update Duration">00:23:57</ValueWithLabel>
             </SpaceBetween>
           </ColumnLayout>
         </Container>
@@ -93,7 +81,7 @@ const Settings: React.FC = () => {
           }
         >
           <FormField stretch>
-            <Input value={""}></Input>
+            <Input value={''}></Input>
           </FormField>
         </Container>
         <Container

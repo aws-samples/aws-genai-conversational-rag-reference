@@ -1,32 +1,32 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { TextFile } from "projen";
-import { ReactTypeScriptProject } from "projen/lib/web";
+import { TextFile } from 'projen';
+import { ReactTypeScriptProject } from 'projen/lib/web';
 
 export const withStorybook = (project: ReactTypeScriptProject) => {
   // Add storybook dependencies
   const storybookDeps = [
-    "@storybook/addon-essentials",
-    "@storybook/addon-interactions",
-    "@storybook/addon-links",
-    "@storybook/blocks",
-    "@storybook/preset-create-react-app",
-    "@storybook/react",
-    "@storybook/react-webpack5",
-    "@storybook/testing-library",
-    "babel-plugin-named-exports-order",
-    "eslint-plugin-storybook",
-    "prop-types",
-    "storybook",
-    "webpack",
+    '@storybook/addon-essentials',
+    '@storybook/addon-interactions',
+    '@storybook/addon-links',
+    '@storybook/blocks',
+    '@storybook/preset-create-react-app',
+    '@storybook/react',
+    '@storybook/react-webpack5',
+    '@storybook/testing-library',
+    'babel-plugin-named-exports-order',
+    'eslint-plugin-storybook',
+    'prop-types',
+    'storybook',
+    'webpack',
   ];
   project.addDevDeps(...storybookDeps);
 
   // Add storybook commands
-  project.package.setScript("storybook", "storybook dev -p 6006");
+  project.package.setScript('storybook', 'storybook dev -p 6006');
 
   // Generate storybook files
-  new TextFile(project, ".storybook/main.ts", {
+  new TextFile(project, '.storybook/main.ts', {
     lines: `
     import type { StorybookConfig } from "@storybook/react-webpack5";
     const config: StorybookConfig = {
@@ -50,10 +50,10 @@ export const withStorybook = (project: ReactTypeScriptProject) => {
       staticDirs: ["../public"],
     };
     export default config;    
-  `.split("\n"),
+  `.split('\n'),
   });
 
-  new TextFile(project, ".storybook/preview.ts", {
+  new TextFile(project, '.storybook/preview.ts', {
     lines: `import type { Preview } from "@storybook/react";
 
 const preview: Preview = {
@@ -69,20 +69,20 @@ const preview: Preview = {
 };
 
 export default preview;   
-  `.split("\n"),
+  `.split('\n'),
   });
 
   // Play nicely with eslint if available
-  project.eslint?.allowDevDeps("**/*.stories.*");
-  project.eslint?.allowDevDeps("**/.storybook/**/*.*");
-  project.eslint?.addExtends("plugin:storybook/recommended");
+  project.eslint?.allowDevDeps('**/*.stories.*');
+  project.eslint?.allowDevDeps('**/.storybook/**/*.*');
+  project.eslint?.addExtends('plugin:storybook/recommended');
 
   // Failsafe if rule is overwritten
   project.eslint?.addOverride({
-    files: ["**/*.stories.*", "**/.storybook/**/*.*"],
+    files: ['**/*.stories.*', '**/.storybook/**/*.*'],
     rules: {
-      "import/no-extraneous-dependencies": "off",
+      'import/no-extraneous-dependencies': 'off',
     },
   });
-  project.eslint?.allowDevDeps("**/.storybook/**/*.*");
+  project.eslint?.allowDevDeps('**/.storybook/**/*.*');
 };

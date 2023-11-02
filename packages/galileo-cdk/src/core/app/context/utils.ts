@@ -22,10 +22,7 @@ export function resolveList(
 const TRUE_REGEX = /^(1|y(es)|t(rue)$)/i;
 const FALSE_REGEX = /^(0|n(o)|f(false)$)/i;
 
-export function resolveBoolean(
-  value?: string | boolean,
-  defaultValue: boolean = false,
-): boolean {
+export function resolveBoolean(value?: string | boolean, defaultValue: boolean = false): boolean {
   if (value == null) {
     return defaultValue;
   }
@@ -37,7 +34,10 @@ export function resolveBoolean(
   return TRUE_REGEX.test(value);
 }
 
-export function resolveBooleanOrString(value?: string | boolean, defaultValue?: string | boolean): boolean | string | undefined {
+export function resolveBooleanOrString(
+  value?: string | boolean,
+  defaultValue?: string | boolean,
+): boolean | string | undefined {
   if (value == null) return defaultValue;
   if (typeof value === 'boolean') return value;
   if (TRUE_REGEX.test(value)) return true;

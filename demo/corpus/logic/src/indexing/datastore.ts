@@ -2,10 +2,7 @@
 PDX-License-Identifier: Apache-2.0 */
 import * as path from 'node:path';
 import { getLogger } from '@aws/galileo-sdk/lib/common';
-import {
-  DynamoDBClient,
-  DynamoDBClientConfig,
-} from '@aws-sdk/client-dynamodb';
+import { DynamoDBClient, DynamoDBClientConfig } from '@aws-sdk/client-dynamodb';
 import { S3Client, S3ClientConfig, HeadObjectCommand } from '@aws-sdk/client-s3';
 import {
   BatchGetCommand,
@@ -37,7 +34,7 @@ export interface IndexEntity {
   readonly sourceLocation: string;
   readonly metadata: Record<string, any>;
   readonly lastModified: Date;
-};
+}
 
 export interface IndexingCacheProps {
   readonly bucketName: string;
@@ -66,14 +63,7 @@ export class IndexingCache {
     return this.entities.size;
   }
 
-  constructor({
-    bucketName,
-    tableName,
-    model,
-    baseLocalPath,
-    ddbClientConfig,
-    s3ClientConfig,
-  }: IndexingCacheProps) {
+  constructor({ bucketName, tableName, model, baseLocalPath, ddbClientConfig, s3ClientConfig }: IndexingCacheProps) {
     this.bucketName = bucketName;
     this.tableName = tableName;
     this.model = model;
@@ -107,7 +97,7 @@ export class IndexingCache {
   @measurable('IndexingCache-resolveEntitiesToIndex')
   async resolveEntitiesToIndex(objectKeys: string[], skipDeltaCheck: boolean = false): Promise<IndexEntity[]> {
     await this._resolveS3Metadata(objectKeys);
-    !skipDeltaCheck && await this._resolveLastIndexed(objectKeys);
+    !skipDeltaCheck && (await this._resolveLastIndexed(objectKeys));
 
     const _entities = Array.from(this.entities.values());
     if (skipDeltaCheck || this.modelLastExecuted == null || this.lastIndexedMap.size === 0) {
@@ -136,17 +126,19 @@ export class IndexingCache {
     const chunks = chunkArray(entities, 25);
 
     for (const chunk of chunks) {
-      const { UnprocessedItems } = await this.ddbDocClient.send(new BatchWriteCommand({
-        RequestItems: {
-          [this.tableName]: chunk.map((Item) => ({
-            PutRequest: {
-              Item,
-            },
-          })),
-        },
-      }));
+      const { UnprocessedItems } = await this.ddbDocClient.send(
+        new BatchWriteCommand({
+          RequestItems: {
+            [this.tableName]: chunk.map((Item) => ({
+              PutRequest: {
+                Item,
+              },
+            })),
+          },
+        }),
+      );
       if (UnprocessedItems && UnprocessedItems[this.tableName]) {
-        UnprocessedItems[this.tableName].forEach(v => {
+        UnprocessedItems[this.tableName].forEach((v) => {
           if (v.PutRequest?.Item) {
             unprocessed.push(v.PutRequest.Item.id);
           }
@@ -168,28 +160,32 @@ export class IndexingCache {
     const now = new Date();
     const timestamp = now.toISOString();
 
-    await this.ddbDocClient.send(new PutCommand({
-      TableName: this.tableName,
-      Item: {
-        PK: this.getModelPK(this.model),
-        SK: 'status',
-        id: this.model,
-        timestamp,
-      },
-    }));
+    await this.ddbDocClient.send(
+      new PutCommand({
+        TableName: this.tableName,
+        Item: {
+          PK: this.getModelPK(this.model),
+          SK: 'status',
+          id: this.model,
+          timestamp,
+        },
+      }),
+    );
 
     this.modelLastExecuted = now;
   }
 
   async getModelLastExecuted(): Promise<Date | undefined> {
     if (this.modelLastExecuted == null) {
-      const { Item } = await this.ddbDocClient.send(new GetCommand({
-        TableName: this.tableName,
-        Key: {
-          PK: this.getModelPK(this.model),
-          SK: 'status',
-        },
-      }));
+      const { Item } = await this.ddbDocClient.send(
+        new GetCommand({
+          TableName: this.tableName,
+          Key: {
+            PK: this.getModelPK(this.model),
+            SK: 'status',
+          },
+        }),
+      );
 
       if (Item && 'timestamp' in Item) {
         this.modelLastExecuted = new Date(Item.timestamp);
@@ -204,35 +200,39 @@ export class IndexingCache {
     logger.info(`Resolving S3 metadata: ${objectKeys.length}`, { count: objectKeys.length });
     logger.debug({ message: 'S3 objects keys to resolve', objectKeys });
 
-    const task: async.AsyncBooleanIterator<string> = async (_objectKey: string) => async.retry({
-      times: 5,
-      interval: exponentialBackoff,
-    }, async () => {
-      const sourceLocation = this.formatSourceLocation(_objectKey);
-      try {
+    const task: async.AsyncBooleanIterator<string> = async (_objectKey: string) =>
+      async.retry(
+        {
+          times: 5,
+          interval: exponentialBackoff,
+        },
+        async () => {
+          const sourceLocation = this.formatSourceLocation(_objectKey);
+          try {
+            const response = await this.s3Client.send(
+              new HeadObjectCommand({
+                Bucket: this.bucketName,
+                Key: _objectKey,
+              }),
+            );
 
-        const response = await this.s3Client.send(new HeadObjectCommand({
-          Bucket: this.bucketName,
-          Key: _objectKey,
-        }));
+            const entity: IndexEntity = {
+              objectKey: _objectKey,
+              localPath: path.join(this.baseLocalPath, _objectKey),
+              sourceLocation,
+              metadata: normalizeMetadata(response.Metadata),
+              lastModified: response.LastModified ?? new Date(),
+            };
 
+            this.entities.set(sourceLocation, entity);
 
-        const entity: IndexEntity = {
-          objectKey: _objectKey,
-          localPath: path.join(this.baseLocalPath, _objectKey),
-          sourceLocation,
-          metadata: normalizeMetadata(response.Metadata),
-          lastModified: response.LastModified ?? new Date(),
-        };
-
-        this.entities.set(sourceLocation, entity);
-
-        return entity;
-      } catch (error) {
-        logger.warn(`Failed to resolve S3 object key: "${sourceLocation}"`, error as Error);
-        throw error;
-      }
-    });
+            return entity;
+          } catch (error) {
+            logger.warn(`Failed to resolve S3 object key: "${sourceLocation}"`, error as Error);
+            throw error;
+          }
+        },
+      );
 
     // Process all requests in parallel up to limit
     await async.eachLimit(objectKeys, 1000, task.bind(this));
@@ -241,7 +241,10 @@ export class IndexingCache {
   }
 
   async filterS3KeysByLastIndexedSince(objectKeys: string[], since: Date): Promise<string[]> {
-    logger.info(`Filter S3 Keys by last indexed since: ${since}`, { count: objectKeys.length, since: since.toISOString() });
+    logger.info(`Filter S3 Keys by last indexed since: ${since}`, {
+      count: objectKeys.length,
+      since: since.toISOString(),
+    });
     await this._resolveLastIndexed(objectKeys);
 
     const result = objectKeys.filter((key) => {
@@ -249,7 +252,9 @@ export class IndexingCache {
       return lastIndexed == null || since > lastIndexed;
     });
 
-    logger.debug(`Successfully filtered S3 Keys by last indexed since: ${since}; from ${objectKeys.length} to ${result.length} keys.`);
+    logger.debug(
+      `Successfully filtered S3 Keys by last indexed since: ${since}; from ${objectKeys.length} to ${result.length} keys.`,
+    );
     return result;
   }
 
@@ -267,23 +272,28 @@ export class IndexingCache {
     const chunks = chunkArray(objectKeys, 100);
 
     for (const chunk of chunks) {
-      const { Responses, UnprocessedKeys } = await this.ddbDocClient.send(new BatchGetCommand({
-        RequestItems: {
-          [this.tableName]: {
-            Keys: chunk.map((objectKey) => ({
-              PK: this.getSourceLocationPK(objectKey),
-              SK: this.model,
-            } as Keys)),
+      const { Responses, UnprocessedKeys } = await this.ddbDocClient.send(
+        new BatchGetCommand({
+          RequestItems: {
+            [this.tableName]: {
+              Keys: chunk.map(
+                (objectKey) =>
+                  ({
+                    PK: this.getSourceLocationPK(objectKey),
+                    SK: this.model,
+                  } as Keys),
+              ),
+            },
           },
-        },
-      }));
+        }),
+      );
       if (Responses && Responses[this.tableName]) {
         Responses[this.tableName].forEach((_entity) => {
           this.lastIndexedMap.set(_entity.id, new Date(_entity.timestamp));
         });
       }
       if (UnprocessedKeys && UnprocessedKeys[this.tableName]) {
-        UnprocessedKeys[this.tableName].Keys?.forEach(_keys => {
+        UnprocessedKeys[this.tableName].Keys?.forEach((_keys) => {
           unprocessed.push(this.idFromPK(_keys.PK));
         });
       }
@@ -303,13 +313,15 @@ export class IndexingCache {
    */
   async resetCache(): Promise<void> {
     if (await this.getModelLastExecuted()) {
-      await this.ddbDocClient.send(new DeleteCommand({
-        TableName: this.tableName,
-        Key: {
-          PK: this.getModelPK(this.model),
-          SK: 'status',
-        },
-      }));
+      await this.ddbDocClient.send(
+        new DeleteCommand({
+          TableName: this.tableName,
+          Key: {
+            PK: this.getModelPK(this.model),
+            SK: 'status',
+          },
+        }),
+      );
     }
   }
 }
@@ -329,7 +341,9 @@ function normalizeMetadataKey(key: string): string {
 }
 
 function normalizeMetadata(metadata?: Record<string, string>): Record<string, string> {
-  return Object.fromEntries(Object.entries(metadata || {}).map(([key, value]) => {
-    return [normalizeMetadataKey(key), value];
-  }));
+  return Object.fromEntries(
+    Object.entries(metadata || {}).map(([key, value]) => {
+      return [normalizeMetadataKey(key), value];
+    }),
+  );
 }

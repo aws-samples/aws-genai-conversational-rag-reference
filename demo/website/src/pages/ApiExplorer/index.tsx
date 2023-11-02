@@ -1,14 +1,14 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { useCognitoAuthContext } from "@aws-northstar/ui";
-import ErrorMessage from "@aws-northstar/ui/components/CognitoAuth/components/ErrorMessage";
-import getCredentials from "@aws-northstar/ui/components/CognitoAuth/hooks/useSigv4Client/utils/getCredentials";
-import { useCallback, useEffect, useState } from "react";
-import SwaggerUI from "swagger-ui-react";
-import "swagger-ui-react/swagger-ui.css";
-import { useRuntimeConfig } from "../../Auth";
+import { useCognitoAuthContext } from '@aws-northstar/ui';
+import ErrorMessage from '@aws-northstar/ui/components/CognitoAuth/components/ErrorMessage';
+import getCredentials from '@aws-northstar/ui/components/CognitoAuth/hooks/useSigv4Client/utils/getCredentials';
+import { useCallback, useEffect, useState } from 'react';
+import SwaggerUI from 'swagger-ui-react';
+import 'swagger-ui-react/swagger-ui.css';
+import { useRuntimeConfig } from '../../Auth';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const aws4Fetch = require("aws4fetch");
+const aws4Fetch = require('aws4fetch');
 
 /**
  * Component to render the home ApiExplorer.
@@ -17,12 +17,11 @@ const ApiExplorer: React.FC = () => {
   const runtimeContext = useRuntimeConfig();
   const [apiSpec, setApiSpec] = useState();
   const [error, setError] = useState<string | undefined>();
-  const { getAuthenticatedUser, region, identityPoolId, userPoolId } =
-    useCognitoAuthContext();
+  const { getAuthenticatedUser, region, identityPoolId, userPoolId } = useCognitoAuthContext();
 
   // Load the OpenAPI spec
   useEffect(() => {
-    fetch("/api.json")
+    fetch('/api.json')
       .then((response) => {
         return response.json();
       })
@@ -31,9 +30,7 @@ const ApiExplorer: React.FC = () => {
         setApiSpec({ ..._apiSpec, servers: [{ url: runtimeContext?.apiUrl }] });
       })
       .catch(() => {
-        setError(
-          "No OpenAPI definition detected. Ensure TypeSafeAPI is passed in to Cloudscape Website construct."
-        );
+        setError('No OpenAPI definition detected. Ensure TypeSafeAPI is passed in to Cloudscape Website construct.');
       });
   }, []);
 
@@ -45,7 +42,7 @@ const ApiExplorer: React.FC = () => {
       getAuthenticatedUser?.()!,
       region,
       identityPoolId,
-      userPoolId
+      userPoolId,
     );
 
     // Sign the request
@@ -59,7 +56,7 @@ const ApiExplorer: React.FC = () => {
       secretAccessKey,
       sessionToken,
       region,
-      service: "execute-api",
+      service: 'execute-api',
       url: r.url,
       body: r.body,
       headers: r.headers,

@@ -16,12 +16,7 @@ type SignedFetcherInit = {
 
 type CreateSignedFetcher = (init: SignedFetcherInit) => typeof fetch;
 
-export const createSignedFetcher: CreateSignedFetcher = ({
-  service,
-  region,
-  credentials,
-  idToken,
-}): typeof fetch => {
+export const createSignedFetcher: CreateSignedFetcher = ({ service, region, credentials, idToken }): typeof fetch => {
   return async (input, init?) => {
     const url = new URL(typeof input === 'string' ? input : input instanceof URL ? input.href : input.url);
 
@@ -30,7 +25,7 @@ export const createSignedFetcher: CreateSignedFetcher = ({
     idToken && headers.set('X-Cognito-IdToken', idToken);
 
     const _headers: HeaderBag = {};
-    headers.forEach((value, key) => _headers[key] = value);
+    headers.forEach((value, key) => (_headers[key] = value));
 
     const request = new HttpRequest({
       hostname: url.hostname,

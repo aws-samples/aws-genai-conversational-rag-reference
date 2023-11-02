@@ -98,18 +98,11 @@ export async function updateChat(
     ReturnValues: 'ALL_NEW',
   });
 
-  const result = (await documentClient.send(
-    command,
-  )) as DDBUpdateOutput<DDBChat>;
+  const result = (await documentClient.send(command)) as DDBUpdateOutput<DDBChat>;
   return result.Attributes;
 }
 
-async function deleteChat(
-  documentClient: DynamoDBDocumentClient,
-  tableName: string,
-  userId: string,
-  chatId: string,
-) {
+async function deleteChat(documentClient: DynamoDBDocumentClient, tableName: string, userId: string, chatId: string) {
   const keys = getChatKey(userId, chatId);
 
   const command = new DeleteCommand({
@@ -130,31 +123,17 @@ export async function deleteChatAndMessages(
 ) {
   // For now we'll perform all the delete actions in a single lambda
   // We might want to consider creating a job queue for deleting the chatMessages async
-  const chatMessageKeys = await getAllChatMessageIds(
-    documentClient,
-    tableName,
-    indexName,
-    userId,
-    chatId,
-  );
+  const chatMessageKeys = await getAllChatMessageIds(documentClient, tableName, indexName, userId, chatId);
 
   let chatMessageSourceKeys: Keys[] = [];
   for (const messageKeys of chatMessageKeys) {
-    const response = await listChatMessageSources(
-      documentClient,
-      tableName,
-      userId,
-      messageKeys.messageId,
-    );
+    const response = await listChatMessageSources(documentClient, tableName, userId, messageKeys.messageId);
     if (response) {
-      chatMessageSourceKeys = [
-        ...chatMessageSourceKeys,
-        ...response,
-      ];
+      chatMessageSourceKeys = [...chatMessageSourceKeys, ...response];
     }
   }
 
-  const deleteKeys = [...chatMessageKeys, ...chatMessageSourceKeys].map(k => ({ PK: k.PK, SK: k.SK }));
+  const deleteKeys = [...chatMessageKeys, ...chatMessageSourceKeys].map((k) => ({ PK: k.PK, SK: k.SK }));
 
   console.log(`found ${chatMessageKeys.length} messages`);
   console.log(`total records to delete: ${deleteKeys.length}`);

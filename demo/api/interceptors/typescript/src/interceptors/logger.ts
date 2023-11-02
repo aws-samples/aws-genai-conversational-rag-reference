@@ -1,15 +1,11 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { Logger } from "@aws-lambda-powertools/logger";
-import { LogLevel } from "@aws-lambda-powertools/logger/lib/types";
-import {
-  ChainedRequestInput,
-  OperationResponse,
-  ServerErrorResponseContent,
-} from "api-typescript-runtime";
+import { Logger } from '@aws-lambda-powertools/logger';
+import { LogLevel } from '@aws-lambda-powertools/logger/lib/types';
+import { ChainedRequestInput, OperationResponse, ServerErrorResponseContent } from 'api-typescript-runtime';
 
 const logger = new Logger({
-  logLevel: (process.env.LOG_LEVEL || "INFO") as LogLevel,
+  logLevel: (process.env.LOG_LEVEL || 'INFO') as LogLevel,
 });
 
 export interface ILoggerInterceptorContext {
@@ -24,20 +20,20 @@ export interface ILoggerInterceptorContext {
 export const loggerInterceptor = async <
   RequestParameters,
   RequestBody,
-  Response extends OperationResponse<number, any>
+  Response extends OperationResponse<number, any>,
 >(
-  request: ChainedRequestInput<RequestParameters, RequestBody, Response>
+  request: ChainedRequestInput<RequestParameters, RequestBody, Response>,
 ): Promise<Response | OperationResponse<500, ServerErrorResponseContent>> => {
   try {
     logger.addContext(request.context);
-    logger.debug("Event:", JSON.stringify(request.event));
+    logger.debug('Event:', JSON.stringify(request.event));
     request.interceptorContext.logger = logger;
 
     const response = await request.chain.next(request);
-    logger.debug("Success:", JSON.stringify(response));
+    logger.debug('Success:', JSON.stringify(response));
     return response;
   } catch (error: any) {
-    logger.error("Failed:", error);
+    logger.error('Failed:', error);
     throw error;
   }
 };

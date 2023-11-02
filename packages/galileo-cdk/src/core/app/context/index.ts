@@ -45,15 +45,8 @@ export class ApplicationContext implements IApplicationContext {
     return _getMetricNamespace(scope, ApplicationContext.of(scope).applicationName);
   }
 
-  static safeResourceName(
-    scope: IConstruct,
-    resourceName: string,
-  ): string {
-    return _safeResourceName(
-      scope,
-      resourceName,
-      ApplicationContext.of(scope).applicationName,
-    );
+  static safeResourceName(scope: IConstruct, resourceName: string): string {
+    return _safeResourceName(scope, resourceName, ApplicationContext.of(scope).applicationName);
   }
 
   private static readonly _lookup = new Map<Stack | Stage, ApplicationContext>();
@@ -72,10 +65,7 @@ export class ApplicationContext implements IApplicationContext {
 
   constructor(scope: Stage | Stack) {
     let ssmConfig: ApplicationConfig | undefined = undefined;
-    const ssmSupport = resolveBoolean(
-      this.tryGetContext<boolean>(scope, 'enableSsmConfigSupport'),
-      false,
-    );
+    const ssmSupport = resolveBoolean(this.tryGetContext<boolean>(scope, 'enableSsmConfigSupport'), false);
     if (ssmSupport) {
       try {
         const paramValue = StringParameter.valueFromLookup(
@@ -88,12 +78,8 @@ export class ApplicationContext implements IApplicationContext {
       }
     }
 
-    this.websiteContentPath = this.resolvePath(
-      this.getContext<string>(scope, 'websiteContentPath'),
-    );
-    this.corpusDockerImagePath = this.resolvePath(
-      this.getContext<string>(scope, 'corpusDockerImagePath'),
-    );
+    this.websiteContentPath = this.resolvePath(this.getContext<string>(scope, 'websiteContentPath'));
+    this.corpusDockerImagePath = this.resolvePath(this.getContext<string>(scope, 'corpusDockerImagePath'));
 
     this.configPath = this.resolvePath(
       process.env.GALILEO_CONFIG || this.tryGetContext<string>(scope, 'configPath') || APPLICATION_CONFIG_JSON,
@@ -104,17 +90,11 @@ export class ApplicationContext implements IApplicationContext {
     this.applicationName = this.config.app.name;
   }
 
-  private getContext<T extends any>(
-    scope: IConstruct,
-    key: keyof IApplicationContext,
-  ): T {
+  private getContext<T extends any>(scope: IConstruct, key: keyof IApplicationContext): T {
     return scope.node.getContext(key);
   }
 
-  private tryGetContext<T extends any>(
-    scope: IConstruct,
-    key: keyof IApplicationContext,
-  ): T | undefined {
+  private tryGetContext<T extends any>(scope: IConstruct, key: keyof IApplicationContext): T | undefined {
     return scope.node.tryGetContext(key);
   }
 
