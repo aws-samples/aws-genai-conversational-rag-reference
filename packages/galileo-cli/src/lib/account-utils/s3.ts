@@ -133,6 +133,7 @@ export namespace s3 {
           Key: `${options.uploadKeyPrefix}/${docKey}`,
           Metadata: fileMetadata,
           Body: pageContent,
+          ContentType: 'text/plain',
         },
         queueSize: 4, // optional concurrency configuration
         partSize: 1024 * 1024 * 5, // optional size of each part, in bytes, at least 5MB
