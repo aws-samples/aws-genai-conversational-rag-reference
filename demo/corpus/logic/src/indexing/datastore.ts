@@ -14,6 +14,7 @@ import {
 } from '@aws-sdk/lib-dynamodb';
 import * as async from 'async';
 import { chunkArray } from './utils';
+import { ENV } from '../env';
 import { measurable } from '../metrics';
 
 const logger = getLogger('indexing/datastore');
@@ -59,6 +60,8 @@ export class IndexingCache {
   protected lastIndexedMap: Map<string, Date> = new Map();
   protected modelLastExecuted?: Date;
 
+  private supportedContentTypes: string[];
+
   get entityCount(): number {
     return this.entities.size;
   }
@@ -72,6 +75,9 @@ export class IndexingCache {
     this.ddbClient = new DynamoDBClient(ddbClientConfig ?? {});
     this.ddbDocClient = DynamoDBDocumentClient.from(this.ddbClient);
     this.s3Client = new S3Client(s3ClientConfig ?? {});
+
+    // remove spaces and split by comma
+    this.supportedContentTypes = ENV.INDEXING_SUPPORTED_CONTENT_TYPES.replace(' ', '').split(',');
   }
 
   formatSourceLocation(key: string): string {
@@ -218,17 +224,22 @@ export class IndexingCache {
               }),
             );
 
-            const entity: IndexEntity = {
-              objectKey: _objectKey,
-              localPath: path.join(this.baseLocalPath, _objectKey),
-              sourceLocation,
-              metadata: normalizeMetadata(response.Metadata),
-              lastModified: response.LastModified ?? new Date(),
-            };
+            if (response.ContentType && this.supportedContentTypes.includes(response.ContentType)) {
+              const entity: IndexEntity = {
+                objectKey: _objectKey,
+                localPath: path.join(this.baseLocalPath, _objectKey),
+                sourceLocation,
+                metadata: normalizeMetadata(response.Metadata),
+                lastModified: response.LastModified ?? new Date(),
+              };
 
-            this.entities.set(sourceLocation, entity);
+              this.entities.set(sourceLocation, entity);
 
-            return entity;
+              return;
+            } else {
+              logger.warn(`${sourceLocation}'s Content-Type (${response.ContentType} not supported. Skipping...)`);
+              return;
+            }
           } catch (error) {
             logger.warn(`Failed to resolve S3 object key: "${sourceLocation}"`, error as Error);
             throw error;

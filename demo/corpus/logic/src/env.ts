@@ -34,6 +34,10 @@ export interface IProcessEnv {
   PROCESSING_INPUT_LOCAL_PATH?: string;
   /** Glob pattern(s) to index in source bucket (CSV) */
   INDEXING_GLOB?: string;
+  /**
+   * Comma-separated list of supported 'Content-Type' values to index from source bucket.
+   */
+  INDEXING_SUPPORTED_CONTENT_TYPES?: string;
   /** Indicates if delta check is skipped, which is the per file last indexed checking */
   INDEXING_SKIP_DELTA_CHECK?: string;
 
@@ -76,7 +80,8 @@ export namespace ENV {
   export const CHUNK_OVERLAP = parseInt(process.env.CHUNK_OVERLAP || '200');
   export const VECTOR_INDEX_LISTS = parseInt(process.env.VECTOR_INDEX_LISTS || '1000');
   export const PROCESSING_INPUT_LOCAL_PATH = process.env.PROCESSING_INPUT_LOCAL_PATH || '/opt/ml/processing/input_data';
-  export const INDEXING_GLOB = process.env.INDEXING_GLOB || '**/*.txt';
+  export const INDEXING_GLOB = process.env.INDEXING_GLOB || '**/*.*';
+  export const INDEXING_SUPPORTED_CONTENT_TYPES = process.env.INDEXING_SUPPORTED_CONTENT_TYPES || 'text/plain';
 
   export const EMBEDDING_TABLENAME = normalizePostgresTableName(
     `${EMBEDDING_SENTENCE_TRANSFORMER_MODEL}_${VECTOR_SIZE}`,

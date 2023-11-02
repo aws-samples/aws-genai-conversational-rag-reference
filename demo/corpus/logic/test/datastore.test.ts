@@ -28,13 +28,12 @@ describe('metadata', () => {
     // console.log(base64EncodedValue);
 
     const metadata = {
-      'key': 'value',
-      'json-base64':
-        'eyJjaMOsYSBraMOzYSI6Imdpw6EgdHLhu4siLCJnacOhIHRy4buLIjoiY2jDrGEga2jDs2EifQ==', // base64EncodedValue,
+      key: 'value',
+      'json-base64': 'eyJjaMOsYSBraMOzYSI6Imdpw6EgdHLhu4siLCJnacOhIHRy4buLIjoiY2jDrGEga2jDs2EifQ==', // base64EncodedValue,
     };
 
     const expectedResult = {
-      'key': 'value',
+      key: 'value',
       'chìa khóa': 'giá trị',
       'giá trị': 'chìa khóa',
     };
@@ -45,7 +44,7 @@ describe('metadata', () => {
 
   test('normalizeMetadata - with wrong base64 field', () => {
     const metadata = {
-      'key': 'value',
+      key: 'value',
       'json-base64': 'wrongly-encoded-value',
     };
 
