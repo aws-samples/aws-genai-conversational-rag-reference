@@ -14,6 +14,7 @@
     "bundle:asset:ai/llms/framework/huggingface/model-tar/source": "npx projen bundle:asset:ai/llms/framework/huggingface/model-tar/source",
     "bundle:asset:ai/llms/framework/sagemaker/model-info/code": "npx projen bundle:asset:ai/llms/framework/sagemaker/model-info/code",
     "bundle:asset:ai/llms/models/falcon/lite/image": "npx projen bundle:asset:ai/llms/models/falcon/lite/image",
+    "bundle:asset:ai/llms/models/managed-embeddings/custom": "npx projen bundle:asset:ai/llms/models/managed-embeddings/custom",
     "bundle:asset:ai/llms/models/sentence-transformer/custom": "npx projen bundle:asset:ai/llms/models/sentence-transformer/custom",
     "bundle:common/resources/service-quota/handler.lambda": "npx projen bundle:common/resources/service-quota/handler.lambda",
     "bundle:common/resources/service-quota/handler.lambda:watch": "npx projen bundle:common/resources/service-quota/handler.lambda:watch",

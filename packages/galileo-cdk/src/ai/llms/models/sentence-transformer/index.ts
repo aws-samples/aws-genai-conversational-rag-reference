@@ -27,7 +27,7 @@ export class HuggingFaceSentenceTransformer extends HuggingFaceModel {
     }
 
     const modelTar = new HFModelTar(scope, `${id}-ModelTar`, {
-      hfRepoId,
+      hfModelId: hfRepoId,
       customAsset: CUSTOM_ASSET_PATH,
     });
 

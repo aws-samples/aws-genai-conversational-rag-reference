@@ -49,7 +49,7 @@ export interface IModelConstraints {
   readonly maxTotalTokens: number;
 }
 
-export interface IModelInfo {
+export interface IBaseModelInfo {
   /** Unique model identifier within application */
   readonly uuid: string;
 
@@ -61,7 +61,9 @@ export interface IModelInfo {
    * @default undefined - uuid will likely be used in formatted way as display
    */
   readonly name?: string;
+}
 
+export interface IModelInfo extends IBaseModelInfo {
   /** Model frameworks which defines details on invoking the model based on framework specifics */
   readonly framework: IModelFramework;
 
@@ -70,6 +72,27 @@ export interface IModelInfo {
 
   /** Model adapter spec */
   readonly adapter?: IModelAdapter;
+}
+
+export const MANAGED_DEFAULT = '@galileo/managed-default';
+
+export interface IEmbeddingModelInfo extends IBaseModelInfo {
+  // TODO: placeholder for supporting additional embedding model providers
+  /** Model frameworks which defines details on invoking the model based on framework specifics */
+  // readonly framework?: IModelFramework;
+  // /** Model adapter spec */
+  // readonly adapter?: IEmbeddingModelAdapter;
+
+  /** Dimension such as vector size of the embeddings */
+  readonly dimensions: number;
+  /**
+   * Indicates if this is the default model
+   */
+  readonly default?: boolean;
+}
+
+export function isManagedDefaultFramework(framework?: IModelFramework): framework is ISageMakerEndpointModelFramework {
+  return framework?.type === ModelFramework.SAGEMAKER_ENDPOINT;
 }
 
 export function isSageMakerEndpointFramework(

@@ -17,8 +17,9 @@ import { ResourceProperties, Data, MODEL_TAR_FILE, ARTIFACT_NAME } from './types
 import { SecureBucket } from '../../../../../common';
 
 export interface HFModelTarProps {
-  readonly hfRepoId: string;
+  readonly hfModelId: string | string[];
   readonly customAsset?: string | assets.Asset;
+  readonly forceModelFolders?: boolean;
   readonly snapshotDownloadOptions?: Record<string, any>;
   readonly environment?: Record<string, string>;
 }
@@ -56,8 +57,17 @@ export class HFModelTar extends Construct {
       };
     }
 
+    if (props.forceModelFolders) {
+      environment = {
+        ...environment,
+        FORCE_MODEL_FOLDERS: 'True',
+      };
+    }
+
+    const hfModelId = Array.isArray(props.hfModelId) ? props.hfModelId.join(',') : props.hfModelId;
+
     const properties: ResourceProperties = {
-      HFRepoId: props.hfRepoId,
+      HFModelId: hfModelId,
       CustomAsset: customAsset && {
         bucketName: customAsset.s3BucketName,
         objectKey: customAsset.s3ObjectKey,
