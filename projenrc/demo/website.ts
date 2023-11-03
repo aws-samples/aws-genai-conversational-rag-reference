@@ -32,6 +32,7 @@ export class Website {
       name: 'website',
       deps: [
         '@cloudscape-design/collection-hooks',
+        '@faker-js/faker',
         '@tanstack/react-query-devtools',
         '@tanstack/react-query',
         '@tanstack/react-virtual@beta',
@@ -51,7 +52,6 @@ export class Website {
         galileoSdk.package.packageName,
       ],
       devDeps: [
-        '@faker-js/faker',
         '@testing-library/react-hooks',
         '@types/jest',
         '@types/lodash',
