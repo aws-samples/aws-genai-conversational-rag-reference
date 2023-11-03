@@ -19,11 +19,11 @@ For full documentation, see <https://aws-samples.github.io/aws-genai-conversatio
 ## Key Documentation Links
 
 - **[Overview](https://aws-samples.github.io/aws-genai-conversational-rag-reference/overview/)**
-- **[Mental Model](https://aws-samples.github.io/aws-genai-conversational-rag-reference/model/)**
+- **[Mental Model](https://aws-samples.github.io/aws-genai-conversational-rag-reference/overview/model/)**
 - **[How it Works](https://aws-samples.github.io/aws-genai-conversational-rag-reference/overview/how/)**
-- **[Getting Started](https://aws-samples.github.io/aws-genai-conversational-rag-reference/quick-start/)**
-- **[Security Considerations](https://aws-samples.github.io/aws-genai-conversational-rag-reference/security/)**
-- **[Contributing](https://aws-samples.github.io/aws-genai-conversational-rag-reference/contributing/)**
+- **[Getting Started](https://aws-samples.github.io/aws-genai-conversational-rag-reference/overview/quick-start/)**
+- **[Security Considerations](https://aws-samples.github.io/aws-genai-conversational-rag-reference/overview/security/)**
+- **[Contributing](https://aws-samples.github.io/aws-genai-conversational-rag-reference/overview/contributing/)**
 - **[Developer Guide](https://aws-samples.github.io/aws-genai-conversational-rag-reference/development/)**
 
 ---
