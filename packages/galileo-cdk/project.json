@@ -203,6 +203,13 @@
         "cwd": "packages/galileo-cdk"
       }
     },
+    "bundle:asset:ai/llms/models/managed-embeddings/custom": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec projen bundle:asset:ai/llms/models/managed-embeddings/custom",
+        "cwd": "packages/galileo-cdk"
+      }
+    },
     "bundle:asset:ai/llms/models/sentence-transformer/custom": {
       "executor": "nx:run-commands",
       "options": {

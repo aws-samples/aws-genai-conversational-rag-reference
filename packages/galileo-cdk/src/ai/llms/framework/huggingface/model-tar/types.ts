@@ -19,9 +19,9 @@ export interface ResourceProperties {
   readonly CustomAsset?: S3Location;
 
   /**
-   * HuggingFace RepoId
+   * HuggingFace model id, or comma-separated list of model ids
    */
-  readonly HFRepoId: string;
+  readonly HFModelId: string;
 
   readonly EnvironmentVariables?: EnvironmentVariable[];
 }

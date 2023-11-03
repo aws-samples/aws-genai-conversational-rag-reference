@@ -35,14 +35,24 @@ export const DEFAULT_APPLICATION_CONFIG: ApplicationConfig = {
     //       enabled: true,
     //     },
     //   },
-    // TODO: placeholder for followup PR to define embedding models in config
-    //   embeddingsModels: [
-    //     {
-    //       provider: 'sagemaker',
-    //       dimensions: 768,
-    //       name: 'sentence-transformers/all-mpnet-base-v2',
-    //       default: true,
-    //     },
-    //   ],
+    embeddingsModels: [
+      {
+        // matching the current name used in database for our default model to prevent breaking existing data.
+        uuid: 'all-mpnet-base-v2',
+        modelId: 'sentence-transformers/all-mpnet-base-v2',
+        dimensions: 768,
+        default: true,
+      },
+      // {
+      //   uuid: 'intfloat/multilingual-e5-large',
+      //   modelId: 'intfloat/multilingual-e5-large',
+      //   dimensions: 1024,
+      // },
+      // {
+      //   uuid: 'sentence-transformers/all-MiniLM-L6-v2',
+      //   modelId: 'sentence-transformers/all-MiniLM-L6-v2',
+      //   dimensions: 384,
+      // },
+    ],
   },
 };

@@ -38,7 +38,7 @@ export class FalconLite extends BaseLLM {
     });
 
     const modelTar = new HFModelTar(this, 'ModelTar', {
-      hfRepoId: FalconLite.HF_MODEL_ID,
+      hfModelId: FalconLite.HF_MODEL_ID,
       snapshotDownloadOptions: {
         revision: 'main',
         // load safetensor weights only

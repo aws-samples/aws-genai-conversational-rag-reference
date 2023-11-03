@@ -53,4 +53,5 @@ tsconfig.json
 !/src/ai/llms/framework/huggingface/model-tar/source-asset.ts
 !/src/ai/llms/framework/sagemaker/model-info/code-asset.ts
 !/src/ai/llms/models/falcon/lite/image-asset.ts
+!/src/ai/llms/models/managed-embeddings/custom-asset.ts
 !/src/ai/llms/models/sentence-transformer/custom-asset.ts

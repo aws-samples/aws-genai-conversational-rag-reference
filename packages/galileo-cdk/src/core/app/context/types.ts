@@ -1,5 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { IEmbeddingModelInfo } from '@aws/galileo-sdk/lib/models';
 import { FoundationModelIds } from '../../../ai/predefined/ids';
 
 /** Default path for config file for application */
@@ -109,13 +110,8 @@ export interface ApplicationConfig {
     samples?: {
       datasets: SampleDataSets[];
     };
-    // TODO: in followup PR will implement embedding models
-    // embeddingsModels: {
-    //   provider: ModelProvider;
-    //   name: string;
-    //   dimensions: number;
-    //   default?: boolean;
-    // }[];
+    // TODO: support additional embedding models, currently just the default ManagedEmbedding model to match current
+    embeddingsModels: IEmbeddingModelInfo[];
     // TODO: enable this one we support multiple rag engines
     // engines: {
     //   aurora: {

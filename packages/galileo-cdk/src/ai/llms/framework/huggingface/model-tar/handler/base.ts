@@ -60,7 +60,7 @@ export async function onEvent(event: CdkCustomResourceEvent, _context: Context):
         projectName: BUILD_PROJECT,
         environmentVariablesOverride: [
           ...(props.EnvironmentVariables || []),
-          { name: 'HF_REPO_ID', value: props.HFRepoId },
+          { name: 'HF_MODEL_ID', value: props.HFModelId },
         ],
       };
       logger.debug('StartBuildCommand:Input:', { input: buildCommandInput });

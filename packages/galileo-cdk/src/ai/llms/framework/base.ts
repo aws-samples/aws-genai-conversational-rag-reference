@@ -170,4 +170,14 @@ export abstract class BaseLLM extends Construct implements Models.IModelInfoProv
       adapter: props.adapter,
     };
   }
+
+  grantInvoke(grantable: iam.IGrantable): void {
+    grantable.grantPrincipal.addToPrincipalPolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: ['sagemaker:InvokeEndpoint', 'sagemaker:DescribeEndpoint'],
+        resources: [this.endpoint.ref],
+      }),
+    );
+  }
 }

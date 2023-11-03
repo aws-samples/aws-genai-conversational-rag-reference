@@ -36,6 +36,7 @@ export class HuggingFaceModel extends BaseLLM {
       primaryContainer: {
         image,
         modelDataUrl: props.modelDataUrl,
+        mode: 'SingleModel',
         environment: {
           SAGEMAKER_CONTAINER_LOG_LEVEL: '20',
           SAGEMAKER_REGION: Stack.of(scope).region,

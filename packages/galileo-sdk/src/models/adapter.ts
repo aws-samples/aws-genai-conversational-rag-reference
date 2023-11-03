@@ -104,10 +104,23 @@ export class PromptAdapter implements IPromptAdapter {
 /**
  * @struct
  */
-export interface IModelAdapter {
-  readonly prompt?: IPromptAdapter;
+export interface IBaseModelAdapter {
   readonly contentHandler?: IContentHandlerAdapter;
 }
+
+/**
+ * Model adapter definition for inference
+ * @struct
+ */
+export interface IModelAdapter extends IBaseModelAdapter {
+  readonly prompt?: IPromptAdapter;
+}
+
+/**
+ * Model adapter for embedding
+ * @struct
+ */
+export interface IEmbeddingModelAdapter extends IBaseModelAdapter {}
 
 export const DEFAULT_OUTPUT_JSONPATH = '[0].generated_text';
 
