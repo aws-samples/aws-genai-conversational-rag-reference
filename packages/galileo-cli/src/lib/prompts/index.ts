@@ -268,7 +268,7 @@ namespace galileoPrompts {
         name: 'models',
         message: 'Bedrock model ids',
         hint: chalk.yellow(
-          '\nOnly models with access approved are listed below, see https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html to request access to additional models\n',
+          '\nEnsure you have requested access for the selected models, see https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html to request access\n',
         ),
         min: 1,
         instructions: chalk.gray('↑/↓: Highlight option, ←/→/[space]: Toggle selection, Return to submit'),

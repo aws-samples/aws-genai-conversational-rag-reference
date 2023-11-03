@@ -22,7 +22,7 @@ export class ApplicationContext implements IApplicationContext {
   /**
    * Version of config spec following semver.
    * - CLI will check this and only allow auto deploy for compatible version
-   * - TODO: in future will add migration and other stuff to support different versions.
+   * - TODO: in future perhaps add migration and other stuff to support different versions.
    */
   static readonly VERSION: string = '0.0.0';
   static readonly SSM_PARAMETER_NAME: string = 'Galileo-ApplicationConfig';
