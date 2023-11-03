@@ -1,10 +1,6 @@
 {
   "dependencies": [
     {
-      "name": "@faker-js/faker",
-      "type": "build"
-    },
-    {
       "name": "@storybook/addon-essentials",
       "type": "build"
     },
@@ -198,6 +194,10 @@
     },
     {
       "name": "@cloudscape-design/components",
+      "type": "runtime"
+    },
+    {
+      "name": "@faker-js/faker",
       "type": "runtime"
     },
     {
