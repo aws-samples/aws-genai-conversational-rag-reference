@@ -4,7 +4,7 @@
 
 ## Predefined Models
 
-Galileo supports a number of predefined large language models (LLMs), including all available non-embeddings text-to-text models provided by Bedrock, and a number of SageMaker JumpStart models (Falcon40b, Falcon7b, Falcon Lite, Jurassic Ultra, and Meta LLama2). If you use the "galileo-cli" convenience deployment task, you can select a range of these predefined models (including which to use by default) to be included in a Galileo deployment. Once deployed, you can use the [prompt development settings UI](../dev-settings) to change which predefined model is active for a chat session.
+Galileo supports a number of predefined large language models (LLMs), including all available non-embeddings text-to-text models provided by Bedrock, and a number of SageMaker JumpStart models (Falcon40b, Falcon7b, Falcon Lite, Jurassic Ultra, and Meta LLama2). If you use the "galileo-cli" convenience deployment task, you can select a range of these predefined models (including which to use by default) to be included in a Galileo deployment. Once deployed, you can use the [prompt development settings UI](../dev-settings/index.md) to change which predefined model is active for a chat session.
 
 ??? abstract "Current list of predefined models"
     --8<-- "development/models/predefined-models.md"

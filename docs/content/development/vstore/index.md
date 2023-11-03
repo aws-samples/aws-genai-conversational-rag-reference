@@ -18,7 +18,7 @@ The "processed bucket" is the destination for objects that have already been pro
     This is very much an example architecture for data ingestion at scale, and is expected to be replaced or modified to support your specific use case. Rather than attempting to force your implementation into the current process, it is recommended to replace this based on your needs. As we learn more about the patterns customers are using, we will work on extending this to support more real world use cases.
 
 !!! warning "Manual Process"
-    Currently the state machine must be manually triggered. It also supports scheduling which is disabled by default, which can be configured in the [../../../../demo/infra/src/application/corpus/index.ts](corpus stack) properties.
+    Currently the state machine must be manually triggered. It also supports scheduling which is disabled by default, which can be configured in the corpus stack ('demo/infra/src/application/corpus/index.ts') properties.
 
 ## Sample Dataset
 

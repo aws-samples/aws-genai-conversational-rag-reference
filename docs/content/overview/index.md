@@ -17,7 +17,7 @@ The screenshot below shows the default web interface, showing an active chat ses
 
 ## Architecture
 
-This simplified architecture diagram shows the key service components utilised to implemented each of the three tiers described described in the [mental model](./model).
+This simplified architecture diagram shows the key service components utilised to implemented each of the three tiers described described in the [mental model](./model/index.md).
 
 ![Architecture](../assets/images/galileo-arch.png)
 
