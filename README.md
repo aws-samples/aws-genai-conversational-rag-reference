@@ -18,13 +18,13 @@ For full documentation, see <https://aws-samples.github.io/aws-genai-conversatio
 
 ## Key Documentation Links
 
-- **[Overview](https://aws-samples.github.io/aws-genai-conversational-rag-reference)**
-- **[Mental Model](https://aws-samples.github.io/aws-genai-conversational-rag-reference/model)**
-- **[How it Works](https://aws-samples.github.io/aws-genai-conversational-rag-reference/overview)**
-- **[Getting Started](https://aws-samples.github.io/aws-genai-conversational-rag-reference/quick-start)**
-- **[Security Considerations](https://aws-samples.github.io/aws-genai-conversational-rag-reference/security)**
-- **[Contributing](https://aws-samples.github.io/aws-genai-conversational-rag-reference/contributing)**
-- **[Developer Guide](https://aws-samples.github.io/aws-genai-conversational-rag-reference/developing)**
+- **[Overview](https://aws-samples.github.io/aws-genai-conversational-rag-reference/overview/)**
+- **[Mental Model](https://aws-samples.github.io/aws-genai-conversational-rag-reference/model/)**
+- **[How it Works](https://aws-samples.github.io/aws-genai-conversational-rag-reference/overview/how/)**
+- **[Getting Started](https://aws-samples.github.io/aws-genai-conversational-rag-reference/quick-start/)**
+- **[Security Considerations](https://aws-samples.github.io/aws-genai-conversational-rag-reference/security/)**
+- **[Contributing](https://aws-samples.github.io/aws-genai-conversational-rag-reference/contributing/)**
+- **[Developer Guide](https://aws-samples.github.io/aws-genai-conversational-rag-reference/development/)**
 
 ---
 
