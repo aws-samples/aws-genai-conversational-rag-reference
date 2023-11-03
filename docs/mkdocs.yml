@@ -1,8 +1,8 @@
 site_name: Galileo Generative AI Reference Sample
 site_description: Galileo Generative AI Reference Sample
 repo_name: aws-genai-conversational-rag-reference
-repo_url: https://github.com/aws-samples/aws-genai-conversational-rag-reference
-site_url: https://aws-samples.github.io/aws-genai-conversational-rag-reference
+repo_url: https://github.com/aws-samples/aws-genai-conversational-rag-reference/
+site_url: https://aws-samples.github.io/aws-genai-conversational-rag-reference/
 copyright: Copyright &copy; 2023 Amazon Web Services, Inc.
 use_directory_urls: true
 docs_dir: content
