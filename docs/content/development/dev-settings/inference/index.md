@@ -5,7 +5,7 @@
 
 The inference settings are used to control the model that is used for inference. It supports choosing either one of the models deployed/configured with the solution, or integrating with a custom model external to the solution.
 
-This enables testing different configurations, such as **Model Kwargs** and **Endpoint Kwargs** without requiring a deployment. And in the case of custom models, you can test a model deployed outside of the solution (e.g. SageMaker JumpStart), or modify the additional configuration of one of the deployed models.
+This enables testing different configurations, such as **Model Kwargs** and **Endpoint Kwargs** without requiring a deployment. And in the case of custom models, you can test a model deployed outside of the solution (e.g. SageMaker JumpStart), or modify the additional configuration of one of the deployed frameworks.
 
 ![Inference](thumb.png)
 
@@ -16,7 +16,7 @@ Most approaches to model integration define backend adapters for each type of mo
 Choose ==**Custom**== from the **LLM model** dropdown to integrate with a model deployed outside of the application.
 ![Model Selector Custom](image.png)
 
-That will expand a set of fields that allow you to integrate with any model deployed on the supported frameworks.
+That will expand a set of fields that allow you to integrate with any model deployed on the supported models.
 ![Custom Model fields](image-1.png)
 
 You can either overwrite the configuration of a predefined model that is deployed, or start from scratch (==None==).
@@ -26,17 +26,18 @@ You can either overwrite the configuration of a predefined model that is deploye
 ![Base Model](image-2.png)
 
 ### Common Settings
-The following fields are common settings across integration frameworks
+
+The following fields are common settings across the integration abstractions
 ![Common settings](image-3.png)
 
 #### Cross-Account Model Integration
+
 By providing a *cross-account* IAM role to assume, when the inference engine invokes the framework via AWS SDK, it will first assume the role provided and use those temporary credentials to invoke the service endpoint. The role must have a trust policy attached that grants the application environment account permissions to assume the roles (`sts:AssumeRole`).
 
 ![Cross-Account](image-6.png){ width="400" }
 
 !!! danger "Cross-Account Security Considerations"
     By default the application in configured to only support assuming cross-account roles in the **Dev Stage** environment, and only **Administrators** are allowed to pass runtime config overrides to specify cross-account roles to assume. Ensure that only **trusted individuals** are granted **Administrator** access, and if enabling this functionality outside of **Dev Stage** environment that precautions and diligence are taken securing access of data and systems.
-
 
 ??? example "Trust Policy Example"
 
@@ -107,11 +108,14 @@ By providing a *cross-account* IAM role to assume, when the inference engine inv
     }
     ```
 
-### Framework Settings
-The following are fields specific to each framework
+### Service Specific Model Settings
+
+The following are fields specific to each model hosting service
 
 #### SageMaker Endpoint
+
 ![SageMaker settings](image-4.png)
 
 #### Bedrock
+
 ![Bedrock settings](image-5.png)

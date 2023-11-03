@@ -1,7 +1,7 @@
 ---
 nav:
   - Overview: index.md
-  - Vision: vision
+  - Mental Model: model
   - How it Works: how
   - Getting Started: quick-start
   - Security: security

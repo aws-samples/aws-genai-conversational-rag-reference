@@ -2,7 +2,11 @@
 
 > Codename: "Galileo"
 
-    This repository is currently a work-in-progress and is a sample reference only, expected to be forked. Overtime, this repository will be partially made available via [AWS PDK](https://aws.github.io/aws-pdk) as libraries and constructs become more stable and robust. This repository is expected to remain as an example reference for bootstrapping such a project using the toolkit provided by the [AWS PDK](https://aws.github.io/aws-pdk).
+![Stability: Experimental](https://img.shields.io/badge/stability-Experimental-important.svg?style=for-the-badge)
+
+> All classes are under active development and subject to non-backward compatible changes or removal in any
+> future version. These are not subject to the [Semantic Versioning](https://semver.org/) model.
+> This means that while you may use them, you may need to update your source code when upgrading to a newer version of this package.
 
 Conversational generative AI applications that provide search and summarisation against a collection of private documents (also known as "retrieval augmented generation" or RAG) are comprised of a number of complex components. These include: an elastic document ingestion pipeline, a special purpose vector store for document embeddings, a performant embeddings inference engine, API access to an aligned large language model, the combined functionality of which is exposed via a user interface that maintains session persistance and is secured with authN. Galileo was created to provide all of these things, integrated into a reference application. The use case of this reference application is a virtual legal research assistant, capable of answering questions against US Supreme Court decisions.
 
@@ -15,7 +19,7 @@ For full documentation, see <https://aws-samples.github.io/aws-genai-conversatio
 ## Key Documentation Links
 
 - **[Overview](https://aws-samples.github.io/aws-genai-conversational-rag-reference)**
-- **[Vision](https://aws-samples.github.io/aws-genai-conversational-rag-reference/vision)**
+- **[Mental Model](https://aws-samples.github.io/aws-genai-conversational-rag-reference/model)**
 - **[How it Works](https://aws-samples.github.io/aws-genai-conversational-rag-reference/overview)**
 - **[Getting Started](https://aws-samples.github.io/aws-genai-conversational-rag-reference/quick-start)**
 - **[Security Considerations](https://aws-samples.github.io/aws-genai-conversational-rag-reference/security)**
@@ -40,4 +44,4 @@ There are a number of security considerations that should be taken into account 
 
 ## Other Useful Samples
 
-If you looking to benchmark multiple LLMs and RAG engines in a simple way, you should checkout [aws-samples/aws-genai-llm-chatbot](https://github.com/aws-samples/aws-genai-llm-chatbot). That project focuses more on experimentation with models and vector stores, while this project focuses more on building an extendable 3-tier application. In the future, we will look at bringing similar functionality into this project, and visa-versa, as we all navigate this rapidly evolving emerging technology landscape.
+If you looking to benchmark multiple LLMs and RAG engines in a simple way, you should checkout [aws-samples/aws-genai-llm-chatbot](https://github.com/aws-samples/aws-genai-llm-chatbot). That project focuses more on experimentation with models and vector stores, while this project focuses more on building an extendable 3-tier application.

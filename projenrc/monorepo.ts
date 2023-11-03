@@ -364,8 +364,7 @@ export class MonorepoProject extends MonorepoTsProject {
       },
       runsOn: ['ubuntu-latest'],
       needs: ['release', 'release_github'],
-      if: '${{ false }}', // disable until repo is public, since all pages are public
-      // if: "needs.release.outputs.latest_commit == github.sha",
+      if: 'needs.release.outputs.latest_commit == github.sha',
       permissions: {
         contents: JobPermission.WRITE,
         pages: JobPermission.WRITE,
