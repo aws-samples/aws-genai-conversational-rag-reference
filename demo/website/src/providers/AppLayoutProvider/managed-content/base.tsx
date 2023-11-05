@@ -54,14 +54,15 @@ export function managedContentFactory<
       [setItems],
     );
 
-    const active = useDebounce(last(last(items)), 50);
+    const active = useDebounce<ManagedAppLayoutContent | undefined>(last(items), 50);
+    const [activeUUID, activeNode] = active || [];
     const context = useMemo<IManagedAppLayoutContentContext>(
       () => ({
-        active,
+        active: activeNode,
         addContent,
         removeContent,
       }),
-      [active],
+      [activeUUID],
     );
 
     return <Context.Provider value={context}>{children}</Context.Provider>;
