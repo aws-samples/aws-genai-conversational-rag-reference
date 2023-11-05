@@ -226,6 +226,10 @@
       "type": "runtime"
     },
     {
+      "name": "dayjs",
+      "type": "runtime"
+    },
+    {
       "name": "immer",
       "type": "runtime"
     },
