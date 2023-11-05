@@ -36,6 +36,7 @@ export class Website {
         '@tanstack/react-query',
         '@tanstack/react-virtual@beta',
         'ace-builds',
+        'dayjs',
         'immer',
         'jwt-decode',
         `langchain@${VERSIONS.LANGCHAIN}`, // not semver so need to pin

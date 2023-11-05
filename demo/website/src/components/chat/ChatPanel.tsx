@@ -1,9 +1,11 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { SpaceBetween } from '@cloudscape-design/components';
 import Header from '@cloudscape-design/components/header';
 import { Chat } from 'api-typescript-react-query-hooks';
 import { useCallback, useRef } from 'react';
 import DeleteChatButton from './components/DeleteChatButton';
+import ExportChat from './components/ExportChat';
 import HumanInputForm from './components/HumanInputForm';
 import { ConversationView } from './ConversationView';
 import { useUpdateChatMutation } from '../../hooks/chats';
@@ -42,7 +44,15 @@ export default function ChatPanel(props: SessionChatProps) {
         flex: 1,
       }}
     >
-      <Header variant="h3" actions={<DeleteChatButton chat={props.chat} />}>
+      <Header
+        variant="h3"
+        actions={
+          <SpaceBetween size="xxxs" direction="horizontal">
+            <ExportChat chat={props.chat} />
+            <DeleteChatButton chat={props.chat} />
+          </SpaceBetween>
+        }
+      >
         <InlineEditor loading={updateChat.isLoading} onChange={updateChatTitle}>
           {props.chat.title}
         </InlineEditor>
