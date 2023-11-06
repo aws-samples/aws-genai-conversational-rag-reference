@@ -4,9 +4,8 @@ nav:
   - Design: design
   - Prompt Development Settings: dev-settings
   - Models: models
-  - Corpus: corpus
   - UI State: uistate
-  - Vector Store: vstore
+  - Vector Store: vector-store
   - API: api
   - Website: website
   - Tooling: tooling

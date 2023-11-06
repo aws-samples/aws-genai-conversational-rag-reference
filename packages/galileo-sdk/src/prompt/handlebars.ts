@@ -89,6 +89,7 @@ export class HandlebarsPromptTemplate<
       templateFormat: 'handlebars',
     });
 
+    this.partialVariables = input.partialVariables;
     this.templatePartials = input.templatePartials;
     this.handlebars = input.handlebars || createHandlebarsRuntime(input.templatePartials || {});
     this.compileOptions = input.compileOptions;

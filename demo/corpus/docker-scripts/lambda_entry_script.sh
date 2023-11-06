@@ -8,7 +8,7 @@ _HANDLER="${1:-api.handler}"
 shift
 
 if [ -z "${AWS_LAMBDA_RUNTIME_API}" ]; then
-  exec /usr/local/bin/aws-lambda-rie /usr/bin/npx --no-install aws-lambda-ric ${_HANDLER}
+  exec /usr/local/bin/aws-lambda-rie $(which npx) --no-install aws-lambda-ric ${_HANDLER}
 else
-  exec /usr/bin/npx --no-install aws-lambda-ric ${_HANDLER}
+  exec $(which npx) --no-install aws-lambda-ric ${_HANDLER}
 fi

@@ -1,7 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import { envBool } from '@aws/galileo-sdk/lib/common';
-import { normalizePostgresTableName } from '@aws/galileo-sdk/lib/vectorstores/pgvector/utils';
 
 export interface IProcessEnv {
   /** Necessary to connect to rds instance - https://github.com/brianc/node-postgres/issues/2607 */
@@ -19,11 +18,8 @@ export interface IProcessEnv {
   /** Indicates if Transport Layer Security (TLS) is enabled */
   RDS_PGVECTOR_TLS_ENABLED?: string;
   /** Port where embedding service is listening */
-  EMBEDDING_PORT?: string;
-  /** Sentence transformer model id */
-  EMBEDDING_SENTENCE_TRANSFORMER_MODEL?: string;
   /** Vector Size */
-  VECTOR_SIZE?: string;
+  VECTOR_SIZE: string;
   /** Chunk size for text splitter */
   CHUNK_SIZE?: string;
   /** Chunk overlap for text splitter */
@@ -40,6 +36,14 @@ export interface IProcessEnv {
   INDEXING_SUPPORTED_CONTENT_TYPES?: string;
   /** Indicates if delta check is skipped, which is the per file last indexed checking */
   INDEXING_SKIP_DELTA_CHECK?: string;
+
+  /** Name of the model to invoke in sagemaker endpoint for embedding */
+  EMBEDDINGS_SAGEMAKER_MODEL: string;
+  /** Endpoint name of sagemaker endpoint for embedding */
+  EMBEDDINGS_SAGEMAKER_ENDPOINT: string;
+
+  /** Name of the postgres table for storing the embeddings */
+  EMBEDDING_TABLENAME: string;
 
   /**
    * Number of workers to parallelize document processing.
@@ -72,10 +76,11 @@ export namespace ENV {
   export const RDS_PGVECTOR_IAM_AUTH = envBool('RDS_PGVECTOR_IAM_AUTH', false);
   export const RDS_PGVECTOR_TLS_ENABLED = envBool('RDS_PGVECTOR_TLS_ENABLED', true);
 
-  export const EMBEDDING_PORT = parseInt(process.env.EMBEDDING_PORT || '1337');
-  export const EMBEDDING_SENTENCE_TRANSFORMER_MODEL =
-    process.env.EMBEDDING_SENTENCE_TRANSFORMER_MODEL || 'all-mpnet-base-v2';
-  export const VECTOR_SIZE = parseInt(process.env.VECTOR_SIZE || '768');
+  export const EMBEDDINGS_SAGEMAKER_MODEL = process.env.EMBEDDINGS_SAGEMAKER_MODEL!;
+  export const EMBEDDINGS_SAGEMAKER_ENDPOINT = process.env.EMBEDDINGS_SAGEMAKER_ENDPOINT!;
+
+  export const VECTOR_SIZE = parseInt(process.env.VECTOR_SIZE!);
+
   export const CHUNK_SIZE = parseInt(process.env.CHUNK_SIZE || '1000');
   export const CHUNK_OVERLAP = parseInt(process.env.CHUNK_OVERLAP || '200');
   export const VECTOR_INDEX_LISTS = parseInt(process.env.VECTOR_INDEX_LISTS || '1000');
@@ -83,9 +88,7 @@ export namespace ENV {
   export const INDEXING_GLOB = process.env.INDEXING_GLOB || '**/*.*';
   export const INDEXING_SUPPORTED_CONTENT_TYPES = process.env.INDEXING_SUPPORTED_CONTENT_TYPES || 'text/plain';
 
-  export const EMBEDDING_TABLENAME = normalizePostgresTableName(
-    `${EMBEDDING_SENTENCE_TRANSFORMER_MODEL}_${VECTOR_SIZE}`,
-  );
+  export const EMBEDDING_TABLENAME = process.env.EMBEDDING_TABLENAME!;
 
   export const INDEXING_SKIP_DELTA_CHECK = envBool('INDEXING_SKIP_DELTA_CHECK', false);
 

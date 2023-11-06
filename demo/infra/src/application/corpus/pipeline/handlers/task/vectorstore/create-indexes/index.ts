@@ -17,6 +17,7 @@ const IMAGE_DIR = path.join(__dirname, 'image');
 export interface VectorStoreCreateIndexTaskProps {
   readonly vpc: ec2.IVpc;
   readonly vectorStore: RDSVectorStore;
+  readonly additionalEnvironment?: Record<string, string>;
 }
 
 export class VectorStoreCreateIndexTask extends Construct {
@@ -68,7 +69,10 @@ export class VectorStoreCreateIndexTask extends Construct {
       containerOverrides: [
         {
           containerDefinition,
-          environment: Object.entries(vectorStore.environment).map(([name, value]) => {
+          environment: Object.entries({
+            ...vectorStore.environment,
+            ...props.additionalEnvironment,
+          }).map(([name, value]) => {
             return { name, value };
           }),
         },

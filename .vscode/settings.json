@@ -12,8 +12,7 @@
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "gradle.nestedProjects": true,
   "python.analysis.extraPaths": [
-    "${workspaceFolder}/demo/api/generated/runtime/python",
-    "${workspaceFolder}/demo/corpus/embeddings"
+    "${workspaceFolder}/demo/api/generated/runtime/python"
   ],
   "prettier.trailingComma": "all",
   "prettier.singleQuote": true,

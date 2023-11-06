@@ -41,6 +41,7 @@
     "demo/",
     "packages/",
     "demo/**/*.*",
+    "docs/**/*.*",
     "samples/",
     "scripts/",
     "!.projenrc.ts",

@@ -14,7 +14,6 @@ packages:
   - demo/api/generated/runtime/typescript
   - demo/corpus
   - demo/website
-  - demo/corpus/embeddings
   - demo/corpus/logic
   - demo/infra
   - demo/sample-dataset

@@ -203,10 +203,13 @@ export class IndexingCache {
 
   @measurable('IndexingCache-resolveS3Metadata')
   async _resolveS3Metadata(objectKeys: string[]) {
-    logger.info(`Resolving S3 metadata: ${objectKeys.length}`, {
-      count: objectKeys.length,
+    logger.info(`Resolving S3 metadata: ${objectKeys.length}`, { count: objectKeys.length });
+    logger.debug({
+      message: 'S3 objects keys to resolve (sample)',
+      sampleSize: 100,
+      totalSize: objectKeys.length,
+      objectKeys: objectKeys.slice(0, 100),
     });
-    logger.debug({ message: 'S3 objects keys to resolve', objectKeys });
 
     const task: async.AsyncBooleanIterator<string> = async (_objectKey: string) =>
       async.retry(

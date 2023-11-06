@@ -1,7 +1,10 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { IEmbeddingModelInfo } from '@aws/galileo-sdk/lib/models';
+import { IEmbeddingModelInfo } from '@aws/galileo-sdk/lib/models/types';
 import { FoundationModelIds } from '../../../ai/predefined/ids';
+
+export type { IEmbeddingModelInfo } from '@aws/galileo-sdk/lib/models/types';
+export { FoundationModelIds } from '../../../ai/predefined/ids';
 
 /** Default path for config file for application */
 export const APPLICATION_CONFIG_JSON = 'config.json';
@@ -110,14 +113,27 @@ export interface ApplicationConfig {
     samples?: {
       datasets: SampleDataSets[];
     };
-    // TODO: support additional embedding models, currently just the default ManagedEmbedding model to match current
-    embeddingsModels: IEmbeddingModelInfo[];
+    managedEmbeddings: {
+      // TODO: support additional embedding models, currently just the default ManagedEmbedding model to match current
+      embeddingsModels: IEmbeddingModelInfo[];
+      instanceType?: string;
+      autoscaling?: {
+        minCapacity?: number;
+        maxCapacity: number;
+      };
+    };
     // TODO: enable this one we support multiple rag engines
     // engines: {
     //   aurora: {
     //     enabled: true;
     //   };
     // };
+    indexing?: {
+      pipeline?: {
+        instanceType?: string;
+        maxInstanceCount?: number;
+      };
+    };
   };
   chat: {
     /**

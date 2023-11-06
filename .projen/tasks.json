@@ -224,7 +224,7 @@
       "name": "postinstall",
       "steps": [
         {
-          "exec": "pnpm exec nx run-many --target=install --output-style=stream --parallel=1 --nx-bail --projects=api-python-runtime,corpus"
+          "exec": "pnpm exec nx run-many --target=install --output-style=stream --parallel=1 --nx-bail --projects=api-python-runtime"
         }
       ]
     },

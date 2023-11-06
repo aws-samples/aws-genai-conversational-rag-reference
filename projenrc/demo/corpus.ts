@@ -1,6 +1,5 @@
 import * as path from 'node:path';
-import { MonorepoTsProject, NxProject } from '@aws/pdk/monorepo';
-import { NxPythonProject } from '../components/python';
+import { MonorepoTsProject } from '@aws/pdk/monorepo';
 import { DEFAULT_RELEASE_BRANCH, PROJECT_AUTHOR, VERSIONS } from '../constants';
 import { TypeScriptProject } from 'projen/lib/typescript';
 import { Project } from 'projen';
@@ -18,7 +17,6 @@ export interface CorpusOptions {
 
 export class Corpus {
   public readonly project: Project;
-  public readonly embeddings: NxPythonProject;
   public readonly logic: TypeScriptProject;
 
   get dockerOutdir(): string {
@@ -35,34 +33,15 @@ export class Corpus {
       name: 'corpus',
     });
 
-    const embeddings = new NxPythonProject({
-      ...PROJECT_AUTHOR,
-      parent,
-      outdir: 'embeddings',
-      name: 'corpus-embeddings',
-      moduleName: 'corpus_embeddings',
-      version: '0.0.0',
-      deps: [
-        'python@>=3.8.1,<4.0',
-        'sentence-transformers@^2.2.2',
-        'typing_extensions@~4.3.0',
-        // https://github.com/pytorch/pytorch/issues/100974
-        'torch@2.0.0',
-        `transformers@{extras = ["torch"], version = "^4.31.0"}`,
-      ],
-      devDeps: ['pytest@^7.3.2', 'pytest-watch@^4.2.0'],
-      dockerfile: false,
-    });
-
     const logic = new TypeScriptProject({
       ...PROJECT_AUTHOR,
       parent,
-      prettier: true,
       defaultReleaseBranch: DEFAULT_RELEASE_BRANCH,
       outdir: 'logic',
       name: 'corpus-logic',
       packageManager: NodePackageManager.PNPM,
       stability: Stability.EXPERIMENTAL,
+      prettier: true,
       package: false,
       deps: [
         '@aws-lambda-powertools/logger',
@@ -114,7 +93,6 @@ export class Corpus {
         },
       },
     });
-    NxProject.ensure(logic).addImplicitDependency(embeddings);
     logic.gitignore.exclude('.docker-dist');
     const bundleTask = logic.addTask('bundle', {
       steps: [
@@ -129,15 +107,7 @@ export class Corpus {
     logic.postCompileTask.spawn(bundleTask);
 
     this.project = parent;
-    this.embeddings = embeddings;
     this.logic = logic;
-
-    NxProject.ensure(parent).addImplicitDependency(embeddings, logic);
-
-    parent.addTask('install', {
-      exec: 'poetry update',
-      cwd: path.relative(parent.outdir, embeddings.outdir),
-    });
 
     // Add all subprojects to monorepo workspace
     monorepo.addWorkspacePackages(

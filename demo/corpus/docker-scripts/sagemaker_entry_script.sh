@@ -28,4 +28,4 @@ NODE_ARGS=(
     )
 
 # Run indexing
-exec /usr/bin/node "${NODE_ARGS[@]}"
+exec $(which node) "${NODE_ARGS[@]}"

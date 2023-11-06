@@ -42,6 +42,9 @@ export class ManagedEmbeddingsMultiModel extends HuggingFaceModel {
       ...props,
       modelId,
       modelDataUrl: modelTar.modelDataUrl,
+      // TODO: need 2xlarge for pipeline bulk processing of 10K+ documents, can use smalling
+      // if smaller corpus. Ideally when bulk processing starts, it would spool up an additional
+      // instance to handle capacity, and shutdown after complete.
       instanceType: props.instanceType ?? 'ml.g4dn.xlarge',
       image: imageMapping.dkrImage(ContainerImages.HF_PYTORCH_INFERENCE_LATEST),
       environment: {

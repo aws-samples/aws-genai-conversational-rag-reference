@@ -5,16 +5,19 @@ export * from '../../../galileo-cdk/src/ai/predefined/ids';
 export * from '../../../galileo-cdk/src/ai/llms/framework/bedrock/constants';
 export * from '../../../galileo-cdk/src/ai/llms/framework/bedrock/utils';
 export * from '../../../galileo-cdk/src/core/app/context';
+export { sortRagEmbeddingModels } from '../../../galileo-cdk/src/core/app/context/utils';
 export * from '../../../../demo/infra/src/application/tags';
 
 import path from 'node:path';
 import chalk from 'chalk';
 import fs from 'fs-extra';
+import { merge } from 'lodash';
 import { formatBedrockModelUUID } from '../../../galileo-cdk/src/ai/llms/framework/bedrock/utils';
 import {
   DEFAULT_APPLICATION_CONFIG,
   APPLICATION_CONFIG_JSON,
   ApplicationConfig,
+  // @ts-ignore - sdk is esm
 } from '../../../galileo-cdk/src/core/app/context';
 
 export const APP_CONFIG_DIR = path.resolve(__dirname, '../../../../demo/infra');
@@ -34,7 +37,7 @@ export namespace helpers {
   export const resolveAppConfig = (file?: string): ApplicationConfig => {
     file = resolveConfigPath(file);
     if (fs.existsSync(file)) {
-      return fs.readJsonSync(file, { encoding: 'utf-8' });
+      return merge({}, DEFAULT_APPLICATION_CONFIG, fs.readJsonSync(file, { encoding: 'utf-8' }));
     }
     return DEFAULT_APPLICATION_CONFIG;
   };
@@ -60,5 +63,15 @@ export namespace helpers {
     if (value == null) return defaultValue;
     if (value.replace(/\s/g, '').length === 0) return defaultValue;
     return value;
+  };
+
+  export const textPromptMessage = (
+    message: string,
+    extra: { description?: string; instructions?: string; info?: string },
+  ): string => {
+    if (extra.info) message += chalk.gray(extra.info);
+    if (extra.description) message += chalk.gray('\n' + extra.description + '\n');
+    if (extra.instructions) message += chalk.yellow('\n' + extra.instructions + '\n');
+    return message;
   };
 }

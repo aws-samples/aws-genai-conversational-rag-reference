@@ -5,6 +5,7 @@ import { Stack, Stage } from 'aws-cdk-lib';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { IConstruct } from 'constructs';
 import * as fs from 'fs-extra';
+import { merge } from 'lodash';
 import { DEFAULT_APPLICATION_CONFIG } from './defaults';
 import { APPLICATION_CONFIG_JSON, ApplicationConfig, IApplicationContext } from './types';
 import { resolveBoolean } from './utils';
@@ -85,7 +86,9 @@ export class ApplicationContext implements IApplicationContext {
       process.env.GALILEO_CONFIG || this.tryGetContext<string>(scope, 'configPath') || APPLICATION_CONFIG_JSON,
     );
 
-    this.config = ssmConfig || this.readConfig(this.configPath);
+    // merge the supplied application config with the defaults to ensure any new features/updates are applied
+    // use default array merge of replace
+    this.config = merge({}, DEFAULT_APPLICATION_CONFIG, ssmConfig || this.readConfig(this.configPath));
 
     this.applicationName = this.config.app.name;
   }

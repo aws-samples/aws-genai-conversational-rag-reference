@@ -3,18 +3,20 @@ PDX-License-Identifier: Apache-2.0 */
 import { PGVectorStoreOptions, distanceStrategyFromValue } from '@aws/galileo-sdk/lib/vectorstores';
 import { corsInterceptor } from 'api-typescript-interceptors';
 import { Document, embedDocumentsHandler, embedQueryHandler, similaritySearchHandler } from 'api-typescript-runtime';
+import { Embeddings } from 'langchain/embeddings/base';
 import { VectorStore } from 'langchain/vectorstores/base';
 import { isEmpty } from 'lodash';
-import * as Embeddings from '../embedding';
+import { SageMakerEndpointEmbeddings } from '../embedding';
+import { ENV } from '../env';
 import { vectorStoreFactory } from '../vectorstore';
 
-let __EMBEDDINGS__: Embeddings.LocalEmbeddings;
+let __EMBEDDINGS__: Embeddings;
 const DEFAULT_KEY = 'DEFAULT';
 const VECTOR_STORE_CACHE = new Map<string, VectorStore>();
 
-function getEmbeddings(): Embeddings.LocalEmbeddings {
+function getEmbeddings(): Embeddings {
   if (__EMBEDDINGS__ == null) {
-    __EMBEDDINGS__ = new Embeddings.LocalEmbeddings({});
+    __EMBEDDINGS__ = new SageMakerEndpointEmbeddings({});
   }
 
   return __EMBEDDINGS__;
@@ -85,13 +87,13 @@ export const similaritySearch = similaritySearchHandler(...interceptors, async (
 export const embedDocuments = embedDocumentsHandler(...interceptors, async ({ input }) => {
   const { texts } = input.body;
 
-  const { embeddings, model } = await Embeddings.embedDocuments(texts);
+  const embeddings = await getEmbeddings().embedDocuments(texts);
 
   return {
     statusCode: 200,
     body: {
       embeddings,
-      model,
+      model: ENV.EMBEDDINGS_SAGEMAKER_MODEL,
     },
   };
 });
@@ -103,13 +105,13 @@ export const embedQuery = embedQueryHandler(...interceptors, async ({ input }) =
     throw new Error('InvalidPayload: text is required');
   }
 
-  const { embedding, model } = await Embeddings.embedQuery(text);
+  const embedding = await getEmbeddings().embedQuery(text);
 
   return {
     statusCode: 200,
     body: {
       embedding,
-      model,
+      model: ENV.EMBEDDINGS_SAGEMAKER_MODEL,
     },
   };
 });

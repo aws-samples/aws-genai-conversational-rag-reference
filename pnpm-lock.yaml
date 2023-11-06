@@ -1016,6 +1016,9 @@ importers:
       '@aws-cdk/aws-lambda-python-alpha':
         specifier: ^2.99.1-alpha.0
         version: 2.99.1-alpha.0(aws-cdk-lib@2.99.1)(constructs@10.2.70)
+      '@aws-cdk/aws-sagemaker-alpha':
+        specifier: ^2.99.1-alpha.0
+        version: 2.99.1-alpha.0(aws-cdk-lib@2.99.1)(constructs@10.2.70)
       '@aws-lambda-powertools/logger':
         specifier: ^1.12.1
         version: 1.12.1
@@ -1635,6 +1638,17 @@ packages:
     engines: {node: '>= 14.15.0'}
     peerDependencies:
       aws-cdk-lib: 2.99.0
+      constructs: ^10.0.0
+    dependencies:
+      aws-cdk-lib: 2.99.1(constructs@10.2.70)
+      constructs: 10.2.70
+    dev: false
+
+  /@aws-cdk/aws-sagemaker-alpha@2.99.1-alpha.0(aws-cdk-lib@2.99.1)(constructs@10.2.70):
+    resolution: {integrity: sha512-3s7vBa+rJ6xb4Fy6gTwG7PkHYOY74AlenEox0m3fyGbDs1h61qFwGBxDgIkbPi2ZjWFK3qIKjj6UPDttoFoitw==}
+    engines: {node: '>= 14.15.0'}
+    peerDependencies:
+      aws-cdk-lib: 2.99.1
       constructs: ^10.0.0
     dependencies:
       aws-cdk-lib: 2.99.1(constructs@10.2.70)
