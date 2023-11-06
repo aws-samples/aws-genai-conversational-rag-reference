@@ -7,6 +7,9 @@ export interface ImageRepositoryMappingProps {
   region: string;
 }
 
+/**
+ * CfnMapping of region-to-account mappings for ECS images.
+ */
 export class ImageRepositoryMapping extends Construct {
   public readonly mapping: cdk.CfnMapping;
   public readonly account: string;

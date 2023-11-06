@@ -85,10 +85,6 @@ export default class DeployCommand extends Command {
 
     context.appConfig.bedrock = await galileoPrompts.bedrockConfig();
 
-    context.appConfig.rag.samples = await galileoPrompts.sampleConfig();
-
-    context.appConfig.tooling = await galileoPrompts.toolingConfig();
-
     // foundational models -related info
     const availableModelIds = helpers.availableModelIds(
       context.appConfig.llms.predefined.sagemaker,
@@ -98,6 +94,11 @@ export default class DeployCommand extends Command {
       onCancel: this.onPromptCancel,
     });
     context.appConfig.llms.defaultModel = defaultModelId;
+
+    context.appConfig.rag = await galileoPrompts.ragConfig();
+    context.appConfig.rag.samples = await galileoPrompts.sampleConfig();
+
+    context.appConfig.tooling = await galileoPrompts.toolingConfig();
 
     helpers.saveAppConfig(context.appConfig, appConfigPath);
 

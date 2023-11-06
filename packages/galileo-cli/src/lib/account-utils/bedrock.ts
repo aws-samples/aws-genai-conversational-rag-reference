@@ -2,6 +2,7 @@
 PDX-License-Identifier: Apache-2.0 */
 
 import execa from 'execa';
+import { CredentialsParams } from '../types';
 
 export enum BedrockModality {
   TEXT = 'TEXT',
@@ -46,15 +47,19 @@ export interface BedrockModelSummary {
   readonly inferenceTypesSupported: string[];
 }
 
-export async function listBedrockModels(region: string): Promise<BedrockModelSummary[]> {
+export async function listBedrockModels({
+  profile,
+  region,
+}: Required<CredentialsParams>): Promise<BedrockModelSummary[]> {
   const response = JSON.parse(
-    (await execa.command(`aws --region ${region} --output json bedrock list-foundation-models`)).stdout,
+    (await execa.command(`aws --region ${region} --profile ${profile} --output json bedrock list-foundation-models`))
+      .stdout,
   );
   return response.modelSummaries as BedrockModelSummary[];
 }
 
-export async function listBedrockTextModels(region: string): Promise<BedrockModelSummary[]> {
-  const models = await listBedrockModels(region);
+export async function listBedrockTextModels(options: Required<CredentialsParams>): Promise<BedrockModelSummary[]> {
+  const models = await listBedrockModels(options);
   return models.filter((v) => {
     const modalities = new Set<string>([...v.inputModalities, ...v.outputModalities]);
     return modalities.size === 1 && modalities.has(BedrockModality.TEXT);

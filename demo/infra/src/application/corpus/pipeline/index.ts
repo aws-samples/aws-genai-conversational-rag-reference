@@ -1,5 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { BaseLLM } from '@aws/galileo-cdk/lib/ai/llms/framework/base';
 import { ServiceQuotas, SecureBucket } from '@aws/galileo-cdk/lib/common';
 import { ApplicationContext } from '@aws/galileo-cdk/lib/core/app';
 import { RDSVectorStore } from '@aws/galileo-cdk/lib/data';
@@ -34,7 +35,7 @@ const PROCESSING_INPUT_LOCAL_PATH = '/opt/ml/processing/input_data';
 export interface IndexingPipelineOptions {
   /**
    * SageMaker Processing Job instance type
-   * @default "ml.g4dn.2xlarge"
+   * @default "ml.t3.large"
    * @see https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ProcessingClusterConfig.html#sagemaker-Type-ProcessingClusterConfig-InstanceType
    */
   readonly instanceType?: string;
@@ -46,11 +47,12 @@ export interface IndexingPipelineOptions {
   /**
    * Target number of files to process per container. Used to infer the number of containers
    * to use based on number of files to index.
-   * @default 5000
+   * @default 2000
    */
   readonly targetContainerFilesCount?: number;
   readonly scheduled?: boolean;
   readonly scheduleDuration?: Duration;
+  readonly additionalEnvironment?: Record<string, string>;
 }
 
 export interface IndexingPipelineProps extends IndexingPipelineOptions {
@@ -65,11 +67,12 @@ export interface IndexingPipelineProps extends IndexingPipelineOptions {
 
 export class IndexingPipeline extends Construct {
   readonly stateMachine: StateMachine;
+  readonly processingJobRole: Role;
 
   constructor(scope: Construct, id: string, props: IndexingPipelineProps) {
     super(scope, id);
 
-    const instanceType = props.instanceType ?? 'ml.g4dn.2xlarge';
+    const instanceType = props.instanceType ?? 'ml.t3.large';
 
     const {
       inputBucket,
@@ -78,8 +81,9 @@ export class IndexingPipeline extends Construct {
       vectorStore,
       vpc,
       maxInstanceCount = 5,
-      targetContainerFilesCount = 5000,
-      dockerImageSize = Size.gibibytes(6),
+      targetContainerFilesCount = 2000,
+      dockerImageSize = Size.gibibytes(1),
+      additionalEnvironment,
     } = props;
 
     const executionDelay = props.scheduleDuration || Duration.hours(1);
@@ -110,6 +114,7 @@ export class IndexingPipeline extends Construct {
         // Available envs are defined in demo/corpus/logic/src/env.ts
         ...ApplicationContext.getPowerToolsEnv(this),
         ...vectorStore.environment,
+        ...additionalEnvironment,
         INDEXING_BUCKET: props.inputBucket.bucketName,
         INDEXING_CACHE_TABLE: props.cacheTable.tableName,
         // Config task already optimizes the s3 objects (bulk or manifest) so no need to check in container
@@ -159,6 +164,7 @@ export class IndexingPipeline extends Construct {
       runtime: Runtime.NODEJS_18_X,
       environment: {
         ...vectorStore.environment,
+        ...additionalEnvironment,
         PROCESSING_INPUT_LOCAL_PATH,
         INDEXING_BUCKET: props.inputBucket.bucketName,
         INDEXING_CACHE_TABLE: props.cacheTable.tableName,
@@ -200,7 +206,7 @@ export class IndexingPipeline extends Construct {
       true,
     );
 
-    const processingJobRole = new Role(this, 'ProcessingRole', {
+    this.processingJobRole = new Role(this, 'ProcessingRole', {
       assumedBy: new ServicePrincipal('sagemaker.amazonaws.com'),
       inlinePolicies: {
         Logging: new PolicyDocument({
@@ -279,11 +285,10 @@ export class IndexingPipeline extends Construct {
         }),
       },
     });
-
-    inputBucket.grantRead(processingJobRole);
-    stagingBucket.grantReadWrite(processingJobRole);
-    vectorStore.grantConnect(processingJobRole);
-    cacheTable.grantReadWriteData(processingJobRole);
+    inputBucket.grantRead(this.processingJobRole);
+    stagingBucket.grantReadWrite(this.processingJobRole);
+    vectorStore.grantConnect(this.processingJobRole);
+    cacheTable.grantReadWriteData(this.processingJobRole);
 
     const dockerImageCode = DockerImageCode.fromImageAsset(props.dockerImagePath, {
       // Sagemaker processing jobs only support AMD64
@@ -292,7 +297,7 @@ export class IndexingPipeline extends Construct {
     });
 
     // Bind the image to role to ensure gets published and role is granted read access
-    const dockerImageUri = dockerImageCode._bind(Architecture.X86_64).bind(processingJobRole).image!.imageUri;
+    const dockerImageUri = dockerImageCode._bind(Architecture.X86_64).bind(this.processingJobRole).image!.imageUri;
 
     const sagemakerProcessingJobTask = new CustomState(this, 'SageMakerProcessingJobTask', {
       // https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateProcessingJob.html
@@ -325,7 +330,7 @@ export class IndexingPipeline extends Construct {
             MaxRuntimeInSeconds: 30000,
           },
           'Environment.$': StatePaths.Environment,
-          RoleArn: processingJobRole.roleArn,
+          RoleArn: this.processingJobRole.roleArn,
           'ProcessingJobName.$': 'States.UUID()',
         },
         ResultPath: null,
@@ -345,6 +350,7 @@ export class IndexingPipeline extends Construct {
       },
       environment: {
         ...vectorStore.environment,
+        ...additionalEnvironment,
       },
     });
     vectorStore.grantConnect(vectorStoreSetupTaskLambda);
@@ -356,6 +362,7 @@ export class IndexingPipeline extends Construct {
     const vectorStoreIndexTask = new VectorStoreCreateIndexTask(this, 'VectorStoreIndexTask', {
       vpc,
       vectorStore,
+      additionalEnvironment,
     });
     vectorStore.grantConnect(vectorStoreIndexTask.taskRole);
 
@@ -460,7 +467,7 @@ export class IndexingPipeline extends Construct {
     });
 
     NagSuppressions.addResourceSuppressions(
-      [stepFunctionsRole, processingJobRole],
+      [stepFunctionsRole, this.processingJobRole],
       [
         {
           id: 'AwsPrototyping-IAMNoWildcardPermissions',

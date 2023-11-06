@@ -11,7 +11,7 @@
       "ES2022",
       "DOM"
     ],
-    "module": "NodeNext",
+    "module": "None",
     "noEmitOnError": false,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
@@ -19,14 +19,15 @@
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "resolveJsonModule": true,
+    "resolveJsonModule": false,
     "strict": true,
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "stripInternal": true,
     "target": "ES2022",
-    "moduleResolution": "nodenext",
-    "skipLibCheck": true
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "noEmit": true
   },
   "include": [
     ".projenrc.js",

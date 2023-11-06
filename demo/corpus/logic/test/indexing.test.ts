@@ -29,16 +29,18 @@ const PROCESSING_INPUT_LOCAL_PATH = '/tmp/mock/ml/input';
 const EMBEDDING_TABLENAME = 'MockEmbeddingTable';
 const INDEXING_CACHE_TABLE = 'MockIndexingCache';
 const INDEXING_BUCKET = 'mock-bucket';
-const EMBEDDING_SENTENCE_TRANSFORMER_MODEL = 'mock-model';
+const EMBEDDINGS_SAGEMAKER_MODEL = 'mock-model';
+const EMBEDDINGS_SAGEMAKER_ENDPOINT = 'mock-endpoint-name';
 const VECTOR_SIZE = '768';
-const MODEL = normalizePostgresTableName(`${EMBEDDING_SENTENCE_TRANSFORMER_MODEL}_${VECTOR_SIZE}`);
+const MODEL = normalizePostgresTableName(`${EMBEDDINGS_SAGEMAKER_MODEL}_${VECTOR_SIZE}`);
 
 jest.mock('../src/embedding', () => ({
-  LocalEmbeddings: FakeEmbeddings,
+  SageMakerEndpointEmbeddings: FakeEmbeddings,
 }));
 
 jest.mock('../src/vectorstore', () => ({
-  vectorStoreFactory: async () => new MemoryVectorStore(new (require('../src/embedding').LocalEmbeddings)()),
+  vectorStoreFactory: async () =>
+    new MemoryVectorStore(new (require('../src/embedding').SageMakerEndpointEmbeddings)()),
 }));
 
 const inputFiles = Object.fromEntries([...Array(100).keys()].map((_, i) => [`file-${i}.txt`, `Content #${i}`]));
@@ -49,7 +51,9 @@ describe('indexing', () => {
     process.env.EMBEDDING_TABLENAME = EMBEDDING_TABLENAME;
     process.env.INDEXING_CACHE_TABLE = INDEXING_CACHE_TABLE;
     process.env.INDEXING_BUCKET = INDEXING_BUCKET;
-    process.env.EMBEDDING_SENTENCE_TRANSFORMER_MODEL = EMBEDDING_SENTENCE_TRANSFORMER_MODEL;
+    process.env.EMBEDDINGS_SAGEMAKER_MODEL = EMBEDDINGS_SAGEMAKER_MODEL;
+    process.env.EMBEDDINGS_SAGEMAKER_ENDPOINT = EMBEDDINGS_SAGEMAKER_ENDPOINT;
+    process.env.EMBEDDING_TABLENAME = MODEL;
     process.env.VECTOR_SIZE = VECTOR_SIZE;
 
     jest.spyOn(require('../src/indexing/utils'), 'globDir').mockImplementation(async () => {

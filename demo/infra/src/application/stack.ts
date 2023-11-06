@@ -74,8 +74,12 @@ export class Application extends Stack {
         // Enable this to setup scheduling rule to automatically run the pipeline based on duration
         scheduled: false,
         scheduleDuration: Duration.hours(1),
+        ...config.rag.indexing?.pipeline,
       },
       autoScaling: true,
+      embeddingInstanceType: config.rag.managedEmbeddings.instanceType,
+      embeddingModels: config.rag.managedEmbeddings.embeddingsModels!,
+      embeddingModelAutoScaling: config.rag.managedEmbeddings.autoscaling,
     });
     this.corpusEtlStateMachineArn = corpus.pipelineStateMachineArn;
     this.corpusProcessedBucketArn = corpus.processedDataBucket.bucketArn;

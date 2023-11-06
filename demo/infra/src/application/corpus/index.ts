@@ -1,10 +1,15 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { ManagedEmbeddingsMultiModel } from '@aws/galileo-cdk/lib/ai/llms/models/managed-embeddings';
 import { SecureBucket } from '@aws/galileo-cdk/lib/common';
 import { RDSVectorStore } from '@aws/galileo-cdk/lib/data';
+import { sortRagEmbeddingModels } from '@aws/galileo-cdk/src/core/app/context/utils';
+import { IEmbeddingModelInfo } from '@aws/galileo-sdk/lib/models';
+import { normalizePostgresTableName } from '@aws/galileo-sdk/lib/vectorstores/pgvector/utils';
 import { INTERCEPTOR_IAM_ACTIONS } from 'api-typescript-interceptors';
 import { OperationLookup } from 'api-typescript-runtime';
 import { Duration, Size } from 'aws-cdk-lib';
+import { EnableScalingProps } from 'aws-cdk-lib/aws-applicationautoscaling';
 import { AttributeType, BillingMode, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { IVpc, SubnetType } from 'aws-cdk-lib/aws-ec2';
 import { Platform } from 'aws-cdk-lib/aws-ecr-assets';
@@ -33,6 +38,14 @@ export interface CorpusProps extends MonitoredNestedStackProps {
   readonly userPoolClientId: string;
   readonly pipeline?: IndexingPipelineOptions;
   readonly autoScaling?: boolean;
+  readonly embeddingInstanceType?: string;
+  readonly embeddingModels: IEmbeddingModelInfo[];
+  readonly embeddingModelAutoScaling?: EnableScalingProps;
+  /**
+   * Max requests per second (RPS) for embedding model autoscaling.
+   * @default 10
+   */
+  readonly embeddingMaxRequestsPerSecond?: number;
 }
 
 export class CorpusStack extends MonitoredNestedStack {
@@ -60,6 +73,14 @@ export class CorpusStack extends MonitoredNestedStack {
   constructor(scope: Construct, id: string, props: CorpusProps) {
     super(scope, id, props);
 
+    if (props.embeddingModels.length < 1) {
+      throw new Error('Must define at least 1 embedding model in config');
+    }
+
+    // make the default the first model, if no default the first is considered default
+    const sortedEmbeddingModels = sortRagEmbeddingModels(props.embeddingModels);
+    const defaultEmbeddingModel = sortedEmbeddingModels[0];
+
     this.vectorStore = new RDSVectorStore(this, 'VectorStore', {
       vpc: props.vpc,
     });
@@ -72,6 +93,26 @@ export class CorpusStack extends MonitoredNestedStack {
       sortKey: { name: 'SK', type: AttributeType.STRING },
       billingMode: BillingMode.PAY_PER_REQUEST,
     });
+
+    const embeddingsModel = new ManagedEmbeddingsMultiModel(this, 'ManagedEmbeddingsMultiModel', {
+      instanceType: props.embeddingInstanceType,
+      embeddingModelIds: sortedEmbeddingModels.map((v) => v.modelId),
+    });
+    props.embeddingModelAutoScaling &&
+      embeddingsModel.autoScaleInstanceCount(props.embeddingModelAutoScaling).scaleOnInvocations('LimitRPS', {
+        maxRequestsPerSecond: props.embeddingMaxRequestsPerSecond ?? 10,
+      });
+
+    // Environment vars for dockers (lambda + processing)
+    const embeddingEnv: Record<string, string> = {
+      EMBEDDINGS_SAGEMAKER_MODEL: defaultEmbeddingModel.modelId,
+      EMBEDDINGS_SAGEMAKER_ENDPOINT: embeddingsModel.endpoint.attrEndpointName,
+      VECTOR_SIZE: defaultEmbeddingModel.dimensions.toString(),
+      // later list will be "workspace", but matching initial naming to prevent data loss
+      EMBEDDING_TABLENAME: normalizePostgresTableName(
+        `${defaultEmbeddingModel.uuid}_${defaultEmbeddingModel.dimensions}`,
+      ),
+    } as const;
 
     const dockerImageCode = DockerImageCode.fromImageAsset(props.dockerImagePath, {
       platform: Platform.LINUX_AMD64,
@@ -93,6 +134,7 @@ export class CorpusStack extends MonitoredNestedStack {
       environment: {
         // Available envs are defined in demo/corpus/logic/src/env.ts
         ...this.vectorStore.environment,
+        ...embeddingEnv,
         USER_POOL_CLIENT_ID: props.userPoolClientId,
         USER_POOL_ID: props.userPoolId,
         TRANSFORMER_CACHE: '/tmp/.cache',
@@ -106,6 +148,7 @@ export class CorpusStack extends MonitoredNestedStack {
         }),
       ],
     });
+    embeddingsModel.grantInvoke(this.apiLambda);
     this.vectorStore.grantConnect(this.apiLambda);
     NagSuppressions.addResourceSuppressions(
       this.apiLambda,
@@ -156,8 +199,19 @@ export class CorpusStack extends MonitoredNestedStack {
       vpc: props.vpc,
       inputBucket: this.processedDataBucket,
       vectorStore: this.vectorStore,
+      additionalEnvironment: {
+        ...props.pipeline?.additionalEnvironment,
+        ...embeddingEnv,
+        // HINT: to easily set chunk size/overlap and index list size, update these env
+        // - later these will be configurable in "workspace"
+        // CHUNK_SIZE: "1000",
+        // CHUNK_OVERLAP: "200",
+        // VECTOR_INDEX_LISTS: "1000",
+      },
       ...props.pipeline,
     });
+
+    embeddingsModel.grantInvoke(this.pipeline.processingJobRole);
 
     // add dependency from pipeline stateMachine to apiLambda to make sure image has been deployed
     this.pipeline.stateMachine.node.addDependency(this.apiLambda);

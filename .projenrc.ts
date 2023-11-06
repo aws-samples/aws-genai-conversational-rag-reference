@@ -6,8 +6,7 @@ import { MonorepoProject } from './projenrc/monorepo';
 const DEMO_DIR = 'demo';
 
 const monorepo = new MonorepoProject({
-  repository:
-    'https://github.com/aws-samples/aws-genai-conversational-rag-reference',
+  repository: 'https://github.com/aws-samples/aws-genai-conversational-rag-reference',
   devDeps: [
     '@types/clear',
     '@types/figlet',
@@ -41,16 +40,14 @@ const monorepo = new MonorepoProject({
   },
 });
 
-monorepo.package.addField(
-  'homepage',
-  'https://aws-samples.github.io/aws-genai-conversational-rag-reference'
-);
+monorepo.package.addField('homepage', 'https://aws-samples.github.io/aws-genai-conversational-rag-reference');
 
 monorepo.tryFindObjectFile('tsconfig.json')?.addOverride('ts-node', {
   require: ['tsconfig-paths/register'],
 });
 
 monorepo.eslint?.addIgnorePattern(DEMO_DIR + '/**/*.*');
+monorepo.eslint?.addIgnorePattern('docs/**/*.*');
 
 // Just some helper tasks to abstract deployment for consumers
 monorepo.addTask('bootstrap-account', {

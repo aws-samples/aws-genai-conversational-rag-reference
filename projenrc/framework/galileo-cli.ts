@@ -19,9 +19,11 @@ export class GalileoCli extends TypeScriptAppProject {
     const tsconfig: TypescriptConfigOptions = {
       compilerOptions: {
         lib: ['ES2022', 'DOM'],
-        module: 'NodeNext',
-        moduleResolution: TypeScriptModuleResolution.NODE_NEXT,
+        module: 'None',
+        moduleResolution: TypeScriptModuleResolution.NODE,
         skipLibCheck: true,
+        resolveJsonModule: false,
+        noEmit: true,
 
         // set these to `undefined` in order to be able to import "external" code
         // currently we're using imports (model ids) from demo/infra

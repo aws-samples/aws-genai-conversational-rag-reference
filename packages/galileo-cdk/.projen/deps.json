@@ -262,6 +262,11 @@
       "type": "runtime"
     },
     {
+      "name": "@aws-cdk/aws-sagemaker-alpha",
+      "version": "^2.99.1-alpha.0",
+      "type": "runtime"
+    },
+    {
       "name": "cdk-nag",
       "type": "runtime"
     }

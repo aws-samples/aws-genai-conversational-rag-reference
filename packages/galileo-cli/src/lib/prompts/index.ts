@@ -3,7 +3,7 @@ PDX-License-Identifier: Apache-2.0 */
 
 // import * as path from "node:path";
 import chalk from 'chalk';
-import { isEmpty, sortBy } from 'lodash';
+import { isEmpty, last, set, sortBy } from 'lodash';
 import prompts, { PromptObject } from 'prompts';
 import {
   APPLICATION_CONFIG_JSON,
@@ -12,8 +12,10 @@ import {
   DEFAULT_APPLICATION_NAME,
   DEFAULT_PREDEFINED_FOUNDATION_MODEL_LIST,
   FoundationModelIds,
+  IEmbeddingModelInfo,
   SampleDataSets,
   helpers,
+  sortRagEmbeddingModels,
 } from '../../internals';
 import { listBedrockTextModels } from '../account-utils/bedrock';
 import context from '../context';
@@ -151,24 +153,56 @@ namespace galileoPrompts {
 
   // TODO: remove this and move sample deployment to upload data command
   export async function sampleConfig(): Promise<ApplicationConfig['rag']['samples']> {
-    const { sampleDatasets } = await prompts({
-      name: 'sampleDatasets',
-      message: 'Deploy sample dataset?',
-      type: 'multiselect',
-      instructions: chalk.gray(
-        '\n ↑/↓: Highlight option, ←/→/[space]: Toggle selection, a: Toggle all, enter/return: Complete answer',
-      ),
-      choices: Object.values(SampleDataSets).map((value) => ({
-        title: value,
-        value: value,
-        selected: context.appConfig.rag.samples?.datasets.includes(value),
-      })),
-      min: 0,
-    });
+    const sampleDatasets = (
+      await prompts({
+        name: 'sampleDatasets',
+        message: 'Deploy sample dataset?',
+        type: 'multiselect',
+        instructions: chalk.gray(
+          '\n ↑/↓: Highlight option, ←/→/[space]: Toggle selection, a: Toggle all, enter/return: Complete answer',
+        ),
+        choices: Object.values(SampleDataSets).map((value) => ({
+          title: value,
+          value: value,
+          selected: context.appConfig.rag.samples?.datasets.includes(value),
+        })),
+        min: 0,
+      })
+    ).sampleDatasets as SampleDataSets[];
 
     if (isEmpty(sampleDatasets)) {
       return undefined;
     }
+
+    if (sampleDatasets.includes(SampleDataSets.SUPREME_COURT_CASES)) {
+      if (
+        context.appConfig.rag.indexing?.pipeline?.maxInstanceCount ||
+        0 < 10 ||
+        context.appConfig.rag.managedEmbeddings.autoscaling?.maxCapacity ||
+        0 < 5
+      ) {
+        if (
+          (
+            await prompts({
+              type: 'confirm',
+              message: helpers.textPromptMessage(
+                'Indexing of the sample dataset might take several hours based on your config, do you want to apply recommended settings?',
+                {
+                  description:
+                    'Recommended: embedding model autoscaling max capacity of 5, and indexing container max instances of 10',
+                  instructions: 'This might results in higher cost',
+                },
+              ),
+              name: 'confirm',
+            })
+          ).confirm
+        ) {
+          set(context.appConfig, 'rag.indexing.pipeline.maxInstanceCount', 10);
+          set(context.appConfig, 'rag.managedEmbeddings.autoscaling.maxCapacity', 5);
+        }
+      }
+    }
+
     return {
       datasets: sampleDatasets,
     };
@@ -260,7 +294,13 @@ namespace galileoPrompts {
       },
     ]);
 
-    const availableTextModels = sortBy(await listBedrockTextModels(region), ['modelId']);
+    const availableTextModels = sortBy(
+      await listBedrockTextModels({
+        region,
+        profile: process.env.AWS_PROFILE!,
+      }),
+      ['modelId'],
+    );
 
     const { models } = await prompts([
       {
@@ -294,6 +334,125 @@ namespace galileoPrompts {
       region,
       models,
       endpointUrl: helpers.ifNotEmpty(endpointUrl),
+    };
+  }
+
+  export async function ragEmbeddingModel(
+    initial?: IEmbeddingModelInfo,
+    isDefault: boolean = false,
+  ): Promise<IEmbeddingModelInfo> {
+    const { modelId, dimensions } = await prompts([
+      {
+        type: 'text',
+        name: 'modelId',
+        message: helpers.textPromptMessage('Embedding model', {
+          description: 'Enter the model id to use for embeddings, supports any AutoML model',
+          instructions:
+            'Example: sentence-transformers/all-mpnet-base-v2, intfloat/multilingual-e5-large, sentence-transformers/all-MiniLM-L6-v2',
+        }),
+        initial: initial?.modelId,
+        min: 3,
+      },
+      {
+        type: 'number',
+        name: 'dimensions',
+        message: helpers.textPromptMessage('Embedding Vector Size', {
+          description: 'Enter the vector size for the chosen embedding model',
+        }),
+        initial: initial?.dimensions,
+      },
+    ]);
+
+    return {
+      uuid: last((modelId as String).split('/'))!,
+      modelId,
+      dimensions,
+      default: isDefault === true ? true : undefined,
+    };
+  }
+
+  export async function ragManagedEmbeddings(): Promise<ApplicationConfig['rag']['managedEmbeddings']> {
+    const embeddingModel = await ragEmbeddingModel(
+      sortRagEmbeddingModels(context.appConfig.rag.managedEmbeddings.embeddingsModels)[0],
+    );
+
+    let { instanceType } = await prompts([
+      {
+        type: 'text',
+        name: 'instanceType',
+        message: helpers.textPromptMessage('Embedding model instance type', {
+          description: 'Enable autoscaling the embedding instance capacity based',
+          instructions: `Recommend "ml.g4dn.xlarge" for smaller datasets, and "ml.g4dn.2xlarge" for larger datasets`,
+        }),
+        initial: context.appConfig.rag.managedEmbeddings.instanceType ?? 'ml.g4dn.xlarge',
+      },
+    ]);
+
+    let { maxCapacity } = await prompts([
+      {
+        type: 'number',
+        name: 'maxCapacity',
+        message: helpers.textPromptMessage('Embedding model max capacity (autoscaling)', {
+          description: 'Enable autoscaling the embedding instance capacity based',
+          instructions: `Ensure adequate Service Quota limit for SageMaker > "${instanceType} for endpoint usage"`,
+        }),
+        initial: context.appConfig.rag.managedEmbeddings.autoscaling?.maxCapacity ?? 1,
+      },
+    ]);
+
+    maxCapacity = parseInt(maxCapacity ?? 1, 10);
+
+    return {
+      instanceType,
+      embeddingsModels: [embeddingModel],
+      ...(maxCapacity > 1
+        ? {
+            autoscaling: {
+              maxCapacity,
+            },
+          }
+        : {}),
+    };
+  }
+
+  export async function ragIndexing(): Promise<ApplicationConfig['rag']['indexing']> {
+    let { instanceType } = await prompts([
+      {
+        type: 'text',
+        name: 'instanceType',
+        message: helpers.textPromptMessage('Indexing Pipeline instance type', {
+          description: 'Instance type used for processing dataset files and indexing to vector store',
+        }),
+        initial: context.appConfig.rag.indexing?.pipeline?.instanceType ?? 'ml.g4dn.xlarge',
+      },
+    ]);
+    let { maxInstanceCount } = await prompts([
+      {
+        type: 'number',
+        name: 'maxInstanceCount',
+        message: helpers.textPromptMessage('Indexing Pipeline max containers', {
+          description: 'Number of containers used for indexing files to vector store',
+          instructions: `Ensure adequate Service Quota limit for SageMaker > "${instanceType} for processing job"`,
+        }),
+        initial: context.appConfig.rag.indexing?.pipeline?.maxInstanceCount ?? 5,
+      },
+    ]);
+
+    maxInstanceCount = parseInt(maxInstanceCount ?? 1);
+
+    return {
+      pipeline: {
+        instanceType,
+        maxInstanceCount,
+      },
+    };
+  }
+
+  export async function ragConfig(): Promise<ApplicationConfig['rag']> {
+    return {
+      ...context.appConfig.rag,
+      managedEmbeddings: await ragManagedEmbeddings(),
+      indexing: await ragIndexing(),
     };
   }
 

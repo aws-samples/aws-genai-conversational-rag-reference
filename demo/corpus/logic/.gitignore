@@ -43,5 +43,5 @@ junit.xml
 /lib
 /dist/
 !/.eslintrc.json
-!/project.json
 .docker-dist
+!/project.json

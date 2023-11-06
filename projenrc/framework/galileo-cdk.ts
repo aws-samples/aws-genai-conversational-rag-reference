@@ -27,6 +27,7 @@ export class GalileoCdk extends AwsCdkConstructLibrary {
       deps: [
         `@aws-cdk/aws-cognito-identitypool-alpha@^${VERSIONS.CDK}-alpha.0`,
         `@aws-cdk/aws-lambda-python-alpha@^${VERSIONS.CDK}-alpha.0`,
+        `@aws-cdk/aws-sagemaker-alpha@^${VERSIONS.CDK}-alpha.0`,
         'cdk-nag',
       ],
       devDeps: [

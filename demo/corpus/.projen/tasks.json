@@ -29,15 +29,6 @@
       "name": "default",
       "description": "Synthesize project files"
     },
-    "install": {
-      "name": "install",
-      "steps": [
-        {
-          "exec": "poetry update"
-        }
-      ],
-      "cwd": "embeddings"
-    },
     "package": {
       "name": "package",
       "description": "Creates the distribution package"

@@ -116,7 +116,7 @@ async function lambdaHandler(state: State): Promise<Partial<ProcessingJobConfig>
       if (lastIndexedFiltered.length === 0) {
         return {
           RunSagemakerJob: false,
-          RunSagemakerJobReason: 'No files to index after last indexed filer, canceling processing job',
+          RunSagemakerJobReason: 'No files to index after last indexed filter, canceling processing job',
           InventoryDetails: inventory.getDetails(),
         };
       }
