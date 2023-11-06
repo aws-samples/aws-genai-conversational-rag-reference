@@ -1,11 +1,16 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+export const GITHUB = {
+  ORG: 'aws-samples',
+  REPOSITORY: 'aws-genai-conversational-rag-reference',
+};
+
 export const PROJECT_AUTHOR = {
   author: 'AWS APJ COPE',
   authorAddress: 'apj-cope@amazon.com',
   authorName: 'AWS APJ COPE',
   authorEmail: 'apj-cope@amazon.com',
-  repositoryUrl: 'https://github.com/aws-samples/aws-genai-conversational-rag-reference',
+  repositoryUrl: `https://github.com/${GITHUB.ORG}/${GITHUB.REPOSITORY}`,
 } as const;
 
 export const DEFAULT_RELEASE_BRANCH = 'mainline';

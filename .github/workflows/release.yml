@@ -78,7 +78,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    if: needs.release.outputs.latest_commit == github.sha
+    if: ${{ (needs.release.outputs.latest_commit == github.sha) && (github.repository == 'aws-samples/aws-genai-conversational-rag-reference') }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

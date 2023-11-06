@@ -9,7 +9,7 @@ import { Job, JobPermission, JobStep } from 'projen/lib/github/workflows-model';
 import { Eslint, TrailingComma } from 'projen/lib/javascript';
 import { PythonProject } from 'projen/lib/python';
 import { TypeScriptProject } from 'projen/lib/typescript';
-import { VERSIONS } from './constants';
+import { GITHUB, VERSIONS } from './constants';
 
 // Scrappy shim around PDK MonorepoTsProject, which separates stuff we would like
 // to make composable in PDK directly.
@@ -364,7 +364,7 @@ export class MonorepoProject extends MonorepoTsProject {
       },
       runsOn: ['ubuntu-latest'],
       needs: ['release', 'release_github'],
-      if: 'needs.release.outputs.latest_commit == github.sha',
+      if: `\${{ (needs.release.outputs.latest_commit == github.sha) && (github.repository == '${GITHUB.ORG}/${GITHUB.REPOSITORY}') }}`,
       permissions: {
         contents: JobPermission.WRITE,
         pages: JobPermission.WRITE,

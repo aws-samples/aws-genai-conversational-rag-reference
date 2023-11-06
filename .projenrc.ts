@@ -1,12 +1,13 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import { GalileoCdk, Demo, GalileoSdk, GalileoCli } from './projenrc';
+import { GITHUB } from './projenrc/constants';
 import { MonorepoProject } from './projenrc/monorepo';
 
 const DEMO_DIR = 'demo';
 
 const monorepo = new MonorepoProject({
-  repository: 'https://github.com/aws-samples/aws-genai-conversational-rag-reference',
+  repository: `https://github.com/${GITHUB.ORG}/${GITHUB.REPOSITORY}`,
   devDeps: [
     '@types/clear',
     '@types/figlet',
@@ -40,7 +41,7 @@ const monorepo = new MonorepoProject({
   },
 });
 
-monorepo.package.addField('homepage', 'https://aws-samples.github.io/aws-genai-conversational-rag-reference');
+monorepo.package.addField('homepage', `https://${GITHUB.ORG}.github.io/${GITHUB.REPOSITORY}`);
 
 monorepo.tryFindObjectFile('tsconfig.json')?.addOverride('ts-node', {
   require: ['tsconfig-paths/register'],
