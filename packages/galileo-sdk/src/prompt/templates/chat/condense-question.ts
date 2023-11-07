@@ -8,13 +8,15 @@ import {
   ScopedHandlebarsPromptTemplateInput,
 } from '../../handlebars.js';
 
-export const CHAT_CONDENSE_QUESTION_PARTIALS: ChatTemplatePartials = {
-  ...BASE_CHAT_PARTIALS,
-  Context: '{{>Dialog}}',
-  Instruction:
-    'Given the following conversational dialog {{~>DelimitedBy}}, and the "Followup Question" below, rephrase the "Followup Question" to be a concise standalone question in its original language. Without answering the question, return only the standalone question.',
-  Cue: 'Followup Question: {{question}}{{>LF}}Standalone Question: ',
-} as const;
+export const CHAT_CONDENSE_QUESTION_TEMPLATE = `Given the following chat history contained in ''' characters, and the "Followup Question" below, rephrase the "Followup Question" to be a concise standalone question in its original language.
+Without answering the question, return only the standalone question.
+
+Chat history: '''
+{{>ChatHistory}}
+'''
+
+Followup Question: {{question}}
+Standalone Question: `;
 
 export interface ChatCondenseQuestionPromptTemplateInputValues {
   readonly chat_history: BaseMessage[];
@@ -38,14 +40,14 @@ export class ChatCondenseQuestionPromptTemplate extends HandlebarsPromptTemplate
 
   constructor(input: ChatCondenseQuestionPromptTemplateInput) {
     super({
-      template: '{{>Layout}}',
+      template: CHAT_CONDENSE_QUESTION_TEMPLATE,
       inputVariables: ['chat_history', 'question'],
       ...input,
       partialVariables: {
         ...input.partialVariables,
       },
       templatePartials: {
-        ...CHAT_CONDENSE_QUESTION_PARTIALS,
+        ...BASE_CHAT_PARTIALS,
         ...input.templatePartials,
       },
     });
