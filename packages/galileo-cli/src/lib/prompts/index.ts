@@ -112,17 +112,27 @@ namespace galileoPrompts {
       initial: options?.initialVal || context.cache.getItem(options?.name ?? 'username'),
     };
   };
-  export const group = (options?: {
+  export const userGroupPicker = (options?: {
     name?: string;
     message?: string;
     initialVal?: string;
-    required?: boolean;
+    groups: string[];
   }): PromptObject => {
+    const _initial = options?.initialVal || context.cache.getItem(options?.name ?? 'group');
     return {
-      type: 'text',
+      type: 'select',
       name: options?.name ?? 'group',
       message: options?.message ?? 'User group',
-      initial: options?.initialVal || context.cache.getItem(options?.name ?? 'group'),
+      instructions: chalk.gray(
+        '\n ↑/↓: Highlight option, ←/→/[space]: Toggle selection, a: Toggle all, enter/return: Complete answer',
+      ),
+      choices:
+        options?.groups.map((_id) => ({
+          title: _id,
+          value: _id,
+          selected: options?.groups.indexOf(_initial) > -1,
+        })) || [],
+      min: 0,
     };
   };
 

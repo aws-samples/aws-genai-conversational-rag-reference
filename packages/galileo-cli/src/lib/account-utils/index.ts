@@ -4,7 +4,13 @@ PDX-License-Identifier: Apache-2.0 */
 import fs from 'node:fs';
 import path from 'node:path';
 import { parse as csvParse } from 'csv-parse/sync';
-import { cognito, CreateCognitoUserRequest, DeleteCognitoUserRequest, CognitoUserInfo } from './cognito';
+import {
+  cognito,
+  CreateCognitoUserRequest,
+  DeleteCognitoUserRequest,
+  CognitoUserInfo,
+  CredentialsWithUserpoolId,
+} from './cognito';
 import { getAWSAccountId } from './get-aws-account-id';
 import { CdkBootstrapInfo, CdkBootstrapInfoRequestOptions, getCdkBootstrapInfo } from './get-bootstrap-info';
 import { UploadDocumentsRequest, s3 } from './s3';
@@ -55,8 +61,12 @@ export namespace accountUtils {
     return cdkBootstrapInfo;
   };
 
-  export const listCognitoUserPools = async (profile: string, region: string) => {
-    return cognito.listUserPools(profile, region);
+  export const listCognitoUserPools = async (creds: CredentialsParams) => {
+    return cognito.listUserPools(creds);
+  };
+
+  export const listCognitoUserGroups = async (options: CredentialsWithUserpoolId) => {
+    return cognito.listUserGroups(options);
   };
 
   export const createCognitoUser = async (options: CreateCognitoUserRequest) => {
@@ -102,7 +112,7 @@ export namespace accountUtils {
     await cognito.bulkCreateCognitoUsers({
       profile,
       region,
-      userPoolId,
+      userpoolId: userPoolId,
       users: records,
     });
   };

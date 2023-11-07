@@ -26,7 +26,7 @@ export default class CognitoCreateUserCommand extends Command {
   async run(): Promise<void> {
     const { flags } = await this.parse(CognitoCreateUserCommand);
 
-    let { profile, region, email, username, group } = flags;
+    let { profile, region, email, username, group, userpoolId } = flags;
     if (!flags.skipConfirmations) {
       const answersAccount = context.cachedAnswers(
         await prompts(
@@ -39,40 +39,59 @@ export default class CognitoCreateUserCommand extends Command {
           { onCancel: this.onPromptCancel },
         ),
       );
+      profile = answersAccount.profile!;
+      region = answersAccount.region!;
+
+      context.ui.newSpinner().start('Loading userpools');
+      const userPools = await accountUtils.listCognitoUserPools({ profile: profile!, region });
+      context.ui.spinner.succeed();
+
+      if (userPools == null) {
+        this.log(
+          chalk.magentaBright(
+            `No userpool deployed in region ${region}. First you need to deploy the app. Quitting...`,
+          ),
+        );
+        this.exit();
+      }
+
+      const { userPoolId: _userpoolId } = context.cachedAnswers(
+        await prompts(galileoPrompts.userPoolPicker(userPools)),
+      );
+      userpoolId = _userpoolId as string;
+
       const answersUser = await prompts(
-        [
-          galileoPrompts.email({ initialVal: flags.email }),
-          galileoPrompts.username({ initialVal: flags.username }),
-          galileoPrompts.group({ initialVal: flags.group }),
-        ],
+        [galileoPrompts.email({ initialVal: flags.email }), galileoPrompts.username({ initialVal: flags.username })],
         { onCancel: this.onPromptCancel },
       );
 
-      profile = answersAccount.profile!;
-      region = answersAccount.region!;
       email = answersUser.email!;
       username = answersUser.username!;
-      group = answersUser.group!;
-    }
 
-    const userPools = await accountUtils.listCognitoUserPools(profile!, region!);
+      context.ui.newSpinner().start('Loading user groups');
+      const userGroups = await accountUtils.listCognitoUserGroups({
+        profile: profile!,
+        region,
+        userpoolId: userpoolId!,
+      });
+      context.ui.spinner.succeed();
 
-    if (userPools == null) {
-      this.log(
-        chalk.magentaBright(`No userpool deployed in region ${region}. First you need to deploy the app. Quitting...`),
+      const { group: _group } = await prompts(
+        galileoPrompts.userGroupPicker({ initialVal: flags.group, groups: userGroups }),
+        { onCancel: this.onPromptCancel },
       );
-      this.exit();
+      group = _group as string;
     }
 
-    const { userPoolId } = context.cachedAnswers(await prompts(galileoPrompts.userPoolPicker(userPools)));
-
+    context.ui.newSpinner().start('Creating cognito user');
     await accountUtils.createCognitoUser({
       profile: profile!,
       region: region!,
       email: email!,
       username: username!,
-      userPoolId,
+      userpoolId: userpoolId!,
       group,
     });
+    context.ui.spinner.succeed();
   }
 }

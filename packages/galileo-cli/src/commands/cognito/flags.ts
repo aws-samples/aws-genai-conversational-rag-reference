@@ -14,6 +14,7 @@ export interface CognitoCreateUserCommandFlags extends BaseCognitoCommandFlags {
   email?: string;
   username?: string;
   group?: string;
+  userpoolId?: string;
 
   skipConfirmations?: boolean;
 }
@@ -49,6 +50,9 @@ export const cognitoCreateUserCommandFlags: FlagInput<CognitoCreateUserCommandFl
   group: Flags.string({
     description: 'The user group to associate the new user with (optional)',
   }),
+  userpoolId: Flags.string({
+    description: 'The userpool id to use in the AWS account',
+  }),
 
   skipConfirmations: Flags.boolean({
     aliases: ['yes', 'non-interactive'],
@@ -56,7 +60,7 @@ export const cognitoCreateUserCommandFlags: FlagInput<CognitoCreateUserCommandFl
     relationships: [
       {
         type: 'all',
-        flags: ['profile', 'region', 'email', 'username'],
+        flags: ['profile', 'region', 'email', 'username', 'userpoolId'],
       },
     ],
   }),

@@ -39,21 +39,10 @@ Make sure that the CSV file has the following columns: "username,email,group"
         { onCancel: this.onPromptCancel },
       ),
     );
-    const { filePath, group } = await prompts(
-      [
-        galileoPrompts.group({
-          message: 'User group (for all new users):',
-          initialVal: flags.group,
-        }),
-        galileoPrompts.filePathPrompt({
-          initialVal: flags.csvFile,
-          what: 'users CSV file',
-        }),
-      ],
-      { onCancel: this.onPromptCancel },
-    );
 
-    const userPools = await accountUtils.listCognitoUserPools(profile, region);
+    context.ui.newSpinner().start('Loading userpools');
+    const userPools = await accountUtils.listCognitoUserPools({ profile, region });
+    context.ui.spinner.succeed();
 
     if (userPools == null) {
       this.log(
@@ -64,6 +53,26 @@ Make sure that the CSV file has the following columns: "username,email,group"
 
     const { userPoolId } = context.cachedAnswers(await prompts(galileoPrompts.userPoolPicker(userPools)));
 
+    context.ui.newSpinner().start('Loading user groups');
+    const userGroups = await accountUtils.listCognitoUserGroups({ profile, region, userpoolId: userPoolId });
+    context.ui.spinner.succeed();
+
+    const { filePath, group } = await prompts(
+      [
+        galileoPrompts.userGroupPicker({
+          message: 'User group (for all new users):',
+          initialVal: flags.group,
+          groups: userGroups,
+        }),
+        galileoPrompts.filePathPrompt({
+          initialVal: flags.csvFile,
+          what: 'users CSV file',
+        }),
+      ],
+      { onCancel: this.onPromptCancel },
+    );
+
+    context.ui.newSpinner().start('Creating cognito users');
     await accountUtils.bulkCreateCognitoUsers({
       profile,
       region,
@@ -71,5 +80,6 @@ Make sure that the CSV file has the following columns: "username,email,group"
       userPoolId,
       group,
     });
+    context.ui.spinner.succeed();
   }
 }
