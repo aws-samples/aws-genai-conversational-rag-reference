@@ -175,12 +175,9 @@ namespace galileoPrompts {
     }
 
     if (sampleDatasets.includes(SampleDataSets.SUPREME_COURT_CASES)) {
-      if (
-        context.appConfig.rag.indexing?.pipeline?.maxInstanceCount ||
-        0 < 10 ||
-        context.appConfig.rag.managedEmbeddings.autoscaling?.maxCapacity ||
-        0 < 5
-      ) {
+      const maxInstanceCount = context.appConfig.rag.indexing?.pipeline?.maxInstanceCount ?? 0;
+      const maxCapacity = context.appConfig.rag.managedEmbeddings.autoscaling?.maxCapacity ?? 0;
+      if (maxInstanceCount < 10 || maxCapacity < 5) {
         if (
           (
             await prompts({

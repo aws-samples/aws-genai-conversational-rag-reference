@@ -11,7 +11,6 @@ export * from '../../../../demo/infra/src/application/tags';
 import path from 'node:path';
 import chalk from 'chalk';
 import fs from 'fs-extra';
-import { merge } from 'lodash';
 import { formatBedrockModelUUID } from '../../../galileo-cdk/src/ai/llms/framework/bedrock/utils';
 import {
   DEFAULT_APPLICATION_CONFIG,
@@ -19,6 +18,7 @@ import {
   ApplicationConfig,
   // @ts-ignore - sdk is esm
 } from '../../../galileo-cdk/src/core/app/context';
+import { mergeApplicationConfigs } from '../../../galileo-cdk/src/core/app/context/utils';
 
 export const APP_CONFIG_DIR = path.resolve(__dirname, '../../../../demo/infra');
 
@@ -37,7 +37,8 @@ export namespace helpers {
   export const resolveAppConfig = (file?: string): ApplicationConfig => {
     file = resolveConfigPath(file);
     if (fs.existsSync(file)) {
-      return merge({}, DEFAULT_APPLICATION_CONFIG, fs.readJsonSync(file, { encoding: 'utf-8' }));
+      const jsonConfig = fs.readJsonSync(file, { encoding: 'utf-8' });
+      return mergeApplicationConfigs(DEFAULT_APPLICATION_CONFIG, jsonConfig);
     }
     return DEFAULT_APPLICATION_CONFIG;
   };
