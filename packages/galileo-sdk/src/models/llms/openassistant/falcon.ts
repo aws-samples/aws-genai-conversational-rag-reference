@@ -1,5 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { CHAT_QUESTION_ANSWER_TEMPLATE } from '../../../prompt/index.js';
 import type { IModelAdapter } from '../../adapter.js';
 import { DEFAULT_MAX_NEW_TOKENS } from '../../constants.js';
 import type { Kwargs } from '../../types.js';
@@ -13,9 +14,10 @@ export const FALCON_ADAPTER: IModelAdapter = {
         SystemMessage: '<|system|>{{content}}<|endoftext|>',
       },
       questionAnswer: {
-        templatePartials: {
-          Cue: 'Question: <|prompter|>{{question}}<|endoftext|>\n\nAnswer: <|assistant|>',
-        },
+        template: CHAT_QUESTION_ANSWER_TEMPLATE.replace(
+          /Question: {{question}}.*$/i,
+          'Question: <|prompter|>{{question}}<|endoftext|>\n\nAnswer: <|assistant|>',
+        ),
       },
     },
   },
