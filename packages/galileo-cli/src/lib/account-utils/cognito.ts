@@ -7,6 +7,7 @@ import {
   CognitoIdentityProviderClient,
   GetGroupCommand,
   ListUserPoolsCommand,
+  ListGroupsCommand,
   AdminDisableUserCommand,
   AdminDeleteUserCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
@@ -20,22 +21,21 @@ export interface CognitoUserInfo {
   readonly group?: string;
 }
 
-export interface CreateCognitoUserRequest extends CredentialsParams, CognitoUserInfo {
-  readonly userPoolId: string;
+export interface CredentialsWithUserpoolId extends CredentialsParams {
+  readonly userpoolId: string;
 }
-
+export interface CreateCognitoUserRequest extends CredentialsWithUserpoolId, CognitoUserInfo {}
 export type DeleteCognitoUserRequest = Omit<CreateCognitoUserRequest, 'group' | 'email'>;
 
-export interface BulkCreateCognitoUsersRequest extends CredentialsParams {
+export interface BulkCreateCognitoUsersRequest extends CredentialsWithUserpoolId {
   readonly users: CognitoUserInfo[];
-  readonly userPoolId: string;
 }
 
 export namespace cognito {
-  export const listUserPools = async (profile: string, region?: string) => {
+  export const listUserPools = async (creds: CredentialsParams) => {
     const client = new CognitoIdentityProviderClient({
-      credentials: fromIni({ profile }),
-      region,
+      credentials: fromIni({ profile: creds.profile }),
+      region: creds.region,
     });
 
     const userpoolsResp = await client.send(
@@ -48,6 +48,21 @@ export namespace cognito {
       id: up.Id!,
       name: up.Name!,
     }));
+  };
+
+  export const listUserGroups = async (options: CredentialsWithUserpoolId) => {
+    const client = new CognitoIdentityProviderClient({
+      credentials: fromIni({ profile: options.profile }),
+      region: options.region,
+    });
+
+    const userGroupsResp = await client.send(
+      new ListGroupsCommand({
+        UserPoolId: options.userpoolId,
+      }),
+    );
+
+    return userGroupsResp.Groups?.map((g) => g.GroupName!) || [];
   };
 
   export const createCognitoUser = async (options: CreateCognitoUserRequest) => {
@@ -71,7 +86,7 @@ export namespace cognito {
           },
         ],
         Username: options.username,
-        UserPoolId: options.userPoolId,
+        UserPoolId: options.userpoolId,
       }),
     );
 
@@ -81,7 +96,7 @@ export namespace cognito {
       const groupResp = await client.send(
         new GetGroupCommand({
           GroupName: options.group,
-          UserPoolId: options.userPoolId,
+          UserPoolId: options.userpoolId,
         }),
       );
 
@@ -93,7 +108,7 @@ export namespace cognito {
         new AdminAddUserToGroupCommand({
           GroupName: options.group!,
           Username: options.username,
-          UserPoolId: options.userPoolId,
+          UserPoolId: options.userpoolId,
         }),
       );
 
@@ -126,7 +141,7 @@ export namespace cognito {
             },
           ],
           Username: user.username,
-          UserPoolId: options.userPoolId,
+          UserPoolId: options.userpoolId,
         }),
       );
 
@@ -137,7 +152,7 @@ export namespace cognito {
           new AdminAddUserToGroupCommand({
             GroupName: user.group!,
             Username: user.username,
-            UserPoolId: options.userPoolId,
+            UserPoolId: options.userpoolId,
           }),
         );
 
@@ -159,7 +174,7 @@ export namespace cognito {
     await client.send(
       new AdminDisableUserCommand({
         Username: options.username,
-        UserPoolId: options.userPoolId,
+        UserPoolId: options.userpoolId,
       }),
     );
     console.log(`${options.username} disabled.`);
@@ -167,7 +182,7 @@ export namespace cognito {
     await client.send(
       new AdminDeleteUserCommand({
         Username: options.username,
-        UserPoolId: options.userPoolId,
+        UserPoolId: options.userpoolId,
       }),
     );
 

@@ -47,7 +47,7 @@ export default class CognitoDeleteUserCommand extends Command {
       username = answersUser.username!;
     }
 
-    const userPools = await accountUtils.listCognitoUserPools(profile!, region!);
+    const userPools = await accountUtils.listCognitoUserPools({ profile: profile!, region });
 
     if (userPools == null) {
       this.log(
@@ -62,7 +62,7 @@ export default class CognitoDeleteUserCommand extends Command {
       profile: profile!,
       region: region!,
       username: username!,
-      userPoolId,
+      userpoolId: userPoolId,
     });
   }
 }
