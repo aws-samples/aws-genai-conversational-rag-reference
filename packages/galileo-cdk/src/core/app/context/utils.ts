@@ -2,6 +2,8 @@
 PDX-License-Identifier: Apache-2.0 */
 
 import { IEmbeddingModelInfo } from '@aws/galileo-sdk/lib/models';
+import { mergeWith } from 'lodash';
+import { ApplicationConfig } from './types';
 
 export function resolveList(
   value?: string | string[],
@@ -60,5 +62,19 @@ export function sortRagEmbeddingModels(embeddingModels: IEmbeddingModelInfo[]): 
     if (b.default) return 1;
     if (a.modelId < b.modelId) return -1;
     return 1;
+  });
+}
+
+/**
+ * Merge multiple application config definitions into a single config.
+ * - Objects are recursively merged
+ * - Arrays are replaced
+ * @param configs List of ApplicationConfig objects to merge
+ * @returns Returns single merged config
+ */
+export function mergeApplicationConfigs(...configs: Partial<ApplicationConfig>[]): ApplicationConfig {
+  return mergeWith({}, ...configs, (_objValue: any, _srcValue: any) => {
+    if (Array.isArray(_srcValue)) return _srcValue;
+    return undefined; // fallback
   });
 }
