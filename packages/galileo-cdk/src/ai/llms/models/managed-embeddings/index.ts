@@ -36,11 +36,9 @@ export class ManagedEmbeddingsMultiModel extends HuggingFaceModel {
 
     const imageMapping = new ImageRepositoryMapping(scope, 'CustomScriptModelMapping', { region });
 
-    const modelId = Array.isArray(embeddingModelIds) ? embeddingModelIds.join(',') : embeddingModelIds;
-
     super(scope, id, {
       ...props,
-      modelId,
+      modelId: id,
       modelDataUrl: modelTar.modelDataUrl,
       // TODO: need 2xlarge for pipeline bulk processing of 10K+ documents, can use smalling
       // if smaller corpus. Ideally when bulk processing starts, it would spool up an additional
@@ -49,7 +47,9 @@ export class ManagedEmbeddingsMultiModel extends HuggingFaceModel {
       image: imageMapping.dkrImage(ContainerImages.HF_PYTORCH_INFERENCE_LATEST),
       environment: {
         // set env for the custom inference.py script to map models
-        MANAGED_EMBEDDINGS_MODEL_IDS: modelId,
+        MANAGED_EMBEDDINGS_MODEL_IDS: Array.isArray(embeddingModelIds)
+          ? embeddingModelIds.join(',')
+          : embeddingModelIds,
       },
     });
   }

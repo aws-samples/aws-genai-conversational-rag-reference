@@ -371,6 +371,7 @@ namespace galileoPrompts {
   export async function ragManagedEmbeddings(): Promise<ApplicationConfig['rag']['managedEmbeddings']> {
     const embeddingModel = await ragEmbeddingModel(
       sortRagEmbeddingModels(context.appConfig.rag.managedEmbeddings.embeddingsModels)[0],
+      true,
     );
 
     let { instanceType } = await prompts([
