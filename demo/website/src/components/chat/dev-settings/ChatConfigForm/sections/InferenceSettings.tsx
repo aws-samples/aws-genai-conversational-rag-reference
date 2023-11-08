@@ -5,7 +5,7 @@ import { Icon } from '@cloudscape-design/components';
 import FormField from '@cloudscape-design/components/form-field';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import { isEmpty } from 'lodash';
-import { FC, useCallback, useEffect } from 'react';
+import { FC, useCallback } from 'react';
 import { Updater } from 'use-immer';
 import { useFoundationModelInventory } from '../../../../../hooks/llm-inventory';
 import { useChatEngineConfigState } from '../../../../../providers/ChatEngineConfig';
@@ -38,17 +38,10 @@ export const InferenceSettings: FC = () => {
     }
   }, []);
 
-  // update default model/endpoint kwargs based on selected model
-  useEffect(() => {
-    const uuid = llmModel?.uuid as string | undefined;
-    if (inventory && uuid) {
-      const predefinedModel = inventory.models[uuid];
-      if (predefinedModel) {
-        setLlmModelKwargs(predefinedModel.framework.modelKwargs);
-        setLlmEndpointKwargs((predefinedModel.framework as ISageMakerEndpointModelFramework).endpointKwargs);
-      }
-    }
-  }, [inventory, llmModel?.uuid]);
+  const predefinedModel = llmModel?.uuid && inventory?.models ? inventory.models[llmModel.uuid] : undefined;
+  const modelKwargs = llmModelKwargs ?? predefinedModel?.framework.modelKwargs;
+  const endpointKwargs =
+    llmEndpointKwargs ?? (predefinedModel?.framework as ISageMakerEndpointModelFramework)?.endpointKwargs;
 
   const updateCustomModel: Updater<ICustomModel> = useCallback(
     (x) => {
@@ -84,7 +77,7 @@ export const InferenceSettings: FC = () => {
       <FormField label="Model Kwargs" stretch>
         <CodeEditor
           language="json"
-          value={toCodeEditorJson(llmModelKwargs)}
+          value={toCodeEditorJson(modelKwargs)}
           onChange={({ detail }) => {
             try {
               detail.value.length && setLlmModelKwargs(JSON.parse(detail.value));
@@ -97,7 +90,7 @@ export const InferenceSettings: FC = () => {
       <FormField label="Model Endpoint Kwargs" stretch>
         <CodeEditor
           language="json"
-          value={toCodeEditorJson(llmEndpointKwargs)}
+          value={toCodeEditorJson(endpointKwargs)}
           onChange={({ detail }) => {
             try {
               detail.value.length && setLlmEndpointKwargs(JSON.parse(detail.value));
