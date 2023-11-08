@@ -59,7 +59,7 @@ for model_id in models_list:
       model_id,
       **download_options,
       local_dir=str(model_folder),
-      local_dir_use_symlinks=True,
+      local_dir_use_symlinks=False,
     )
 
     print(f"Model snapshot downloaded to: {model_folder}", flush=True)
@@ -83,7 +83,7 @@ if CUSTOM_ASSET_CODEBUILD_SRC_DIR != None:
 # tar the model
 ##########################################
 print("create tarbar...")
-subprocess.run(f"tar -chf {model_tar_file} --use-compress-program=pigz *", shell=True, check=True, cwd=str(WORKDIR)) #nosec
+subprocess.run(f"tar -cf {model_tar_file} --use-compress-program=pigz *", shell=True, check=True, cwd=str(WORKDIR)) #nosec
 print(f"{MODEL_TAR_FILENAME} created at ${model_tar_file}")
 print("Model Tar Size:" + str(os.path.getsize(model_tar_file) * 1e-6) + "MB")
 

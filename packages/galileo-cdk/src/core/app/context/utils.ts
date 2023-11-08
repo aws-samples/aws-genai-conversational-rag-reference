@@ -2,7 +2,7 @@
 PDX-License-Identifier: Apache-2.0 */
 
 import { IEmbeddingModelInfo } from '@aws/galileo-sdk/lib/models';
-import { mergeWith } from 'lodash';
+import { mergeWith, sortBy } from 'lodash';
 import { ApplicationConfig } from './types';
 
 export function resolveList(
@@ -57,12 +57,7 @@ export function resolveBooleanOrString(
  */
 export function sortRagEmbeddingModels(embeddingModels: IEmbeddingModelInfo[]): IEmbeddingModelInfo[] {
   // make the default the first model, if no default the first is considered default
-  return embeddingModels.sort((a, b) => {
-    if (a.default) return -1;
-    if (b.default) return 1;
-    if (a.modelId < b.modelId) return -1;
-    return 1;
-  });
+  return sortBy(embeddingModels, ['default', 'uuid', 'modelId']);
 }
 
 /**
