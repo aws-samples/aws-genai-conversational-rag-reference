@@ -301,6 +301,7 @@ namespace galileoPrompts {
       },
     ]);
 
+    context.ui.newSpinner().start('Loading available Bedrock models');
     const availableTextModels = sortBy(
       await listBedrockTextModels({
         region,
@@ -308,6 +309,7 @@ namespace galileoPrompts {
       }),
       ['modelId'],
     );
+    context.ui.spinner.succeed();
 
     const { models } = await prompts([
       {
