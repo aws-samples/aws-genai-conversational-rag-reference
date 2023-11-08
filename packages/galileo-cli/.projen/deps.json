@@ -22,6 +22,10 @@
       "type": "build"
     },
     {
+      "name": "@types/exceljs",
+      "type": "build"
+    },
+    {
       "name": "@types/execa",
       "type": "build"
     },
@@ -217,6 +221,10 @@
     },
     {
       "name": "csv-parse",
+      "type": "runtime"
+    },
+    {
+      "name": "exceljs",
       "type": "runtime"
     },
     {
