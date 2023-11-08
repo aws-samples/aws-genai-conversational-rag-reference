@@ -53,9 +53,11 @@ export namespace s3 {
       } catch (err: any) {
         // bucket in another region -- we can ignore it since `region` parameter
         // represents our application.
-        if (err instanceof S3ServiceException && err.name === 'PermanentRedirect') {
+        if (err instanceof S3ServiceException && (err.name === 'PermanentRedirect' || err.name === 'NoSuchTagSet')) {
           // `PermanentRedirect` happens when bucket is in a different region
           // we expect this -> noop
+          // NoSuchTagSet happens when no tags are present for the bucket
+          // we expect this -> noop, skip
         } else {
           // anything else --> log it
           console.log(`Error: ${JSON.stringify(err, null, 2)}`);
@@ -139,15 +141,9 @@ export namespace s3 {
         partSize: 1024 * 1024 * 5, // optional size of each part, in bytes, at least 5MB
         leavePartsOnError: false, // optional manually handle dropped parts
       });
-      upload.on('httpUploadProgress', (progress) => {
-        context.ui.spinner.text = `\t[${i + 1}/${docKeys.length}] ${progress.Key}: ${progress.part}/${progress.total}`;
-      });
-
-      context.ui.spinner.text = `Uploading ${options.uploadBucket}/${options.uploadKeyPrefix}/${docKey}`;
 
       await upload.done();
-      context.ui.spinner.text = `\t[${i + 1}/${docKeys.length}] ${docKey}`;
+      context.ui.spinner.text = `Uploading documents ${i + 1}/${docKeys.length}`;
     }
-    context.ui.spinner.succeed(`${docKeys.length} documents uploaded`);
   };
 }

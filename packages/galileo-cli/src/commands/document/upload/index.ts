@@ -111,6 +111,7 @@ export default class DocumentUploadCommand extends Command {
       }
     }
 
+    context.ui.newSpinner().start('Uploading documents');
     await accountUtils.uploadDocuments({
       documentMetadata: documentMetadata!,
       metadataFilepath: metadataFile,
@@ -119,6 +120,7 @@ export default class DocumentUploadCommand extends Command {
       uploadBucket,
       uploadKeyPrefix,
     });
+    context.ui.spinner.succeed();
 
     context.ui.newSpinner().start('Loading step functions');
     const stepFunctions = await accountUtils.listStepfunctions({
