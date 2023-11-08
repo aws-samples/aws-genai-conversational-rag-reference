@@ -1,6 +1,16 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { Box, FormField, Modal, SegmentedControl, SpaceBetween, Textarea } from '@cloudscape-design/components';
+import {
+  Box,
+  Checkbox,
+  FormField,
+  Icon,
+  Modal,
+  Popover,
+  SegmentedControl,
+  SpaceBetween,
+  Textarea,
+} from '@cloudscape-design/components';
 import Button from '@cloudscape-design/components/button';
 import { Chat, ChatMessage } from 'api-typescript-react-query-hooks';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -12,6 +22,7 @@ import {
   exportFormatOptions,
 } from './ExportChat.utils';
 import { CHAT_MESSAGE_PARAMS, useListChatMessages } from '../../../hooks/chats';
+import { useChatEngineConfig } from '../../../providers/ChatEngineConfig';
 
 export default function ExportChat(props: { chat: Chat }) {
   const {
@@ -21,6 +32,9 @@ export default function ExportChat(props: { chat: Chat }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [exportFormat, setExportFormat] = useState(ExportFormat.text);
   const [renderedMessages, setRenderedMessages] = useState<string>();
+  const [includeModelKwargs, setIncludeModelKwargs] = useState(true);
+  const [includeLLMInfo, setIncludeLLMInfo] = useState(true);
+  const [config] = useChatEngineConfig();
 
   const { data, isFetching, isError, isLoading } = useListChatMessages({
     chatId,
@@ -47,7 +61,13 @@ export default function ExportChat(props: { chat: Chat }) {
 
   useEffect(() => {
     let text = '';
-    const exportHelper = ChatExportHelper.from(props.chat, messages);
+    const exportHelper = ChatExportHelper.from({
+      chat: props.chat,
+      messages,
+      chatEngineConfig: config,
+      includeLLMInfo,
+      includeModelKwargs,
+    });
 
     switch (exportFormat) {
       case ExportFormat.csv: {
@@ -65,7 +85,7 @@ export default function ExportChat(props: { chat: Chat }) {
     }
 
     setRenderedMessages(text);
-  }, [messages, exportFormat]);
+  }, [messages, exportFormat, includeLLMInfo, includeModelKwargs]);
 
   if (messages.length === 0) {
     return null;
@@ -99,15 +119,55 @@ export default function ExportChat(props: { chat: Chat }) {
           header="Export chat"
         >
           <SpaceBetween size="m">
-            <FormField label="Export format" stretch={true}>
-              <SegmentedControl
-                selectedId={exportFormat}
-                onChange={({ detail }) => {
-                  setExportFormat(detail.selectedId as ExportFormat);
-                }}
-                options={exportFormatOptions}
-              />
-            </FormField>
+            <SpaceBetween size="l" direction="horizontal" alignItems="center">
+              <FormField label="Export format" stretch={true}>
+                <SegmentedControl
+                  selectedId={exportFormat}
+                  onChange={({ detail }) => {
+                    setExportFormat(detail.selectedId as ExportFormat);
+                  }}
+                  options={exportFormatOptions}
+                />
+              </FormField>
+              {config.llmModelKwargs != null && (
+                <FormField label="Model kwargs">
+                  <Checkbox
+                    checked={includeModelKwargs}
+                    onChange={({ detail }) => {
+                      setIncludeModelKwargs(detail.checked);
+                    }}
+                  >
+                    Include
+                  </Checkbox>
+                </FormField>
+              )}
+              {config.llmModel != null && (
+                <FormField label="LLM Info">
+                  <Checkbox
+                    checked={includeLLMInfo}
+                    onChange={({ detail }) => {
+                      setIncludeLLMInfo(detail.checked);
+                    }}
+                  >
+                    Include
+                  </Checkbox>
+                </FormField>
+              )}
+              <Box float="right">
+                <Popover
+                  position="right"
+                  size="medium"
+                  triggerType="custom"
+                  content={
+                    <>
+                      <i>LLM info</i>/<i>Model kwargs</i> are only available in recent chats
+                    </>
+                  }
+                >
+                  <Icon name="status-info" />
+                </Popover>
+              </Box>
+            </SpaceBetween>
 
             <FormField label="Content" stretch={true}>
               <Textarea value={renderedMessages ?? ''} rows={30} readOnly={true} />
