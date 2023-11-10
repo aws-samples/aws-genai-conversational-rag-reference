@@ -52,7 +52,16 @@ export default function ExportChat(props: { chat: Chat }) {
 
   const downloadButtonClicked = useCallback(() => {
     const element = document.createElement('a');
-    const file = new Blob([renderedMessages ?? ''], { type: ExportFormatMime[exportFormat] });
+    const file = new Blob(
+      [
+        // UTF-8 BOM
+        new Uint8Array([0xef, 0xbb, 0xbf]),
+        renderedMessages ?? '',
+      ],
+      {
+        type: `${ExportFormatMime[exportFormat]};charset=utf-8`,
+      },
+    );
     element.href = URL.createObjectURL(file);
     element.download = `chat-${props.chat.chatId}.${ExportFormatExtension[exportFormat]}`;
     document.body.appendChild(element); // Required for this to work in FireFox
