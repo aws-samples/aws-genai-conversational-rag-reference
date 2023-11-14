@@ -16,11 +16,6 @@ export interface IProcessEnv {
    */
   ADMIN_GROUPS: string;
   /**
-   * Domain of chat agent used to provide context for its role
-   * @example "Legal"
-   */
-  DOMAIN: string;
-  /**
    * Role arn used for access foundation model inventory and invoking model endpoints.
    *
    * Used in developer accounts during development to support reusing the primary development account
@@ -40,6 +35,5 @@ export const ENV: IProcessEnv = {
   CHAT_MESSAGE_TABLE_NAME: process.env.CHAT_MESSAGE_TABLE_NAME!,
   CHAT_MESSAGE_TABLE_GSI_INDEX_NAME: process.env.CHAT_MESSAGE_TABLE_GSI_INDEX_NAME!,
   ADMIN_GROUPS: process.env.ADMIN_GROUPS!,
-  DOMAIN: process.env.DOMAIN!,
   FOUNDATION_MODEL_CROSS_ACCOUNT_ROLE_ARN: process.env.FOUNDATION_MODEL_CROSS_ACCOUNT_ROLE_ARN,
 };

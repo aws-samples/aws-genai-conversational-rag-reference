@@ -12,7 +12,7 @@ import { getLogger } from '../common/index.js';
 const logger = getLogger('chat/search');
 
 export interface SearchRetrieverInput extends Omit<RemoteLangChainRetrieverParams, 'auth'> {
-  readonly k?: number;
+  readonly limit?: number;
   readonly filter?: Record<string, unknown>;
   readonly fetch?: typeof fetch;
   // TODO: implement score threshold
@@ -34,7 +34,7 @@ export class SearchRetriever extends RemoteLangChainRetriever {
       ...input,
     });
 
-    this.k = input.k ?? 5;
+    this.k = input.limit ?? 5;
     this.filter = input.filter;
     this.fetch = input.fetch ?? fetch;
     this.scoreThreshold = input.scoreThreshold;

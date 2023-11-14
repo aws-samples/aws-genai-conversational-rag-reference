@@ -165,6 +165,11 @@
       "import": "./lib/chat/chain.js",
       "require": "./lib/chat/chain.cjs"
     },
+    "./lib/chat/config": {
+      "types": "./lib/chat/config/index.d.ts",
+      "import": "./lib/chat/config/index.js",
+      "require": "./lib/chat/config/index.cjs"
+    },
     "./lib/chat/context": {
       "types": "./lib/chat/context.d.ts",
       "import": "./lib/chat/context.js",
@@ -254,6 +259,11 @@
       "types": "./lib/langchain/embeddings/sagemager_endpoint.d.ts",
       "import": "./lib/langchain/embeddings/sagemager_endpoint.js",
       "require": "./lib/langchain/embeddings/sagemager_endpoint.cjs"
+    },
+    "./lib/langchain/output_parsers/pojo": {
+      "types": "./lib/langchain/output_parsers/pojo.d.ts",
+      "import": "./lib/langchain/output_parsers/pojo.js",
+      "require": "./lib/langchain/output_parsers/pojo.cjs"
     },
     "./lib/langchain/patch": {
       "types": "./lib/langchain/patch.d.ts",
@@ -365,6 +375,11 @@
       "import": "./lib/prompt/templates/chat/base.js",
       "require": "./lib/prompt/templates/chat/base.cjs"
     },
+    "./lib/prompt/templates/chat/classify": {
+      "types": "./lib/prompt/templates/chat/classify.d.ts",
+      "import": "./lib/prompt/templates/chat/classify.js",
+      "require": "./lib/prompt/templates/chat/classify.cjs"
+    },
     "./lib/prompt/templates/chat/condense-question": {
       "types": "./lib/prompt/templates/chat/condense-question.d.ts",
       "import": "./lib/prompt/templates/chat/condense-question.js",
@@ -375,10 +390,40 @@
       "import": "./lib/prompt/templates/chat/question-answer.js",
       "require": "./lib/prompt/templates/chat/question-answer.cjs"
     },
+    "./lib/prompt/templates/store/registry": {
+      "types": "./lib/prompt/templates/store/registry.d.ts",
+      "import": "./lib/prompt/templates/store/registry.js",
+      "require": "./lib/prompt/templates/store/registry.cjs"
+    },
+    "./lib/prompt/templates/store/resolver": {
+      "types": "./lib/prompt/templates/store/resolver.d.ts",
+      "import": "./lib/prompt/templates/store/resolver.js",
+      "require": "./lib/prompt/templates/store/resolver.cjs"
+    },
+    "./lib/prompt/templates/store/system": {
+      "types": "./lib/prompt/templates/store/system.d.ts",
+      "import": "./lib/prompt/templates/store/system.js",
+      "require": "./lib/prompt/templates/store/system.cjs"
+    },
+    "./lib/prompt/types": {
+      "types": "./lib/prompt/types.d.ts",
+      "import": "./lib/prompt/types.js",
+      "require": "./lib/prompt/types.cjs"
+    },
+    "./lib/schema": {
+      "types": "./lib/schema/index.d.ts",
+      "import": "./lib/schema/index.js",
+      "require": "./lib/schema/index.cjs"
+    },
     "./lib/utils/bedrock": {
       "types": "./lib/utils/bedrock.d.ts",
       "import": "./lib/utils/bedrock.js",
       "require": "./lib/utils/bedrock.cjs"
+    },
+    "./lib/utils/merge": {
+      "types": "./lib/utils/merge.d.ts",
+      "import": "./lib/utils/merge.js",
+      "require": "./lib/utils/merge.cjs"
     },
     "./lib/vectorstores": {
       "types": "./lib/vectorstores/index.d.ts",

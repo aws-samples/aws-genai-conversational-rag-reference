@@ -4,10 +4,8 @@ PDX-License-Identifier: Apache-2.0 */
 import type {} from '@types/jest';
 import { AIMessage, HumanMessage, SystemMessage } from 'langchain/schema';
 import { LLAMA2_ADAPTER } from './llama2.js';
-import {
-  ChatCondenseQuestionPromptTemplate,
-  ChatQuestionAnswerPromptTemplate,
-} from '../../../prompt/templates/chat/index.js';
+import { resolvePromptTemplateByChainType } from '../../../prompt/templates/store/resolver.js';
+import { ChainType } from '../../../schema/index.js';
 import { ModelAdapter } from '../../adapter.js';
 
 describe('models/llms/meta/llama2', () => {
@@ -15,22 +13,21 @@ describe('models/llms/meta/llama2', () => {
     const adapter = new ModelAdapter(LLAMA2_ADAPTER);
 
     test('should render qa prompt', async () => {
-      const template = new ChatQuestionAnswerPromptTemplate({
-        ...adapter.prompt?.chat?.questionAnswer,
-      });
+      const template = await resolvePromptTemplateByChainType(ChainType.QA, adapter.prompt?.chat?.QA);
       expect(
         await template.format({
           question: 'THE QUESTION',
-          domain: 'DOMAIN',
           context: 'THE CORPUS',
         }),
       ).toMatchSnapshot();
     });
 
     test('should render condense prompt', async () => {
-      const template = new ChatCondenseQuestionPromptTemplate({
-        ...adapter.prompt?.chat?.condenseQuestion,
-      });
+      const template = await resolvePromptTemplateByChainType(
+        ChainType.CONDENSE_QUESTION,
+        adapter.prompt?.chat?.CONDENSE_QUESTION,
+      );
+
       expect(
         await template.format({
           question: 'THE QUESTION',

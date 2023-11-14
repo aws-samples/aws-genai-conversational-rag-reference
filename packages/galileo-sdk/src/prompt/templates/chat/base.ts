@@ -2,7 +2,7 @@
 PDX-License-Identifier: Apache-2.0 */
 import type Handlebars from 'handlebars';
 import { AIMessage, BaseMessage, HumanMessage, SystemMessage } from 'langchain/schema';
-import { HandlebarsTemplatePartials } from '../../handlebars.js';
+import { HandlebarsTemplatePartials } from '../../types.js';
 
 export interface BaseChatTemplatePartials extends HandlebarsTemplatePartials {
   /**
@@ -43,7 +43,7 @@ export const BASE_CHAT_PARTIALS: BaseChatTemplatePartials = {
 {{#if (eq type "human")}}{{>HumanMessage}}
 {{~else if (eq type "ai")}}{{>AIMessage}}
 {{~else if (eq type "system")}}{{>SystemMessage}}
-{{~else}}{{>BaseMessage}}
+{{~else}}{{>BaseMessage}}{{/if}}
 \n
 {{/each}}`,
 } as const;

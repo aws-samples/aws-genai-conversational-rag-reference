@@ -151,3 +151,8 @@ map StringAnyMap {
     key: String
     value: Any
 }
+/// A generic structure for maps that are indexed by a string and hold String value
+map StringMap {
+    key: String
+    value: String
+}

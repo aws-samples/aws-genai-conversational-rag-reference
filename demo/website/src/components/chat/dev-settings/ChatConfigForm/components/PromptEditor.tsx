@@ -1,11 +1,8 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import {
-  ChatCondenseQuestionPromptTemplate,
-  ChatCondenseQuestionPromptTemplateInputValues,
-  ChatQuestionAnswerPromptTemplate,
-  ChatQuestionAnswerPromptTemplateInputValues,
-} from '@aws/galileo-sdk/lib/prompt/templates/chat';
+import { resolvePromptTemplateByChainType } from '@aws/galileo-sdk/lib/prompt/templates/store/resolver';
+import type { PromptRuntime } from '@aws/galileo-sdk/lib/prompt/types';
+import { ChainType } from '@aws/galileo-sdk/lib/schema';
 import { Box, Button, Header, Popover, SpaceBetween, Table, Toggle } from '@cloudscape-design/components';
 import Grid from '@cloudscape-design/components/grid';
 import { Ace } from 'ace-builds';
@@ -13,24 +10,14 @@ import { isEmpty } from 'lodash';
 import { useState, useEffect, FC, useRef, useCallback } from 'react';
 import CodeEditor, { AceEditor } from '../../../../code-editor';
 
-type PromptTemplateClasses = typeof ChatCondenseQuestionPromptTemplate | typeof ChatQuestionAnswerPromptTemplate;
-
 export type PromptEditorInputValues = { [key: string]: any };
 
-export interface PromptEditorProps<
-  T extends object = any,
-  PTC extends PromptTemplateClasses = PromptTemplateClasses,
-  IV extends
-    | ChatCondenseQuestionPromptTemplateInputValues
-    | ChatQuestionAnswerPromptTemplateInputValues = PTC extends typeof ChatCondenseQuestionPromptTemplate
-    ? ChatCondenseQuestionPromptTemplateInputValues
-    : ChatQuestionAnswerPromptTemplateInputValues,
-> {
+export interface PromptEditorProps<CTT extends ChainType = any, T extends object = any> {
   readonly value?: string | T;
-  readonly promptCls: PTC;
-  readonly promptClsOptions?: any;
+  readonly type: CTT;
+  readonly runtime?: PromptRuntime;
   readonly onChange: (value?: string | T) => void;
-  readonly defaultInputValues: Partial<IV>;
+  readonly defaultInputValues: any;
 }
 
 function interpPropValueToCode(value: any): string {
@@ -57,25 +44,26 @@ export const PromptEditor: FC<PromptEditorProps> = (props) => {
 
   // generate a flattened version of the default template
   useEffect(() => {
-    const prompt = new props.promptCls(props.promptClsOptions || {});
+    (async () => {
+      const prompt = await resolvePromptTemplateByChainType(props.type, props.runtime);
+      defaultTemplateRef.current = prompt.flatten();
+      setValue((current) => {
+        if (isEmpty(current)) {
+          return defaultTemplateRef.current!;
+        } else {
+          return current;
+        }
+      });
 
-    defaultTemplateRef.current = prompt.flatten();
-    setValue((current) => {
-      if (isEmpty(current)) {
-        return defaultTemplateRef.current!;
+      if (prompt.templatePartials != null && !isEmpty(prompt.templatePartials)) {
+        setPartials(
+          Object.fromEntries(Object.entries(prompt.templatePartials).map(([_key, _value]) => [_key, String(_value)])),
+        );
       } else {
-        return current;
+        setPartials(undefined);
       }
-    });
-
-    if (prompt.templatePartials != null && !isEmpty(prompt.templatePartials)) {
-      setPartials(
-        Object.fromEntries(Object.entries(prompt.templatePartials).map(([_key, _value]) => [_key, String(_value)])),
-      );
-    } else {
-      setPartials(undefined);
-    }
-  }, [props.promptCls, props.promptClsOptions]);
+    })().catch(console.error);
+  }, [props.type, props.runtime]);
 
   // Update editor auto completion based on template partials
   useEffect(() => {
@@ -130,14 +118,22 @@ export const PromptEditor: FC<PromptEditorProps> = (props) => {
   useEffect(() => {
     (async () => {
       try {
-        const prompt = new props.promptCls({ template: value });
+        const prompt = await resolvePromptTemplateByChainType(
+          props.type,
+          props.runtime,
+          isEmpty(value)
+            ? undefined
+            : {
+                template: value,
+              },
+        );
         const previewValue = await prompt.format(inputValues);
         setPreview(previewValue);
       } catch (error) {
         setPreview(String(error));
       }
     })().catch(console.error);
-  }, [props.promptCls, inputValues, value]);
+  }, [props.type, props.runtime, inputValues, value]);
 
   return (
     <Grid gridDefinition={[{ colspan: 6 }, { colspan: 6 }]}>

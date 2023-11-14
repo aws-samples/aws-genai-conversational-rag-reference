@@ -12,49 +12,6 @@ enum MessageType {
     CHAT = "chat"
 }
 
-enum ChatEngineConfigSearchType {
-    SIMILARITY = "similarity"
-    SIMILARITY_SCORE_THRESHOLD = "similarity_score_threshold"
-    MMR = "mmr"
-}
-
-structure ChatEngineConfig {
-    // Inference LLM model id.
-    // The unique model identifier assigned in application stack foundation model inventory
-    // or a JSON object model info definition.
-    llm_model: Any
-    // Model kwargs to pass to the LLM model
-    llm_model_kwargs: Any
-    // Endpoint kwargs to pass to LLM model
-    llm_endpoint_kwargs: Any
-    // Url of the semantic search endpoint
-    search_url: String
-    // Search kwargs for performing RAG
-    search_kwargs: Any
-    // Memory kwargs for managing chat history
-    memory_kwargs: Any
-    // Type of search
-    search_type: ChatEngineConfigSearchType
-    // Prompt template used for final question/answser request to LLM
-    qa_prompt: Any
-    // Prompt template used for condensing and reformatting question/history prior to invoking question/answer request
-    condense_question_prompt: Any
-}
-
-/// Chat search options
-structure ChatSearchOptions {
-    // The number of sources to consider (k).
-    limit: Integer
-    // Key-value parameter to pass for filtering metadata (e.g.: domain, collection, etc.).
-    filters: StringAnyMap
-}
-
-structure ChatOptions {
-    // Agent domain.
-    domain: String
-    // Search options for vectorstore.
-    search: ChatSearchOptions
-}
 
 @mixin
 structure ChatMessageIdMixin with [ChatIdMixin] {
@@ -124,13 +81,9 @@ structure CreateChatMessageInput for CreateChatMessage {
     chatId: String
     @required
     question: String
-    // Config for chat available only to authorized admin-like groups
-    // Will be ignored for other users
-    config: ChatEngineConfig
 
-    // Define chat options such as domain, and search options for filtering
-    // available for all users
-    options: ChatOptions
+    // Options to customize/configure chat engine
+    options: ChatEngineConfig
 }
 
 structure CreateChatMessageOutput for CreateChatMessage {

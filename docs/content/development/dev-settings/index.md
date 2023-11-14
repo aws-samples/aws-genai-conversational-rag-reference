@@ -41,8 +41,7 @@ Clicking on the ==:material-dots-vertical:== icon will expose the following list
 
 - **Copy :octicons-download-16:**: Copies the current config JSON to clipboard
 - **Paste :octicons-upload-16:**: Overwrite current config with JSON from clipboard
-- **Reset :material-reload:**: Replaces config with stored (*if available*) or default value
-- **Clear :octicons-trash-16:**: Deletes stored value and resets to default value
+- **Reset :material-reload:**: Reset the config to default state
 
 !!! tip "Sharing Configs"
 

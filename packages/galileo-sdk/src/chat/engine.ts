@@ -1,51 +1,31 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import '../langchain/patch.js';
-import { BaseLLM } from 'langchain/llms/base';
-import { PromptTemplate } from 'langchain/prompts';
+import { BaseLanguageModel } from 'langchain/base_language';
 import { BaseRetriever } from 'langchain/schema/retriever';
-import { ChatEngineChain } from './chain.js';
-import { ChatEngineContext } from './context.js';
+import { ChatEngineChain, ChatEngineChainFromInput } from './chain.js';
+import { UnresolvedChatEngineConfig, resolveChatEngineConfig } from './config/index.js';
 import { DynamoDBChatMessageHistory } from './dynamodb/message-history.js';
 import { ChatEngineHistory, ChatTurn } from './memory.js';
-import { SearchRetriever, SearchRetrieverInput } from './search.js';
-import { TKwags } from '../common/types.js';
-import { Dict, IModelInfo } from '../models/index.js';
-import { ChatCondenseQuestionPromptRuntime, ChatQuestionAnswerPromptRuntime } from '../prompt/templates/chat/index.js';
+import { SearchRetriever } from './search.js';
+import { Dict } from '../models/index.js';
 
-export interface ChatEngineConfig {
-  readonly llmModel?: string | IModelInfo;
-  readonly llmModelKwargs?: TKwags;
-  readonly llmEndpointKwargs?: TKwags;
-  readonly search?: SearchRetrieverInput;
-  readonly memoryKwargs?: TKwags;
-  readonly qaPrompt?: string | ChatQuestionAnswerPromptRuntime;
-  readonly condenseQuestionPrompt?: string | ChatCondenseQuestionPromptRuntime;
-}
-
-export interface ChatEngineFromOption {
+export interface ChatEngineFromOption extends UnresolvedChatEngineConfig {
   readonly chatId: string;
   readonly userId: string;
-  readonly domain: string;
   readonly maxNewTokens?: number;
   readonly chatHistoryTable: string;
   readonly chatHistoryTableIndexName: string;
-  readonly search: SearchRetrieverInput;
   readonly verbose?: boolean;
-  readonly config?: ChatEngineConfig;
   readonly returnTraceData?: boolean;
 }
 
-interface ChatEngineProps {
+interface ChatEngineProps extends ChatEngineChainFromInput {
   readonly chatId: string;
   readonly userId: string;
-  readonly domain: string;
-  readonly llm: BaseLLM;
-  readonly chatHistory: DynamoDBChatMessageHistory;
+  readonly llm: BaseLanguageModel;
   readonly memory: ChatEngineHistory;
   readonly retriever: BaseRetriever;
-  readonly qaPrompt: PromptTemplate;
-  readonly condenseQuestionPrompt: PromptTemplate;
   readonly verbose?: boolean;
   readonly returnTraceData?: boolean;
 }
@@ -55,53 +35,41 @@ export class ChatEngine {
     const {
       chatId,
       userId,
-      domain,
       maxNewTokens = 500,
       chatHistoryTable,
       chatHistoryTableIndexName,
-      search: searchOptions,
-      config = {},
       verbose = process.env.LOG_LEVEL === 'DEBUG',
+      returnTraceData,
+      ...unresolvedConfig
     } = options;
 
-    if (domain == null || domain.length === 0) {
-      throw new Error('Missing domain config');
-    }
-
-    const retriever = new SearchRetriever(searchOptions);
-
-    const modelInfo = await ChatEngineContext.resolveModelInfo(config.llmModel);
-
-    const context = new ChatEngineContext(modelInfo, {
-      domain,
-      maxNewTokens,
-      qaPrompt: typeof config.qaPrompt === 'string' ? { template: config.qaPrompt } : config.qaPrompt,
-      condenseQuestionPrompt:
-        typeof config.condenseQuestionPrompt === 'string'
-          ? { template: config.condenseQuestionPrompt }
-          : config.condenseQuestionPrompt,
-      endpointKwargs: config.llmEndpointKwargs,
-      modelKwargs: config.llmModelKwargs,
+    const config = await resolveChatEngineConfig(unresolvedConfig, {
       verbose,
     });
 
+    const retriever = new SearchRetriever(config.search);
+
+    const historyLimit = config.memory?.limit ?? 20;
     const chatHistory = new DynamoDBChatMessageHistory({
       tableName: chatHistoryTable,
       indexName: chatHistoryTableIndexName,
       userId,
       chatId,
+      messagesLimit: historyLimit,
     });
 
     const memory = new ChatEngineHistory({
       chatHistory,
-      k: 20, // TODO: need to right size this
-      ...config.memoryKwargs,
+      k: historyLimit,
     });
 
     return new ChatEngine({
       ...options,
-      ...context,
-      chatHistory,
+      ...config,
+      qaChain: {
+        type: 'stuff',
+        ...config.qaChain,
+      },
       memory,
       retriever,
     });
@@ -109,54 +77,42 @@ export class ChatEngine {
 
   readonly chatId: string;
   readonly userId: string;
-  readonly llm: BaseLLM;
-  readonly chatHistory: DynamoDBChatMessageHistory;
+  readonly llm: BaseLanguageModel;
   readonly memory: ChatEngineHistory;
   readonly retriever: BaseRetriever;
-
   readonly chain: ChatEngineChain;
 
-  protected qaPrompt: PromptTemplate;
-  protected condenseQuestionPrompt: PromptTemplate;
   protected readonly returnTraceData: boolean;
 
   constructor(props: ChatEngineProps) {
     const {
       chatId,
       userId,
-      chatHistory,
       llm,
       memory,
       retriever,
-      qaPrompt,
-      condenseQuestionPrompt,
+      qaChain,
+      condenseQuestionChain,
+      classifyChain,
       verbose,
       returnTraceData,
     } = props;
 
     this.returnTraceData = returnTraceData ?? false;
-    this.qaPrompt = qaPrompt;
-    this.condenseQuestionPrompt = condenseQuestionPrompt;
 
     this.chatId = chatId;
     this.userId = userId;
     this.llm = llm;
-    this.chatHistory = chatHistory;
     this.memory = memory;
     this.retriever = retriever;
 
-    this.chain = ChatEngineChain.fromLLM(this.llm, this.retriever, {
+    this.chain = ChatEngineChain.from({
       verbose,
-      memory: this.memory,
-      qaChainOptions: {
-        type: 'stuff',
-        prompt: this.qaPrompt,
-        verbose,
-      },
-      questionGenerator: {
-        llm: this.llm,
-        prompt: this.condenseQuestionPrompt,
-      },
+      memory,
+      retriever,
+      qaChain,
+      condenseQuestionChain,
+      classifyChain,
       returnSourceDocuments: true,
     }) as ChatEngineChain;
 
@@ -183,9 +139,6 @@ export class ChatEngine {
         chatId: this.chatId,
         userId: this.userId,
         ...this.chain.traceData,
-        llm: this.llm.toJSON(),
-        qaPrompt: this.qaPrompt.toJSON(),
-        condenseQuestionPrompt: this.condenseQuestionPrompt.toJSON(),
       };
     } catch (error) {
       return {

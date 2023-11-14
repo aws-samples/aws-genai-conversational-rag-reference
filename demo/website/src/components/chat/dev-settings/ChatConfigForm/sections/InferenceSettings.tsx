@@ -4,9 +4,11 @@ import { ModelFramework, ISageMakerEndpointModelFramework } from '@aws/galileo-s
 import { Icon } from '@cloudscape-design/components';
 import FormField from '@cloudscape-design/components/form-field';
 import SpaceBetween from '@cloudscape-design/components/space-between';
+import produce from 'immer';
 import { isEmpty } from 'lodash';
 import { FC, useCallback } from 'react';
 import { Updater } from 'use-immer';
+import { useIsAdmin } from '../../../../../Auth';
 import { useFoundationModelInventory } from '../../../../../hooks/llm-inventory';
 import { useChatEngineConfigState } from '../../../../../providers/ChatEngineConfig';
 import CodeEditor from '../../../../code-editor';
@@ -15,48 +17,69 @@ import { CustomModelEditor, ICustomModel } from '../components/CustomModelEditor
 import { CUSTOM_VALUE, ModelSelector } from '../components/ModelSelector';
 
 export const InferenceSettings: FC = () => {
+  const isAdmin = useIsAdmin();
   const inventory = useFoundationModelInventory();
-  const [llmModel, setLlmModel] = useChatEngineConfigState('llmModel');
-  const [llmModelKwargs, setLlmModelKwargs] = useChatEngineConfigState('llmModelKwargs');
-  const [llmEndpointKwargs, setLlmEndpointKwargs] = useChatEngineConfigState('llmEndpointKwargs');
+  const [llm, setLlm] = useChatEngineConfigState('llm');
 
-  const isCustomLlmModel = (llmModel as ICustomModel)?.isCustom === true;
+  // Only allow custom models for admins
+  const isCustomLlmModel = isAdmin && (llm?.model as ICustomModel)?.isCustom === true;
 
-  const onModelSelected = useCallback((value: string) => {
-    if (value === CUSTOM_VALUE) {
-      setLlmModel({
-        isCustom: true,
-        name: 'custom:custom',
-        framework: {
-          type: ModelFramework.SAGEMAKER_ENDPOINT,
-        },
-      } as ICustomModel);
-    } else {
-      setLlmModel({
-        uuid: value,
-      });
-    }
-  }, []);
+  const onModelSelected = useCallback(
+    (value: string) => {
+      if (isAdmin && value === CUSTOM_VALUE) {
+        setLlm((draft) => {
+          return {
+            ...draft,
+            model: {
+              isCustom: true,
+              name: 'custom:custom',
+              framework: {
+                type: ModelFramework.SAGEMAKER_ENDPOINT,
+              },
+            } as ICustomModel,
+          };
+        });
+      } else {
+        setLlm((draft) => {
+          return {
+            ...draft,
+            model: {
+              uuid: value,
+            },
+          };
+        });
+      }
+    },
+    [isAdmin],
+  );
 
-  const predefinedModel = llmModel?.uuid && inventory?.models ? inventory.models[llmModel.uuid] : undefined;
-  const modelKwargs = llmModelKwargs ?? predefinedModel?.framework.modelKwargs;
+  const predefinedModel = llm?.model?.uuid && inventory?.models ? inventory.models[llm.model.uuid] : undefined;
+  const modelKwargs = llm?.modelKwargs ?? predefinedModel?.framework.modelKwargs;
   const endpointKwargs =
-    llmEndpointKwargs ?? (predefinedModel?.framework as ISageMakerEndpointModelFramework)?.endpointKwargs;
+    llm?.endpointKwargs ?? (predefinedModel?.framework as ISageMakerEndpointModelFramework)?.endpointKwargs;
 
-  const updateCustomModel: Updater<ICustomModel> = useCallback(
+  const updateCustomModel = useCallback<Updater<ICustomModel>>(
     (x) => {
-      setLlmModel((draft: any) => {
+      if (isAdmin) {
+        return;
+      }
+      setLlm((draft) => {
+        let nextModel;
         if (typeof x === 'function') {
-          x(draft);
-          return draft;
+          nextModel = produce(draft?.model || {}, x);
         } else if (isEmpty(x)) {
-          return undefined;
+          nextModel = undefined;
         } else {
-          return x;
+          nextModel = x;
         }
+
+        return {
+          ...draft,
+          model: nextModel,
+        };
       });
     },
-    [setLlmModel],
+    [setLlm],
   );
 
   return (
@@ -71,16 +94,26 @@ export const InferenceSettings: FC = () => {
           </>
         }
       >
-        <ModelSelector custom value={isCustomLlmModel ? CUSTOM_VALUE : llmModel?.uuid} onChange={onModelSelected} />
+        <ModelSelector
+          custom={isAdmin}
+          value={isCustomLlmModel ? CUSTOM_VALUE : llm?.model?.uuid}
+          onChange={onModelSelected}
+        />
       </FormField>
-      {isCustomLlmModel && <CustomModelEditor value={llmModel} updateValue={updateCustomModel} />}
+      {isCustomLlmModel && <CustomModelEditor value={llm?.modelKwargs} updateValue={updateCustomModel} />}
       <FormField label="Model Kwargs" stretch>
         <CodeEditor
           language="json"
           value={toCodeEditorJson(modelKwargs)}
           onChange={({ detail }) => {
             try {
-              detail.value.length && setLlmModelKwargs(JSON.parse(detail.value));
+              detail.value.length &&
+                setLlm((draft) => {
+                  return {
+                    ...draft,
+                    modelKwargs: JSON.parse(detail.value),
+                  };
+                });
             } catch (error) {
               console.warn('Failed to parse `LLM Model Kwargs`', detail.value, error);
             }
@@ -93,7 +126,13 @@ export const InferenceSettings: FC = () => {
           value={toCodeEditorJson(endpointKwargs)}
           onChange={({ detail }) => {
             try {
-              detail.value.length && setLlmEndpointKwargs(JSON.parse(detail.value));
+              detail.value.length &&
+                setLlm((draft) => {
+                  return {
+                    ...draft,
+                    endpointKwargs: JSON.parse(detail.value),
+                  };
+                });
             } catch (error) {
               console.warn('Failed to parse `LLM Endpoint Kwargs`', detail.value, error);
             }
