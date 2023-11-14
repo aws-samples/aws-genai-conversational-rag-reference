@@ -10,6 +10,9 @@ export interface EsmExportDefinition {
   // readonly node: string;
   readonly import: string;
   readonly require: string;
+
+  readonly browser?: { import: string; require: string };
+  readonly node?: { import: string; require: string };
 }
 
 export type EsmExportRecord = Record<string, EsmExportDefinition>;
@@ -92,8 +95,23 @@ export class EsmPackageExports extends Component implements EsmPackageExportsOpt
         const libPath = './' + path.join(this.lib, relPath);
         let exportPath = libPath.replace(/(\/index)?\.ts/, '');
 
+        const browser = fs.existsSync(absPath.replace(/\.ts$/, '.browser.ts'));
+        const node = fs.existsSync(absPath.replace(/\.ts$/, '.node.ts'));
+
         exports[exportPath] = {
           types: libPath.replace(/\.ts$/, '.d.ts'),
+          browser: browser
+            ? {
+                import: libPath.replace(/\.ts$/, '.browser.js'),
+                require: libPath.replace(/\.ts$/, '.browser.cjs'),
+              }
+            : undefined,
+          node: node
+            ? {
+                import: libPath.replace(/\.ts$/, '.node.js'),
+                require: libPath.replace(/\.ts$/, '.node.cjs'),
+              }
+            : undefined,
           import: libPath.replace(/\.ts$/, '.js'),
           require: libPath.replace(/\.ts$/, '.cjs'),
         };
