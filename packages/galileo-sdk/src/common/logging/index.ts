@@ -27,3 +27,5 @@ export function getLogger(scopeOrAttributes: string | Record<string, any>, optio
     },
   });
 }
+
+export type getLogger = typeof getLogger;
