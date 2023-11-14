@@ -16,7 +16,6 @@ import {
   DEFAULT_APPLICATION_CONFIG,
   APPLICATION_CONFIG_JSON,
   ApplicationConfig,
-  // @ts-ignore - sdk is esm
 } from '../../../galileo-cdk/src/core/app/context';
 import { mergeApplicationConfigs } from '../../../galileo-cdk/src/core/app/context/utils';
 
