@@ -49,6 +49,10 @@
       "type": "build"
     },
     {
+      "name": "@types/assert",
+      "type": "build"
+    },
+    {
       "name": "@types/jest",
       "type": "build"
     },
@@ -85,6 +89,14 @@
     },
     {
       "name": "babel-plugin-named-exports-order",
+      "type": "build"
+    },
+    {
+      "name": "console-browserify",
+      "type": "build"
+    },
+    {
+      "name": "crypto-browserify",
       "type": "build"
     },
     {
@@ -134,7 +146,15 @@
       "type": "build"
     },
     {
+      "name": "path-browserify",
+      "type": "build"
+    },
+    {
       "name": "prettier",
+      "type": "build"
+    },
+    {
+      "name": "process",
       "type": "build"
     },
     {
@@ -155,6 +175,10 @@
     },
     {
       "name": "storybook",
+      "type": "build"
+    },
+    {
+      "name": "stream-browserify",
       "type": "build"
     },
     {
@@ -219,6 +243,10 @@
     },
     {
       "name": "api-typescript-react-query-hooks",
+      "type": "runtime"
+    },
+    {
+      "name": "assert",
       "type": "runtime"
     },
     {
