@@ -37,6 +37,7 @@ export class Website {
         '@tanstack/react-query',
         '@tanstack/react-virtual@beta',
         'ace-builds',
+        'assert',
         'dayjs',
         'immer',
         'jwt-decode',
@@ -53,11 +54,17 @@ export class Website {
       ],
       devDeps: [
         '@testing-library/react-hooks',
+        '@types/assert',
         '@types/jest',
         '@types/lodash',
+        'console-browserify',
+        'crypto-browserify',
         'msw-storybook-addon',
         'msw',
+        'path-browserify',
+        'process',
         'react-test-renderer',
+        'stream-browserify',
       ],
       tsconfigDev: {
         compilerOptions: {
@@ -66,13 +73,7 @@ export class Website {
           moduleResolution: TypeScriptModuleResolution.NODE,
         },
       },
-      rewire: {
-        ignoreWarnings: [
-          {
-            module: '__PLACEHOLDER__',
-          },
-        ],
-      },
+      rewire: {},
     });
     this.project.tsconfig?.addInclude('src/**/*.tsx');
     this.project.addGitIgnore('public/api.html');
@@ -99,7 +100,7 @@ export class Website {
     // @ts-ignore -- protected
     rewireConfig.synthesizeContent = (_: any) => {
       const text = _synthesizeContent(_);
-      return text?.replace(JSON.stringify('__PLACEHOLDER__'), '/node_modules\\/(autolinker|ace-builds)/i');
+      return text?.replace('return config;', `return require('../webpack/config-overrides')(config, env);`);
     };
 
     // TODO: figure out why these modules started failing on test with ecma import/export errors?
