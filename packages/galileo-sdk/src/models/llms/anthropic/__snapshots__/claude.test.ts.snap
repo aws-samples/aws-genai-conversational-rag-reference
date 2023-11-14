@@ -3,15 +3,16 @@
 exports[`models/llms/anthropic/claude adapter should render condense prompt 1`] = `
 "
 
-Human: <system>Given the following conversational dialog delimited by <dialog>, and the "Followup Question" below, rephrase the "Followup Question" to be a concise standalone question in its original language. Without answering the question, return only the standalone question.
+Human: Read the following chat history inside <history></history> XML tags, and then rephrase the "Followup Question" below to be a concise standalone question in its original language. Without answering the question, return only the standalone question:
 
-<dialog>
+<history>
 System: A system message
-Human: Hi
-Assistant: Hello!
-</dialog>
-</system>
 
+Human: Hi
+
+Assistant: Hello!
+
+</history>
 Followup Question: THE QUESTION
 
 Assistant: "
@@ -20,19 +21,17 @@ Assistant: "
 exports[`models/llms/anthropic/claude adapter should render qa prompt 1`] = `
 "
 
-Human: <system>You are a research assistant in the "DOMAIN" domain. Based on the following rules and provided corpus delimited by <corpus>, answer the question. 
+Human: Read the follow text inside <text></text> XML tags, and then answer the question based on the provided rules inside <rules></rules>:
 
-Rules:
+<text>
+THE CORPUS
+</text>
+<rules>
 1. only use knowledge from the provided corpus to answer the question
 2. always be truthful, honest, unbiased, and unharmful
 3. be concise, do not repeat the question or yourself in the answer
-
-<corpus>
-THE CORPUS
-</corpus>
-</system>
-
-Question: THE QUESTION
+</rules>
+Based on the text above, THE QUESTION
 
 Assistant: "
 `;

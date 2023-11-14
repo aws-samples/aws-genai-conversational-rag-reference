@@ -1,20 +1,39 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+// import { getChainConfigKeyByType } from '@aws/galileo-sdk/lib/chat/config';
 import { ModelAdapter } from '@aws/galileo-sdk/lib/models/adapter';
 import { resolveModelAdapter } from '@aws/galileo-sdk/lib/models/llms/utils';
 import { IModelInfo } from '@aws/galileo-sdk/lib/models/types';
-import { ChatEngineConfig, ChatEngineConfigSearchType } from 'api-typescript-react-query-hooks';
+import { ChainType } from '@aws/galileo-sdk/lib/schema';
+import { ChatEngineChainConfig, ChatEngineConfig } from 'api-typescript-react-query-hooks';
+import { produce } from 'immer';
 import { isEmpty, merge } from 'lodash';
 import React, { PropsWithChildren, createContext, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useImmer, Updater, DraftFunction } from 'use-immer';
-import { useIsAdmin } from '../Auth';
+import { useImmer, Updater } from 'use-immer';
+import { useDebounce } from 'usehooks-ts';
 import { useFoundationModelInventory } from '../hooks/llm-inventory';
 
-export type { ChatEngineConfig, ChatEngineConfigSearchType };
+export type { ChatEngineConfig };
+
+export function getChainConfigKeyByType(type: ChainType) {
+  switch (type) {
+    case ChainType.QA:
+      return 'qaChain';
+    case ChainType.CONDENSE_QUESTION:
+      return 'condenseQuestionChain';
+    case ChainType.CLASSIFY:
+      return 'classifyChain';
+  }
+}
+
+export function getChainConfigByType(type: ChainType, config?: ChatEngineConfig) {
+  const key = getChainConfigKeyByType(type);
+  return config && config[key];
+}
 
 export interface ChatEngineConfigActions {
-  readonly reset: (hard?: boolean) => void;
+  readonly reset: () => void;
   readonly copy: () => Promise<void>;
   readonly paste: () => Promise<void>;
 }
@@ -44,7 +63,7 @@ export const useChatEngineConfigState = <P extends keyof ChatEngineConfig>(
     (value) => {
       updateConfig((draft) => {
         if (typeof value === 'function') {
-          draft[prop] = (value as DraftFunction<ChatEngineConfig[P]>)(draft[prop]);
+          draft[prop] = produce(draft[prop], value);
         } else {
           draft[prop] = value;
         }
@@ -56,8 +75,10 @@ export const useChatEngineConfigState = <P extends keyof ChatEngineConfig>(
   return [config[prop], setter];
 };
 
+// TODO: support customizing llm for each chain - now is just default single llm for all, but backend supports specific for each
 export const useChatEngineConfigModelInfo = (noDefault: boolean = false): Partial<IModelInfo> | undefined => {
-  const llmModel: IModelInfo | undefined = useChatEngineConfigState('llmModel')[0];
+  const [config] = useChatEngineConfig();
+  const llmModel = config.llm?.model;
   const inventory = useFoundationModelInventory();
 
   return useMemo(() => {
@@ -70,12 +91,60 @@ export const useChatEngineConfigModelInfo = (noDefault: boolean = false): Partia
   }, [inventory, llmModel?.uuid, noDefault]);
 };
 
+// TODO: support customizing llm for each chain - now is just default single llm for all, but backend supports specific for each
 export const useChatEngineConfigModelAdapter = (noDefault: boolean = false): ModelAdapter | undefined => {
   const modelInfo = useChatEngineConfigModelInfo(noDefault);
 
   return useMemo(() => {
-    return modelInfo ? resolveModelAdapter(modelInfo as any) : new ModelAdapter();
+    const adapter = modelInfo ? resolveModelAdapter(modelInfo as any) : new ModelAdapter();
+    return adapter;
   }, [modelInfo]);
+};
+
+export const useChatEngineConfigChain = <T extends ChainType>(type: T) => {
+  const [config, updateConfig] = useChatEngineConfig();
+  const value = getChainConfigByType(type, config);
+  const configKey = getChainConfigKeyByType(type);
+
+  const updater = useCallback<Updater<typeof value>>(
+    (draft) => {
+      updateConfig((_draft) => {
+        const _value = typeof draft === 'function' ? produce(_draft[configKey], draft) : draft;
+        _draft[configKey] = _value;
+      });
+    },
+    [type, configKey, updateConfig],
+  );
+
+  return useMemo(() => [value, updater], [value, updater]) as [typeof value, typeof updater];
+};
+
+export const useChatEngineConfigChainProp = <T extends ChainType, P extends keyof ChatEngineChainConfig>(
+  type: T,
+  prop: P,
+) => {
+  const [chain, updateChain] = useChatEngineConfigChain(type);
+
+  const updater = useCallback<Updater<ChatEngineChainConfig[P]>>(
+    (draft) => {
+      updateChain((_draft) => {
+        const _value = typeof draft === 'function' ? produce(_draft && _draft[prop], draft) : draft;
+        return {
+          ..._draft,
+          [prop]: _value,
+        };
+      });
+    },
+    [type, prop, updateChain],
+  );
+
+  const value = chain && chain[prop];
+
+  return useMemo(() => [value, updater], [value, updater]) as [ChatEngineChainConfig[P], typeof updater];
+};
+
+export const useChatEngineConfigChainPrompt = <T extends ChainType>(type: T) => {
+  return useChatEngineConfigChainProp(type, 'prompt');
 };
 
 /**
@@ -87,10 +156,18 @@ const ChatEngineConfigProvider: React.FC<PropsWithChildren> = ({ children }) => 
   const chatId = useLocation()
     .pathname.match(/chat\/([^/]+)(\/.*)?$/)
     ?.at(1);
-  const isAdmin = useIsAdmin();
   const [config, updateConfig] = useImmer<ChatEngineConfig>({});
   const configRef = useRef<ChatEngineConfig>();
   configRef.current = config;
+
+  // persist config for chat use debounce
+  const configTupleToPersist = useDebounce([chatId, config], 250) as [string, ChatEngineConfig];
+  useEffect(() => {
+    const [_chatId, _config] = configTupleToPersist;
+    if (_chatId && !isEmpty(_config)) {
+      storeConfig(_chatId, _config);
+    }
+  }, [configTupleToPersist]);
 
   // Persist anytime chat id is modified, or on unmount
   useEffect(() => {
@@ -107,18 +184,10 @@ const ChatEngineConfigProvider: React.FC<PropsWithChildren> = ({ children }) => 
     return;
   }, [chatId]);
 
-  const reset = useCallback(
-    (hard?: boolean) => {
-      if (hard) {
-        updateConfig({});
-        chatId && storeConfig(chatId, undefined);
-      } else {
-        const _config = chatId && retrieveConfig(chatId);
-        updateConfig(_config || {});
-      }
-    },
-    [chatId, updateConfig],
-  );
+  const reset = useCallback(() => {
+    updateConfig({});
+    chatId && storeConfig(chatId, undefined);
+  }, [chatId, updateConfig]);
 
   const copy = useCallback(async () => {
     return navigator.clipboard.writeText(JSON.stringify(configRef.current, null, 2));
@@ -146,11 +215,7 @@ const ChatEngineConfigProvider: React.FC<PropsWithChildren> = ({ children }) => 
     },
   ];
 
-  return (
-    <ChatEngineConfigContext.Provider value={isAdmin ? context : DEFAULT_CONTEXT}>
-      {children}
-    </ChatEngineConfigContext.Provider>
-  );
+  return <ChatEngineConfigContext.Provider value={context}>{children}</ChatEngineConfigContext.Provider>;
 };
 
 export default ChatEngineConfigProvider;

@@ -1,20 +1,25 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import '@aws/galileo-sdk/lib/langchain/patch';
-import {
-  ChatCondenseQuestionPromptTemplate,
-  ChatQuestionAnswerPromptTemplate,
-} from '@aws/galileo-sdk/lib/prompt/templates/chat';
-import { Icon, Link, TextContent } from '@cloudscape-design/components';
+// import '@aws/galileo-sdk/lib/langchain/patch';
+import { ChainType } from '@aws/galileo-sdk/lib/schema';
+import { Icon, Link, TextContent, Toggle } from '@cloudscape-design/components';
 import FormField from '@cloudscape-design/components/form-field';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import { FC } from 'react';
-import { useChatEngineConfigModelAdapter, useChatEngineConfigState } from '../../../../../providers/ChatEngineConfig';
+import {
+  useChatEngineConfigChainPrompt,
+  useChatEngineConfigChainProp,
+  useChatEngineConfigModelAdapter,
+} from '../../../../../providers/ChatEngineConfig';
 import PromptEditor from '../components/PromptEditor';
 
 export const PromptSettings: FC = () => {
-  const [qaPrompt, setQaPrompt] = useChatEngineConfigState('qaPrompt');
-  const [condenseQuestionPrompt, setCondenseQuestionPrompt] = useChatEngineConfigState('condenseQuestionPrompt');
+  const [qaPrompt, setQaPrompt] = useChatEngineConfigChainPrompt(ChainType.QA);
+  const [condenseQuestionPrompt, setCondenseQuestionPrompt] = useChatEngineConfigChainPrompt(
+    ChainType.CONDENSE_QUESTION,
+  );
+  const [classifyPrompt, setClassifyPrompt] = useChatEngineConfigChainPrompt(ChainType.CLASSIFY);
+  const [classifyEnabled, setClassifyEnabled] = useChatEngineConfigChainProp(ChainType.CLASSIFY, 'enabled');
 
   const adapter = useChatEngineConfigModelAdapter();
 
@@ -53,10 +58,10 @@ export const PromptSettings: FC = () => {
         stretch
       >
         <PromptEditor
-          promptCls={ChatQuestionAnswerPromptTemplate}
-          promptClsOptions={adapter?.prompt?.chat?.questionAnswer}
-          value={qaPrompt}
-          onChange={setQaPrompt}
+          type={ChainType.QA}
+          runtime={adapter?.prompt?.chat?.QA}
+          value={qaPrompt?.template}
+          onChange={(template) => setQaPrompt({ template })}
           defaultInputValues={{
             domain: 'Testing',
             context: ['Source document #1', 'Source document #2'].join('\n\n'),
@@ -70,10 +75,10 @@ export const PromptSettings: FC = () => {
         stretch
       >
         <PromptEditor
-          promptCls={ChatCondenseQuestionPromptTemplate}
-          promptClsOptions={adapter?.prompt?.chat?.condenseQuestion}
-          value={condenseQuestionPrompt}
-          onChange={setCondenseQuestionPrompt}
+          type={ChainType.CONDENSE_QUESTION}
+          runtime={adapter?.prompt?.chat?.CONDENSE_QUESTION}
+          value={condenseQuestionPrompt?.template}
+          onChange={(template) => setCondenseQuestionPrompt({ template })}
           defaultInputValues={{
             chat_history: [
               { type: 'human', content: 'What is prompt engineering?' },
@@ -86,6 +91,35 @@ export const PromptSettings: FC = () => {
           }}
         />
       </FormField>
+
+      <FormField
+        label="Classify Enabled"
+        description="Indicates if classification chain is enabled to provide configuration capabilities to following chains"
+      >
+        <Toggle
+          checked={classifyEnabled ?? false}
+          onChange={({ detail }) => {
+            setClassifyEnabled(detail.checked);
+          }}
+        />
+      </FormField>
+      {classifyEnabled && (
+        <FormField
+          label="Classify Prompt"
+          description="Prompt that generates classification JSON as config passed to following prompts"
+          stretch
+        >
+          <PromptEditor
+            type={ChainType.CLASSIFY}
+            runtime={adapter?.prompt?.chat?.CLASSIFY}
+            value={classifyPrompt?.template}
+            onChange={(template) => setClassifyPrompt({ template })}
+            defaultInputValues={{
+              question: 'Why are roses red and violets blue?',
+            }}
+          />
+        </FormField>
+      )}
     </SpaceBetween>
   );
 };

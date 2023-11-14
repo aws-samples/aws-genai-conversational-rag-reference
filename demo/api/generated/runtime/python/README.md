@@ -101,12 +101,14 @@ Class | Method | HTTP request | Description
 ## Documentation For Models
 
  - [Chat](docs/Chat.md)
+ - [ChatEngineChainConfig](docs/ChatEngineChainConfig.md)
  - [ChatEngineConfig](docs/ChatEngineConfig.md)
- - [ChatEngineConfigSearchType](docs/ChatEngineConfigSearchType.md)
+ - [ChatEngineLLMConfig](docs/ChatEngineLLMConfig.md)
+ - [ChatEngineMemoryConfig](docs/ChatEngineMemoryConfig.md)
+ - [ChatEnginePromptRuntimeConfig](docs/ChatEnginePromptRuntimeConfig.md)
+ - [ChatEngineSearchConfig](docs/ChatEngineSearchConfig.md)
  - [ChatMessage](docs/ChatMessage.md)
  - [ChatMessageSource](docs/ChatMessageSource.md)
- - [ChatOptions](docs/ChatOptions.md)
- - [ChatSearchOptions](docs/ChatSearchOptions.md)
  - [ClientErrorResponseContent](docs/ClientErrorResponseContent.md)
  - [CreateChatMessageRequestContent](docs/CreateChatMessageRequestContent.md)
  - [CreateChatMessageResponseContent](docs/CreateChatMessageResponseContent.md)
@@ -132,6 +134,7 @@ Class | Method | HTTP request | Description
  - [SimilaritySearchRequestContent](docs/SimilaritySearchRequestContent.md)
  - [SimilaritySearchResponseContent](docs/SimilaritySearchResponseContent.md)
  - [StringAnyMap](docs/StringAnyMap.md)
+ - [StringMap](docs/StringMap.md)
  - [UpdateChatRequestContent](docs/UpdateChatRequestContent.md)
  - [UpdateChatResponseContent](docs/UpdateChatResponseContent.md)
 

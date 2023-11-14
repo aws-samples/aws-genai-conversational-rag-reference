@@ -32,7 +32,7 @@ const dynamoDBDocumentMock = mockClient(DynamoDBDocumentClient);
 const secretsManagerMock = mockClient(SecretsManagerClient);
 const sageMakerRuntimeMock = mockClient(SageMakerRuntimeClient);
 
-describe('chat/engine', () => {
+describe('chat/engine/classify', () => {
   beforeAll(() => {
     process.env.AWS_DEFAULT_REGION = 'us-east-1';
     process.env[FOUNDATION_MODEL_INVENTORY_SECRET] = 'MOCK';
@@ -102,6 +102,21 @@ describe('chat/engine', () => {
         Body: new TextEncoder().encode(
           JSON.stringify([
             {
+              generated_text: JSON.stringify({
+                originalLanguage: 'french',
+                originalQuestion: 'Bonjour mon ami!',
+                language: 'english',
+                question: 'Hello my friend!',
+              }),
+            },
+          ]),
+        ),
+        $metadata: {},
+      } as InvokeEndpointCommandOutput)
+      .resolvesOnce({
+        Body: new TextEncoder().encode(
+          JSON.stringify([
+            {
               generated_text: 'LLM combine response',
             },
           ]),
@@ -124,6 +139,14 @@ describe('chat/engine', () => {
       userId: 'tester',
       chatHistoryTable: 'MockDatastore',
       chatHistoryTableIndexName: 'MockIndex',
+      classifyChain: {
+        enabled: true,
+      },
+      qaChain: {
+        prompt: {
+          template: 'Translate {{originalLanguage}} to {{language}} for question "{{question}}"',
+        },
+      },
       search: {
         url: 'http://localhost:1337',
         fetch: async (input, init): Promise<Response> => {

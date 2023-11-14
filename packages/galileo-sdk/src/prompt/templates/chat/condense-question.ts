@@ -1,14 +1,9 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { BaseMessage } from 'langchain/schema';
-import { BASE_CHAT_PARTIALS, ChatTemplatePartials } from './base.js';
-import {
-  HandlebarsPromptTemplate,
-  HandlebarsPromptTemplateRuntime,
-  ScopedHandlebarsPromptTemplateInput,
-} from '../../handlebars.js';
+import { BASE_CHAT_PARTIALS } from './base.js';
+import { PromptRuntime } from '../../types.js';
 
-export const CHAT_CONDENSE_QUESTION_TEMPLATE = `Given the following chat history contained in ''' characters, and the "Followup Question" below, rephrase the "Followup Question" to be a concise standalone question in its original language.
+export const TEMPLATE = `Given the following chat history contained in ''' characters, and the "Followup Question" below, rephrase the "Followup Question" to be a concise standalone question in its original language.
 Without answering the question, return only the standalone question.
 
 Chat history: '''
@@ -18,38 +13,14 @@ Chat history: '''
 Followup Question: {{question}}
 Standalone Question: `;
 
-export interface ChatCondenseQuestionPromptTemplateInputValues {
-  readonly chat_history: BaseMessage[];
-  readonly question: string;
-}
+export const PROMPT_TEMPLATE: Required<PromptRuntime> = {
+  root: true,
+  template: TEMPLATE,
+  inputVariables: ['chat_history', 'question'],
+  templatePartials: {
+    ...BASE_CHAT_PARTIALS,
+  },
+  partialVariables: {},
+};
 
-export type ChatCondenseQuestionPromptTemplateInput = ScopedHandlebarsPromptTemplateInput<
-  ChatTemplatePartials,
-  ChatCondenseQuestionPromptTemplateInputValues
->;
-export type ChatCondenseQuestionPromptRuntime =
-  HandlebarsPromptTemplateRuntime<ChatCondenseQuestionPromptTemplateInput>;
-
-export class ChatCondenseQuestionPromptTemplate extends HandlebarsPromptTemplate<
-  ChatTemplatePartials,
-  ChatCondenseQuestionPromptTemplateInputValues
-> {
-  static async deserialize(data: any) {
-    return new ChatCondenseQuestionPromptTemplate(data);
-  }
-
-  constructor(input: ChatCondenseQuestionPromptTemplateInput) {
-    super({
-      template: CHAT_CONDENSE_QUESTION_TEMPLATE,
-      inputVariables: ['chat_history', 'question'],
-      ...input,
-      partialVariables: {
-        ...input.partialVariables,
-      },
-      templatePartials: {
-        ...BASE_CHAT_PARTIALS,
-        ...input.templatePartials,
-      },
-    });
-  }
-}
+export default PROMPT_TEMPLATE;

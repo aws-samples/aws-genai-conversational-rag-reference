@@ -44,7 +44,7 @@ export class DynamoDBChatMessageHistory extends BaseListChatMessageHistory {
     super();
     this.tableName = tableName;
     this.indexName = indexName;
-    this.messagesLimit = messagesLimit || 40;
+    this.messagesLimit = messagesLimit ?? 40;
     this.userId = userId;
     this.chatId = chatId;
 
@@ -53,6 +53,10 @@ export class DynamoDBChatMessageHistory extends BaseListChatMessageHistory {
   }
 
   async getMessages(): Promise<BaseMessage[]> {
+    if (this.messagesLimit <= 0) {
+      return [];
+    }
+
     try {
       const Items = await lib.Messages.listAllMessagesByTime(
         this.docClient,

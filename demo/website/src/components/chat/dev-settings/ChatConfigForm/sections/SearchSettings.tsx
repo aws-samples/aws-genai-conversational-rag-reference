@@ -1,54 +1,61 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { Input, SegmentedControl } from '@cloudscape-design/components';
+import { Input } from '@cloudscape-design/components';
 import FormField from '@cloudscape-design/components/form-field';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import { FC } from 'react';
-import { ChatEngineConfigSearchType, useChatEngineConfigState } from '../../../../../providers/ChatEngineConfig';
+import { useIsAdmin } from '../../../../../Auth';
+import { useChatEngineConfigState } from '../../../../../providers/ChatEngineConfig';
 import CodeEditor from '../../../../code-editor';
-import { formatLabel, toCodeEditorJson } from '../../utils';
-
-const SEARCH_TYPES: ChatEngineConfigSearchType[] = ['similarity', 'similarity_score_threshold', 'mmr'];
+import { toCodeEditorJson } from '../../utils';
 
 export const SearchSettings: FC = () => {
-  const [searchKwargs, setSearchKwargs] = useChatEngineConfigState('searchKwargs');
-  const [searchType, setSearchType] = useChatEngineConfigState('searchType');
-  const [searchUrl, setSearchUrl] = useChatEngineConfigState('searchUrl');
+  const isAdmin = useIsAdmin();
+  const [search, setSearch] = useChatEngineConfigState('search');
 
   return (
     <SpaceBetween direction="vertical" size="s">
-      <FormField label="Search Kwargs" stretch>
+      <FormField label="Limit" description="Max number of messages to include in context">
+        <Input
+          type="number"
+          value={String(search?.limit ?? 5)}
+          onChange={({ detail }) => {
+            setSearch((_draft) => ({
+              ..._draft,
+              limit: parseInt(detail.value),
+            }));
+          }}
+        />
+      </FormField>
+
+      <FormField label="Filter" description="Mapping of metadata search criteria to apply." stretch>
         <CodeEditor
           language="json"
-          value={toCodeEditorJson(searchKwargs)}
+          value={toCodeEditorJson(search?.filter)}
           onChange={({ detail }) => {
             try {
-              setSearchKwargs(JSON.parse(detail.value));
+              setSearch((_draft) => ({
+                ..._draft,
+                filter: JSON.parse(detail.value),
+              }));
             } catch (error) {
-              console.warn('Failed to parse `Search Kwargs`', detail.value, error);
+              console.warn('Failed to parse `Search config`', detail.value, error);
             }
           }}
         />
       </FormField>
-      <FormField label="Search URL" stretch>
-        <Input
-          value={searchUrl || ''}
-          onChange={({ detail }) => {
-            setSearchUrl(detail.value);
-          }}
-        />
-      </FormField>
-      {/* TODO: enable once we support the other types of search in backend */}
-      {false && (
-        <FormField label="Search Type" stretch>
-          <SegmentedControl
-            selectedId={searchType || null}
-            onChange={({ detail }) => setSearchType(detail.selectedId as any)}
-            label="Search Type"
-            options={SEARCH_TYPES.map((id) => ({
-              id,
-              text: formatLabel(id),
-            }))}
+
+      {/* Privileged properties */}
+      {isAdmin && (
+        <FormField label="URL" description="Search endpoint url to retrieve documents from." stretch>
+          <Input
+            value={String(search?.url || '')}
+            onChange={({ detail }) => {
+              setSearch((_draft) => ({
+                ..._draft,
+                url: detail.value,
+              }));
+            }}
           />
         </FormField>
       )}

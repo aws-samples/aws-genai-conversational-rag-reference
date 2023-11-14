@@ -1,6 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { LLM } from 'langchain/llms/base';
+import { BaseLanguageModel } from 'langchain/base_language';
 import { Bedrock } from 'langchain/llms/bedrock';
 import { SageMakerEndpoint } from 'langchain/llms/sagemaker_endpoint';
 import { PromptTemplate } from 'langchain/prompts';
@@ -12,28 +12,23 @@ import { resolveFoundationModelCredentials } from '../models/cross-account.js';
 import { FoundationModelInventory } from '../models/index.js';
 import { resolveModelAdapter } from '../models/llms/utils.js';
 import { IModelInfo, Kwargs, isBedrockFramework, isSageMakerEndpointFramework } from '../models/types.js';
-import {
-  ChatCondenseQuestionPromptRuntime,
-  ChatCondenseQuestionPromptTemplate,
-  ChatQuestionAnswerPromptRuntime,
-  ChatQuestionAnswerPromptTemplate,
-} from '../prompt/templates/chat/index.js';
+import { resolvePromptTemplateByChainType } from '../prompt/templates/store/resolver.js';
+import { PromptRuntime } from '../prompt/types.js';
+import { ChainType } from '../schema/index.js';
 import { omitManagedBedrockKwargs } from '../utils/bedrock.js';
 
 const logger = getLogger('chat/adapter');
 
-export interface IChatEngineContextOptions {
-  readonly domain: string;
-  readonly maxNewTokens: number;
-  readonly qaPrompt?: ChatQuestionAnswerPromptRuntime;
-  readonly condenseQuestionPrompt?: ChatCondenseQuestionPromptRuntime;
-  readonly modelKwargs?: Kwargs;
-  readonly endpointKwargs?: Kwargs;
-  readonly verbose?: boolean;
+export interface ResolvedLLM {
+  llm: BaseLanguageModel;
+  modelInfo: IModelInfo;
+  adapter: ModelAdapter;
 }
 
+export type ResolvableModelInfo = string | IModelInfo | Partial<IModelInfo>;
+
 export class ChatEngineContext {
-  static async resolveModelInfo(modelInfo: string | IModelInfo | Partial<IModelInfo> | undefined): Promise<IModelInfo> {
+  static async resolveModelInfo(modelInfo: ResolvableModelInfo | undefined): Promise<IModelInfo> {
     logger.info('Resolve model info', { modelInfo: modelInfo ?? 'DEFAULT' });
 
     if (typeof modelInfo === 'string' && modelInfo.startsWith('{')) {
@@ -56,44 +51,29 @@ export class ChatEngineContext {
     return modelInfo as IModelInfo;
   }
 
-  readonly llm: LLM;
-  readonly qaPrompt: PromptTemplate;
-  readonly condenseQuestionPrompt: PromptTemplate;
+  static async resolveLLM(
+    modelInfo?: IModelInfo,
+    options?: { verbose?: boolean; modelKwargs?: Kwargs; endpointKwargs?: Kwargs },
+  ): Promise<ResolvedLLM> {
+    modelInfo ??= await ChatEngineContext.resolveModelInfo(modelInfo);
+    let adapter = resolveModelAdapter(modelInfo);
 
-  readonly modelInfo: IModelInfo;
-  readonly maxNewTokens: number;
-  readonly domain: string;
-
-  readonly adapter: ModelAdapter;
-
-  constructor(modelInfo: IModelInfo, options: IChatEngineContextOptions) {
-    this.modelInfo = modelInfo;
-    this.maxNewTokens = options.maxNewTokens;
-    this.domain = options.domain;
-
-    logger.debug('LLM configuration', { modelInfo, options });
-
-    this.adapter = resolveModelAdapter(modelInfo);
-    logger.debug('ModelAdapter:', {
-      isDefault: this.adapter.isDefault,
-      adapter: this.adapter.isDefault ? undefined : this.adapter,
-    });
-
+    let llm: BaseLanguageModel;
     if (isSageMakerEndpointFramework(modelInfo.framework)) {
       const { endpointName, endpointRegion, role } = modelInfo.framework;
 
       const endpointKwargs = {
         ...modelInfo.framework.endpointKwargs,
-        ...options.endpointKwargs,
+        ...options?.endpointKwargs,
       };
       const modelKwargs = {
         ...modelInfo.framework.modelKwargs,
-        ...options.modelKwargs,
+        ...options?.modelKwargs,
       };
       logger.debug('Resolved sagemaker kwargs', { endpointKwargs, modelKwargs });
 
-      this.llm = new SageMakerEndpoint({
-        verbose: options.verbose,
+      llm = new SageMakerEndpoint({
+        verbose: options?.verbose,
         // Support cross-account endpoint if enabled and provided in env
         // Otherwise default to execution role creds
         clientOptions: {
@@ -101,7 +81,7 @@ export class ChatEngineContext {
           credentials: resolveFoundationModelCredentials(role),
         },
         endpointName: endpointName,
-        contentHandler: this.adapter.contentHandler,
+        contentHandler: adapter.contentHandler,
         endpointKwargs,
         modelKwargs,
       });
@@ -112,13 +92,13 @@ export class ChatEngineContext {
         maxTokens: DEFAULT_MAX_NEW_TOKENS,
         temperature: 0,
         ...modelInfo.framework.modelKwargs,
-        ...options.endpointKwargs,
-        ...options.modelKwargs,
+        ...options?.endpointKwargs,
+        ...options?.modelKwargs,
       };
       logger.debug('Resolved bedrock kwargs', { modelKwargs });
 
-      this.llm = new Bedrock({
-        verbose: options.verbose,
+      llm = new Bedrock({
+        verbose: options?.verbose,
         // Support cross-account endpoint if enabled and provided in env
         // Otherwise default to execution role credentials
         credentials: resolveFoundationModelCredentials(role),
@@ -133,69 +113,16 @@ export class ChatEngineContext {
       throw new Error(`Model Framework "${modelInfo.framework.type}" is not supported/implemented`);
     }
 
-    this.qaPrompt = new ChatQuestionAnswerPromptTemplate(
-      merge(
-        // defaults
-        {
-          domain: options.domain,
-        },
-        // model specific config
-        this.adapter.prompt?.chat?.questionAnswer,
-        // runtime specific
-        options.qaPrompt,
-      ),
-    );
+    const resolved: ResolvedLLM = { llm, modelInfo, adapter };
+    logger.debug('Resolved LLM:', { modelInfo, adapter, llm: llm.toJSON() });
 
-    this.condenseQuestionPrompt = new ChatCondenseQuestionPromptTemplate(
-      merge(
-        // defaults
-        {
-          domain: options.domain,
-        },
-        // model specific config
-        this.adapter.prompt?.chat?.condenseQuestion,
-        // runtime specific
-        options.condenseQuestionPrompt,
-      ),
-    );
-
-    logger.debug('Prompts', {
-      qaPrompt: this.qaPrompt.serialize(),
-      condenseQuestionPrompt: this.condenseQuestionPrompt.serialize(),
-    });
+    return resolved;
   }
 
-  getNumTokens(text: string): number {
-    // https://github.com/hwchase17/langchainjs/blob/b1869537e78a128df1616a8aef64ab38e19490f9/langchain/src/base_language/index.ts#L154
-    // TODO: implemented Tiktoken to get exact values
-    return Math.ceil(text.length / 4);
-  }
-
-  get maxInputLength(): number {
-    if (this.modelInfo.constraints) {
-      return this.modelInfo.constraints.maxInputLength || this.modelInfo.constraints.maxTotalTokens - 1;
-    }
-    return 2048;
-  }
-
-  get qaPromptLength(): number {
-    return this.getNumTokens(this.qaPrompt.template);
-  }
-
-  get condenseQuestionPromptLength(): number {
-    return this.getNumTokens(this.condenseQuestionPrompt.template);
-  }
-
-  truncateInputText(text: string): string {
-    // TODO: integrate truncation into the chain flow
-    const tokens = this.getNumTokens(text);
-    if (tokens <= this.maxInputLength) {
-      return text;
-    }
-    const textLength = text.length;
-    const targetLength = textLength * (this.maxInputLength / tokens);
-    const reduceBy = textLength - targetLength + 3; // ... is 3 chars
-    const midPoint = Math.round(textLength / 2);
-    return text.slice(0, Math.floor(midPoint - reduceBy / 2)) + '...' + text.slice(Math.ceil(midPoint + reduceBy / 2));
+  static async resolvePromptTemplate(
+    type: ChainType,
+    ...runtime: (string | PromptRuntime | undefined)[]
+  ): Promise<PromptTemplate> {
+    return resolvePromptTemplateByChainType(type, ...runtime);
   }
 }

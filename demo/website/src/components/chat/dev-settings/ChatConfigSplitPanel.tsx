@@ -1,22 +1,14 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import {
-  ButtonDropdown,
-  ButtonDropdownProps,
-  Header,
-  SplitPanelProps,
-  StatusIndicator,
-} from '@cloudscape-design/components';
+import { ButtonDropdown, ButtonDropdownProps, Header, StatusIndicator } from '@cloudscape-design/components';
 import { CancelableEventHandler } from '@cloudscape-design/components/internal/events';
 import { isEmpty } from 'lodash';
 import { FC, useCallback, useMemo } from 'react';
 import { ChatConfigForm } from './ChatConfigForm';
-import { useIsAdmin } from '../../../Auth';
 import { ManagedSplitPanel } from '../../../providers/AppLayoutProvider/managed-content';
 import { useChatEngineConfig } from '../../../providers/ChatEngineConfig';
 
 export const ChatConfigSplitPanel: FC = () => {
-  const isAdmin = useIsAdmin();
   const [config, , actions] = useChatEngineConfig();
 
   const onAction = useCallback<CancelableEventHandler<ButtonDropdownProps.ItemClickDetails>>(
@@ -32,10 +24,6 @@ export const ChatConfigSplitPanel: FC = () => {
         }
         case 'reset': {
           actions?.reset();
-          break;
-        }
-        case 'clear': {
-          actions?.reset(true);
           break;
         }
       }
@@ -56,7 +44,6 @@ export const ChatConfigSplitPanel: FC = () => {
               { id: 'copy', text: 'copy', iconName: 'download' },
               { id: 'paste', text: 'paste', iconName: 'upload' },
               { id: 'reset', text: 'reset', iconName: 'refresh' },
-              { id: 'clear', text: 'clear', iconName: 'remove' },
             ]}
           />
         }
@@ -74,20 +61,9 @@ export const ChatConfigSplitPanel: FC = () => {
     [config, actions],
   );
 
-  const splitPanelProps = useMemo<SplitPanelProps | false>(
-    () =>
-      isAdmin && {
-        header: header as any,
-        children: <ChatConfigForm />,
-        closeBehavior: 'collapse',
-        hidePreferencesButton: true,
-      },
-    [isAdmin, header],
+  return (
+    <ManagedSplitPanel uuid="chat/dev-settings" header={header as any} closeBehavior="collapse" hidePreferencesButton>
+      <ChatConfigForm />
+    </ManagedSplitPanel>
   );
-
-  if (!isAdmin || !splitPanelProps) {
-    return null;
-  }
-
-  return <ManagedSplitPanel uuid="chat/dev-settings" {...splitPanelProps} />;
 };
