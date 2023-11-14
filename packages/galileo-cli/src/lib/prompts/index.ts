@@ -60,23 +60,29 @@ namespace galileoPrompts {
   });
 
   export async function applicationName(): Promise<string> {
-    const { name } = await prompts({
-      type: 'text',
-      name: 'name',
-      message: 'Application Name (stack/resource naming)',
-      initial: context.appConfig.app.name || DEFAULT_APPLICATION_NAME,
-    });
+    const { name } = await prompts(
+      {
+        type: 'text',
+        name: 'name',
+        message: 'Application Name (stack/resource naming)',
+        initial: context.appConfig.app.name || DEFAULT_APPLICATION_NAME,
+      },
+      context.promptsOptions,
+    );
     return name;
   }
 
   export async function appConfigPath(initial?: string): Promise<string> {
-    const { configPath: _value } = await prompts({
-      type: 'text',
-      name: 'configPath',
-      message: 'Config file name?',
-      initial: initial || context.cache.getItem('appConfigPath') || APPLICATION_CONFIG_JSON,
-      validate: async (value: string) => value == null || value.endsWith('.json') || 'Profile is required',
-    });
+    const { configPath: _value } = await prompts(
+      {
+        type: 'text',
+        name: 'configPath',
+        message: 'Config file name?',
+        initial: initial || context.fromCache('appConfigPath') || APPLICATION_CONFIG_JSON,
+        validate: async (value: string) => value == null || value.endsWith('.json') || 'Config must end with .json',
+      },
+      context.promptsOptions,
+    );
     context.cache.setItem('appConfigPath', _value);
     return _value;
   }
@@ -137,20 +143,25 @@ namespace galileoPrompts {
   };
 
   export async function adminEmailAndUsername(): Promise<undefined | { username: string; email: string }> {
-    const result = await prompts([
-      email({
-        message:
-          'Administrator email address' +
-          chalk.reset.grey(' Enter email address to automatically create Cognito admin user, otherwise leave blank\n'),
-        initialVal: context.appConfig.identity.admin?.email,
-      }),
-      {
-        type: (prev) => (prev == null ? false : 'text'),
-        name: 'username',
-        message: 'Administrator username',
-        initial: context.appConfig.identity.admin?.username ?? 'admin',
-      },
-    ]);
+    const result = await prompts(
+      [
+        email({
+          message:
+            'Administrator email address' +
+            chalk.reset.grey(
+              ' Enter email address to automatically create Cognito admin user, otherwise leave blank\n',
+            ),
+          initialVal: context.appConfig.identity.admin?.email,
+        }),
+        {
+          type: (prev) => (prev == null ? false : 'text'),
+          name: 'username',
+          message: 'Administrator username',
+          initial: context.appConfig.identity.admin?.username ?? 'admin',
+        },
+      ],
+      context.promptsOptions,
+    );
 
     if (helpers.ifNotEmpty(result.email)) {
       return {
@@ -164,20 +175,23 @@ namespace galileoPrompts {
   // TODO: remove this and move sample deployment to upload data command
   export async function sampleConfig(): Promise<ApplicationConfig['rag']['samples']> {
     const sampleDatasets = (
-      await prompts({
-        name: 'sampleDatasets',
-        message: 'Deploy sample dataset?',
-        type: 'multiselect',
-        instructions: chalk.gray(
-          '\n ↑/↓: Highlight option, ←/→/[space]: Toggle selection, a: Toggle all, enter/return: Complete answer',
-        ),
-        choices: Object.values(SampleDataSets).map((value) => ({
-          title: value,
-          value: value,
-          selected: context.appConfig.rag.samples?.datasets.includes(value),
-        })),
-        min: 0,
-      })
+      await prompts(
+        {
+          name: 'sampleDatasets',
+          message: 'Deploy sample dataset?',
+          type: 'multiselect',
+          instructions: chalk.gray(
+            '\n ↑/↓: Highlight option, ←/→/[space]: Toggle selection, a: Toggle all, enter/return: Complete answer',
+          ),
+          choices: Object.values(SampleDataSets).map((value) => ({
+            title: value,
+            value: value,
+            selected: context.appConfig.rag.samples?.datasets.includes(value),
+          })),
+          min: 0,
+        },
+        context.promptsOptions,
+      )
     ).sampleDatasets as SampleDataSets[];
 
     if (isEmpty(sampleDatasets)) {
@@ -190,18 +204,21 @@ namespace galileoPrompts {
       if (maxInstanceCount < 10 || maxCapacity < 5) {
         if (
           (
-            await prompts({
-              type: 'confirm',
-              message: helpers.textPromptMessage(
-                'Indexing of the sample dataset might take several hours based on your config, do you want to apply recommended settings?',
-                {
-                  description:
-                    'Recommended: embedding model autoscaling max capacity of 5, and indexing container max instances of 10',
-                  instructions: 'This might results in higher cost',
-                },
-              ),
-              name: 'confirm',
-            })
+            await prompts(
+              {
+                type: 'confirm',
+                message: helpers.textPromptMessage(
+                  'Indexing of the sample dataset might take several hours based on your config, do you want to apply recommended settings?',
+                  {
+                    description:
+                      'Recommended: embedding model autoscaling max capacity of 5, and indexing container max instances of 10',
+                    instructions: 'This might results in higher cost',
+                  },
+                ),
+                name: 'confirm',
+              },
+              context.promptsOptions,
+            )
           ).confirm
         ) {
           set(context.appConfig, 'rag.indexing.pipeline.maxInstanceCount', 10);
@@ -216,27 +233,30 @@ namespace galileoPrompts {
   }
 
   export async function toolingConfig(): Promise<ApplicationConfig['tooling']> {
-    const { tooling } = await prompts({
-      name: 'tooling',
-      message: 'Enable tooling in dev stage (SageMaker Studio, PgAdmin)?',
-      type: 'multiselect',
-      instructions: chalk.gray(
-        '\n ↑/↓: Highlight option, ←/→/[space]: Toggle selection, a: Toggle all, enter/return: Complete answer',
-      ),
-      choices: [
-        {
-          title: 'sagemakerStudio',
-          value: 'sagemakerStudio',
-          selected: context.appConfig.tooling?.sagemakerStudio ?? false,
-        },
-        {
-          title: 'pgadmin',
-          value: 'pgadmin',
-          selected: context.appConfig.tooling?.pgadmin ?? false,
-        },
-      ],
-      min: 0,
-    });
+    const { tooling } = await prompts(
+      {
+        name: 'tooling',
+        message: 'Enable tooling in dev stage (SageMaker Studio, PgAdmin)?',
+        type: 'multiselect',
+        instructions: chalk.gray(
+          '\n ↑/↓: Highlight option, ←/→/[space]: Toggle selection, a: Toggle all, enter/return: Complete answer',
+        ),
+        choices: [
+          {
+            title: 'sagemakerStudio',
+            value: 'sagemakerStudio',
+            selected: context.appConfig.tooling?.sagemakerStudio ?? false,
+          },
+          {
+            title: 'pgadmin',
+            value: 'pgadmin',
+            selected: context.appConfig.tooling?.pgadmin ?? false,
+          },
+        ],
+        min: 0,
+      },
+      context.promptsOptions,
+    );
 
     return {
       sagemakerStudio: tooling.includes('sagemakerStudio'),
@@ -277,12 +297,15 @@ namespace galileoPrompts {
   };
 
   export async function bedrockConfig() {
-    const { enabled } = await prompts({
-      type: 'confirm',
-      name: 'enabled',
-      message: 'Enable Bedrock?',
-      initial: context.appConfig.bedrock?.enabled ?? true,
-    });
+    const { enabled } = await prompts(
+      {
+        type: 'confirm',
+        name: 'enabled',
+        message: 'Enable Bedrock?',
+        initial: context.appConfig.bedrock?.enabled ?? true,
+      },
+      context.promptsOptions,
+    );
 
     if (!enabled) {
       return {
@@ -292,14 +315,17 @@ namespace galileoPrompts {
 
     const selectedBedrockModels = new Set<string>((context.appConfig.bedrock?.models as any) || []);
 
-    const { region } = await prompts([
-      {
-        type: 'text',
-        name: 'region',
-        message: 'Bedrock region',
-        initial: context.appConfig.bedrock?.region ?? BEDROCK_REGION,
-      },
-    ]);
+    const { region } = await prompts(
+      [
+        {
+          type: 'text',
+          name: 'region',
+          message: 'Bedrock region',
+          initial: context.appConfig.bedrock?.region ?? BEDROCK_REGION,
+        },
+      ],
+      context.promptsOptions,
+    );
 
     context.ui.newSpinner().start('Loading available Bedrock models');
     const availableTextModels = sortBy(
@@ -311,32 +337,38 @@ namespace galileoPrompts {
     );
     context.ui.spinner.succeed();
 
-    const { models } = await prompts([
-      {
-        type: 'autocompleteMultiselect',
-        name: 'models',
-        message: 'Bedrock model ids',
-        hint: chalk.yellow(
-          '\nEnsure you have requested access for the selected models, see https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html to request access\n',
-        ),
-        min: 1,
-        instructions: chalk.gray('↑/↓: Highlight option, ←/→/[space]: Toggle selection, Return to submit'),
-        choices: availableTextModels.map((v) => ({
-          value: v.modelId,
-          title: `${v.providerName} ${v.modelName} (${v.modelId})`,
-          selected: selectedBedrockModels.has(v.modelId),
-        })),
-      },
-    ]);
+    const { models } = await prompts(
+      [
+        {
+          type: 'autocompleteMultiselect',
+          name: 'models',
+          message: 'Bedrock model ids',
+          hint: chalk.yellow(
+            '\nEnsure you have requested access for the selected models, see https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html to request access\n',
+          ),
+          min: 1,
+          instructions: chalk.gray('↑/↓: Highlight option, ←/→/[space]: Toggle selection, Return to submit'),
+          choices: availableTextModels.map((v) => ({
+            value: v.modelId,
+            title: `${v.providerName} ${v.modelName} (${v.modelId})`,
+            selected: selectedBedrockModels.has(v.modelId),
+          })),
+        },
+      ],
+      context.promptsOptions,
+    );
 
-    const { endpointUrl } = await prompts([
-      {
-        type: 'text',
-        name: 'endpointUrl',
-        message: `Bedrock endpoint url ${chalk.gray('(optional)')}`,
-        initial: context.appConfig.bedrock?.endpointUrl ?? undefined,
-      },
-    ]);
+    const { endpointUrl } = await prompts(
+      [
+        {
+          type: 'text',
+          name: 'endpointUrl',
+          message: `Bedrock endpoint url ${chalk.gray('(optional)')}`,
+          initial: context.appConfig.bedrock?.endpointUrl ?? undefined,
+        },
+      ],
+      context.promptsOptions,
+    );
 
     return {
       enabled: true,
@@ -350,27 +382,30 @@ namespace galileoPrompts {
     initial?: IEmbeddingModelInfo,
     isDefault: boolean = false,
   ): Promise<IEmbeddingModelInfo> {
-    const { modelId, dimensions } = await prompts([
-      {
-        type: 'text',
-        name: 'modelId',
-        message: helpers.textPromptMessage('Embedding model', {
-          description: 'Enter the model id to use for embeddings, supports any AutoML model',
-          instructions:
-            'Example: sentence-transformers/all-mpnet-base-v2, intfloat/multilingual-e5-large, sentence-transformers/all-MiniLM-L6-v2',
-        }),
-        initial: initial?.modelId,
-        min: 3,
-      },
-      {
-        type: 'number',
-        name: 'dimensions',
-        message: helpers.textPromptMessage('Embedding Vector Size', {
-          description: 'Enter the vector size for the chosen embedding model',
-        }),
-        initial: initial?.dimensions,
-      },
-    ]);
+    const { modelId, dimensions } = await prompts(
+      [
+        {
+          type: 'text',
+          name: 'modelId',
+          message: helpers.textPromptMessage('Embedding model', {
+            description: 'Enter the model id to use for embeddings, supports any AutoML model',
+            instructions:
+              'Example: sentence-transformers/all-mpnet-base-v2, intfloat/multilingual-e5-large, sentence-transformers/all-MiniLM-L6-v2',
+          }),
+          initial: initial?.modelId,
+          min: 3,
+        },
+        {
+          type: 'number',
+          name: 'dimensions',
+          message: helpers.textPromptMessage('Embedding Vector Size', {
+            description: 'Enter the vector size for the chosen embedding model',
+          }),
+          initial: initial?.dimensions,
+        },
+      ],
+      context.promptsOptions,
+    );
 
     return {
       uuid: last((modelId as String).split('/'))!,
@@ -386,29 +421,35 @@ namespace galileoPrompts {
       true,
     );
 
-    let { instanceType } = await prompts([
-      {
-        type: 'text',
-        name: 'instanceType',
-        message: helpers.textPromptMessage('Embedding model instance type', {
-          description: 'Enable autoscaling the embedding instance capacity based',
-          instructions: `Recommend "ml.g4dn.xlarge" for smaller datasets, and "ml.g4dn.2xlarge" for larger datasets`,
-        }),
-        initial: context.appConfig.rag.managedEmbeddings.instanceType ?? 'ml.g4dn.xlarge',
-      },
-    ]);
+    let { instanceType } = await prompts(
+      [
+        {
+          type: 'text',
+          name: 'instanceType',
+          message: helpers.textPromptMessage('Embedding model instance type', {
+            description: 'Enable autoscaling the embedding instance capacity based',
+            instructions: `Recommend "ml.g4dn.xlarge" for smaller datasets, and "ml.g4dn.2xlarge" for larger datasets`,
+          }),
+          initial: context.appConfig.rag.managedEmbeddings.instanceType ?? 'ml.g4dn.xlarge',
+        },
+      ],
+      context.promptsOptions,
+    );
 
-    let { maxCapacity } = await prompts([
-      {
-        type: 'number',
-        name: 'maxCapacity',
-        message: helpers.textPromptMessage('Embedding model max capacity (autoscaling)', {
-          description: 'Enable autoscaling the embedding instance capacity based',
-          instructions: `Ensure adequate Service Quota limit for SageMaker > "${instanceType} for endpoint usage"`,
-        }),
-        initial: context.appConfig.rag.managedEmbeddings.autoscaling?.maxCapacity ?? 1,
-      },
-    ]);
+    let { maxCapacity } = await prompts(
+      [
+        {
+          type: 'number',
+          name: 'maxCapacity',
+          message: helpers.textPromptMessage('Embedding model max capacity (autoscaling)', {
+            description: 'Enable autoscaling the embedding instance capacity based',
+            instructions: `Ensure adequate Service Quota limit for SageMaker > "${instanceType} for endpoint usage"`,
+          }),
+          initial: context.appConfig.rag.managedEmbeddings.autoscaling?.maxCapacity ?? 1,
+        },
+      ],
+      context.promptsOptions,
+    );
 
     maxCapacity = parseInt(maxCapacity ?? 1, 10);
 
@@ -426,27 +467,33 @@ namespace galileoPrompts {
   }
 
   export async function ragIndexing(): Promise<ApplicationConfig['rag']['indexing']> {
-    let { instanceType } = await prompts([
-      {
-        type: 'text',
-        name: 'instanceType',
-        message: helpers.textPromptMessage('Indexing Pipeline instance type', {
-          description: 'Instance type used for processing dataset files and indexing to vector store',
-        }),
-        initial: context.appConfig.rag.indexing?.pipeline?.instanceType ?? 'ml.g4dn.xlarge',
-      },
-    ]);
-    let { maxInstanceCount } = await prompts([
-      {
-        type: 'number',
-        name: 'maxInstanceCount',
-        message: helpers.textPromptMessage('Indexing Pipeline max containers', {
-          description: 'Number of containers used for indexing files to vector store',
-          instructions: `Ensure adequate Service Quota limit for SageMaker > "${instanceType} for processing job"`,
-        }),
-        initial: context.appConfig.rag.indexing?.pipeline?.maxInstanceCount ?? 5,
-      },
-    ]);
+    let { instanceType } = await prompts(
+      [
+        {
+          type: 'text',
+          name: 'instanceType',
+          message: helpers.textPromptMessage('Indexing Pipeline instance type', {
+            description: 'Instance type used for processing dataset files and indexing to vector store',
+          }),
+          initial: context.appConfig.rag.indexing?.pipeline?.instanceType ?? 'ml.g4dn.xlarge',
+        },
+      ],
+      context.promptsOptions,
+    );
+    let { maxInstanceCount } = await prompts(
+      [
+        {
+          type: 'number',
+          name: 'maxInstanceCount',
+          message: helpers.textPromptMessage('Indexing Pipeline max containers', {
+            description: 'Number of containers used for indexing files to vector store',
+            instructions: `Ensure adequate Service Quota limit for SageMaker > "${instanceType} for processing job"`,
+          }),
+          initial: context.appConfig.rag.indexing?.pipeline?.maxInstanceCount ?? 5,
+        },
+      ],
+      context.promptsOptions,
+    );
 
     maxInstanceCount = parseInt(maxInstanceCount ?? 1);
 

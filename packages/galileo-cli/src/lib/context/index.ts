@@ -4,6 +4,7 @@ PDX-License-Identifier: Apache-2.0 */
 import path from 'node:path';
 import execa from 'execa';
 import { JSONStorage } from 'node-localstorage';
+import prompts from 'prompts';
 import { Ui } from './ui';
 import { IApplicationContextKey, ApplicationContext, helpers, ApplicationConfig } from '../../internals';
 import { CdkContextValue, ExecaCommandReturn, ExecaTask } from '../types';
@@ -55,6 +56,27 @@ class Context {
     this._appConfig = value;
   }
 
+  fromCache<T = any>(key: string): T | undefined {
+    try {
+      return this.cache.getItem(key);
+    } catch (error) {
+      // console.warn(`Failed retrieve cached value: ${key}`, error);
+      return undefined;
+    }
+  }
+
+  toCache(key: string, value?: any) {
+    try {
+      if (value == null) {
+        this.cache.removeItem(key);
+      } else {
+        this.cache.setItem(key, value);
+      }
+    } catch (error) {
+      console.warn(`Failed to cache value: ${key}`, value, error);
+    }
+  }
+
   /**
    * Auto-cache for `prompts` answers.
    * @param answers Prompts answers
@@ -83,6 +105,18 @@ class Context {
 
   saveExecTasks() {
     this.cache.setItem('replayTasks', this.execTasks);
+  }
+
+  exit() {
+    process.exit();
+  }
+
+  get promptsOptions(): prompts.Options {
+    return {
+      onCancel: () => {
+        process.exit();
+      },
+    };
   }
 }
 
