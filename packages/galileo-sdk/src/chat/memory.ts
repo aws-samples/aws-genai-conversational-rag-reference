@@ -50,10 +50,10 @@ export interface ChatTurn {
 export class ChatEngineHistory extends BufferWindowMemory {
   chatHistory: DynamoDBChatMessageHistory;
 
-  protected _turns: ChatTurn[] = [];
+  protected turns: ChatTurn[] = [];
 
   get lastTurn(): ChatTurn {
-    return this._turns.slice(-1)[0];
+    return this.turns.slice(-1)[0];
   }
 
   constructor(fields: BufferWindowMemoryInput & { chatHistory: DynamoDBChatMessageHistory }) {
@@ -74,7 +74,7 @@ export class ChatEngineHistory extends BufferWindowMemory {
       outputValues.sourceDocuments || [],
     );
 
-    this._turns.push({
+    this.turns.push({
       human: human.chatMessage,
       ai: ai.chatMessage,
       sources: ai.sources,

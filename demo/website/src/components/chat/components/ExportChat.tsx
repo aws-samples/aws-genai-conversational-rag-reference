@@ -138,7 +138,7 @@ export default function ExportChat(props: { chat: Chat }) {
                   options={exportFormatOptions}
                 />
               </FormField>
-              {config.llmModelKwargs != null && (
+              {config.llm?.modelKwargs != null && (
                 <FormField label="Model kwargs">
                   <Checkbox
                     checked={includeModelKwargs}
@@ -150,7 +150,7 @@ export default function ExportChat(props: { chat: Chat }) {
                   </Checkbox>
                 </FormField>
               )}
-              {config.llmModel != null && (
+              {config.llm?.model != null && (
                 <FormField label="LLM Info">
                   <Checkbox
                     checked={includeLLMInfo}

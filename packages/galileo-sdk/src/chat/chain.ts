@@ -2,13 +2,14 @@
 PDX-License-Identifier: Apache-2.0 */
 import { BaseLanguageModel } from 'langchain/base_language';
 import { CallbackManagerForChainRun } from 'langchain/callbacks';
-import { BaseChain, ChainInputs, LLMChain, loadQAChain, QAChainParams } from 'langchain/chains';
+import { BaseChain, ChainInputs, LLMChain, loadQAChain, QAChainParams, StuffDocumentsChain } from 'langchain/chains';
 import { PromptTemplate } from 'langchain/prompts';
 // import { SerializedChatVectorDBQAChain } from "./serde.js";
 import { ChainValues } from 'langchain/schema';
 import { BaseRetriever } from 'langchain/schema/retriever';
 import { getLogger } from '../common/index.js';
 import { startPerfMetric } from '../common/metrics/index.js';
+import { PojoOutputParser } from '../langchain/output_parsers/pojo.js';
 
 const logger = getLogger('chat/chain');
 
@@ -17,11 +18,49 @@ export type LoadValues = Record<string, any>;
 
 export interface ChatEngineChainInput extends ChainInputs {
   retriever: BaseRetriever;
-  combineDocumentsChain: BaseChain;
-  questionGeneratorChain: LLMChain;
+  /**
+   * Classify chain for adaptive chain (classification, category, language, etc.)
+   * which outputs JSON config proved to following chain inputs
+   */
+  classifyChain: false | LLMChain;
+  /**
+   * Primary Question/Answer chain that provides the final answer generation to the user.
+   */
+  qaChain: BaseChain;
+  /**
+   * Followup question generator chain which condenses followup question based on chat history
+   * into a standalone question which is provided to the QA chain.
+   */
+  condenseQuestionChain: LLMChain;
   returnSourceDocuments?: boolean;
   inputKey?: string;
 }
+
+export type ChatEngineChainFromInput = {
+  returnSourceDocuments?: boolean;
+  retriever: BaseRetriever;
+  classifyChain:
+    | false
+    | {
+        llm: BaseLanguageModel;
+        prompt: PromptTemplate;
+        /** Key to use for output, default to "classification" */
+        outputKey?: string;
+      };
+  condenseQuestionChain: {
+    llm: BaseLanguageModel;
+    prompt: PromptTemplate;
+  };
+  qaChain: {
+    // TODO: support other combine document types, we need to implement templates + adapters?
+    type: 'stuff';
+    llm: BaseLanguageModel;
+    prompt: PromptTemplate;
+  };
+} & Omit<
+  ChatEngineChainInput,
+  'retriever' | 'combineDocumentsChain' | 'qaChain' | 'classifyChain' | 'condenseQuestionChain'
+>;
 
 export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
   static lc_name() {
@@ -31,39 +70,45 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
   /**
    * Static method to create a new ChatEngineChain from a
    * BaseLanguageModel and a BaseRetriever.
-   * @param llm {@link BaseLanguageModel} instance used to generate a new question.
    * @param retriever {@link BaseRetriever} instance used to retrieve relevant documents.
    * @param options.returnSourceDocuments Whether to return source documents in the final output
-   * @param options.questionGeneratorChainOptions Options to initialize the standalone question generation chain used as the first internal step
-   * @param options.qaChainOptions {@link QAChainParams} used to initialize the QA chain used as the second internal step
+   * @param options.condenseQuestionChain Options to initialize the standalone question generation chain used as the first internal step
+   * @param options.qaChain {@link QAChainParams} used to initialize the QA chain used as the second internal step
    * @returns A new instance of ChatEngineChain.
    */
-  static fromLLM(
-    llm: BaseLanguageModel,
-    retriever: BaseRetriever,
-    options: {
-      returnSourceDocuments?: boolean;
-      questionGenerator: {
-        llm?: BaseLanguageModel;
-        prompt: PromptTemplate;
-      };
-      qaChainOptions: QAChainParams;
-    } & Omit<ChatEngineChainInput, 'retriever' | 'combineDocumentsChain' | 'questionGeneratorChain'>,
-  ): ChatEngineChain {
-    const { qaChainOptions, questionGenerator, verbose, ...rest } = options;
-
-    const qaChain = loadQAChain(llm, qaChainOptions);
-
-    const questionGeneratorChain = new LLMChain({
-      prompt: questionGenerator.prompt,
-      llm: questionGenerator.llm ?? llm,
+  static from(options: ChatEngineChainFromInput): ChatEngineChain {
+    const {
+      qaChain: qaChainOptions,
+      classifyChain: classifyOptions,
+      condenseQuestionChain: condenseQuestionChainOptions,
       verbose,
+      ...rest
+    } = options;
+
+    const qaChain = loadQAChain(qaChainOptions.llm, {
+      verbose,
+      ...qaChainOptions,
+    });
+
+    const classifyChain =
+      classifyOptions &&
+      new LLMChain({
+        verbose,
+        ...classifyOptions,
+        outputKey: 'classification',
+        // classify chain must return parsable JSON
+        outputParser: new PojoOutputParser<any>(),
+      });
+
+    const condenseQuestionChain = new LLMChain({
+      verbose,
+      ...condenseQuestionChainOptions,
     });
 
     const instance = new this({
-      retriever,
-      combineDocumentsChain: qaChain,
-      questionGeneratorChain,
+      classifyChain,
+      qaChain,
+      condenseQuestionChain,
       verbose,
       ...rest,
     });
@@ -72,6 +117,8 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
 
   inputKey = 'question';
 
+  classificationKey = 'classification';
+
   chatHistoryKey = 'chat_history';
 
   get inputKeys() {
@@ -79,7 +126,7 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
   }
 
   get outputKeys() {
-    return this.combineDocumentsChain.outputKeys.concat(this.returnSourceDocuments ? ['sourceDocuments'] : []);
+    return this.qaChain.outputKeys.concat(this.returnSourceDocuments ? ['sourceDocuments'] : []);
   }
 
   get traceData(): any {
@@ -88,9 +135,11 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
 
   retriever: BaseRetriever;
 
-  combineDocumentsChain: BaseChain;
+  classifyChain: false | LLMChain;
 
-  questionGeneratorChain: LLMChain;
+  qaChain: BaseChain;
+
+  condenseQuestionChain: LLMChain;
 
   returnSourceDocuments = false;
 
@@ -99,8 +148,9 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
   constructor(fields: ChatEngineChainInput) {
     super(fields);
     this.retriever = fields.retriever;
-    this.combineDocumentsChain = fields.combineDocumentsChain;
-    this.questionGeneratorChain = fields.questionGeneratorChain;
+    this.classifyChain = fields.classifyChain;
+    this.qaChain = fields.qaChain;
+    this.condenseQuestionChain = fields.condenseQuestionChain;
     this.inputKey = fields.inputKey ?? this.inputKey;
     this.returnSourceDocuments = fields.returnSourceDocuments ?? this.returnSourceDocuments;
   }
@@ -114,48 +164,75 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
       throw new Error(`Chat history key ${this.chatHistoryKey} not found.`);
     }
     const question: string = values[this.inputKey];
-    const chatHistory = values[this.chatHistoryKey];
+    const chatHistory = values[this.chatHistoryKey] || [];
 
-    let newQuestion = question;
-    if (chatHistory.length > 0) {
+    let classification: ChainValues | undefined;
+    if (this.classifyChain) {
+      logger.debug('Calling classify chain: ', { question });
+      const $$ClassifyChainExecutionTime = startPerfMetric('ClassifyChainExecutionTime');
+      classification = (await this.classifyChain.call({ question }))[this.classificationKey];
+      $$ClassifyChainExecutionTime();
+      logger.debug('Result from classify chain: ', { classification });
+    }
+
+    let newQuestion = classification?.question || question;
+    const hasHistory = chatHistory.length > 0;
+    if (hasHistory) {
+      const condenseQuestionInput: ChainValues = {
+        question: newQuestion,
+        ...classification,
+        chat_history: chatHistory,
+      };
+      logger.debug('Chain:condenseQuestionChain:input', { input: condenseQuestionInput });
       const $$QuestionGeneratorExecutionTime = startPerfMetric('QuestionGeneratorExecutionTime');
-      const result = await this.questionGeneratorChain.call(
-        {
-          question,
-          chat_history: chatHistory,
-        },
+      const result = await this.condenseQuestionChain.call(
+        condenseQuestionInput,
         runManager?.getChild('question_generator'),
       );
       $$QuestionGeneratorExecutionTime();
+      logger.debug('Chain:condenseQuestionChain:output', { output: result });
 
       const keys = Object.keys(result);
       if (keys.length === 1) {
         newQuestion = result[keys[0]];
+        logger.debug(`Rewrote question from "${question}" to "${newQuestion}`);
       } else {
         throw new Error('Return from llm chain has multiple values, only single values supported.');
       }
     }
+    logger.debug('Chain:retriever:getRelevantDocuments:query', { query: newQuestion });
     const $$GetRelevantDocumentsExecutionTime = startPerfMetric('GetRelevantDocumentsExecutionTime');
     const docs = await this.retriever.getRelevantDocuments(newQuestion, runManager?.getChild('retriever'));
     $$GetRelevantDocumentsExecutionTime();
 
     const inputs = {
-      question: newQuestion,
+      ...classification,
       input_documents: docs,
       chat_history: chatHistory,
+      question: newQuestion,
     };
 
+    logger.debug('Chain:condenseQuestionChain:input', { input: inputs });
     const $$CombineDocumentsExecutionTime = startPerfMetric('CombineDocumentsExecutionTime');
-    const result = await this.combineDocumentsChain.call(inputs, runManager?.getChild('combine_documents'));
+    const result = await this.qaChain.call(inputs, runManager?.getChild('combine_documents'));
     $$CombineDocumentsExecutionTime();
+    logger.debug('Chain:condenseQuestionChain:output', { output: result });
 
     this._traceData = {
       originalQuestion: question,
       standaloneQuestion: newQuestion,
+      classification,
+      hasHistory,
+      chainValues: values,
       chatHistory,
       sourceDocuments: docs,
       inputs,
       result,
+      chains: {
+        qaChain: this.qaChain instanceof StuffDocumentsChain ? this.qaChain.llmChain.toJSON() : this.qaChain.toJSON(),
+        condenseQuestionChain: this.condenseQuestionChain.toJSON(),
+        classifyChain: this.classifyChain && this.classifyChain.toJSON(),
+      },
     };
 
     logger.debug('Trace data', { traceData: this.traceData });

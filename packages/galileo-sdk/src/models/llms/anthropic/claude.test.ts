@@ -4,7 +4,8 @@ PDX-License-Identifier: Apache-2.0 */
 import type {} from '@types/jest';
 import { AIMessage, HumanMessage, SystemMessage } from 'langchain/schema';
 import { CLAUDE_V2_ADAPTER } from './claude';
-import { ChatCondenseQuestionPromptTemplate, ChatQuestionAnswerPromptTemplate } from '../../../prompt/templates/chat';
+import { resolvePromptTemplateByChainType } from '../../../prompt/templates/store/resolver.js';
+import { ChainType } from '../../../schema';
 import { ModelAdapter } from '../../adapter';
 
 describe('models/llms/anthropic/claude', () => {
@@ -12,22 +13,22 @@ describe('models/llms/anthropic/claude', () => {
     const adapter = new ModelAdapter(CLAUDE_V2_ADAPTER);
 
     test('should render qa prompt', async () => {
-      const template = new ChatQuestionAnswerPromptTemplate({
-        ...adapter.prompt?.chat?.questionAnswer,
-      });
+      const template = await resolvePromptTemplateByChainType(ChainType.QA, adapter.prompt?.chat?.QA);
+
       expect(
         await template.format({
           question: 'THE QUESTION',
-          domain: 'DOMAIN',
           context: 'THE CORPUS',
         }),
       ).toMatchSnapshot();
     });
 
     test('should render condense prompt', async () => {
-      const template = new ChatCondenseQuestionPromptTemplate({
-        ...adapter.prompt?.chat?.condenseQuestion,
-      });
+      const template = await resolvePromptTemplateByChainType(
+        ChainType.CONDENSE_QUESTION,
+        adapter.prompt?.chat?.CONDENSE_QUESTION,
+      );
+
       expect(
         await template.format({
           question: 'THE QUESTION',

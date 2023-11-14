@@ -66,10 +66,10 @@ export class ChatExportHelper {
         title: chat.title,
         createdAt: chat.createdAt == null ? undefined : dayjs(chat.createdAt).format(DATETIMEFORMAT),
       },
-      llmInfo: options.includeLLMInfo ? options.chatEngineConfig.llmModel?.modelId : undefined,
+      llmInfo: options.includeLLMInfo ? options.chatEngineConfig.llm?.model?.uuid : undefined,
       modelKwargs:
-        options.includeModelKwargs && options.chatEngineConfig.llmModelKwargs
-          ? omit(options.chatEngineConfig.llmModelKwargs, 'stop_sequences')
+        options.includeModelKwargs && options.chatEngineConfig.llm?.modelKwargs
+          ? omit(options.chatEngineConfig.llm.modelKwargs, 'stop_sequences')
           : undefined,
       messages: messages.map((msg) => ({
         messageId: msg.messageId,

@@ -1,5 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { CHAT_PROMPT_TEMPLATES } from '../../../prompt/index.js';
 import type { IModelAdapter } from '../../adapter.js';
 import { DEFAULT_MAX_NEW_TOKENS } from '../../constants.js';
 import type { Kwargs } from '../../types.js';
@@ -8,21 +9,11 @@ import type { Kwargs } from '../../types.js';
 export const CLAUDE_V2_ADAPTER: IModelAdapter = {
   prompt: {
     chat: {
-      questionAnswer: {
-        template: `\n\nHuman: Read the following chat history inside <history></history> XML tags, and then rephrase the "Followup Question" below to be a concise standalone question in its original language. Without answering the question, return only the standalone question:
-
-<history>
-{{>ChatHistory}}
-</history>
-Followup Question: {{question}}
-
-Assistant: `,
-      },
-      condenseQuestion: {
+      QA: {
         template: `\n\nHuman: Read the follow text inside <text></text> XML tags, and then answer the question based on the provided rules inside <rules></rules>:
 
 <text>
-{{corpus}}
+{{context}}
 </text>
 <rules>
 1. only use knowledge from the provided corpus to answer the question
@@ -32,6 +23,19 @@ Assistant: `,
 Based on the text above, {{question}}
 
 Assistant: `,
+      },
+      CONDENSE_QUESTION: {
+        template: `\n\nHuman: Read the following chat history inside <history></history> XML tags, and then rephrase the "Followup Question" below to be a concise standalone question in its original language. Without answering the question, return only the standalone question:
+
+<history>
+{{>ChatHistory}}
+</history>
+Followup Question: {{question}}
+
+Assistant: `,
+      },
+      CLASSIFY: {
+        template: '\n\nHuman: ' + CHAT_PROMPT_TEMPLATES.CLASSIFY.template.replace(/Classification: /g, 'Assistant: '),
       },
     },
   },
