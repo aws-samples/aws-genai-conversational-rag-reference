@@ -5,5 +5,6 @@ export * as dynamodb from './dynamodb/index.js';
 export * as chain from './chain.js';
 export * as context from './context.js';
 export * as memory from './memory.js';
+export * from './config/index.js';
 
 export * from './engine.js';

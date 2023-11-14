@@ -34,48 +34,59 @@ export const handler = createChatMessageHandler(...INTERCEPTORS, async ({ input,
 
     const question = input.body.question;
     const chatId = input.requestParameters.chatId;
-    const chatOptions = input.body.options;
     metrics.addMetadata('chatId', chatId);
 
-    let config: Chat.ChatEngineConfig = {};
-    if (_isAdmin && input.body.config) {
-      config = {
-        ...config,
-        ...input.body.config,
-      };
-      logger.warn({
-        message: 'Overriding default config for admin user',
-        callingIdentity,
-        config,
-      });
-    }
+    const verbose = logger.getLevelName() === 'DEBUG';
 
-    let searchUrlService = 'execute-api';
-    if (ENV.SEARCH_URL.includes('lambda-url')) {
-      searchUrlService = 'lambda';
-    }
+    // User request time config
+    const userConfig = input.body.options || {};
+    // [SECURITY]: check for "privileged" options, and restrict to only admins (search url, custom models, etc.)
+    // make sure config does not allow privileged properties to non-admins (such as custom models/roles)
+    !_isAdmin && Chat.assertNonPrivilegedChatEngineConfig(userConfig as any);
 
-    const engine = await Chat.ChatEngine.from({
-      userId,
-      chatId,
-      config,
-      chatHistoryTable: ENV.CHAT_MESSAGE_TABLE_NAME,
-      chatHistoryTableIndexName: ENV.CHAT_MESSAGE_TABLE_GSI_INDEX_NAME,
-      domain: chatOptions?.domain ?? ENV.DOMAIN,
+    // Should we store this as "system" config once we implement config store?
+    const systemConfig: Chat.UnresolvedChatEngineConfig = {
+      root: true,
+      classifyChain: {
+        enabled: false,
+      },
       search: {
         url: ENV.SEARCH_URL,
-        fetch: createSignedFetcher({
-          service: searchUrlService,
-          credentials: fromNodeProviderChain(),
-          region: process.env.AWS_REGION! || process.env.AWS_DEFAULT_REGION!,
-          idToken: callingIdentity.idToken,
-        }),
-        k: chatOptions?.search?.limit,
-        filter: {
-          ...chatOptions?.search?.filters,
-        },
+        verbose,
       },
-      verbose: logger.getLevelName() === 'DEBUG',
+    };
+
+    // TODO: fetch "application" config for chat once implemented
+    const applicationConfig: Partial<Chat.UnresolvedChatEngineConfig> = {};
+
+    const configs: [Chat.UnresolvedChatEngineConfig, ...Partial<Chat.UnresolvedChatEngineConfig>[]] = [
+      systemConfig,
+      applicationConfig,
+      userConfig as any,
+    ];
+
+    const config = Chat.mergeUnresolvedChatEngineConfig(...configs);
+
+    logger.debug({ message: 'Resolved ChatEngineConfig', config, configs });
+
+    const searchFetcher = createSignedFetcher({
+      service: config.search.url.includes('lambda-url') ? 'lambda' : 'execute-api',
+      credentials: fromNodeProviderChain(),
+      region: process.env.AWS_REGION! || process.env.AWS_DEFAULT_REGION!,
+      idToken: callingIdentity.idToken,
+    });
+
+    const engine = await Chat.ChatEngine.from({
+      ...config,
+      search: {
+        ...config.search,
+        fetch: searchFetcher,
+      },
+      userId,
+      chatId,
+      chatHistoryTable: ENV.CHAT_MESSAGE_TABLE_NAME,
+      chatHistoryTableIndexName: ENV.CHAT_MESSAGE_TABLE_GSI_INDEX_NAME,
+      verbose,
       returnTraceData: _isAdmin,
     });
     $$PreQuery();
@@ -88,6 +99,14 @@ export const handler = createChatMessageHandler(...INTERCEPTORS, async ({ input,
       logger.info('Chain successfully executed query');
       logger.debug({ message: 'ChatEngine query result', result });
 
+      const traceData = _isAdmin
+        ? {
+            ...result.traceData,
+            config,
+            configs,
+          }
+        : undefined;
+
       return ApiResponse.success({
         question: {
           ...result.turn.human,
@@ -98,7 +117,7 @@ export const handler = createChatMessageHandler(...INTERCEPTORS, async ({ input,
           text: result.answer,
         },
         sources: result.turn.sources,
-        traceData: result.traceData,
+        traceData,
       } as CreateChatMessageResponseContent);
     } catch (error) {
       logger.error('Failed to execute query', error as Error);

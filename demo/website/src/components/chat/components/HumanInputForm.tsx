@@ -4,15 +4,12 @@ import { Badge } from '@cloudscape-design/components';
 import Button from '@cloudscape-design/components/button';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import { Chat } from 'api-typescript-react-query-hooks';
-import { isEmpty } from 'lodash';
 import { useCallback, useState } from 'react';
-import { useIsAdmin } from '../../../Auth';
 import { useCreateChatMessageMutation } from '../../../hooks/chats';
 import { useChatEngineConfig } from '../../../providers/ChatEngineConfig';
 
 export default function HumanInputForm(props: { chat: Chat; onSuccess?: () => void }) {
-  const isAdmin = useIsAdmin();
-  const [config] = useChatEngineConfig();
+  const [options] = useChatEngineConfig();
   const [currentMessage, setCurrentMessage] = useState('');
 
   const onSuccess = useCallback(() => {
@@ -27,7 +24,7 @@ export default function HumanInputForm(props: { chat: Chat; onSuccess?: () => vo
       // @ts-ignore - incorrect
       createChatMessageRequestContent: {
         question: currentMessage,
-        ...(isAdmin && !isEmpty(config) ? { config } : {}),
+        options,
       },
     });
     setCurrentMessage('');

@@ -6,7 +6,6 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import ChatPanel from './ChatPanel';
 import ChatsList from './ChatsList';
 import { ChatConfigSplitPanel } from './dev-settings/ChatConfigSplitPanel';
-import { useIsAdmin } from '../../Auth';
 
 type SessionsProps = {
   chats: Chat[];
@@ -14,7 +13,6 @@ type SessionsProps = {
 };
 
 export default function Sessions({ chats, loading }: SessionsProps) {
-  const isAdmin = useIsAdmin();
   const navigate = useNavigate();
 
   const setSelectedChat = (chat: Chat) => navigate(`/chat/${chat.chatId}`, { replace: true });
@@ -62,7 +60,7 @@ export default function Sessions({ chats, loading }: SessionsProps) {
           {selectedChat && (
             <>
               <ChatPanel chat={selectedChat} />
-              {isAdmin && <ChatConfigSplitPanel />}
+              <ChatConfigSplitPanel />
             </>
           )}
         </div>
