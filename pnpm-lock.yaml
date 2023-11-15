@@ -1417,6 +1417,9 @@ importers:
       '@aws-lambda-powertools/parameters':
         specifier: ^1.12.1
         version: 1.12.1
+      api-typescript-runtime:
+        specifier: ^0.0.0
+        version: link:../../demo/api/generated/runtime/typescript
       cross-fetch:
         specifier: ^3.1.8
         version: 3.1.8

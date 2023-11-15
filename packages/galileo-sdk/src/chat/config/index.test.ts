@@ -2,18 +2,13 @@
 PDX-License-Identifier: Apache-2.0 */
 // @ts-ignore
 import type {} from '@types/jest';
-import {
-  UnresolvedChatEngineConfig,
-  extractPrivilegedChatEngineConfigKeys,
-  mergeUnresolvedChatEngineConfig,
-} from './index';
+import { ChatEngineConfig, extractPrivilegedChatEngineConfigKeys, mergeUnresolvedChatEngineConfig } from './index';
 
 describe('chat/config', () => {
   describe('mergeUnresolvedChatEngineConfig', () => {
     test('should correctly merge configs', () => {
       const actual = mergeUnresolvedChatEngineConfig(
         {
-          root: true,
           llm: {
             model: 'sys-llm',
             modelKwargs: { a: 'sys' },
@@ -35,7 +30,6 @@ describe('chat/config', () => {
             modelKwargs: { b: 'app', c: 'app' },
           },
           classifyChain: {
-            enabled: true,
             llm: {
               model: 'application-classify-llm',
             },
@@ -55,8 +49,7 @@ describe('chat/config', () => {
         },
       );
 
-      const expected: UnresolvedChatEngineConfig = {
-        root: true,
+      const expected: ChatEngineConfig = {
         llm: {
           model: 'user-llm',
           modelKwargs: { a: 'sys', b: 'app', c: 'user' },
@@ -69,7 +62,7 @@ describe('chat/config', () => {
           limit: 9,
         },
         classifyChain: {
-          enabled: true,
+          enabled: false,
           llm: {
             model: 'application-classify-llm',
           },

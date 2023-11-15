@@ -3,6 +3,7 @@ PDX-License-Identifier: Apache-2.0 */
 import { Input } from '@cloudscape-design/components';
 import FormField from '@cloudscape-design/components/form-field';
 import SpaceBetween from '@cloudscape-design/components/space-between';
+import { isEmpty } from 'lodash';
 import { FC } from 'react';
 import { useIsAdmin } from '../../../../../Auth';
 import { useChatEngineConfigState } from '../../../../../providers/ChatEngineConfig';
@@ -34,9 +35,11 @@ export const SearchSettings: FC = () => {
           value={toCodeEditorJson(search?.filter)}
           onChange={({ detail }) => {
             try {
+              let filter = JSON.parse(detail.value);
+              if (isEmpty(filter)) filter = undefined;
               setSearch((_draft) => ({
                 ..._draft,
-                filter: JSON.parse(detail.value),
+                filter,
               }));
             } catch (error) {
               console.warn('Failed to parse `Search config`', detail.value, error);
@@ -51,9 +54,13 @@ export const SearchSettings: FC = () => {
           <Input
             value={String(search?.url || '')}
             onChange={({ detail }) => {
+              let url: string | undefined = detail.value;
+              if (isEmpty(url.trim())) {
+                url = undefined;
+              }
               setSearch((_draft) => ({
                 ..._draft,
-                url: detail.value,
+                url,
               }));
             }}
           />
