@@ -10,6 +10,8 @@ import {
   DeleteCognitoUserRequest,
   CognitoUserInfo,
   CredentialsWithUserpoolId,
+  AuthCognitoUserRequest,
+  AuthResponseChallenge,
 } from './cognito';
 import { getAWSAccountId } from './get-aws-account-id';
 import { CdkBootstrapInfo, CdkBootstrapInfoRequestOptions, getCdkBootstrapInfo } from './get-bootstrap-info';
@@ -71,6 +73,13 @@ export namespace accountUtils {
 
   export const createCognitoUser = async (options: CreateCognitoUserRequest) => {
     return cognito.createCognitoUser(options);
+  };
+
+  export const authCognitoUser = async (options: AuthCognitoUserRequest) => {
+    return cognito.authCognitoUser(options);
+  };
+  export const respondCognitoChallenge = async (options: AuthResponseChallenge) => {
+    return cognito.repondChallenge(options);
   };
 
   export const bulkCreateCognitoUsers = async (

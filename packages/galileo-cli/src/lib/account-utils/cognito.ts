@@ -10,6 +10,9 @@ import {
   ListGroupsCommand,
   AdminDisableUserCommand,
   AdminDeleteUserCommand,
+  InitiateAuthCommand,
+  ListUserPoolClientsCommand,
+  RespondToAuthChallengeCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { fromIni } from '@aws-sdk/credential-providers';
 import chalk from 'chalk';
@@ -25,6 +28,17 @@ export interface CredentialsWithUserpoolId extends CredentialsParams {
   readonly userpoolId: string;
 }
 export interface CreateCognitoUserRequest extends CredentialsWithUserpoolId, CognitoUserInfo {}
+export interface AuthCognitoUserRequest extends CredentialsWithUserpoolId {
+  readonly username: string;
+  readonly password: string;
+}
+export interface AuthResponseChallenge extends CredentialsParams {
+  readonly appClientId: string;
+  challengeName: string;
+  challengeParams: Record<string, string>;
+  responseValue?: string;
+  session?: string;
+}
 export type DeleteCognitoUserRequest = Omit<CreateCognitoUserRequest, 'group' | 'email'>;
 
 export interface BulkCreateCognitoUsersRequest extends CredentialsWithUserpoolId {
@@ -187,5 +201,66 @@ export namespace cognito {
     );
 
     console.log(`${options.username} deleted.`);
+  };
+
+  export const authCognitoUser = async (options: AuthCognitoUserRequest) => {
+    const client = new CognitoIdentityProviderClient({
+      credentials: fromIni({ profile: options.profile }),
+      region: options.region,
+    });
+
+    const userpoolClientsResp = await client.send(
+      new ListUserPoolClientsCommand({
+        UserPoolId: options.userpoolId,
+      }),
+    );
+
+    if (userpoolClientsResp.UserPoolClients == null || userpoolClientsResp.UserPoolClients.length === 0) {
+      throw new Error('No userpool clients. Quitting...');
+    }
+
+    const appClientId = userpoolClientsResp.UserPoolClients[0].ClientId;
+    const authResp = await client.send(
+      new InitiateAuthCommand({
+        AuthFlow: 'USER_PASSWORD_AUTH',
+        ClientId: appClientId,
+        AuthParameters: {
+          USERNAME: options.username,
+          PASSWORD: options.password,
+        },
+      }),
+    );
+
+    return {
+      appClientId,
+      challengeName: authResp.ChallengeName,
+      challengeParams: authResp.ChallengeParameters,
+      profile: options.profile,
+      region: options.region,
+      session: authResp.Session,
+    } as AuthResponseChallenge;
+  };
+
+  export const repondChallenge = async (options: AuthResponseChallenge) => {
+    const client = new CognitoIdentityProviderClient({
+      credentials: fromIni({ profile: options.profile }),
+      region: options.region,
+    });
+
+    // only support SOFTWARE_TOKEN_MFA now
+    const respondChallengeResp = await client.send(
+      new RespondToAuthChallengeCommand({
+        ChallengeName: options.challengeName,
+        ClientId: options.appClientId,
+        ChallengeResponses: {
+          // SOFTWARE_TOKEN_MFA
+          USERNAME: options.challengeParams.USER_ID_FOR_SRP,
+          SOFTWARE_TOKEN_MFA_CODE: options.responseValue!,
+        },
+        Session: options.session,
+      }),
+    );
+
+    return respondChallengeResp.AuthenticationResult;
   };
 }
