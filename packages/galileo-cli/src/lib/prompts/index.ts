@@ -118,6 +118,13 @@ namespace galileoPrompts {
       initial: options?.initialVal || context.cache.getItem(options?.name ?? 'username'),
     };
   };
+  export const password = (options?: { name?: string; message?: string }): PromptObject => {
+    return {
+      type: 'password',
+      name: options?.name ?? 'password',
+      message: options?.message ?? 'Password',
+    };
+  };
   export const userGroupPicker = (options?: {
     name?: string;
     message?: string;
