@@ -22,7 +22,7 @@ export interface ChatEngineChainInput extends ChainInputs {
    * Classify chain for adaptive chain (classification, category, language, etc.)
    * which outputs JSON config proved to following chain inputs
    */
-  classifyChain: false | LLMChain;
+  classifyChain?: LLMChain;
   /**
    * Primary Question/Answer chain that provides the final answer generation to the user.
    */
@@ -39,14 +39,12 @@ export interface ChatEngineChainInput extends ChainInputs {
 export type ChatEngineChainFromInput = {
   returnSourceDocuments?: boolean;
   retriever: BaseRetriever;
-  classifyChain:
-    | false
-    | {
-        llm: BaseLanguageModel;
-        prompt: PromptTemplate;
-        /** Key to use for output, default to "classification" */
-        outputKey?: string;
-      };
+  classifyChain?: {
+    llm: BaseLanguageModel;
+    prompt: PromptTemplate;
+    /** Key to use for output, default to "classification" */
+    outputKey?: string;
+  };
   condenseQuestionChain: {
     llm: BaseLanguageModel;
     prompt: PromptTemplate;
@@ -135,7 +133,7 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
 
   retriever: BaseRetriever;
 
-  classifyChain: false | LLMChain;
+  classifyChain?: LLMChain;
 
   qaChain: BaseChain;
 

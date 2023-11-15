@@ -1,84 +1,45 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-
+import type {
+  ChatEngineConfig,
+  ChatEngineChainConfig,
+  ChatEngineLLMConfig,
+  ChatEngineSearchConfig,
+  ChatEngineMemoryConfig,
+} from 'api-typescript-runtime';
 import { BaseLanguageModel } from 'langchain/base_language';
 import { PromptTemplate } from 'langchain/prompts';
 import { difference } from 'lodash';
-import { TKwags } from '../../common/types.js';
-import { IModelInfo } from '../../models/types.js';
-import { PromptRuntime } from '../../prompt/types.js';
 import { ChainType } from '../../schema/index.js';
 import { mergeConfig } from '../../utils/merge.js';
 import { ChatEngineContext, ResolvedLLM } from '../context.js';
-import { SearchRetrieverInput } from '../search.js';
 
-export interface MemoryConfig {
-  /**
-   * Number of messages to fetch for contextual conversation history
-   * - Set to 0 to disable conversation history (and condense question step), but still store messages
-   */
-  readonly limit?: number;
-}
+export { ChatEngineConfig, ChatEngineChainConfig, ChatEngineLLMConfig, ChatEngineSearchConfig, ChatEngineMemoryConfig };
 
-export interface LLMConfig {
-  /**
-   * LLM model, either predefined model uuid as string, or model info definition.
-   */
-  readonly model: string | IModelInfo | undefined;
-  /** Additional model kwargs */
-  readonly modelKwargs?: TKwags;
-  /** Additional endpoint kwargs */
-  readonly endpointKwargs?: TKwags;
-}
-
-export interface UnresolvedLLMChainConfig {
-  readonly enabled?: boolean;
-  readonly llm?: LLMConfig;
-  readonly prompt?: string | PromptRuntime;
-}
-
-export interface LLMChainConfig {
-  readonly enabled?: boolean;
+export interface ResolvedLLMChainConfig {
   readonly llm: BaseLanguageModel;
   readonly prompt: PromptTemplate;
 }
 
-export interface UnresolvedChatEngineConfig {
-  /** Indicates if config is the root, and should not be merged with ancestors */
-  readonly root?: boolean;
-  /** LLM to use for chains, unless overridden by the chain */
-  readonly llm?: LLMConfig;
-  /** Classify chain config, if undefined no classification will be performed */
-  readonly classifyChain?: false | UnresolvedLLMChainConfig;
-  /** Question/Answer chain config */
-  readonly qaChain?: UnresolvedLLMChainConfig;
-  /** Condense question chain (standalone question generator) */
-  readonly condenseQuestionChain?: UnresolvedLLMChainConfig;
-
-  readonly search: SearchRetrieverInput;
-  readonly memory?: MemoryConfig;
-}
-
-export interface ChatEngineConfig {
+export interface ResolvedChatEngineConfig {
   /** Indicates if config is the root, and should not be merged with ancestors */
   readonly root?: boolean;
   /** LLM to use for chains, unless overridden by the chain */
   readonly llm: BaseLanguageModel;
   /** Classify chain config, if undefined no classification will be performed */
-  readonly classifyChain: false | LLMChainConfig;
+  readonly classifyChain?: ResolvedLLMChainConfig;
   /** Question/Answer chain config */
-  readonly qaChain: LLMChainConfig;
+  readonly qaChain: ResolvedLLMChainConfig;
   /** Condense question chain (standalone question generator) */
-  readonly condenseQuestionChain: LLMChainConfig;
+  readonly condenseQuestionChain: ResolvedLLMChainConfig;
 
-  readonly search: SearchRetrieverInput;
-  readonly memory?: MemoryConfig;
+  readonly search?: ChatEngineSearchConfig;
+
+  readonly memory?: ChatEngineMemoryConfig;
 }
 
-export function mergeUnresolvedChatEngineConfig(
-  ...configs: Partial<UnresolvedChatEngineConfig>[]
-): UnresolvedChatEngineConfig {
-  return mergeConfig(...configs) as UnresolvedChatEngineConfig;
+export function mergeUnresolvedChatEngineConfig(...configs: Partial<ChatEngineConfig>[]): ChatEngineConfig {
+  return mergeConfig(...(configs as any)) as ChatEngineConfig;
 }
 
 function extractPrivilegedKeys(obj: any, allowed: string[], prefix?: string): string[] {
@@ -96,13 +57,13 @@ export const UNPRIVILEGED_KEYS = {
   SEARCH: ['filter', 'limit', 'scoreThreshold'],
 };
 
-export function extractPrivilegedChatEngineConfigKeys(config: Partial<UnresolvedChatEngineConfig>): string[] {
+export function extractPrivilegedChatEngineConfigKeys(config: Partial<ChatEngineConfig>): string[] {
   const privileged: string[] = [];
   privileged.push(...extractPrivilegedKeys(config.llm?.model, UNPRIVILEGED_KEYS.MODEL, 'llm.model'));
 
   Object.values(ChainType).forEach((type) => {
     const key = getChainConfigKeyByType(type);
-    const chainConfig = config[key] as UnresolvedLLMChainConfig | undefined;
+    const chainConfig = config[key] as ChatEngineChainConfig | undefined;
     privileged.push(...extractPrivilegedKeys(chainConfig?.llm?.model, UNPRIVILEGED_KEYS.MODEL, `${key}.llm.model`));
   });
 
@@ -111,7 +72,7 @@ export function extractPrivilegedChatEngineConfigKeys(config: Partial<Unresolved
   return privileged;
 }
 
-export function assertNonPrivilegedChatEngineConfig(config: Partial<UnresolvedChatEngineConfig>): void {
+export function assertNonPrivilegedChatEngineConfig(config: Partial<ChatEngineChainConfig>): void {
   const privileged = extractPrivilegedChatEngineConfigKeys(config);
 
   if (privileged.length) {
@@ -120,7 +81,7 @@ export function assertNonPrivilegedChatEngineConfig(config: Partial<UnresolvedCh
 }
 
 async function resolveLLM(
-  llmConfig?: LLMConfig,
+  llmConfig?: ChatEngineLLMConfig,
   defaultValues?: ResolvedLLM,
   options?: { verbose?: boolean },
 ): Promise<ResolvedLLM> {
@@ -133,32 +94,20 @@ async function resolveLLM(
 }
 
 export async function resolveChatEngineConfig(
-  config: UnresolvedChatEngineConfig,
+  config: ChatEngineConfig,
   options?: { verbose?: boolean },
-): Promise<ChatEngineConfig> {
+): Promise<ResolvedChatEngineConfig> {
   const defaultLLM = await resolveLLM(config.llm, undefined, options);
   const qaLLM = await resolveLLM(config.qaChain?.llm, defaultLLM, options);
   const condensedLLM = await resolveLLM(config.condenseQuestionChain?.llm, defaultLLM, options);
-  const classifyLLM =
-    config.classifyChain && config.classifyChain.enabled === true
-      ? await resolveLLM(
-          {
-            model: defaultLLM.modelInfo,
-            modelKwargs: { temperature: 0 },
-            ...config.classifyChain?.llm,
-          },
-          defaultLLM,
-          options,
-        )
-      : false;
-  const classify = classifyLLM && config.classifyChain;
+  const classifyLLM = config.classifyChain?.enabled
+    ? await resolveLLM(config.classifyChain?.llm, defaultLLM, options)
+    : undefined;
 
   return {
     ...config,
     llm: defaultLLM.llm,
     qaChain: {
-      // required
-      enabled: true,
       llm: qaLLM.llm,
       prompt: await ChatEngineContext.resolvePromptTemplate(
         ChainType.QA,
@@ -167,8 +116,6 @@ export async function resolveChatEngineConfig(
       ),
     },
     condenseQuestionChain: {
-      // enabled by default
-      enabled: config.condenseQuestionChain?.enabled ?? true,
       llm: condensedLLM.llm,
       prompt: await ChatEngineContext.resolvePromptTemplate(
         ChainType.CONDENSE_QUESTION,
@@ -176,18 +123,17 @@ export async function resolveChatEngineConfig(
         config.condenseQuestionChain?.prompt,
       ),
     },
-    classifyChain: classify
-      ? {
-          // disabled by default
-          enabled: config.classifyChain.enabled ?? false,
-          llm: classifyLLM.llm,
-          prompt: await ChatEngineContext.resolvePromptTemplate(
-            ChainType.CLASSIFY,
-            classifyLLM.adapter.prompt?.chat?.CLASSIFY,
-            config.classifyChain?.prompt,
-          ),
-        }
-      : false,
+    classifyChain:
+      config.classifyChain?.enabled && classifyLLM
+        ? {
+            llm: classifyLLM.llm,
+            prompt: await ChatEngineContext.resolvePromptTemplate(
+              ChainType.CLASSIFY,
+              classifyLLM.adapter.prompt?.chat?.CLASSIFY,
+              config.classifyChain?.prompt,
+            ),
+          }
+        : undefined,
   };
 }
 
@@ -202,7 +148,7 @@ export function getChainConfigKeyByType(type: ChainType) {
   }
 }
 
-export function getChainConfigByType<T extends UnresolvedChatEngineConfig | ChatEngineConfig>(
+export function getChainConfigByType<T extends ChatEngineConfig | ResolvedChatEngineConfig>(
   type: ChainType,
   config?: T,
 ) {

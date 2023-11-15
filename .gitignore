@@ -60,6 +60,7 @@ build
 LICENSE-THIRD-PARTY
 tsconfig.tsbuildinfo
 oss-attribution
+.local
 !/demo/api/generated/runtime/README.md
 !/demo/api/generated/documentation/README.md
 !/demo/api/generated/libraries/README.md
