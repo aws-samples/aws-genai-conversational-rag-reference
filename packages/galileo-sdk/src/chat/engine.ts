@@ -4,18 +4,18 @@ import '../langchain/patch.js';
 import { BaseLanguageModel } from 'langchain/base_language';
 import { BaseRetriever } from 'langchain/schema/retriever';
 import { ChatEngineChain, ChatEngineChainFromInput } from './chain.js';
-import { UnresolvedChatEngineConfig, resolveChatEngineConfig } from './config/index.js';
+import { ChatEngineConfig, resolveChatEngineConfig } from './config/index.js';
 import { DynamoDBChatMessageHistory } from './dynamodb/message-history.js';
 import { ChatEngineHistory, ChatTurn } from './memory.js';
-import { SearchRetriever } from './search.js';
+import { SearchRetriever, SearchRetrieverInput } from './search.js';
 import { Dict } from '../models/index.js';
 
-export interface ChatEngineFromOption extends UnresolvedChatEngineConfig {
+export interface ChatEngineFromOption extends Omit<ChatEngineConfig, 'search'> {
   readonly chatId: string;
   readonly userId: string;
-  readonly maxNewTokens?: number;
   readonly chatHistoryTable: string;
   readonly chatHistoryTableIndexName: string;
+  readonly search: SearchRetrieverInput;
   readonly verbose?: boolean;
   readonly returnTraceData?: boolean;
 }
@@ -35,11 +35,11 @@ export class ChatEngine {
     const {
       chatId,
       userId,
-      maxNewTokens = 500,
       chatHistoryTable,
       chatHistoryTableIndexName,
       verbose = process.env.LOG_LEVEL === 'DEBUG',
       returnTraceData,
+      search,
       ...unresolvedConfig
     } = options;
 
@@ -47,7 +47,7 @@ export class ChatEngine {
       verbose,
     });
 
-    const retriever = new SearchRetriever(config.search);
+    const retriever = new SearchRetriever(search);
 
     const historyLimit = config.memory?.limit ?? 20;
     const chatHistory = new DynamoDBChatMessageHistory({
@@ -64,14 +64,17 @@ export class ChatEngine {
     });
 
     return new ChatEngine({
-      ...options,
       ...config,
+      chatId,
+      userId,
       qaChain: {
         type: 'stuff',
         ...config.qaChain,
       },
       memory,
       retriever,
+      verbose,
+      returnTraceData,
     });
   }
 
@@ -139,6 +142,7 @@ export class ChatEngine {
         chatId: this.chatId,
         userId: this.userId,
         ...this.chain.traceData,
+        search: this.retriever.toJSON(),
       };
     } catch (error) {
       return {

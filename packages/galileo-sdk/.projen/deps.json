@@ -236,6 +236,10 @@
       "type": "runtime"
     },
     {
+      "name": "api-typescript-runtime",
+      "type": "runtime"
+    },
+    {
       "name": "cross-fetch",
       "type": "runtime"
     },
