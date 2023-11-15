@@ -50,6 +50,9 @@ monorepo.tryFindObjectFile('tsconfig.json')?.addOverride('ts-node', {
 monorepo.eslint?.addIgnorePattern(DEMO_DIR + '/**/*.*');
 monorepo.eslint?.addIgnorePattern('docs/**/*.*');
 
+// local dir to store files without committing
+monorepo.addGitIgnore('.local');
+
 // Just some helper tasks to abstract deployment for consumers
 monorepo.addTask('bootstrap-account', {
   description: 'Bootstrap aws account with CDK',

@@ -62,10 +62,11 @@ export const useChatEngineConfigState = <P extends keyof ChatEngineConfig>(
   const setter: Updater<ChatEngineConfig[P]> = useCallback(
     (value) => {
       updateConfig((draft) => {
-        if (typeof value === 'function') {
-          draft[prop] = produce(draft[prop], value);
+        let _value = typeof value === 'function' ? produce(draft[prop], value) : value;
+        if (_value == null || isEmpty(_value)) {
+          delete draft[prop];
         } else {
-          draft[prop] = value;
+          draft[prop] = _value;
         }
       });
     },
