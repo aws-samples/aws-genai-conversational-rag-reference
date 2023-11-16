@@ -207,18 +207,19 @@ namespace galileoPrompts {
 
     if (sampleDatasets.includes(SampleDataSets.SUPREME_COURT_CASES)) {
       const maxInstanceCount = context.appConfig.rag.indexing?.pipeline?.maxInstanceCount ?? 0;
+      const createVectorStoreIndexes = context.appConfig.rag.indexing?.pipeline?.createVectorStoreIndexes ?? false;
       const maxCapacity = context.appConfig.rag.managedEmbeddings.autoscaling?.maxCapacity ?? 0;
-      if (maxInstanceCount < 10 || maxCapacity < 5) {
+      if (maxInstanceCount < 10 || maxCapacity < 5 || !createVectorStoreIndexes) {
         if (
           (
             await prompts(
               {
                 type: 'confirm',
                 message: helpers.textPromptMessage(
-                  'Indexing of the sample dataset might take several hours based on your config, do you want to apply recommended settings?',
+                  'Indexing of the sample dataset might take several hours based on your config and search results might be slow, do you want to apply recommended settings?',
                   {
                     description:
-                      'Recommended: embedding model autoscaling max capacity of 5, and indexing container max instances of 10',
+                      'Recommended: embedding model autoscaling max capacity of 5, indexing container max instances of 10, and create database index',
                     instructions: 'This might results in higher cost',
                   },
                 ),
@@ -229,6 +230,7 @@ namespace galileoPrompts {
           ).confirm
         ) {
           set(context.appConfig, 'rag.indexing.pipeline.maxInstanceCount', 10);
+          set(context.appConfig, 'rag.indexing.pipeline.createVectorStoreIndexes', true);
           set(context.appConfig, 'rag.managedEmbeddings.autoscaling.maxCapacity', 5);
         }
       }
@@ -501,6 +503,20 @@ namespace galileoPrompts {
       ],
       context.promptsOptions,
     );
+    let { createVectorStoreIndexes } = await prompts(
+      [
+        {
+          type: 'confirm',
+          name: 'createVectorStoreIndexes',
+          message: helpers.textPromptMessage('Create vector store "index"?', {
+            description: 'If enabled, will create a database index for the data to improve search over large datasets',
+            instructions: 'Recommended for very large datasets',
+          }),
+          initial: context.appConfig.rag.indexing?.pipeline?.createVectorStoreIndexes ?? false,
+        },
+      ],
+      context.promptsOptions,
+    );
 
     maxInstanceCount = parseInt(maxInstanceCount ?? 1);
 
@@ -508,6 +524,7 @@ namespace galileoPrompts {
       pipeline: {
         instanceType,
         maxInstanceCount,
+        createVectorStoreIndexes,
       },
     };
   }

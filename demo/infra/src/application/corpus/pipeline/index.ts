@@ -52,6 +52,12 @@ export interface IndexingPipelineOptions {
   readonly targetContainerFilesCount?: number;
   readonly scheduled?: boolean;
   readonly scheduleDuration?: Duration;
+  /**
+   * Indicates if database indexes are created for vector store data.
+   * - Recommended for very large datasets
+   * @default false
+   */
+  readonly createVectorStoreIndexes?: boolean;
   readonly additionalEnvironment?: Record<string, string>;
 }
 
@@ -110,6 +116,9 @@ export class IndexingPipeline extends Construct {
       MaxContainerInstanceCount: maxInstanceCount,
       TargetContainerFilesCount: targetContainerFilesCount,
       SubsequentExecutionDelay: executionDelay.toMinutes(),
+      VectorStoreManagement: {
+        CreateIndexes: props.createVectorStoreIndexes ?? false,
+      },
       Environment: {
         // Available envs are defined in demo/corpus/logic/src/env.ts
         ...ApplicationContext.getPowerToolsEnv(this),
@@ -373,7 +382,13 @@ export class IndexingPipeline extends Construct {
     ///////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////
-    const runProcessingJobChain = vectorStoreSetupTask.next(sagemakerProcessingJobTask).next(vectorStoreIndexTask.task);
+    const succeedTask = new Succeed(this, 'Succeed');
+    const vectorStoreIndexChoice = new Choice(this, 'VectorStoreIndexChoice', {
+      comment: 'Should create vector store index?',
+    })
+      .when(Condition.booleanEquals(StatePaths.CreateIndexes, true), vectorStoreIndexTask.task.next(succeedTask))
+      .otherwise(succeedTask);
+    const runProcessingJobChain = vectorStoreSetupTask.next(sagemakerProcessingJobTask).next(vectorStoreIndexChoice);
 
     const cancelState = new Succeed(this, 'Cancelled');
 

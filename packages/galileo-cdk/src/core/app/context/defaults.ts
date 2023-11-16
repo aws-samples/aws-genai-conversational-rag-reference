@@ -61,6 +61,7 @@ export const DEFAULT_APPLICATION_CONFIG: ApplicationConfig = {
       pipeline: {
         instanceType: 'ml.t3.large',
         maxInstanceCount: 5,
+        createVectorStoreIndexes: false,
       },
     },
   },
