@@ -108,7 +108,10 @@ const galileoSdk = new GalileoSdk(monorepo);
 const galileoCdkLib = new GalileoCdk(monorepo);
 galileoCdkLib.addBundledDeps(galileoSdk.package.packageName);
 
-new GalileoCli(monorepo);
+const galileoCli = new GalileoCli(monorepo);
+// CLI imports a few definitions from CDK package
+// adding implicit dependency to force build order
+monorepo.addImplicitDependency(galileoCli, galileoCdkLib);
 
 //////////////////////////////////////////////////////////
 // DEMOS
