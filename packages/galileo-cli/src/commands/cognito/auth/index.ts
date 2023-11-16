@@ -1,6 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 
+import { AuthenticationResultType } from '@aws-sdk/client-cognito-identity-provider';
 import { Command } from '@oclif/core';
 import chalk from 'chalk';
 import prompts from 'prompts';
@@ -16,7 +17,7 @@ export default class CognitoAuthCommand extends Command {
     this.exit();
   }
 
-  async run(): Promise<void> {
+  async run(options?: { logIdToken?: boolean }): Promise<AuthenticationResultType | undefined> {
     const { profile, region } = await prompts([galileoPrompts.profile(), galileoPrompts.awsRegion({})], {
       onCancel: this.onPromptCancel,
     });
@@ -68,8 +69,8 @@ export default class CognitoAuthCommand extends Command {
         responseValue,
       });
       context.ui.spinner.succeed();
-
-      this.log(`Tokens acquired. Id Token:`, authenticationResult?.IdToken);
+      if (options?.logIdToken !== false) this.log(`Tokens acquired. Id Token:`, authenticationResult?.IdToken);
+      return authenticationResult;
     } else {
       this.log(`${challenge.challengeName} challange not supported. Quitting...`);
       this.exit();

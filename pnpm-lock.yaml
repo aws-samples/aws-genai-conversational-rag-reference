@@ -1215,6 +1215,9 @@ importers:
 
   packages/galileo-cli:
     dependencies:
+      '@aws-crypto/sha256-js':
+        specifier: ^5.0.0
+        version: 5.0.0
       '@aws-sdk/client-cognito-identity-provider':
         specifier: ^3.418.0
         version: 3.421.0
@@ -1236,6 +1239,18 @@ importers:
       '@aws-sdk/lib-storage':
         specifier: ^3.418.0
         version: 3.421.0(@aws-sdk/client-s3@3.418.0)
+      '@aws-sdk/protocol-http':
+        specifier: ^3.374.0
+        version: 3.374.0
+      '@aws-sdk/querystring-parser':
+        specifier: ^3.374.0
+        version: 3.374.0
+      '@aws-sdk/signature-v4':
+        specifier: ^3.374.0
+        version: 3.374.0
+      '@aws-sdk/types':
+        specifier: ^3.418.0
+        version: 3.418.0
       '@oclif/core':
         specifier: ^2.15.0
         version: 2.15.0(@types/node@16.18.39)(typescript@5.2.2)
@@ -1272,6 +1287,9 @@ importers:
       clear:
         specifier: ^0.1.0
         version: 0.1.0
+      cross-fetch:
+        specifier: ^3.1.8
+        version: 3.1.8
       csv-parse:
         specifier: ^5.5.0
         version: 5.5.0
@@ -1306,9 +1324,6 @@ importers:
         specifier: ^2.4.2
         version: 2.4.2
     devDependencies:
-      '@aws-sdk/types':
-        specifier: ^3.418.0
-        version: 3.418.0
       '@oclif/test':
         specifier: ^2.5.6
         version: 2.5.6(@types/node@16.18.39)(typescript@5.2.2)
@@ -3146,7 +3161,7 @@ packages:
     deprecated: This package has moved to @smithy/querystring-parser
     dependencies:
       '@smithy/querystring-parser': 1.1.0
-      tslib: 2.6.1
+      tslib: 2.6.2
 
   /@aws-sdk/rds-signer@3.418.0:
     resolution: {integrity: sha512-4jA2K/7Ukkajbw2L2/HsWgkP1uRtlgRcLcuhFXAiSCxNAflQt8xKeMVYe13p+uHvrhXmSuuyI1iiODE/PusJlA==}
@@ -14431,7 +14446,7 @@ packages:
     dependencies:
       semver: 7.5.4
       shelljs: 0.8.5
-      typescript: 5.4.0-dev.20231114
+      typescript: 5.4.0-dev.20231115
     dev: true
 
   /drange@1.1.1:
@@ -26009,8 +26024,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.4.0-dev.20231114:
-    resolution: {integrity: sha512-z7rH8Vy4KWJyzNUaFt1HMzwYNRUmy2HMN98eufjvqbhmS3WPoQF89/UgonRmYf1vAP/69z0PytuV9hBMHNkaDg==}
+  /typescript@5.4.0-dev.20231115:
+    resolution: {integrity: sha512-a+TtR81g52/m9nDePLWP1sa8gXhU+6Zgad4vMfUrMWX+dHdDmrfHx/vqEbLQotyUSNGRYcZWu97o8XxSRci/aQ==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
