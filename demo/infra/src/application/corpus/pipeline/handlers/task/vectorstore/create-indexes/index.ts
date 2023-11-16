@@ -69,12 +69,15 @@ export class VectorStoreCreateIndexTask extends Construct {
       containerOverrides: [
         {
           containerDefinition,
-          environment: Object.entries({
-            ...vectorStore.environment,
-            ...props.additionalEnvironment,
-          }).map(([name, value]) => {
-            return { name, value };
-          }),
+          environment: [
+            ...Object.entries({
+              ...vectorStore.environment,
+              ...props.additionalEnvironment,
+            }).map(([name, value]) => {
+              return { name, value };
+            }),
+            { name: 'STATE_ENV', value: sfn.JsonPath.jsonToString(sfn.JsonPath.objectAt('$.Environment')) },
+          ],
         },
       ],
       subnets: {
