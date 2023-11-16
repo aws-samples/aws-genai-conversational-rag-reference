@@ -1,4 +1,4 @@
-import { MonorepoTsProject } from "@aws/pdk/monorepo";
+import { MonorepoTsProject, NxProject } from "@aws/pdk/monorepo";
 import { GalileoCdk, GalileoSdk } from "../framework";
 import { Api } from "./api";
 import { Website } from "./website";
@@ -51,5 +51,13 @@ export class Demo {
     this.website = website;
     this.corpus = corpus;
     this.sample = sample;
+
+    // HACK: Make sure infra/website are rebuilt when overrides are modified
+    NxProject.ensure(this.website.project).addBuildTargetFiles([
+      `{workspaceRoot}/demo/overrides/**/*`
+    ])
+    NxProject.ensure(this.infra.project).addBuildTargetFiles([
+      `{workspaceRoot}/demo/overrides/**/*`
+    ])
   }
 }

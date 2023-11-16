@@ -7,6 +7,7 @@
     "dev": "npx projen dev",
     "eslint": "npx projen eslint",
     "eslint-staged": "npx projen eslint-staged",
+    "overrides:copy:chat-engine-config": "npx projen overrides:copy:chat-engine-config",
     "package": "npx projen package",
     "post-compile": "npx projen post-compile",
     "post-upgrade": "npx projen post-upgrade",
