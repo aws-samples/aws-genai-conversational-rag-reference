@@ -136,6 +136,10 @@
       "type": "build"
     },
     {
+      "name": "@aws-crypto/sha256-js",
+      "type": "runtime"
+    },
+    {
       "name": "@aws-sdk/client-cognito-identity-provider",
       "version": "^3.418.0",
       "type": "runtime"
@@ -167,6 +171,23 @@
     },
     {
       "name": "@aws-sdk/lib-storage",
+      "version": "^3.418.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/protocol-http",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/querystring-parser",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/signature-v4",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/types",
       "version": "^3.418.0",
       "type": "runtime"
     },
@@ -217,6 +238,10 @@
     },
     {
       "name": "clear",
+      "type": "runtime"
+    },
+    {
+      "name": "cross-fetch",
       "type": "runtime"
     },
     {
