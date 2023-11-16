@@ -56,7 +56,7 @@ Chunk size and overlap are not configurable via cli or config at this time, you 
 - `demo/corpus/logic/src/env.ts` contains the default env vars
 - `demo/infra/src/application/corpus/index.ts` contains env var overrides for the state machine
 
-```
+```ts
 CHUNK_SIZE: "1000",
 CHUNK_OVERLAP: "200",
 ```
@@ -70,9 +70,11 @@ Currently the backend support filtering, however the UI does not have controls f
 See `demo/infra/src/application/corpus/pipeline/types.ts` for all configuration options.
 
 #### How to start indexing objects in S3?
+
 Just start execution of the Pipeline StateMachine from the StepFunction console with the default payload. It will auto-detect new/modified files and will index them, or if everything is new it will bulk index everything. If you change the embedding model and run execution, it will create a new database table and index for the new embeddings.
 
 #### How do I force BULK re-indexing?
+
 If you want to force re-indexing everything, use the following payload.
 
 ```json
@@ -84,6 +86,7 @@ If you want to force re-indexing everything, use the following payload.
 ```
 
 #### How to test indexing on a small sample set?
+
 You can limit the number of files that are processed with the following payload.
 
 ```json
@@ -97,6 +100,21 @@ You can limit the number of files that are processed with the following payload.
 ```
 
 > Process the first 1000 file, across 2 containers
+
+#### How do I override environment variables?
+
+You can override environment variables from the payload as well (make sure all keys and values are `string`):
+
+```json
+{
+  "IndexingStrategy": "BULK",
+  "SubsequentExecutionDelay": 0,
+  "ModifiedSince": 1,
+  "Environment": { "CHUNK_SIZE": "2000", "CHUNK_OVERLAP": "400" }
+}
+```
+
+> Bulk reindexing with custom chunksize
 
 #### How to reset vector store data?
 

@@ -1,6 +1,8 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { envBool } from '@aws/galileo-sdk/lib/common';
+import { envBool, getLogger } from '@aws/galileo-sdk/lib/common';
+
+const logger = getLogger('demo/corpus/logic/env');
 
 export interface IProcessEnv {
   /** Necessary to connect to rds instance - https://github.com/brianc/node-postgres/issues/2607 */
@@ -66,6 +68,24 @@ export interface IProcessEnv {
    * @default 1000
    */
   INDEXING_VECTORSTOR_INSERT_MAX?: string;
+
+  /**
+   * Environment overrides for EcsTask
+   */
+  STATE_ENV?: string;
+}
+
+// optional override ENVs from sfn STATE_ENV
+if (process.env.STATE_ENV != null) {
+  try {
+    const stateEnv = JSON.parse(process.env.STATE_ENV) as Record<string, string>;
+    logger.debug('Overriding envorment variables from STATE_ENV');
+    Object.entries(stateEnv).forEach(([key, value]) => {
+      process.env[key] = value;
+    });
+  } catch (err: any) {
+    logger.warn(`Error while parsing STATE_ENV environment overrides`, process.env.STATE_ENV);
+  }
 }
 
 export namespace ENV {
@@ -85,7 +105,7 @@ export namespace ENV {
   export const CHUNK_OVERLAP = parseInt(process.env.CHUNK_OVERLAP || '200');
   export const VECTOR_INDEX_LISTS = parseInt(process.env.VECTOR_INDEX_LISTS || '1000');
   export const PROCESSING_INPUT_LOCAL_PATH = process.env.PROCESSING_INPUT_LOCAL_PATH || '/opt/ml/processing/input_data';
-  export const INDEXING_GLOB = process.env.INDEXING_GLOB || '**/*.*';
+  export const INDEXING_GLOB = process.env.INDEXING_GLOB || '**/*';
   export const INDEXING_SUPPORTED_CONTENT_TYPES = process.env.INDEXING_SUPPORTED_CONTENT_TYPES || 'text/plain';
 
   export const EMBEDDING_TABLENAME = process.env.EMBEDDING_TABLENAME!;
