@@ -2,6 +2,32 @@
   "name": "website",
   "root": "demo/website",
   "targets": {
+    "build": {
+      "inputs": [
+        "default",
+        "^default",
+        "{workspaceRoot}/demo/overrides/**/*"
+      ],
+      "outputs": [
+        "{projectRoot}/dist",
+        "{projectRoot}/lib",
+        "{projectRoot}/build",
+        "{projectRoot}/coverage",
+        "{projectRoot}/test-reports",
+        "{projectRoot}/target",
+        "{projectRoot}/cdk.out",
+        "{projectRoot}/LICENSE_THIRD_PARTY",
+        "{projectRoot}/.jsii"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec projen build",
+        "cwd": "demo/website"
+      }
+    },
     "default": {
       "executor": "nx:run-commands",
       "options": {
@@ -44,13 +70,6 @@
         "cwd": "demo/website"
       }
     },
-    "build": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "pnpm exec projen build",
-        "cwd": "demo/website"
-      }
-    },
     "post-upgrade": {
       "executor": "nx:run-commands",
       "options": {
@@ -83,6 +102,13 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec projen dev",
+        "cwd": "demo/website"
+      }
+    },
+    "overrides:copy:chat-engine-config": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec projen overrides:copy:chat-engine-config",
         "cwd": "demo/website"
       }
     },

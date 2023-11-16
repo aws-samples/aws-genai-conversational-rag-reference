@@ -11,7 +11,7 @@ import { isEmpty, merge } from 'lodash';
 import React, { PropsWithChildren, createContext, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useImmer, Updater } from 'use-immer';
-import { useDebounce } from 'usehooks-ts';
+import { useDebounce, useFetch } from 'usehooks-ts';
 import { useFoundationModelInventory } from '../hooks/llm-inventory';
 
 export type { ChatEngineConfig };
@@ -148,6 +148,14 @@ export const useChatEngineConfigChainPrompt = <T extends ChainType>(type: T) => 
   return useChatEngineConfigChainProp(type, 'prompt');
 };
 
+const useOverrideChatEngineConfigJson = (): ChatEngineConfig | undefined => {
+  const configJson = useFetch<string>('/chat-engine-config.json');
+  if (configJson.error == null && configJson.data) {
+    return configJson.data as ChatEngineConfig;
+  }
+  return;
+};
+
 /**
  * Sets up the ChatEngineConfig context used to config chat engine config for admins.
  * This provider MUST wrap the <App /> which manages the splitpanel where dev settings are rendered.
@@ -157,7 +165,9 @@ const ChatEngineConfigProvider: React.FC<PropsWithChildren> = ({ children }) => 
   const chatId = useLocation()
     .pathname.match(/chat\/([^/]+)(\/.*)?$/)
     ?.at(1);
-  const [config, updateConfig] = useImmer<ChatEngineConfig>({});
+  const override = useOverrideChatEngineConfigJson();
+  const defaultConfig = useMemo(() => override || {}, [override]);
+  const [config, updateConfig] = useImmer<ChatEngineConfig>(defaultConfig);
   const configRef = useRef<ChatEngineConfig>();
   configRef.current = config;
 
@@ -174,7 +184,7 @@ const ChatEngineConfigProvider: React.FC<PropsWithChildren> = ({ children }) => 
   useEffect(() => {
     if (chatId) {
       // reset the config to persisted value for chat
-      updateConfig(retrieveConfig(chatId));
+      updateConfig(retrieveConfig(chatId, defaultConfig));
 
       return () => {
         if (configRef.current != null && !isEmpty(configRef.current)) {
@@ -183,7 +193,7 @@ const ChatEngineConfigProvider: React.FC<PropsWithChildren> = ({ children }) => 
       };
     }
     return;
-  }, [chatId]);
+  }, [chatId, defaultConfig]);
 
   const reset = useCallback(() => {
     updateConfig({});
@@ -233,6 +243,10 @@ function storeConfig(chatId: string, config?: ChatEngineConfig) {
   }
 }
 
-function retrieveConfig(chatId: string): ChatEngineConfig {
-  return JSON.parse(localStorage.getItem(persistentKey(chatId)) || '{}');
+function retrieveConfig(chatId: string, defaultValue: ChatEngineConfig = {}): ChatEngineConfig {
+  const persisted = localStorage.getItem(persistentKey(chatId));
+  if (persisted) {
+    return JSON.parse(persisted);
+  }
+  return defaultValue;
 }
