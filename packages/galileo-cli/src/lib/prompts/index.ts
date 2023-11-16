@@ -628,6 +628,52 @@ namespace galileoPrompts {
       initial: initialVal || context.cache.getItem('uploadKeyPrefix'),
     };
   };
+
+  export const inferenceEngineLambdaUrl = async (): Promise<string> => {
+    const result = await prompts({
+      type: 'text',
+      name: 'url',
+      message: helpers.textPromptMessage('Inference engine lambda function url?', {
+        instructions: 'Get value from stack outputs or from browser network request tab',
+      }),
+      initial: context.fromCache('inferenceEngineLambdaUrl'),
+    });
+    context.toCache('inferenceEngineLambdaUrl', result.url);
+    return result.url;
+  };
+
+  export const chatId = async (): Promise<string> => {
+    const result = await prompts({
+      type: 'text',
+      name: 'chatId',
+      message: helpers.textPromptMessage('Chat id?', {
+        instructions: 'Perform the task against this specific chat id',
+      }),
+      initial: context.fromCache('chatId'),
+    });
+    context.toCache('chatId', result.chatId);
+    return result.chatId;
+  };
+
+  export const chatEngineSettingsFile = async (): Promise<string | undefined> => {
+    const result = await prompts({
+      type: 'text',
+      name: 'chatEngineSettingsFile',
+      message: helpers.textPromptMessage('Chat settings file?', {
+        description:
+          'If provided, will customize the chat engine runtime for requests. Leave blank, enter none|default, to use defaults.',
+        instructions: 'You can copy the Chat Settings from website, and store in local json file',
+      }),
+      initial: context.fromCache('chatEngineSettingsFile'),
+    });
+    if (['none', 'default', ''].includes((result.chatEngineSettingsFile || '').trim())) {
+      context.cache.removeItem('chatEngineSettingsFile');
+      return;
+    } else {
+      context.toCache('chatEngineSettingsFile', result.chatEngineSettingsFile);
+      return result.chatEngineSettingsFile;
+    }
+  };
 }
 
 export default galileoPrompts;
