@@ -84,6 +84,14 @@
         }
       ]
     },
+    "overrides:copy:chat-engine-config": {
+      "name": "overrides:copy:chat-engine-config",
+      "steps": [
+        {
+          "exec": "[ -f ../overrides/chat-engine-config.json ] && cp ../overrides/chat-engine-config.json ./public/"
+        }
+      ]
+    },
     "package": {
       "name": "package",
       "description": "Creates the distribution package",
@@ -105,6 +113,9 @@
       "name": "pre-compile",
       "description": "Prepare the project for compilation",
       "steps": [
+        {
+          "spawn": "overrides:copy:chat-engine-config"
+        },
         {
           "exec": "cp ../api/generated/documentation/html2/index.html public/api.html",
           "condition": "[ -f \"../api/generated/documentation/html2/index.html\" ]"

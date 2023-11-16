@@ -18,6 +18,7 @@ import {
 } from 'api-typescript-interceptors';
 import { CreateChatMessageResponseContent, createChatMessageHandler } from 'api-typescript-runtime';
 import { cloneDeepWith, isUndefined, omitBy } from 'lodash';
+import applicationChatEngineConfigJson from './chat-engine-config.json'; // HACK: temporary way to support updating app level config at deploy time
 import { ENV } from './env';
 
 const ADMIN_GROUPS: string[] = JSON.parse(ENV.ADMIN_GROUPS);
@@ -54,6 +55,9 @@ export const handler = createChatMessageHandler(...INTERCEPTORS, async ({ input,
     // make sure config does not allow privileged properties to non-admins (such as custom models/roles)
     !_isAdmin && assertNonPrivilegedChatEngineConfig(userConfig as any);
 
+    // TODO: fetch "application" config for chat once implemented
+    const applicationConfig: Partial<ChatEngineConfig> = applicationChatEngineConfigJson;
+
     // Should we store this as "system" config once we implement config store?
     const systemConfig: ChatEngineConfig = {
       classifyChain: undefined,
@@ -61,9 +65,6 @@ export const handler = createChatMessageHandler(...INTERCEPTORS, async ({ input,
         url: ENV.SEARCH_URL,
       },
     };
-
-    // TODO: fetch "application" config for chat once implemented
-    const applicationConfig: Partial<ChatEngineConfig> = {};
 
     const configs: ChatEngineConfig[] = [systemConfig, applicationConfig, userConfig];
 

@@ -9,7 +9,8 @@
       "inputs": [
         {
           "runtime": "date +%s"
-        }
+        },
+        "{workspaceRoot}/demo/overrides/**/*"
       ],
       "outputs": [],
       "executor": "nx:run-commands",

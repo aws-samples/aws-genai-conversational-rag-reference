@@ -44,6 +44,7 @@ public/api.json
 !/.projen/react-config-overrides.js
 /build/
 public/api.html
+public/chat-engine-config.json
 runtime-config.*
 !runtime-config.example.json
 !/project.json

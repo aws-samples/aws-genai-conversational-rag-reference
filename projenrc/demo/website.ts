@@ -77,6 +77,7 @@ export class Website {
     });
     this.project.tsconfig?.addInclude('src/**/*.tsx');
     this.project.addGitIgnore('public/api.html');
+    this.project.addGitIgnore('public/chat-engine-config.json');
     this.project.addGitIgnore('runtime-config.*');
     this.project.addGitIgnore('!runtime-config.example.json');
     const apiHtml = path.relative(
@@ -111,5 +112,12 @@ export class Website {
         '^.+\\.module\\.(css|sass|scss)$',
       ],
     });
+
+    // HACK: copy chat-engine-config.json overrides into public if exists
+    const CHAT_ENGINE_CONFIG_OVERRIDE = '../overrides/chat-engine-config.json'
+    const copyOverrideTask = this.project.addTask('overrides:copy:chat-engine-config', {
+      exec: `[ -f ${CHAT_ENGINE_CONFIG_OVERRIDE} ] && cp ${CHAT_ENGINE_CONFIG_OVERRIDE} ./public/`})
+
+    this.project.preCompileTask.prependSpawn(copyOverrideTask)
   }
 }
