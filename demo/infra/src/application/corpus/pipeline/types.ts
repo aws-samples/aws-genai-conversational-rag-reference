@@ -69,6 +69,7 @@ export interface VectorStoreManagement {
   readonly PurgeData?: boolean;
   readonly IndexesToCreate?: `${DistanceStrategy}` | `${DistanceStrategy}`[];
   readonly DropOtherIndexes?: boolean;
+  readonly CreateIndexes?: boolean;
 }
 
 export interface StateMachineIdentifier {
@@ -142,4 +143,5 @@ export const StatePaths = {
   Environment: '$.Environment',
   DoRunProcessingJob: '$.ProcessingJobConfig.RunSagemakerJob',
   S3Input: '$.ProcessingJobConfig.S3Input',
+  CreateIndexes: '$.VectorStoreManagement.CreateIndexes',
 } as const;

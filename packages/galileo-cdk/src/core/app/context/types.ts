@@ -132,6 +132,7 @@ export interface ApplicationConfig {
       pipeline?: {
         instanceType?: string;
         maxInstanceCount?: number;
+        createVectorStoreIndexes?: boolean;
       };
     };
   };
