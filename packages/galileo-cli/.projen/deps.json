@@ -10,6 +10,10 @@
       "type": "build"
     },
     {
+      "name": "@types/async",
+      "type": "build"
+    },
+    {
       "name": "@types/chalk",
       "type": "build"
     },
@@ -229,6 +233,10 @@
     },
     {
       "name": "@smithy/property-provider",
+      "type": "runtime"
+    },
+    {
+      "name": "async",
       "type": "runtime"
     },
     {
