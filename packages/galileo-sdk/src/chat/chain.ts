@@ -2,11 +2,12 @@
 PDX-License-Identifier: Apache-2.0 */
 import { BaseLanguageModel } from 'langchain/base_language';
 import { CallbackManagerForChainRun } from 'langchain/callbacks';
-import { BaseChain, ChainInputs, LLMChain, loadQAChain, QAChainParams, StuffDocumentsChain } from 'langchain/chains';
+import { BaseChain, ChainInputs, LLMChain, QAChainParams, StuffDocumentsChain } from 'langchain/chains';
 import { PromptTemplate } from 'langchain/prompts';
 // import { SerializedChatVectorDBQAChain } from "./serde.js";
 import { ChainValues } from 'langchain/schema';
 import { BaseRetriever } from 'langchain/schema/retriever';
+import { ResolvedLLMChainConfig } from './config/index.js';
 import { getLogger } from '../common/index.js';
 import { startPerfMetric } from '../common/metrics/index.js';
 import { PojoOutputParser } from '../langchain/output_parsers/pojo.js';
@@ -83,10 +84,12 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
       ...rest
     } = options;
 
-    const qaChain = loadQAChain(qaChainOptions.llm, {
-      verbose,
-      ...qaChainOptions,
-    });
+    if (qaChainOptions.type !== 'stuff') {
+      throw new Error(`ChatEngineChain only supports 'stuff' qa chain for now: found ${qaChainOptions.type}`);
+    }
+
+    // use custom loader to extend how input documents from retrieval are propagated
+    const qaChain = loadQAStuffChain(qaChainOptions, verbose);
 
     const classifyChain =
       classifyOptions &&
@@ -258,4 +261,23 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
   // serialize(): SerializedChatVectorDBQAChain {
   //   throw new Error("Not implemented.");
   // }
+}
+
+export function loadQAStuffChain(config: ResolvedLLMChainConfig, verbose: boolean = false) {
+  const { llm, prompt } = config;
+  const llmChain = new LLMChain({ prompt, llm, verbose });
+  const chain = new CustomStuffDocumentsChain({ llmChain, verbose });
+  return chain;
+}
+
+export class CustomStuffDocumentsChain extends StuffDocumentsChain {
+  documentsVariableName = this.documentVariableName + '_documents';
+
+  _prepInputs(values: ChainValues): ChainValues {
+    return {
+      // propagate the "input_documents" objects array to prompt for handlebars to control rendering
+      [this.documentsVariableName]: values[this.inputKey],
+      ...super._prepInputs(values),
+    };
+  }
 }

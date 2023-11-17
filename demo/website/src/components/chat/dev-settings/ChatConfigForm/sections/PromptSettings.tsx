@@ -1,6 +1,5 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-// import '@aws/galileo-sdk/lib/langchain/patch';
 import { ChainType } from '@aws/galileo-sdk/lib/schema';
 import { Icon, Link, TextContent, Toggle } from '@cloudscape-design/components';
 import FormField from '@cloudscape-design/components/form-field';
@@ -11,6 +10,7 @@ import {
   useChatEngineConfigChainProp,
   useChatEngineConfigModelAdapter,
 } from '../../../../../providers/ChatEngineConfig';
+import * as fixtures from '../../fixtures/prompt-inputs';
 import PromptEditor from '../components/PromptEditor';
 
 export const PromptSettings: FC = () => {
@@ -62,11 +62,7 @@ export const PromptSettings: FC = () => {
           runtime={adapter?.prompt?.chat?.QA}
           value={qaPrompt?.template}
           onChange={(template) => setQaPrompt({ template })}
-          defaultInputValues={{
-            domain: 'Testing',
-            context: ['Source document #1', 'Source document #2'].join('\n\n'),
-            question: 'Do you like prompt engineering?',
-          }}
+          defaultInputValues={fixtures.QA_PROMPT}
         />
       </FormField>
       <FormField
@@ -79,16 +75,7 @@ export const PromptSettings: FC = () => {
           runtime={adapter?.prompt?.chat?.CONDENSE_QUESTION}
           value={condenseQuestionPrompt?.template}
           onChange={(template) => setCondenseQuestionPrompt({ template })}
-          defaultInputValues={{
-            chat_history: [
-              { type: 'human', content: 'What is prompt engineering?' },
-              {
-                type: 'ai',
-                content: 'Prompt engineering fine-tunes language models for specific tasks using targeted questions.',
-              },
-            ] as any,
-            question: 'How is this different from other engineering?',
-          }}
+          defaultInputValues={fixtures.CONDENSE_QUESTION_PROMPT}
         />
       </FormField>
 
@@ -114,9 +101,7 @@ export const PromptSettings: FC = () => {
             runtime={adapter?.prompt?.chat?.CLASSIFY}
             value={classifyPrompt?.template}
             onChange={(template) => setClassifyPrompt({ template })}
-            defaultInputValues={{
-              question: 'Why are roses red and violets blue?',
-            }}
+            defaultInputValues={fixtures.CLASSIFY_PROMPT}
           />
         </FormField>
       )}
