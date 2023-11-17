@@ -88,7 +88,7 @@
       "name": "overrides:copy:chat-engine-config",
       "steps": [
         {
-          "exec": "[ -f ../overrides/chat-engine-config.json ] && cp ../overrides/chat-engine-config.json ./public/"
+          "exec": "[ -f ../overrides/chat-engine-config.json ] && cp ../overrides/chat-engine-config.json ./public/ || exit 0;"
         }
       ]
     },
