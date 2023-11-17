@@ -8,18 +8,17 @@ import {
   ExpandableSection,
   Form,
   FormField,
-  Grid,
   Input,
   SegmentedControl,
   SpaceBetween,
   Spinner,
-  TextContent,
   Textarea,
 } from '@cloudscape-design/components';
 import ContentLayout from '@cloudscape-design/components/content-layout';
 import Header from '@cloudscape-design/components/header';
 import { DistanceStrategy, useSimilaritySearch } from 'api-typescript-react-query-hooks';
 import { useCallback, useState } from 'react';
+import { SourceDocument } from '../../components/chat/components/SourceDocument';
 import CodeEditor from '../../components/code-editor';
 
 export const CorpusSearch: React.FC = () => {
@@ -134,30 +133,7 @@ export const CorpusSearch: React.FC = () => {
 
           <SpaceBetween direction="vertical" size="m">
             {search.data?.documents.map((document, i) => (
-              <Container
-                key={i}
-                header={
-                  <Header variant="h3" description={`Score: ${document.score} (distance)`}>
-                    Document {i + 1}
-                  </Header>
-                }
-                footer={
-                  <ExpandableSection headerText="Metadata" variant="footer">
-                    <Grid>
-                      {Object.entries(document.metadata).map(([label, value], j) => (
-                        <div key={j}>
-                          <Box variant="awsui-key-label">{label}</Box>
-                          <div>{String(value)}</div>
-                        </div>
-                      ))}
-                    </Grid>
-                  </ExpandableSection>
-                }
-              >
-                <TextContent>
-                  <div style={{ whiteSpace: 'pre-wrap' }}>{document.pageContent}</div>
-                </TextContent>
-              </Container>
+              <SourceDocument key={i} title={`Document #${i + 1}`} document={document} />
             ))}
           </SpaceBetween>
         </Box>

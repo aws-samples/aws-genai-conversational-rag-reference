@@ -1,58 +1,12 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { Button, TextContent, Icon, Box, Modal, SpaceBetween, Spinner } from '@cloudscape-design/components';
-import type { ChatMessage, ChatMessageSource } from 'api-typescript-react-query-hooks';
+import { Button, TextContent, Box, Modal, SpaceBetween, Spinner } from '@cloudscape-design/components';
+import type { ChatMessage } from 'api-typescript-react-query-hooks';
 import { useState } from 'react';
-import { useCollapse } from 'react-collapsed';
+import { SourceDocument } from './components/SourceDocument';
 import { useDeleteChatMessageMutation, useMessageSources } from '../../hooks/chats';
 import CopyText from '../buttons/CopyText';
 import { ModalButton } from '../buttons/ModalButton';
-
-type SourceComponentProps = {
-  source: ChatMessageSource;
-};
-
-export function ExpandableSourceComponent({ source }: SourceComponentProps) {
-  const { getCollapseProps, getToggleProps, isExpanded } = useCollapse();
-  return (
-    <div>
-      <div
-        style={{
-          alignItems: 'middle',
-          gap: '4px',
-          display: 'flex',
-          marginTop: '10px',
-        }}
-      >
-        <div
-          {...getToggleProps()}
-          className="button"
-          style={{
-            transition: 'all 0.25s',
-            transform: isExpanded ? 'rotate(0deg)' : 'rotate(-90deg)',
-            height: '100%',
-          }}
-        >
-          <Icon name="caret-down-filled" />
-        </div>
-        <div>Source {source.sourceId}</div>
-        <Button iconName="external" variant="inline-icon" />
-      </div>
-      <div {...getCollapseProps()}>
-        <div style={{ marginLeft: '20px', fontStyle: 'italic' }}>{source.pageContent}</div>
-      </div>
-    </div>
-  );
-}
-
-export function SourceComponent({ source }: SourceComponentProps) {
-  return (
-    <div>
-      <h4>Source {+source.sourceId + 1}</h4>
-      <div style={{ marginLeft: '20px', fontStyle: 'italic' }}>{source.pageContent}</div>
-    </div>
-  );
-}
 
 type MessageProps = {
   message: ChatMessage;
@@ -74,11 +28,11 @@ export function MessageSources({ chatId, messageId }: MessageSourcesProps) {
       ) : (
         sourcesRequest.data &&
         (sourcesRequest.data.length ? (
-          <div style={{ marginTop: '8px' }}>
-            {sourcesRequest.data.map((source) => (
-              <SourceComponent source={source} key={source.sourceId} />
+          <SpaceBetween direction="vertical" size="m">
+            {sourcesRequest.data.map((source, i) => (
+              <SourceDocument key={source.sourceId} title={`Source #${i + 1}`} document={source} />
             ))}
-          </div>
+          </SpaceBetween>
         ) : (
           'No sources available'
         ))
