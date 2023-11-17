@@ -4,9 +4,10 @@ PDX-License-Identifier: Apache-2.0 */
 import { AuthenticationResultType } from '@aws-sdk/client-cognito-identity-provider';
 import { fromNodeProviderChain } from '@aws-sdk/credential-providers';
 import { Command } from '@oclif/core';
+import * as async from 'async';
 import chalk from 'chalk';
 import fs from 'fs-extra';
-import { isEmpty, set } from 'lodash';
+import { isEmpty, set, meanBy, sumBy } from 'lodash';
 import prompts from 'prompts';
 import { helpers } from '../../../internals';
 import { createSignedFetcher } from '../../../lib/account-utils/signed-fetch';
@@ -14,7 +15,7 @@ import context from '../../../lib/context';
 import galileoPrompts from '../../../lib/prompts';
 import CognitoAuthCommand from '../../cognito/auth';
 
-const TOKEN_BUFFER = 300 * 60 * 1000; // 5 minutes
+const TOKEN_BUFFER = 300 * 60; // 5 minutes
 
 const LAMBDA_URL_PATTERN = /^https:\/\/(?<id>[^.]+)\.lambda-url\.(?<region>[^.]+)\.on\.aws/;
 
@@ -49,43 +50,39 @@ export default class InvokeChatBulkCommand extends Command {
       initial: context.fromCache('invokeChatBulkInputDataFile'),
     });
     context.toCache('invokeChatBulkInputDataFile', inputDataFile);
+    const bulkInvokeBatchSize = await galileoPrompts.bulkInvokeBatchSize();
     const questions = await this.parseInputDataFile(inputDataFile);
 
     const { region } = LAMBDA_URL_PATTERN.exec(lambdaUrl)?.groups || {};
 
-    const fetcher = createSignedFetcher({
-      service: 'lambda',
+    const bulkExecStart = Date.now();
+    const answers = await this.invokeQuestionsParallel(
+      lambdaUrl,
       region,
-      credentials: fromNodeProviderChain(),
+      chatId,
+      cognitoAuth?.IdToken!,
+      settings,
+      bulkInvokeBatchSize,
+      questions,
+    );
+    // overall execution time
+    const execTime = ((Date.now() - bulkExecStart) / 1000).toFixed(2);
+
+    // average execution time
+    const avargeExecTime = meanBy(answers, (a) => {
+      return a.stats.execTimeInSeconds;
+    });
+    const numberOfCallsFailed = sumBy(answers, (a) => {
+      return a.stats.retryCount;
     });
 
-    const answers: { question: string; answer: string }[] = [];
-    this.log(`Invoking chat for ${questions.length} questions`);
-    for (const question of questions) {
-      this.log(chalk.bold('> Question: ') + chalk.cyanBright(question));
-      context.ui.newSpinner().start('Waiting for response...');
-
-      // Lambda FunctionURL does not support `pathParameters` so we need to use queryParameters
-      const response = await fetcher(`${lambdaUrl}/chat/${chatId}/message?chatId=${chatId}`, {
-        headers: {
-          'X-Cognito-IdToken': cognitoAuth?.IdToken!,
-        },
-        body: JSON.stringify({
-          question,
-          options: settings,
-        }),
-        method: 'PUT',
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        const answer = result.answer.text;
-        context.ui.spinner.succeed(chalk.greenBright(answer));
-        answers.push({ question, answer });
-      } else {
-        this.error(`${response.status} - ${response.statusText}`);
-      }
-    }
+    this.log(chalk.yellowBright('Stats:'));
+    this.log(`Number of questions: ${questions.length}`);
+    this.log(`Batch size: ${bulkInvokeBatchSize}`);
+    this.log(`Execution time: ${execTime} seconds`);
+    this.log(`Average QA time: ${avargeExecTime}`);
+    this.log(`Number of calls failed: ${numberOfCallsFailed}`);
+    this.log(`Average fail per question: ${numberOfCallsFailed / questions.length}`);
 
     const { outputFile } = await prompts({
       type: 'text',
@@ -110,4 +107,123 @@ export default class InvokeChatBulkCommand extends Command {
 
     throw new Error('Input data file is invalid, must be an array of strings');
   }
+
+  async invokeQuestionsParallel(
+    lambdaUrl: string,
+    region: string,
+    chatId: string,
+    idToken: string,
+    settings: any,
+    batchSize: number,
+    questions: string[],
+  ) {
+    const fetcher = createSignedFetcher({
+      service: 'lambda',
+      region,
+      credentials: fromNodeProviderChain(),
+    });
+
+    const answers: {
+      question: string;
+      answer: string;
+      classification: any;
+      stats: { execTimeInSeconds: number; retryCount: number };
+    }[] = [];
+    this.log(`Invoking chat for ${questions.length} questions with batchSize ${batchSize}`);
+
+    const maxRetries = 5;
+
+    const createTaskWithRetryCount = async (options: { q: string; idx: number }) => {
+      let retryCount = 0;
+      const { q } = options;
+      const idx = options.idx + 1;
+      let success = false;
+
+      while (retryCount < maxRetries) {
+        try {
+          this.log(chalk.bold(`> Question ${idx}/${questions.length}: ${chalk.cyanBright(q)}`));
+          // Lambda FunctionURL does not support `pathParameters` so we need to use queryParameters
+
+          const start = Date.now();
+          const response = await fetcher(`${lambdaUrl}/chat/${chatId}/message?chatId=${chatId}`, {
+            headers: {
+              'X-Cognito-IdToken': idToken,
+            },
+            body: JSON.stringify({
+              question: q,
+              options: settings,
+            }),
+            method: 'PUT',
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            const answer = result.answer.text;
+            const finish = Date.now();
+            const taskResult = {
+              answer: {
+                question: q,
+                answer,
+                classification: result.traceData.classification,
+                stats: {
+                  execTimeInSeconds: (finish - start) / 1000,
+                  retryCount,
+                },
+              },
+              idx,
+            };
+
+            answers.push(taskResult!.answer);
+            this.log(
+              chalk.bold(
+                `> Question ${taskResult!.idx}/${questions.length}: ${chalk.greenBright('OK')} ${chalk.grey(
+                  `retry ${retryCount}`,
+                )}`,
+              ),
+            );
+
+            success = true;
+          } else {
+            this.log(
+              `> Question ${idx}/${questions.length}: ${chalk.redBright(
+                `${response.status} - ${response.statusText}`,
+              )} - ${chalk.gray(`retry ${retryCount}`)}`,
+            );
+            success = false;
+          }
+        } catch (err: any) {
+          this.log(`Question ${idx}/${questions.length}: Error -- ${err.message}`);
+          success = false;
+        } finally {
+          if (success) break;
+
+          retryCount++;
+
+          const waitMs = mixedExponentialBackMs(retryCount);
+          this.log(`> Question ${idx}/${questions.length}: waiting ${waitMs} ms`);
+          await wait(waitMs);
+        }
+      }
+
+      if (!success) {
+        throw new Error(`Task errored after ${retryCount} for question ${idx}/${questions.length}`);
+      }
+    };
+
+    const iteratorTask: async.AsyncBooleanIterator<{ q: string; idx: number }> = async (options) => {
+      return createTaskWithRetryCount(options);
+    };
+
+    const qWithIdx = questions.map((value, idx) => ({ q: value, idx: idx }));
+    await async.eachLimit(qWithIdx, batchSize, iteratorTask.bind(this));
+
+    return answers;
+  }
 }
+
+const mixedExponentialBackMs = (retryCount: number): number => {
+  return Math.random() * 3000 + 250 * Math.pow(2, retryCount);
+};
+const wait = (ms: number): Promise<void> => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};

@@ -27,6 +27,7 @@
   "devDependencies": {
     "@aws-sdk/types": "^3.418.0",
     "@oclif/test": "^2.5.6",
+    "@types/async": "^3.2.20",
     "@types/chalk": "^2.2.0",
     "@types/clear": "^0.1.2",
     "@types/csv-parse": "^1.2.2",
@@ -81,6 +82,7 @@
     "@oclif/plugin-update": "^3.2.4",
     "@oclif/plugin-warn-if-update-available": "^2.1.1",
     "@smithy/property-provider": "^2.0.10",
+    "async": "^3.2.4",
     "chalk": "^4",
     "clear": "^0.1.0",
     "cross-fetch": "^3.1.8",
