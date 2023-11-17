@@ -37,7 +37,7 @@
     "commit": "pnpm exec cz",
     "prerequisite-check": "./prerequisite-check.sh",
     "preinstall": "./prerequisite-check.sh",
-    "git-clean:keep-configs": "git clean -xfd -e demo/website/public -e demo/infra/config*.json -e packages/galileo-cli/bin/.cache -e demo/infra/cdk.context.json",
+    "git-clean:keep-configs": "git clean -xfd -e demo/website/public -e demo/infra/config*.json -e packages/galileo-cli/bin/.cache -e demo/infra/cdk.context.json -e demo/overrides -e .local",
     "galileo-cli": "pnpm dlx tsx packages/galileo-cli/bin/galileo-cli.ts"
   },
   "devDependencies": {
