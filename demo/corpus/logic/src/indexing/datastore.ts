@@ -352,7 +352,7 @@ async function delay(interval: number) {
   });
 }
 
-export function normalizeMetadata(metadata: Record<string, string> = {}): Record<string, string> {
+export function normalizeMetadata(metadata: Record<string, string> = {}): Record<string, any> {
   let metadataNormalized: Record<string, string> = {};
 
   for (const key in metadata) {
@@ -369,7 +369,14 @@ export function normalizeMetadata(metadata: Record<string, string> = {}): Record
         logger.error('Error decoding json-base64 field. Skipping...', err.message);
       }
     } else {
-      metadataNormalized[key] = metadata[key];
+      try {
+        // if it was a JSON object stringified
+        const jsonVal = JSON.parse(metadata[key]);
+        metadataNormalized[key] = jsonVal;
+      } catch (err: any) {
+        // it wasn't
+        metadataNormalized[key] = metadata[key];
+      }
     }
   }
 
