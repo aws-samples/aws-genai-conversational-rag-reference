@@ -123,8 +123,12 @@ export namespace s3 {
       };
 
       const fileMetadata: Record<string, string> = {};
-      Object.keys(_fileMetadata).forEach((k) => {
-        fileMetadata[kebabCase(k)] = (_fileMetadata as any)[k];
+      Object.keys(_fileMetadata).forEach((key) => {
+        let val = (_fileMetadata as any)[key];
+        if (typeof val !== 'string') {
+          val = JSON.stringify(val);
+        }
+        fileMetadata[kebabCase(key)] = val;
       });
 
       // upload file to S3 with metadata
