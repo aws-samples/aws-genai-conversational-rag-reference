@@ -672,6 +672,17 @@ namespace galileoPrompts {
     return result.chatId;
   };
 
+  export const bulkInvokeBatchSize = async (): Promise<number> => {
+    const result = await prompts({
+      type: 'number',
+      name: 'bulkInvokeBatchSize',
+      message: helpers.textPromptMessage('Batch size (parallelization)', {}),
+      initial: context.fromCache('bulkInvokeBatchSize'),
+    });
+    context.toCache('bulkInvokeBatchSize', result.bulkInvokeBatchSize);
+    return result.bulkInvokeBatchSize;
+  };
+
   export const chatEngineSettingsFile = async (): Promise<string | undefined> => {
     const result = await prompts({
       type: 'text',
