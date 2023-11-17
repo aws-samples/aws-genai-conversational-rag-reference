@@ -5,7 +5,7 @@ import { createMetrics } from '@aws/galileo-sdk/lib/common/metrics';
 export { measurable, measure, startPerfMetric as measurer } from '@aws/galileo-sdk/lib/common/metrics';
 
 const [metrics, logMetric] = createMetrics({
-  serviceName: process.env.POWERTOOLS_SERVICE_NAME ?? 'Corpus',
+  serviceName: 'Corpus',
 });
 
 export { metrics, logMetric };

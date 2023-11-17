@@ -170,7 +170,9 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
     let classification: ChainValues | undefined;
     if (this.classifyChain) {
       logger.debug('Calling classify chain: ', { question });
-      const $$ClassifyChainExecutionTime = startPerfMetric('ClassifyChainExecutionTime');
+      const $$ClassifyChainExecutionTime = startPerfMetric('Chain.CLASSIFY.ExecutionTime', {
+        highResolution: true,
+      });
       classification = (await this.classifyChain.call({ question }))[this.classificationKey];
       $$ClassifyChainExecutionTime();
       logger.debug('Result from classify chain: ', { classification });
@@ -185,7 +187,9 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
         chat_history: chatHistory,
       };
       logger.debug('Chain:condenseQuestionChain:input', { input: condenseQuestionInput });
-      const $$QuestionGeneratorExecutionTime = startPerfMetric('QuestionGeneratorExecutionTime');
+      const $$QuestionGeneratorExecutionTime = startPerfMetric('Chain.CONDENSE_QUESTION.ExecutionTime', {
+        highResolution: true,
+      });
       const result = await this.condenseQuestionChain.call(
         condenseQuestionInput,
         runManager?.getChild('question_generator'),
@@ -202,7 +206,9 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
       }
     }
     logger.debug('Chain:retriever:getRelevantDocuments:query', { query: newQuestion });
-    const $$GetRelevantDocumentsExecutionTime = startPerfMetric('GetRelevantDocumentsExecutionTime');
+    const $$GetRelevantDocumentsExecutionTime = startPerfMetric('Chain.DocumentRetrieval.ExecutionTime', {
+      highResolution: true,
+    });
     const docs = await this.retriever.getRelevantDocuments(newQuestion, runManager?.getChild('retriever'));
     $$GetRelevantDocumentsExecutionTime();
 
@@ -214,7 +220,9 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
     };
 
     logger.debug('Chain:condenseQuestionChain:input', { input: inputs });
-    const $$CombineDocumentsExecutionTime = startPerfMetric('CombineDocumentsExecutionTime');
+    const $$CombineDocumentsExecutionTime = startPerfMetric('Chain.QA.ExecutionTime', {
+      highResolution: true,
+    });
     const result = await this.qaChain.call(inputs, runManager?.getChild('combine_documents'));
     $$CombineDocumentsExecutionTime();
     logger.debug('Chain:condenseQuestionChain:output', { output: result });
