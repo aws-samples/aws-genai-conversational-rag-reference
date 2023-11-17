@@ -77,6 +77,13 @@ class Context {
     }
   }
 
+  cacheValue(key: string) {
+    return {
+      get: () => this.fromCache(key),
+      set: (value: any) => this.toCache(key, value),
+    };
+  }
+
   /**
    * Auto-cache for `prompts` answers.
    * @param answers Prompts answers

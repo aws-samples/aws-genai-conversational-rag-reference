@@ -580,8 +580,9 @@ namespace galileoPrompts {
       'arn:aws:iam::aws:policy/PowerUserAccess,arn:aws:iam::aws:policy/IAMFullAccess',
   };
 
-  export const userPoolPicker = (userPools: { id: string; name: string }[]): PromptObject => {
-    return {
+  export const userPoolPicker = async (userPools: { id: string; name: string }[]): Promise<string> => {
+    const cache = context.cacheValue('userPoolId');
+    const { userPoolId } = await prompts({
       type: 'select',
       name: 'userPoolId',
       message: 'Cognito user pools',
@@ -589,9 +590,11 @@ namespace galileoPrompts {
       choices: Object.values(userPools).map((up) => ({
         title: `${up.name} (${up.id})`,
         value: up.id,
-        selected: context.cache.getItem('userPoolId'),
+        selected: cache.get(),
       })),
-    };
+    });
+    cache.set(userPoolId);
+    return userPoolId;
   };
 
   export const filePathPrompt = (options?: { what?: string; initialVal?: string }): PromptObject => {

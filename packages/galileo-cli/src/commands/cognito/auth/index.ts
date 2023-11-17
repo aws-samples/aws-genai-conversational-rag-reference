@@ -33,7 +33,7 @@ export default class CognitoAuthCommand extends Command {
       this.exit();
     }
 
-    const { userPoolId } = await prompts(galileoPrompts.userPoolPicker(userPools));
+    const userPoolId = await galileoPrompts.userPoolPicker(userPools);
 
     const { username, password } = await prompts([galileoPrompts.username(), galileoPrompts.password()], {
       onCancel: this.onPromptCancel,
