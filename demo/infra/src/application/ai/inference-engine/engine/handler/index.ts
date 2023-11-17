@@ -28,7 +28,7 @@ const INTERCEPTORS = interceptors.filter((v) => v != corsInterceptor) as unknown
 
 export const handler = createChatMessageHandler(...INTERCEPTORS, async ({ input, interceptorContext }) => {
   const [metrics, logMetrics] = createMetrics({
-    serviceName: process.env.POWERTOOLS_SERVICE_NAME ?? 'InferenceEngine',
+    serviceName: 'InferenceEngine',
   });
   metrics.addDimension('component', 'inferenceEngine');
 
