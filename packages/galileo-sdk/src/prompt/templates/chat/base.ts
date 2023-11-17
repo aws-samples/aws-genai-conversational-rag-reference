@@ -27,10 +27,20 @@ export interface BaseChatTemplatePartials extends HandlebarsTemplatePartials {
    */
   readonly ChatHistory: Handlebars.Template<{ messages: BaseMessage[] }>;
 
-  // TODO: Document chains (Stuff, Reduce, etc) convert documents to string, but later will
-  // submit a PR to support passing unprocessed list of source documents to the prompt
-  // readonly Documents: Handlebars.Template<{ documents: Document[] }>;
-  // readonly Document: Handlebars.Template<Document>;
+  /**
+   * Renderer for context documents from retriever, which iterates of actual
+   * Document objects to provide modifying how documents are rendered in the prompt.
+   * By default langchain just joins the pageContent of each document with linebreak
+   * separate, but you might want to augment this with prefix from metadata, or wrap
+   * in different way.
+   */
+  readonly ContextDocuments: Handlebars.Template<{ context_documents: Document[] }>;
+  /**
+   * Renders a single Document object. By default just writes the `pageContent`
+   * without modification. This will receive the full Document object, so you could
+   * modify rendering based on metadata.
+   */
+  readonly Document: Handlebars.Template<Document>;
 }
 
 export const BASE_CHAT_PARTIALS: BaseChatTemplatePartials = {
@@ -46,6 +56,9 @@ export const BASE_CHAT_PARTIALS: BaseChatTemplatePartials = {
 {{~else}}{{>BaseMessage}}{{/if}}
 \n
 {{/each}}`,
+
+  ContextDocuments: `{{#each context_documents}}{{>Document}}\n\n{{/each}}`,
+  Document: '{{pageContent}}',
 } as const;
 
 export interface ChatTemplatePartials extends BaseChatTemplatePartials {}
