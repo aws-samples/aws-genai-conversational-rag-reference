@@ -8,6 +8,7 @@ import { ChatEngineConfig, resolveChatEngineConfig } from './config/index.js';
 import { DynamoDBChatMessageHistory } from './dynamodb/message-history.js';
 import { ChatEngineHistory, ChatTurn } from './memory.js';
 import { SearchRetriever, SearchRetrieverInput } from './search.js';
+import { startPerfMetric as $$$ } from '../common/metrics/index.js';
 import { Dict } from '../models/index.js';
 
 export interface ChatEngineFromOption extends Omit<ChatEngineConfig, 'search'> {
@@ -125,7 +126,9 @@ export class ChatEngine {
   }
 
   async query(query: string): Promise<ChatEngineQueryResponse> {
+    const $time = $$$('Engine.Query.ExecutionTime', { highResolution: true });
     const result = await this.chain.call({ question: query });
+    $time();
     const turn = this.memory.lastTurn;
 
     return {
