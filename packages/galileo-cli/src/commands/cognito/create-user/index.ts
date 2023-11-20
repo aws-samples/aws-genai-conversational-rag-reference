@@ -55,10 +55,7 @@ export default class CognitoCreateUserCommand extends Command {
         this.exit();
       }
 
-      const { userPoolId: _userpoolId } = context.cachedAnswers(
-        await prompts(galileoPrompts.userPoolPicker(userPools)),
-      );
-      userpoolId = _userpoolId as string;
+      userpoolId = await galileoPrompts.userPoolPicker(userPools);
 
       const answersUser = await prompts(
         [galileoPrompts.email({ initialVal: flags.email }), galileoPrompts.username({ initialVal: flags.username })],

@@ -56,7 +56,7 @@ export default class CognitoDeleteUserCommand extends Command {
       this.exit();
     }
 
-    const { userPoolId } = context.cachedAnswers(await prompts(galileoPrompts.userPoolPicker(userPools)));
+    const userPoolId = await galileoPrompts.userPoolPicker(userPools);
 
     await accountUtils.deleteCognitoUser({
       profile: profile!,

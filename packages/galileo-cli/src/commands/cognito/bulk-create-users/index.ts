@@ -51,7 +51,7 @@ Make sure that the CSV file has the following columns: "username,email,group"
       this.exit();
     }
 
-    const { userPoolId } = context.cachedAnswers(await prompts(galileoPrompts.userPoolPicker(userPools)));
+    const userPoolId = await galileoPrompts.userPoolPicker(userPools);
 
     context.ui.newSpinner().start('Loading user groups');
     const userGroups = await accountUtils.listCognitoUserGroups({ profile, region, userpoolId: userPoolId });
