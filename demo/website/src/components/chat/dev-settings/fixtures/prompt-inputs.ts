@@ -2,7 +2,7 @@
 PDX-License-Identifier: Apache-2.0 */
 
 import { Document } from 'langchain/document';
-import { AIMessage, HumanMessage } from 'langchain/schema';
+import { AIMessage, BaseMessage, HumanMessage } from 'langchain/schema';
 import '@aws/galileo-sdk/lib/langchain/patch';
 
 export const CONTEXT_DOCUMENTS = [
@@ -27,6 +27,13 @@ export const CHAT_HISTORY = [
   }),
 ];
 
+export function marshalChatHistory(messages: BaseMessage[]) {
+  return messages.map((message) => ({
+    ...message,
+    type: message._getType(),
+  })) as (BaseMessage & { type: string })[];
+}
+
 export const CLASSIFICATION_RESULT = {
   category: 'example',
   originalLanguage: 'english',
@@ -40,7 +47,7 @@ export const QA_PROMPT = {
 };
 
 export const CONDENSE_QUESTION_PROMPT = {
-  chat_history: CHAT_HISTORY,
+  chat_history: marshalChatHistory(CHAT_HISTORY),
   question: 'How is this different from other engineering?',
 };
 
