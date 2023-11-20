@@ -356,17 +356,17 @@ export function normalizeMetadata(metadata: Record<string, string> = {}): Record
   let metadataNormalized: Record<string, string> = {};
 
   for (const key in metadata) {
-    if (key === 'json-base64') {
+    if (key === 'json-base64' || key === 'json-base-64') {
       try {
         // base64 decode
         const decodedValue = Buffer.from(metadata[key], 'base64').toString('utf-8');
-        const decodedObject = JSON.parse(decodedValue);
-        metadataNormalized = {
-          ...metadataNormalized,
-          ...decodedObject,
-        };
+        const decodedObject = JSON.parse(decodedValue) as Record<string, string>;
+
+        Object.entries(decodedObject).forEach(([dKey, value]) => {
+          metadataNormalized[dKey] = value;
+        });
       } catch (err: any) {
-        console.log('Error decoding json-base64 field. Skipping...', err.message);
+        logger.error('Error decoding json-base64 field. Skipping...', err.message);
       }
     } else {
       metadataNormalized[key] = metadata[key];
