@@ -78,7 +78,7 @@
     "@aws-lambda-powertools/logger": "^1.12.1",
     "@aws-lambda-powertools/metrics": "^1.12.1",
     "@aws-lambda-powertools/parameters": "^1.12.1",
-    "api-typescript-runtime": "^0.0.0",
+    "api-typescript-runtime": "0.0.0",
     "cross-fetch": "^3.1.8",
     "handlebars": "^4.7.8",
     "handlebars-helpers-lite": "^0.2.1",
