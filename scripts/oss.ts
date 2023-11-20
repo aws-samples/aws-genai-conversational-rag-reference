@@ -4,7 +4,7 @@
 SPDX-License-Identifier: Apache-2.0 */
 import path from "node:path";
 import fs from "node:fs/promises";
-import { $ } from "execa";
+import execa from "execa";
 import satisfies from "spdx-satisfies";
 import correct from "spdx-correct";
 import chalk from "chalk";
@@ -25,10 +25,16 @@ const ALLOWLIST: string[] = [
   "MIT",
   "MPL-2.0+",
   "Python-2.0+",
+  "(MIT AND Zlib)",
+  "(MIT AND BSD-3-Clause)",
 ];
 
 // List of packages that were manually checked for allowed licensing
 const EXCEPTIONS = new Set<string>([
+  "buffers", // false positive: listed as MIT
+  "colors", // false positive: listed as MIT
+  "clear", // false positive: listed as MIT
+  "npm", // npm listed at Artistic-2.0
 ]);
 
 interface Pkg {
@@ -66,7 +72,8 @@ function notAllowed(license: string): boolean {
 (async () => {
   console.info(chalk.cyanBright("Performing Open-Source Check"));
   console.info(chalk.gray("Checking licenses for all dependencies..."));
-  const licenses = JSON.parse((await $`pnpm licenses ls --prod --json`).stdout);
+  const licenseJson = (await execa.command('pnpm licenses ls --prod --json')).stdout;
+  const licenses = JSON.parse(licenseJson);
   const totals = Object.values<Pkg[]>(licenses).reduce<Counts>((_totals, _pkgs): Counts => {
     return {
       licenseCount: _totals.licenseCount + 1,
@@ -76,7 +83,7 @@ function notAllowed(license: string): boolean {
   const notAllowedLicenses = Object.keys(licenses).map((v) => correct(v, { upgrade: true }) || UNKNOWN).filter(notAllowed);
   console.info(chalk.gray(`Found ${totals.licenseCount} licenses across ${totals.packageCount} dependencies`));
 
-  const attribution = (await $`pnpm licenses ls --prod --long`).stdout;
+  const attribution = (await execa.command('pnpm licenses ls --prod --long')).stdout;
   await fs.writeFile(path.join(ROOT_DIR, "LICENSE-THIRD-PARTY"), attribution, { encoding: "utf-8" });
   console.info(chalk.cyan("Third-Party attribution notice written to LICENSE-THIRD-PARTY"));
 
@@ -104,7 +111,7 @@ function notAllowed(license: string): boolean {
 
   // Run audit for high+ issues
   console.info(chalk.gray("Performing audit scan for vulnerability across all dependencies (high+)"));
-  await $`pnpm audit --prod --audit-level high`;
+  await execa.command('pnpm audit --prod --audit-level high');
   console.info(chalk.green("Audit checker has passed!"));
 
   console.info(chalk.bold.greenBright("Open-Source check completed successfully! 🤑"));
