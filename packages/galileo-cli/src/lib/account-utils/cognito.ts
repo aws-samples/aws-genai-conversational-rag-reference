@@ -13,6 +13,7 @@ import {
   InitiateAuthCommand,
   ListUserPoolClientsCommand,
   RespondToAuthChallengeCommand,
+  ChallengeNameType,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { fromIni } from '@aws-sdk/credential-providers';
 import chalk from 'chalk';
@@ -34,7 +35,7 @@ export interface AuthCognitoUserRequest extends CredentialsWithUserpoolId {
 }
 export interface AuthResponseChallenge extends CredentialsParams {
   readonly appClientId: string;
-  challengeName: string;
+  challengeName: ChallengeNameType;
   challengeParams: Record<string, string>;
   responseValue?: string;
   session?: string;

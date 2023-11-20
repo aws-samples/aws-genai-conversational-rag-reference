@@ -2,7 +2,7 @@
   "dependencies": [
     {
       "name": "@aws/pdk",
-      "version": "0.22.9",
+      "version": "0.22.42",
       "type": "build"
     },
     {
@@ -202,7 +202,7 @@
     },
     {
       "name": "@aws/pdk",
-      "version": "0.22.9",
+      "version": "0.22.42",
       "type": "override"
     },
     {
@@ -217,12 +217,12 @@
     },
     {
       "name": "aws-cdk-lib",
-      "version": "2.99.1",
+      "version": "2.110.0",
       "type": "override"
     },
     {
       "name": "constructs",
-      "version": "10.2.70",
+      "version": "10.3.0",
       "type": "override"
     },
     {
@@ -256,15 +256,16 @@
       "type": "peer"
     },
     {
+      "name": "@aws-cdk/aws-cognito-identitypool-alpha",
+      "version": "latest",
+      "type": "runtime"
+    },
+    {
       "name": "aws-cdk-lib",
       "type": "runtime"
     },
     {
       "name": "cdk-nag",
-      "type": "runtime"
-    },
-    {
-      "name": "constructs",
       "type": "runtime"
     }
   ],

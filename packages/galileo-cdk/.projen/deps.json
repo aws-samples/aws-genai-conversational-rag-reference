@@ -2,32 +2,32 @@
   "dependencies": [
     {
       "name": "@aws-sdk/client-codebuild",
-      "version": "^3.418.0",
+      "version": "^3.451.0",
       "type": "build"
     },
     {
       "name": "@aws-sdk/client-dynamodb",
-      "version": "^3.418.0",
+      "version": "^3.451.0",
       "type": "build"
     },
     {
       "name": "@aws-sdk/client-service-quotas",
-      "version": "^3.418.0",
+      "version": "^3.451.0",
       "type": "build"
     },
     {
       "name": "@aws-sdk/client-sfn",
-      "version": "^3.418.0",
+      "version": "^3.451.0",
       "type": "build"
     },
     {
       "name": "@aws-sdk/lib-dynamodb",
-      "version": "^3.418.0",
+      "version": "^3.451.0",
       "type": "build"
     },
     {
       "name": "@aws-sdk/types",
-      "version": "^3.418.0",
+      "version": "^3.451.0",
       "type": "build"
     },
     {
@@ -55,12 +55,12 @@
     },
     {
       "name": "aws-cdk-lib",
-      "version": "2.99.1",
+      "version": "2.110.0",
       "type": "build"
     },
     {
       "name": "constructs",
-      "version": "10.2.70",
+      "version": "10.3.0",
       "type": "build"
     },
     {
@@ -182,7 +182,7 @@
     },
     {
       "name": "@smithy/types",
-      "version": "^2.3.4",
+      "version": "^2.5.0",
       "type": "bundled"
     },
     {
@@ -243,27 +243,27 @@
     },
     {
       "name": "aws-cdk-lib",
-      "version": "^2.99.1",
+      "version": "^2.110.0",
       "type": "peer"
     },
     {
       "name": "constructs",
-      "version": "^10.2.70",
+      "version": "^10.3.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-cognito-identitypool-alpha",
-      "version": "^2.99.1-alpha.0",
+      "version": "^2.110.0-alpha.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-lambda-python-alpha",
-      "version": "^2.99.1-alpha.0",
+      "version": "^2.110.0-alpha.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-sagemaker-alpha",
-      "version": "^2.99.1-alpha.0",
+      "version": "^2.110.0-alpha.0",
       "type": "runtime"
     },
     {

@@ -28,6 +28,7 @@ export function mapV1MessageToStoredMessage(message: StoredMessage | StoredMessa
         content: v1Message.text,
         role: v1Message.role,
         name: undefined,
+        tool_call_id: undefined,
       },
     };
   }
