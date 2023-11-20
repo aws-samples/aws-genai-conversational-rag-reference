@@ -73,7 +73,9 @@ export const useChatEngineConfigState = <P extends keyof ChatEngineConfig>(
     [updateConfig],
   );
 
-  return [config[prop], setter];
+  const value = config[prop];
+
+  return useMemo(() => [value, setter], [value, setter]);
 };
 
 // TODO: support customizing llm for each chain - now is just default single llm for all, but backend supports specific for each
@@ -178,7 +180,7 @@ const ChatEngineConfigProvider: React.FC<PropsWithChildren> = ({ children }) => 
     if (_chatId && !isEmpty(_config)) {
       storeConfig(_chatId, _config);
     }
-  }, [configTupleToPersist]);
+  }, configTupleToPersist);
 
   // Persist anytime chat id is modified, or on unmount
   useEffect(() => {
@@ -216,15 +218,18 @@ const ChatEngineConfigProvider: React.FC<PropsWithChildren> = ({ children }) => 
     }
   }, [updateConfig]);
 
-  const context: ChatEngineConfigContext = [
-    config,
-    updateConfig,
-    {
-      reset,
-      copy,
-      paste,
-    },
-  ];
+  const context: ChatEngineConfigContext = useMemo(
+    () => [
+      config,
+      updateConfig,
+      {
+        reset,
+        copy,
+        paste,
+      },
+    ],
+    [config, updateConfig, reset, copy, paste],
+  );
 
   return <ChatEngineConfigContext.Provider value={context}>{children}</ChatEngineConfigContext.Provider>;
 };
