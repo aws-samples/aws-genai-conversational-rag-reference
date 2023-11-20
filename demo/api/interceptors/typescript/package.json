@@ -50,7 +50,7 @@
   "dependencies": {
     "@aws-lambda-powertools/logger": "^1.12.1",
     "@aws-lambda-powertools/tracer": "^1.12.1",
-    "@aws-sdk/client-cognito-identity-provider": "^3.418.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.451.0",
     "api-typescript-runtime": "0.0.0",
     "jose": "^4.14.6",
     "nanoid": "^3.3.6",

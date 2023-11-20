@@ -21,7 +21,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@aws/pdk": "^0.22.1",
+    "@aws/pdk": "0.22.42",
     "api-typescript-runtime": "0.0.0",
     "aws-cdk-lib": "^2.95.0",
     "cdk-nag": "^2.27.146",
