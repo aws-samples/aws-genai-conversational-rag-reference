@@ -325,6 +325,9 @@
           "exec": "pnpm exec syncpack fix-mismatches"
         },
         {
+          "exec": "rm pnpm-lock.yaml"
+        },
+        {
           "exec": "pnpm i"
         },
         {

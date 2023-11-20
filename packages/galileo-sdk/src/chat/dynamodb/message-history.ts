@@ -81,6 +81,7 @@ export class DynamoDBChatMessageHistory extends BaseListChatMessageHistory {
             type: item.type,
             data: {
               name: undefined,
+              tool_call_id: undefined,
               content: item.data.content,
               role: item.type,
               additional_kwargs: item,
@@ -114,7 +115,7 @@ export class DynamoDBChatMessageHistory extends BaseListChatMessageHistory {
           this.tableName,
           this.userId,
           this.chatId,
-          message.content,
+          message.content as string,
           sources || [],
         );
 
@@ -127,7 +128,7 @@ export class DynamoDBChatMessageHistory extends BaseListChatMessageHistory {
           this.tableName,
           this.userId,
           this.chatId,
-          message.content,
+          message.content as string,
         );
 
         logger.debug({ message: 'Successfully stored chat message', response });

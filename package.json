@@ -33,6 +33,7 @@
     "upgrade-deps": "pnpm exec projen upgrade-deps",
     "watch": "pnpm exec projen watch",
     "workspace:bin:link": "pnpm exec projen workspace:bin:link",
+    "install:ci": "pnpm exec projen install:ci",
     "synth-workspace": "pnpm exec projen",
     "commit": "pnpm exec cz",
     "prerequisite-check": "./prerequisite-check.sh",
@@ -41,7 +42,7 @@
     "galileo-cli": "pnpm dlx tsx packages/galileo-cli/bin/galileo-cli.ts"
   },
   "devDependencies": {
-    "@aws/pdk": "0.22.9",
+    "@aws/pdk": "0.22.42",
     "@commitlint/cli": "^17.7.2",
     "@commitlint/config-conventional": "^17.7.0",
     "@nrwl/devkit": "^16.9.1",
@@ -94,17 +95,17 @@
     "nx": "^16"
   },
   "dependencies": {
+    "@aws-cdk/aws-cognito-identitypool-alpha": "latest",
     "aws-cdk-lib": "^2.99.1",
-    "cdk-nag": "^2.27.146",
-    "constructs": "^10.2.70"
+    "cdk-nag": "^2.27.146"
   },
   "pnpm": {
     "overrides": {
-      "@aws/pdk": "0.22.9",
+      "@aws/pdk": "0.22.42",
       "@types/babel__traverse": "7.18.2",
       "@zkochan/js-yaml": "npm:js-yaml@4.1.0",
-      "aws-cdk-lib": "2.99.1",
-      "constructs": "10.2.70",
+      "aws-cdk-lib": "2.110.0",
+      "constructs": "10.3.0",
       "nth-check": ">=2.0.1",
       "postcss": ">=8.4.31",
       "semver": ">=7.5.2",
@@ -137,15 +138,10 @@
       "packages/galileo-cdk",
       "packages/galileo-cli",
       "packages/galileo-sdk",
-      "demo/api",
-      "demo/api/generated/documentation/html2",
-      "demo/api/model",
-      "demo/api/generated/runtime/python",
       "demo/api/generated/infrastructure/typescript",
       "demo/api/interceptors/typescript",
       "demo/api/generated/libraries/typescript-react-query-hooks",
       "demo/api/generated/runtime/typescript",
-      "demo/corpus",
       "demo/website",
       "demo/corpus/logic",
       "demo/infra",

@@ -32,6 +32,7 @@
     },
     {
       "name": "@tanstack/react-query",
+      "version": "^4",
       "type": "runtime"
     }
   ],
