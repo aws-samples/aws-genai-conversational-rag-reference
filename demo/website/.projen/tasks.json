@@ -43,6 +43,9 @@
       },
       "steps": [
         {
+          "spawn": "overrides:copy:chat-engine-config"
+        },
+        {
           "exec": "react-app-rewired start"
         }
       ]
