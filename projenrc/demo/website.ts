@@ -120,5 +120,6 @@ export class Website {
     });
 
     this.project.preCompileTask.prependSpawn(copyOverrideTask);
+    this.project.tasks.tryFind("dev")?.prependSpawn(copyOverrideTask);
   }
 }
