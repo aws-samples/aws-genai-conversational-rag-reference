@@ -9,6 +9,11 @@ import type { Kwargs } from '../../types.js';
 export const CLAUDE_V2_ADAPTER: IModelAdapter = {
   prompt: {
     chat: {
+      base: {
+        // \n\nHuman: is stop sequence in Claude so override default
+        HumanMessage: 'H: {{content}}',
+        AIMessage: 'A: {{content}}',
+      },
       QA: {
         template: `\n\nHuman: Read the follow text inside <text></text> XML tags, and then answer the question based on the provided rules inside <rules></rules>:
 
