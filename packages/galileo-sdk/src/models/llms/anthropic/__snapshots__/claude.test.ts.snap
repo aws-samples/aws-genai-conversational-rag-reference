@@ -8,9 +8,9 @@ Human: Read the following chat history inside <history></history> XML tags, and 
 <history>
 System: A system message
 
-Human: Hi
+H: Hi
 
-Assistant: Hello!
+A: Hello!
 
 </history>
 Followup Question: THE QUESTION
