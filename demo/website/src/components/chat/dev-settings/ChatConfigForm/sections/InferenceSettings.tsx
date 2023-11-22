@@ -105,15 +105,17 @@ export const InferenceSettings: FC = () => {
         <CodeEditor
           language="json"
           value={toCodeEditorJson(modelKwargs)}
-          onChange={({ detail }) => {
+          onDelayedChange={({ detail }) => {
             try {
-              detail.value.length &&
+              if (detail.value.length) {
+                const value = JSON.parse(detail.value);
                 setLlm((draft) => {
                   return {
                     ...draft,
-                    modelKwargs: JSON.parse(detail.value),
+                    modelKwargs: value,
                   };
                 });
+              }
             } catch (error) {
               console.warn('Failed to parse `LLM Model Kwargs`', detail.value, error);
             }
@@ -124,15 +126,17 @@ export const InferenceSettings: FC = () => {
         <CodeEditor
           language="json"
           value={toCodeEditorJson(endpointKwargs)}
-          onChange={({ detail }) => {
+          onDelayedChange={({ detail }) => {
             try {
-              detail.value.length &&
+              if (detail.value.length) {
+                const value = JSON.parse(detail.value);
                 setLlm((draft) => {
                   return {
                     ...draft,
-                    endpointKwargs: JSON.parse(detail.value),
+                    endpointKwargs: value,
                   };
                 });
+              }
             } catch (error) {
               console.warn('Failed to parse `LLM Endpoint Kwargs`', detail.value, error);
             }
