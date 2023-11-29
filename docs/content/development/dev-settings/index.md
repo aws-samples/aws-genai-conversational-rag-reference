@@ -3,6 +3,7 @@
 --8<-- "disclaimer/third-party-model.md"
 --8<-- "disclaimer/prompt-engineering-template.md"
 --8<-- "development/dev-settings/_/header.md"
+--8<-- "news-feed.md"
 
 The **Dev Settings** is designed to support rapid development iterations without requiring a deployment, including integrating with models deployed outside the application. The aim is to support trying out the latest models against the full application flow before committing to codifying and deploying the models from within the application, such as testing a new model deployed from [SageMaker JumpStart](https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-foundation-models.html){:target="_blank"}.
 
