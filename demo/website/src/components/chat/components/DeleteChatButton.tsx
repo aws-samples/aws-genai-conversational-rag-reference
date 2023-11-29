@@ -5,7 +5,7 @@ import Box from '@cloudscape-design/components/box';
 import Button from '@cloudscape-design/components/button';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import { Chat } from 'api-typescript-react-query-hooks';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useDeleteChatMutation } from '../../../hooks/chats';
 
 export default function DeleteChatButton(props: { chat: Chat }) {
@@ -15,29 +15,44 @@ export default function DeleteChatButton(props: { chat: Chat }) {
     setVisible(false);
   });
 
+  const open = useCallback(() => {
+    setVisible(true);
+  }, []);
+
+  const close = useCallback(() => {
+    setVisible(false);
+    deleteChat.reset();
+  }, [deleteChat]);
+
   return (
     <>
-      <Button variant="inline-icon" iconName="remove" onClick={() => setVisible(true)} />
+      <Button variant="inline-icon" iconName="remove" onClick={open} />
 
       <Modal
-        onDismiss={() => setVisible(false)}
+        onDismiss={close}
         visible={visible}
         footer={
           <Box float="right">
             <SpaceBetween direction="horizontal" size="xs">
-              <Button variant="link" onClick={() => setVisible(false)}>
+              <Button variant="link" onClick={close}>
                 Cancel
               </Button>
-              <Button
-                variant="primary"
-                loading={deleteChat.isLoading}
-                disabled={deleteChat.isError}
-                onClick={() => {
-                  deleteChat.mutateAsync({ chatId: props.chat.chatId }).catch(console.error);
-                }}
-              >
-                Ok
-              </Button>
+              {deleteChat.isError ? (
+                <Button variant="normal" onClick={() => deleteChat.mutate({ chatId: props.chat.chatId })}>
+                  Retry
+                </Button>
+              ) : (
+                <Button
+                  variant="primary"
+                  loading={deleteChat.isLoading}
+                  disabled={deleteChat.isError}
+                  onClick={() => {
+                    deleteChat.mutate({ chatId: props.chat.chatId });
+                  }}
+                >
+                  Delete
+                </Button>
+              )}
             </SpaceBetween>
           </Box>
         }

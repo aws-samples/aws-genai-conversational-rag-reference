@@ -7,7 +7,7 @@ import { Authorizers, Integrations, TypeSafeApiIntegration } from '@aws/pdk/type
 import { Api as TypeSafeApi, ApiIntegrations, MockIntegrations } from 'api-typescript-infra';
 import { INTERCEPTOR_IAM_ACTIONS } from 'api-typescript-interceptors';
 import { OperationConfig } from 'api-typescript-runtime';
-import { ArnFormat, CfnJson, NestedStack, NestedStackProps, Reference, Stack, Token } from 'aws-cdk-lib';
+import { ArnFormat, CfnJson, Duration, NestedStack, NestedStackProps, Reference, Stack, Token } from 'aws-cdk-lib';
 import { Cors } from 'aws-cdk-lib/aws-apigateway';
 import { GeoRestriction } from 'aws-cdk-lib/aws-cloudfront';
 import { ITable } from 'aws-cdk-lib/aws-dynamodb';
@@ -69,6 +69,9 @@ export class PresentationStack extends NestedStack {
       handler: 'handler',
       runtime: Runtime.NODEJS_18_X,
       entry: require.resolve('./lambdas/chat/deleteChat'),
+      // TODO: need to optimize how dependent entities are deletes to be bulk (sources + messages)
+      // until then just setting this to 60s timeout
+      timeout: Duration.seconds(60),
     });
 
     const listChatMessagesFn = new NodejsFunction(this, `listChatMessages-Lambda`, {
