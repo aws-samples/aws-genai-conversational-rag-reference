@@ -17,7 +17,8 @@
         "{projectRoot}/target",
         "{projectRoot}/cdk.out",
         "{projectRoot}/LICENSE_THIRD_PARTY",
-        "{projectRoot}/.jsii"
+        "{projectRoot}/.jsii",
+        "{projectRoot}/public/chat-engine-config.json"
       ],
       "dependsOn": [
         "^build"

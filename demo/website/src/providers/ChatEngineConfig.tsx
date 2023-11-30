@@ -153,6 +153,7 @@ export const useChatEngineConfigChainPrompt = <T extends ChainType>(type: T) => 
 const useOverrideChatEngineConfigJson = (): ChatEngineConfig | undefined => {
   const configJson = useFetch<string>('/chat-engine-config.json');
   if (configJson.error == null && configJson.data) {
+    if (isEmpty(configJson.data)) return;
     return configJson.data as ChatEngineConfig;
   }
   return;

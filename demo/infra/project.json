@@ -12,7 +12,9 @@
         },
         "{workspaceRoot}/demo/overrides/**/*"
       ],
-      "outputs": [],
+      "outputs": [
+        "{projectRoot}/src/application/ai/inference-engine/engine/handler/chat-engine-config.json"
+      ],
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec projen build",
@@ -142,6 +144,13 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec projen compile:watch",
+        "cwd": "demo/infra"
+      }
+    },
+    "overrides:copy:chat-engine-config": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec projen overrides:copy:chat-engine-config",
         "cwd": "demo/infra"
       }
     },

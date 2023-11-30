@@ -112,14 +112,5 @@ export class Website {
         '^.+\\.module\\.(css|sass|scss)$',
       ],
     });
-
-    // HACK: copy chat-engine-config.json overrides into public if exists
-    const CHAT_ENGINE_CONFIG_OVERRIDE = '../overrides/chat-engine-config.json';
-    const copyOverrideTask = this.project.addTask('overrides:copy:chat-engine-config', {
-      exec: `[ -f ${CHAT_ENGINE_CONFIG_OVERRIDE} ] && cp ${CHAT_ENGINE_CONFIG_OVERRIDE} ./public/ || exit 0;`,
-    });
-
-    this.project.preCompileTask.prependSpawn(copyOverrideTask);
-    this.project.tasks.tryFind("dev")?.prependSpawn(copyOverrideTask);
   }
 }
