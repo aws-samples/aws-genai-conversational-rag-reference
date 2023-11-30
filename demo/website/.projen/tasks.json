@@ -91,7 +91,7 @@
       "name": "overrides:copy:chat-engine-config",
       "steps": [
         {
-          "exec": "[ -f ../overrides/chat-engine-config.json ] && cp ../overrides/chat-engine-config.json ./public/ || exit 0;"
+          "exec": "[ -f ../overrides/chat-engine-config.json ] && cp -f ../overrides/chat-engine-config.json public/chat-engine-config.json || echo '{}' > public/chat-engine-config.json"
         }
       ]
     },

@@ -116,6 +116,14 @@
         }
       ]
     },
+    "overrides:copy:chat-engine-config": {
+      "name": "overrides:copy:chat-engine-config",
+      "steps": [
+        {
+          "exec": "[ -f ../overrides/chat-engine-config.json ] && cp -f ../overrides/chat-engine-config.json src/application/ai/inference-engine/engine/handler/chat-engine-config.json || echo '{}' > src/application/ai/inference-engine/engine/handler/chat-engine-config.json"
+        }
+      ]
+    },
     "package": {
       "name": "package",
       "description": "Creates the distribution package",
@@ -140,7 +148,12 @@
     },
     "pre-compile": {
       "name": "pre-compile",
-      "description": "Prepare the project for compilation"
+      "description": "Prepare the project for compilation",
+      "steps": [
+        {
+          "spawn": "overrides:copy:chat-engine-config"
+        }
+      ]
     },
     "synth": {
       "name": "synth",

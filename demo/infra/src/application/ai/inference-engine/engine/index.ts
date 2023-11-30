@@ -1,6 +1,5 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import path from 'path';
 import { isDevStage } from '@aws/galileo-cdk/lib/common';
 import { INTERCEPTOR_IAM_ACTIONS } from 'api-typescript-interceptors';
 import { CfnOutput, Duration, Size } from 'aws-cdk-lib';
@@ -13,13 +12,7 @@ import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { ISecret } from 'aws-cdk-lib/aws-secretsmanager';
 import { NagSuppressions } from 'cdk-nag';
 import { Construct } from 'constructs';
-import fs from 'fs-extra';
 import { ILambdaEnvironment } from './handler/env';
-
-const OVERRIDES_DIR = path.resolve(__dirname, '../../../../../../overrides');
-const CHAT_ENGINE_CONFIG_FILENAME = 'chat-engine-config.json';
-const CHAT_ENGINE_CONFIG_OVERRIDE = path.join(OVERRIDES_DIR, CHAT_ENGINE_CONFIG_FILENAME);
-const CHAT_ENGINE_CONFIG_HANDLER_FILE = path.join(__dirname, 'handler', CHAT_ENGINE_CONFIG_FILENAME);
 
 export interface InferenceEngineProps {
   readonly searchUrl: string;
@@ -57,14 +50,6 @@ export class InferenceEngine extends Construct implements IInferenceEngine {
 
   constructor(scope: Construct, id: string, props: InferenceEngineProps) {
     super(scope, id);
-
-    // HACK: temporary way to support easily defining the application wide default for chat engine config
-    if (fs.existsSync(CHAT_ENGINE_CONFIG_OVERRIDE)) {
-      fs.copyFileSync(CHAT_ENGINE_CONFIG_OVERRIDE, CHAT_ENGINE_CONFIG_HANDLER_FILE);
-    } else {
-      // file must exist, so we create empty default
-      fs.writeJsonSync(CHAT_ENGINE_CONFIG_OVERRIDE, {});
-    }
 
     this.role = new iam.Role(this, 'InferenceRole', {
       assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),

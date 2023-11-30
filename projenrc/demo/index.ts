@@ -5,6 +5,8 @@ import { Website } from "./website";
 import { Corpus } from "./corpus";
 import { Sample } from "./sample";
 import { Infra } from "./infra";
+import { Project } from 'projen';
+import path from 'path';
 
 export interface DemoOptions {
   readonly monorepo: MonorepoTsProject;
@@ -52,12 +54,28 @@ export class Demo {
     this.corpus = corpus;
     this.sample = sample;
 
-    // HACK: Make sure infra/website are rebuilt when overrides are modified
-    NxProject.ensure(this.website.project).addBuildTargetFiles([
-      `{workspaceRoot}/demo/overrides/**/*`
-    ])
-    NxProject.ensure(this.infra.project).addBuildTargetFiles([
-      `{workspaceRoot}/demo/overrides/**/*`
-    ])
+    this.setupChatEngineConfigOverrides(this.website.project, 'public', [
+      'pre-compile',
+      'dev',
+    ]);
+    this.setupChatEngineConfigOverrides(this.infra.project, 'src/application/ai/inference-engine/engine/handler', [
+      'pre-compile',
+    ]);
+  }
+
+  // HACK: support application wide chat engine config "default"
+  private setupChatEngineConfigOverrides(project: Project, destDir: string, prependSpawnTask: string[]) {
+    const FILENAME = 'chat-engine-config.json';
+    const srcFile = path.join('../overrides', FILENAME);
+    const destFile = path.join(destDir, FILENAME);
+    const copyOverrideTask = project.addTask('overrides:copy:chat-engine-config', {
+      exec: `[ -f ${srcFile} ] && cp -f ${srcFile} ${destFile} || echo '{}' > ${destFile}`,
+    });
+    NxProject.ensure(project).addBuildTargetFiles(
+      [`{workspaceRoot}/demo/overrides/**/*`],
+      [`{projectRoot}/${destFile}`]
+    )
+
+    prependSpawnTask.forEach(t => project.tasks.tryFind(t)?.prependSpawn(copyOverrideTask));
   }
 }
