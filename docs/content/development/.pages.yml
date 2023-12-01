@@ -2,7 +2,7 @@
 nav:
   - Overview: index.md
   - Design: design
-  - Prompt Development Settings: dev-settings
+  - Prompt Development Settings: chat-dev-settings
   - Models: models
   - UI State: uistate
   - Vector Store: vector-store

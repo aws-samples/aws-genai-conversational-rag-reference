@@ -1,7 +1,7 @@
 # Inference (Dev Settings)
 
 --8<-- "disclaimer/third-party-model.md"
---8<-- "development/dev-settings/_/header.md"
+--8<-- "development/chat-dev-settings/_/header.md"
 
 The inference settings are used to control the model that is used for inference. It supports choosing either one of the models deployed/configured with the solution, or integrating with a custom model external to the solution.
 
