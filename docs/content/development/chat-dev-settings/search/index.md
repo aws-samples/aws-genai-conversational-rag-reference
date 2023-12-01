@@ -1,6 +1,6 @@
 # Search (Dev Settings)
 
---8<-- "development/dev-settings/_/header.md"
+--8<-- "development/chat-dev-settings/_/header.md"
 
 TODO
 
