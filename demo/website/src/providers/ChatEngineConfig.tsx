@@ -1,6 +1,5 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-// import { getChainConfigKeyByType } from '@aws/galileo-sdk/lib/chat/config';
 import { ModelAdapter } from '@aws/galileo-sdk/lib/models/adapter';
 import { resolveModelAdapter } from '@aws/galileo-sdk/lib/models/llms/utils';
 import { IModelInfo } from '@aws/galileo-sdk/lib/models/types';

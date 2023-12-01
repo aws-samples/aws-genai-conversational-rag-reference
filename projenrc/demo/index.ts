@@ -27,7 +27,7 @@ export class Demo {
       options;
 
     const api = new Api({ monorepo, rootOutdir });
-    // BAD: framework taking dep on demo is bad, but we are planning to drastically simplify
+    // HACK: framework taking dep on demo is bad, but we are planning to drastically simplify
     // this repo soon to remove this framework vs demo paradigm, and we want to be API-First,
     // while a significant amount of types are driven by sdk which prevents this.
     galileoSdk.addDeps(api.project.runtime.typescript!.package.packageName);

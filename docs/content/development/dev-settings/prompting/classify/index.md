@@ -10,7 +10,7 @@ Extend the capabilities of the conversational chain with the classification step
 
 !!! tip "Multi-Language Support"
 
-    If your knowledge base is all in english but you want to support end-users in different language, you can translate the input question to english and capture the original language, using the english translation throughout the chain, and tell the final QA LLM to reply in the original language. This has been with Bedrock Claude v2 with great success, you automatically support all languages that the model supports.
+    If your knowledge base is all in english but you want to support end-users in different language, you can translate the input question to english and capture the original language, using the english translation throughout the chain, and tell the final QA LLM to reply in the original language. This has been tested with Bedrock Claude v2 with great success, you automatically support all languages that the model supports.
 
 !!! warning "`question` property is special!!!"
 

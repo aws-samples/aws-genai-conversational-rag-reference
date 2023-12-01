@@ -1,6 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-// @ts-ignore
+// @ts-ignore - jest types are messed up in repo
 import type {} from '@types/jest';
 import { ChatEngineConfig, extractPrivilegedChatEngineConfigKeys, mergeUnresolvedChatEngineConfig } from './index';
 

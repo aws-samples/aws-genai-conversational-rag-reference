@@ -80,6 +80,7 @@ export function assertNonPrivilegedChatEngineConfig(config: Partial<ChatEngineCh
   }
 }
 
+/** Resolve serialized LLM config to instantiated classes */
 async function resolveLLM(
   llmConfig?: ChatEngineLLMConfig,
   defaultValues?: ResolvedLLM,
@@ -93,6 +94,7 @@ async function resolveLLM(
   return ChatEngineContext.resolveLLM(modelInfo, { ...llmConfig, ...options });
 }
 
+/** Resolve serialized ChatEngineConfig definition to instantiated classes */
 export async function resolveChatEngineConfig(
   config: ChatEngineConfig,
   options?: { verbose?: boolean },
