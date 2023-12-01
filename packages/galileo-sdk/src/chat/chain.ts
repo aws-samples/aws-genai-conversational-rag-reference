@@ -4,7 +4,6 @@ import { BaseLanguageModel } from 'langchain/base_language';
 import { CallbackManagerForChainRun } from 'langchain/callbacks';
 import { BaseChain, ChainInputs, LLMChain, QAChainParams, StuffDocumentsChain } from 'langchain/chains';
 import { PromptTemplate } from 'langchain/prompts';
-// import { SerializedChatVectorDBQAChain } from "./serde.js";
 import { ChainValues } from 'langchain/schema';
 import { BaseRetriever } from 'langchain/schema/retriever';
 import { ResolvedLLMChainConfig } from './config/index.js';
@@ -258,17 +257,6 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
   _chainType(): string {
     return 'conversational_retrieval_chain';
   }
-
-  // static async deserialize(
-  //   _data: SerializedChatVectorDBQAChain,
-  //   _values: LoadValues
-  // ): Promise<ChatEngineChain> {
-  //   throw new Error("Not implemented.");
-  // }
-
-  // serialize(): SerializedChatVectorDBQAChain {
-  //   throw new Error("Not implemented.");
-  // }
 }
 
 export function loadQAStuffChain(config: ResolvedLLMChainConfig, verbose: boolean = false) {

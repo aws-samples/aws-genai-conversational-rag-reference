@@ -15,8 +15,10 @@ import context from '../../../lib/context';
 import galileoPrompts from '../../../lib/prompts';
 import CognitoAuthCommand from '../../cognito/auth';
 
+/** Number of minutes before cognito token expiration to consider expired, to ensure enough time to execute operations */
 const TOKEN_BUFFER = 300 * 60; // 5 minutes
 
+/** RegEx to extract parts of lambda function url */
 const LAMBDA_URL_PATTERN = /^https:\/\/(?<id>[^.]+)\.lambda-url\.(?<region>[^.]+)\.on\.aws/;
 
 export default class InvokeChatBulkCommand extends Command {
