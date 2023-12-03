@@ -10,6 +10,7 @@ In addition to the [built-in helpers](https://handlebarsjs.com/guide/builtin-hel
 Each template has predefined [template partials](https://handlebarsjs.com/guide/partials.html){:target="_blank"} for composing more reusable templates. The partials are primarily used for minimizing requirements for codifying reusable model adapter, however they can still be used through the **Dev Settings** as well.
 
 ## Prompt Templates
+
 The solution is a modified version of [LangChain Conversational Retrieval QA chain](https://js.langchain.com/docs/modules/chains/popular/chat_vector_db){:target="blank"}, which chains together two prompt templates.
 
 1. **Question Generator** *(Condense Question)*
@@ -37,8 +38,8 @@ The solution is a modified version of [LangChain Conversational Retrieval QA cha
 
         Notice that `chat_history` is not provided to the *QA* prompt. This is because the *Condense Question* prompt has included the relevant chat history into a condensed *standalone* prompt that is independent of the chat history. This reduces the size of this prompt while also reducing the load on the model.
 
-
 ## Editor
+
 After opening the **Dev Settings** panel on the bottom, click the ***Prompt Engineering*** tab.
 
 ![Prompt Engineering](./image.png)
@@ -55,9 +56,11 @@ The prompt template that you see in the editors is a ***flattened*** version of 
         ![Alt text](image-2.png)
 
 ### How to replace chat message format?
+
 The `chat_history` data is an array of [LangChain BaseMessages](https://js.langchain.com/docs/api/schema/classes/BaseMessage){:target="_blank"}, with [type](https://js.langchain.com/docs/api/schema/types/MessageType){:target="_blank"} property getter added for convenience.
 
 The `{{>Dialog}}` partial will render each message based on the message type.
+
 ```handlebars
 {{#each chat_history}}
 {{~#if (eq type "human")}}{{>HumanMessage}}
@@ -68,7 +71,9 @@ The `{{>Dialog}}` partial will render each message based on the message type.
 
 {{/each}}
 ```
+
 The flattened version of the `{{>Dialog}}` partial looks like this.
+
 ```handlebars
 {{#each chat_history}}
 {{~#if (eq type "human")}}Human: {{content}}
@@ -79,6 +84,7 @@ The flattened version of the `{{>Dialog}}` partial looks like this.
 
 {{/each}}
 ```
+
 ![Message Partials](image-3.png){:width="600"}
 
 ### Partial Replacement
