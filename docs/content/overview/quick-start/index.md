@@ -63,6 +63,8 @@ The cli will generate an application configuration file in demo/infra/config.jso
 
 > `pnpm run galileo-cli --help` for cli help info
 
+Check out the [CLI page](../../development/cli/) for more details on CLI operations.
+
 ### Manually
 
 !!! tip "Recommended for full control and modification"
@@ -88,7 +90,7 @@ pnpm exec cdk deploy --app cdk.out --require-approval never Dev/Galileo-SampleDa
 
 ## What is deployed?
 
-![](../../assets/images/galileo-arch.png)
+![Galileo High-level Architecture](../../assets/images/galileo-arch.png)
 
 ---
 
