@@ -20,6 +20,53 @@ The "processed bucket" is the destination for objects that have already been pro
 !!! warning "Manual Process"
     Currently the state machine must be manually triggered. It also supports scheduling which is disabled by default, which can be configured in the corpus stack (`demo/infra/src/application/corpus/index.ts`) properties.
 
+### Data import flow
+
+Using the [CLI's Document Uploader](../cli/document-upload/), the document import flow is as follows:
+
+```mermaid
+sequenceDiagram
+  actor User
+  participant CLI
+  participant S3 as S3<br/>bucket
+  participant SFN as Indexing<br/>Workflow
+  participant VectorStore as Vector<br/>Store
+  participant SMJob as Sagemaker<br/>Processing Job
+  participant SMEmb as Sagemaker Endpoint<br/>Embedding model
+
+  autonumber
+
+  User ->> CLI: document upload
+  CLI ->> CLI: prepare data
+  CLI ->> S3: upload documents<br/>(with metadata)
+  CLI -->> User: trigger workflow?
+  User ->> CLI: yes
+  CLI -->> SFN: start execution
+
+  SFN ->> SFN: config workflow
+  SFN ->> S3: query changeset
+  S3 -->> SFN: objects
+
+  SFN ->> VectorStore: initialize<br/>vector store
+
+  SFN ->> SMJob: start processing job
+  activate SMJob
+
+  loop For each document
+    SMJob ->> SMEmb: toVector(document)
+    SMEmb -->> SMJob: vector
+    SMJob ->> VectorStore: upsert(vector)
+  end
+
+  SMJob -->> SFN: resume<br/>(processing job finished)
+  deactivate SMJob
+
+  alt Indexing on?
+    SFN ->> VectorStore: create/update<br/>index
+  end
+
+```
+
 ## Sample Dataset
 
 The current sample dataset (US Supreme Court Cases), is defined as a stack which uses the CDK S3 Deployment construct to batch deploy data into the "processed bucket" with respective metadata. Additionally the sample data set stack will automatically trigger the state machine for indexing.
