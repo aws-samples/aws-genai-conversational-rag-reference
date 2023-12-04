@@ -83,3 +83,23 @@ All data encryption in the scope of the reference sample is done using AWS' Key 
 Some of the permission details in the stack may still need further refinement to match your use-cases. Please review the source code as well as the overall architecture to decide appropriate approach of integrating your guardrails into the system.
 
 Similarly, the Presentation Tier is constructed only with 2 types of users and some permission segmentation, but in order to fit a Production use-case, it is required that application permission is carefully discussed with your team, role/permission matrix is developed for such system, and associating development is carried out to actualize it.
+
+## Infrastructure and System Enhancements
+
+### Multiple Product Environments
+
+For simplicity, all resources are deployed into one account. Creating multiple accounts to organize all the resources of the solution is a good DevOps practice. A multi-account strategy is important not only to improve governance but also to increase security and control of the resources that support the business. This strategy allows developers, data scientists and data engineers to experiment, innovate, and integrate faster, while keeping the production environment safe and available for your customers.
+
+It is recommended to create at least 3 different AWS accounts, one for each environment: Dev, Staging and Production.
+
+### Dev Environment
+
+Dev Environment should be equipped with the same type of resources as the Production environment, as well as Sagemaker Studio/Notebook where data scientist can experiment with developing the machine learning solution.
+
+### Staging Environment
+
+Similar to the Dev Environment, Staging Environment should have the same type of resources like in the Production Environment. And it is used to run fully end-to-end integration tests before the infrastructure as code changes or the new models are deployed to the Production Environment.
+
+### Production Environment
+
+Production Environment is a more tightly controlled environment used to serve inferences on real-world data for real-world customers. All the infrastructure changes and new models must be fully tested before being deployed to Production Environment.
