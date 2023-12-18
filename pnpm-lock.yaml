@@ -1645,6 +1645,7 @@ packages:
   /@aws-cdk/aws-apigatewayv2-alpha@2.99.0-alpha.0(aws-cdk-lib@2.110.0)(constructs@10.3.0):
     resolution: {integrity: sha512-bYtSCyjsa9h7LVz2n0xbQowV+amztnT5U0K48Lbo18N5u+WswW4TP4wu/xxRcotP1PoiGLeyEt+Lpa757ac3ww==}
     engines: {node: '>= 14.15.0'}
+    deprecated: This package has been stabilized and moved to aws-cdk-lib
     peerDependencies:
       aws-cdk-lib: 2.110.0
       constructs: 10.3.0
@@ -14441,7 +14442,7 @@ packages:
     dependencies:
       semver: 7.5.4
       shelljs: 0.8.5
-      typescript: 5.4.0-dev.20231119
+      typescript: 5.4.0-dev.20231217
     dev: true
 
   /drange@1.1.1:
@@ -26025,8 +26026,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.4.0-dev.20231119:
-    resolution: {integrity: sha512-a8JGI0ifhQ0VM9dJhSWWZnSKQu6Bgm16G32BHDOIhEuLcn0uWcfA2ZHeazTiqYEAzja+zsN+Y4f8yliGW0K3+A==}
+  /typescript@5.4.0-dev.20231217:
+    resolution: {integrity: sha512-LfTSjpGkhz5vojqrbHPD0UyPplTewag9lJpWP0U4hfeOXi62DN1CBp/us35zPVmD49iznxiIgTW9rNMbEiJYtw==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
