@@ -14442,7 +14442,7 @@ packages:
     dependencies:
       semver: 7.5.4
       shelljs: 0.8.5
-      typescript: 5.4.0-dev.20231217
+      typescript: 5.4.0-dev.20240110
     dev: true
 
   /drange@1.1.1:
@@ -26026,8 +26026,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.4.0-dev.20231217:
-    resolution: {integrity: sha512-LfTSjpGkhz5vojqrbHPD0UyPplTewag9lJpWP0U4hfeOXi62DN1CBp/us35zPVmD49iznxiIgTW9rNMbEiJYtw==}
+  /typescript@5.4.0-dev.20240110:
+    resolution: {integrity: sha512-OEtXRprxdta9A5qLObqsgCrFjAWxGuTj8T4W+GBWqDhxIT//BevP5MROHX8Zi18RlvTZSu5G76xJaQT1CK1YpQ==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
