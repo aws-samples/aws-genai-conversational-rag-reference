@@ -183,7 +183,7 @@ export class IndexingPipeline extends Construct {
     });
 
     props.inputBucket.grantRead(configLambda);
-    props.cacheTable.grantReadData(configLambda);
+    props.cacheTable.grantReadWriteData(configLambda);
     stagingBucket.grantReadWrite(configLambda);
 
     const configTask = new tasks.LambdaInvoke(this, 'ConfigTask', {

@@ -445,7 +445,7 @@ export class PGVectorStore extends VectorStore {
    */
   async truncate(task?: pg.ITask<any>): Promise<void> {
     if (await this.tableExists(task)) {
-      await (task || this.db).query('TRUNCATE $1', [this.tableName]);
+      await (task || this.db).query(`TRUNCATE ${this.tableName}`);
     }
   }
 
