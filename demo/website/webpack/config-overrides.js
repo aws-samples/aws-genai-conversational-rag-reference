@@ -23,6 +23,7 @@ module.exports = function override(config, env) {
     'path': require.resolve('path-browserify'),
     'process': require.resolve('process/browser.js'),
     'stream': require.resolve('stream-browserify'),
+    'vm': require.resolve('vm-browserify'),
   }
 
   config.plugins = [

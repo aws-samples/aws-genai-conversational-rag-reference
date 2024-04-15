@@ -222,9 +222,10 @@ export class MonorepoProject extends MonorepoTsProject {
       'eslint.workingDirectories': [
         ...subprojects.filter((p) => Eslint.of(p) != null).map((p) => './' + path.relative(this.outdir, p.outdir)),
       ],
+      // https://code.visualstudio.com/updates/v1_85#_code-actions-on-save-and-auto
       'editor.codeActionsOnSave': {
-        'source.fixAll': true,
-        'source.organizeImports': false,
+        'source.fixAll': 'explicit',
+        'source.organizeImports': 'never',
       },
     });
   }
@@ -340,10 +341,13 @@ export class MonorepoProject extends MonorepoTsProject {
     this.recurseProjects(this, this.configureJest.bind(this));
     this.recurseProjects(this, this.configJsii.bind(this));
 
-    this.configUpgradeDependencies();
     this.configureVscode();
 
     super.synth();
+  }
+
+  postSynthesize(): void {
+    this.configUpgradeDependencies();
   }
 
   renderWorkflowSetup(_options?: javascript.RenderWorkflowSetupOptions | undefined): JobStep[] {

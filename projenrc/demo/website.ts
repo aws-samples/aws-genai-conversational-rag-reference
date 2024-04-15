@@ -65,6 +65,7 @@ export class Website {
         'process',
         'react-test-renderer',
         'stream-browserify',
+        'vm-browserify',
       ],
       tsconfigDev: {
         compilerOptions: {

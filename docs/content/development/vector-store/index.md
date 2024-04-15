@@ -171,6 +171,7 @@ The state machine can be executed with the following payload to delete the datab
 {
   "VectorStoreManagement": {
     "PurgeData": true,
+    "CreateIndexes": false
   }
 }
 ```

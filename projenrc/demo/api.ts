@@ -2,7 +2,7 @@ import * as path from 'node:path';
 import { MonorepoTsProject, NxProject } from '@aws/pdk/monorepo';
 import { DocumentationFormat, Language, Library, ModelLanguage, TypeSafeApiProject } from '@aws/pdk/type-safe-api';
 import { TypeScriptProject } from 'projen/lib/typescript';
-import { DEFAULT_RELEASE_BRANCH, PROJECT_AUTHOR, VERSIONS } from '../constants';
+import { DEFAULT_RELEASE_BRANCH, PROJECT_AUTHOR } from '../constants';
 import { NodePackageManager, TypeScriptModuleResolution } from 'projen/lib/javascript';
 
 export interface ApiOptions {
@@ -58,7 +58,12 @@ export class Api {
       },
     });
     this.project.runtime.typescript!.package.addField('private', true);
-    this.project.runtime.python!.addDependency('python@>=3.10,<4.0');
+
+    // TODO: starting from PDK v0.23.14 this line would cause build error.
+    // TODO: introduce it back once https://github.com/aws/aws-pdk/issues/751 is fixed
+    // this.project.runtime.python!.addDependency('python@>=3.10,<4.0');
+    this.project.runtime.python!.addDependency('python@^3.10');
+
     this.project.runtime.python!.addDependency('certifi@^2023.5.7');
     this.project.runtime.python!.addDependency('urllib3@>=1.25.4,<1.27');
     this.project.runtime.python!.addDependency('typing_extensions@^4.7.1');
@@ -100,7 +105,7 @@ export class Api {
       deps: [
         '@aws-lambda-powertools/logger',
         '@aws-lambda-powertools/tracer',
-        `@aws-sdk/client-cognito-identity-provider@^${VERSIONS.AWS_SDK}`,
+        `@aws-sdk/client-cognito-identity-provider`,
         'jose',
         'nanoid',
         'node-cache',
@@ -108,7 +113,7 @@ export class Api {
         this.project.runtime.typescript!.package.packageName,
       ],
       devDeps: [
-        '@aws-sdk/types',
+        `@aws-sdk/types`,
         '@types/aws-lambda',
         '@types/node-fetch',
         'aws-lambda',

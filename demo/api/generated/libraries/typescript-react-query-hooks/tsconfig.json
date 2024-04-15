@@ -13,7 +13,7 @@
       "dom",
       "es2019"
     ],
-    "module": "ES6",
+    "module": "CommonJS",
     "noEmitOnError": false,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": false,
@@ -26,10 +26,9 @@
     "strictNullChecks": false,
     "strictPropertyInitialization": false,
     "stripInternal": true,
-    "target": "ES6",
-    "jsx": "react",
+    "target": "ES2019",
     "skipLibCheck": true,
-    "moduleResolution": "node"
+    "jsx": "react"
   },
   "include": [
     "src/**/*.ts"

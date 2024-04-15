@@ -110,12 +110,13 @@ export class HandlebarsPromptTemplate<
    * for the UX experience for now.
    */
   flatten(): string {
+    const templateStr = this.template as string;
     if (this.templatePartials == null) {
-      return this.template;
+      return templateStr;
     }
 
     const partialPattern = /(?<hspace>\s*)?(?<block>{{(?<htrim>~)?> ?(?<partial>\w+) ?(?<ttrim>~)?}})(?<tspace>\s*)?/;
-    let template = this.template.slice();
+    let template = templateStr.slice();
     let match: RegExpExecArray | null;
     while ((match = partialPattern.exec(template)) != null) {
       const { block, hspace, htrim, partial, ttrim, tspace } = match.groups! as unknown as FlattenRegexGroups;

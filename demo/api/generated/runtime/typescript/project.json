@@ -72,6 +72,13 @@
         "cwd": "demo/api/generated/runtime/typescript"
       }
     },
+    "create-openapitools.json": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec projen create-openapitools.json",
+        "cwd": "demo/api/generated/runtime/typescript"
+      }
+    },
     "generate": {
       "executor": "nx:run-commands",
       "options": {
