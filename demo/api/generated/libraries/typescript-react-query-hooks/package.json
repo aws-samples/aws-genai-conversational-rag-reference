@@ -3,6 +3,7 @@
   "scripts": {
     "build": "npx projen build",
     "compile": "npx projen compile",
+    "create-openapitools.json": "npx projen create-openapitools.json",
     "default": "npx projen default",
     "generate": "npx projen generate",
     "package": "npx projen package",
@@ -14,12 +15,12 @@
     "watch": "npx projen watch"
   },
   "devDependencies": {
-    "@types/node": "^16",
-    "@types/react": "^18.2.21",
-    "npm-check-updates": "^16",
-    "projen": "^0.73.37",
+    "@types/node": "^18",
+    "@types/react": "^18.2.74",
+    "constructs": "^10.0.0",
+    "projen": "^0.79.24",
     "react": "^18.2.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.4.3"
   },
   "peerDependencies": {
     "react": "^18.2.0"
@@ -27,7 +28,6 @@
   "dependencies": {
     "@tanstack/react-query": "^4"
   },
-  "pnpm": {},
   "main": "lib/index.js",
   "license": "Apache-2.0",
   "version": "0.0.0",

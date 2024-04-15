@@ -24,66 +24,64 @@
     "organization": false
   },
   "devDependencies": {
-    "@aws-sdk/client-dynamodb": "3.451.0",
-    "@aws-sdk/client-s3": "3.451.0",
-    "@aws-sdk/client-sagemaker-runtime": "3.451.0",
-    "@aws-sdk/client-secrets-manager": "3.451.0",
-    "@aws-sdk/lib-dynamodb": "3.451.0",
-    "@aws-sdk/types": "3.451.0",
-    "@smithy/types": "2.5.0",
-    "@types/async": "^3.2.20",
-    "@types/aws-lambda": "^8.10.119",
-    "@types/jest": "^29.5.4",
-    "@types/lodash": "^4.14.199",
-    "@types/node": "^16",
+    "@aws-sdk/client-dynamodb": "3.540.0",
+    "@aws-sdk/client-s3": "3.540.0",
+    "@aws-sdk/client-sagemaker-runtime": "3.540.0",
+    "@aws-sdk/client-secrets-manager": "3.543.0",
+    "@aws-sdk/lib-dynamodb": "3.540.0",
+    "@aws-sdk/types": "3.535.0",
+    "@smithy/types": "2.12.0",
+    "@types/async": "^3.2.24",
+    "@types/aws-lambda": "^8.10.136",
+    "@types/jest": "^29.5.12",
+    "@types/lodash": "^4.17.0",
+    "@types/node": "^18",
     "@types/node-fetch": "^2",
-    "@types/uuid": "^9.0.3",
+    "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^6",
     "@typescript-eslint/parser": "^6",
-    "aws-sdk-client-mock": "^3.0.0",
+    "aws-sdk-client-mock": "^3.1.0",
+    "constructs": "^10.0.0",
     "eslint": "^8",
     "eslint-config-prettier": "^8.10.0",
-    "eslint-import-resolver-node": "^0.3.9",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-header": "^3.1.1",
-    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-prettier": "^4.2.1",
-    "jest": "^29.6.4",
+    "jest": "^29.7.0",
     "jest-junit": "^15",
-    "npm-check-updates": "^16",
     "prettier": "^2.8.8",
-    "projen": "^0.73.37",
-    "ts-jest": "^29.1.1",
-    "typescript": "^5.2.2"
+    "projen": "^0.80.17",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.4.3"
   },
   "peerDependencies": {
-    "@aws-sdk/client-dynamodb": "^3.451.0",
-    "@aws-sdk/client-s3": "^3.451.0",
-    "@aws-sdk/client-sagemaker-runtime": "^3.451.0",
-    "@aws-sdk/client-secrets-manager": "^3.451.0",
-    "@aws-sdk/lib-dynamodb": "^3.451.0",
-    "@aws-sdk/types": "^3.451.0",
-    "@smithy/types": "^2.5.0"
+    "@aws-sdk/client-dynamodb": "^3.535.0",
+    "@aws-sdk/client-s3": "^3.535.0",
+    "@aws-sdk/client-sagemaker-runtime": "^3.535.0",
+    "@aws-sdk/client-secrets-manager": "^3.535.0",
+    "@aws-sdk/lib-dynamodb": "^3.535.0",
+    "@aws-sdk/types": "^3.535.0",
+    "@smithy/types": "^2.12.0"
   },
   "dependencies": {
-    "@aws-lambda-powertools/logger": "^1.12.1",
-    "@aws-lambda-powertools/metrics": "^1.12.1",
-    "@aws-lambda-powertools/parameters": "^1.12.1",
+    "@aws-lambda-powertools/logger": "^1.18.1",
+    "@aws-lambda-powertools/metrics": "^1.18.1",
+    "@aws-lambda-powertools/parameters": "^1.18.1",
     "@aws/galileo-sdk": "0.0.0",
-    "@middy/core": "^4.6.1",
-    "@middy/error-logger": "^4.6.1",
-    "@middy/http-router": "^4.6.1",
-    "@middy/input-output-logger": "^4.6.1",
+    "@middy/core": "^4.7.0",
+    "@middy/error-logger": "^4.7.0",
+    "@middy/http-router": "^4.7.0",
+    "@middy/input-output-logger": "^4.7.0",
     "api-typescript-interceptors": "0.0.0",
     "api-typescript-runtime": "0.0.0",
-    "async": "^3.2.4",
+    "async": "^3.2.5",
     "dotenv": "^10.0.0",
-    "fast-glob": "^3.3.1",
-    "langchain": "0.0.194",
+    "fast-glob": "^3.3.2",
+    "langchain": "0.1.31",
     "lodash": "^4.17.21",
     "node-fetch": "^2"
   },
-  "pnpm": {},
   "main": "lib/index.js",
   "license": "Apache-2.0",
   "version": "0.0.0",
@@ -120,11 +118,13 @@
         }
       ]
     ],
-    "preset": "ts-jest",
-    "globals": {
-      "ts-jest": {
-        "tsconfig": "tsconfig.dev.json"
-      }
+    "transform": {
+      "^.+\\.[t]sx?$": [
+        "ts-jest",
+        {
+          "tsconfig": "tsconfig.dev.json"
+        }
+      ]
     }
   },
   "types": "lib/index.d.ts",

@@ -1,38 +1,7 @@
 {
   "dependencies": [
     {
-      "name": "@aws-sdk/client-dynamodb",
-      "version": "3.451.0",
-      "type": "build"
-    },
-    {
-      "name": "@aws-sdk/client-s3",
-      "version": "3.451.0",
-      "type": "build"
-    },
-    {
-      "name": "@aws-sdk/client-sagemaker-runtime",
-      "version": "3.451.0",
-      "type": "build"
-    },
-    {
-      "name": "@aws-sdk/client-secrets-manager",
-      "version": "3.451.0",
-      "type": "build"
-    },
-    {
-      "name": "@aws-sdk/lib-dynamodb",
-      "version": "3.451.0",
-      "type": "build"
-    },
-    {
       "name": "@aws-sdk/types",
-      "version": "3.451.0",
-      "type": "build"
-    },
-    {
-      "name": "@smithy/types",
-      "version": "2.5.0",
       "type": "build"
     },
     {
@@ -58,7 +27,7 @@
     },
     {
       "name": "@types/node",
-      "version": "^16",
+      "version": "^18",
       "type": "build"
     },
     {
@@ -80,11 +49,12 @@
       "type": "build"
     },
     {
-      "name": "eslint-config-prettier",
+      "name": "constructs",
+      "version": "^10.0.0",
       "type": "build"
     },
     {
-      "name": "eslint-import-resolver-node",
+      "name": "eslint-config-prettier",
       "type": "build"
     },
     {
@@ -118,11 +88,6 @@
       "type": "build"
     },
     {
-      "name": "npm-check-updates",
-      "version": "^16",
-      "type": "build"
-    },
-    {
       "name": "prettier",
       "type": "build"
     },
@@ -140,37 +105,30 @@
     },
     {
       "name": "@aws-sdk/client-dynamodb",
-      "version": "^3.451.0",
       "type": "peer"
     },
     {
       "name": "@aws-sdk/client-s3",
-      "version": "^3.451.0",
       "type": "peer"
     },
     {
       "name": "@aws-sdk/client-sagemaker-runtime",
-      "version": "^3.451.0",
       "type": "peer"
     },
     {
       "name": "@aws-sdk/client-secrets-manager",
-      "version": "^3.451.0",
       "type": "peer"
     },
     {
       "name": "@aws-sdk/lib-dynamodb",
-      "version": "^3.451.0",
       "type": "peer"
     },
     {
       "name": "@aws-sdk/types",
-      "version": "^3.451.0",
       "type": "peer"
     },
     {
       "name": "@smithy/types",
-      "version": "^2.5.0",
       "type": "peer"
     },
     {
@@ -227,7 +185,7 @@
     },
     {
       "name": "langchain",
-      "version": "0.0.194",
+      "version": "0.1.31",
       "type": "runtime"
     },
     {

@@ -5,3 +5,4 @@ node_modules/
 !/.projen/deps.json
 !/.projen/files.json
 !/project.json
+!/LICENSE

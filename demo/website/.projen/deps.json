@@ -62,7 +62,7 @@
     },
     {
       "name": "@types/node",
-      "version": "^16",
+      "version": "^18",
       "type": "build"
     },
     {
@@ -75,6 +75,10 @@
     },
     {
       "name": "@types/swagger-ui-react",
+      "type": "build"
+    },
+    {
+      "name": "@types/uuid",
       "type": "build"
     },
     {
@@ -96,15 +100,16 @@
       "type": "build"
     },
     {
+      "name": "constructs",
+      "version": "^10.0.0",
+      "type": "build"
+    },
+    {
       "name": "crypto-browserify",
       "type": "build"
     },
     {
       "name": "eslint-config-prettier",
-      "type": "build"
-    },
-    {
-      "name": "eslint-import-resolver-node",
       "type": "build"
     },
     {
@@ -141,11 +146,6 @@
       "type": "build"
     },
     {
-      "name": "npm-check-updates",
-      "version": "^16",
-      "type": "build"
-    },
-    {
       "name": "path-browserify",
       "type": "build"
     },
@@ -159,6 +159,7 @@
     },
     {
       "name": "projen",
+      "version": "^0.79.24",
       "type": "build"
     },
     {
@@ -187,6 +188,10 @@
       "type": "build"
     },
     {
+      "name": "vm-browserify",
+      "type": "build"
+    },
+    {
       "name": "webpack",
       "type": "build"
     },
@@ -201,7 +206,19 @@
       "type": "override"
     },
     {
+      "name": "@aws-crypto/sha256-js",
+      "type": "runtime"
+    },
+    {
       "name": "@aws-northstar/ui",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/protocol-http",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/signature-v4",
       "type": "runtime"
     },
     {
@@ -243,6 +260,7 @@
     },
     {
       "name": "api-typescript-react-query-hooks",
+      "version": "0.0.0",
       "type": "runtime"
     },
     {
@@ -267,7 +285,7 @@
     },
     {
       "name": "langchain",
-      "version": "0.0.194",
+      "version": "0.1.31",
       "type": "runtime"
     },
     {
@@ -318,6 +336,10 @@
     },
     {
       "name": "usehooks-ts",
+      "type": "runtime"
+    },
+    {
+      "name": "uuid",
       "type": "runtime"
     },
     {
