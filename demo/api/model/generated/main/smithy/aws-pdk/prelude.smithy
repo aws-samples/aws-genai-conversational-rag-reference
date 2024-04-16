@@ -3,35 +3,34 @@
 $version: "2"
 
 metadata validators = [
-    
     {
-      id: "SupportedLanguage_handler"
-      name: "EmitEachSelector"
-      configuration: {
-          bindToTrait: com.amazon#handler
-          selector: """
-              :not([@trait|com.amazon#handler: @{language} = typescript, java, python])
-          """
-          messageTemplate: """
-              @{trait|com.amazon#handler|language} is not supported by type-safe-api.
-              Supported languages are "typescript", "java" and "python".
-          """
-      }
+        id: "SupportedLanguage"
+        name: "EmitEachSelector"
+        configuration: {
+            bindToTrait: com.amazon#handler
+            selector: """
+                :not([@trait|com.amazon#handler: @{language} = typescript, java, python])
+            """
+            messageTemplate: """
+                @{trait|com.amazon#handler|language} is not supported by type-safe-api.
+                Supported languages are "typescript", "java" and "python".
+            """
+        }
     }
     {
-      id: "TraitNotPermitted_handler"
-      name: "EmitEachSelector"
-      configuration: {
-          bindToTrait: com.amazon#handler
-          selector: """
-              *
-          """
-          messageTemplate: """
-              @@handler trait cannot be used unless handler project languages have been configured.
-              You can add handler projects by configuring TypeSafeApiProject in your .projenrc
-          """
-      }
-  }
+        id: "TraitNotPermitted"
+        name: "EmitEachSelector"
+        configuration: {
+            bindToTrait: com.amazon#handler
+            selector: """
+                *
+            """
+            messageTemplate: """
+                @@handler trait cannot be used unless handler project languages have been configured.
+                You can add handler projects by configuring TypeSafeApiProject in your .projenrc
+            """
+        }
+    }
 ]
 
 namespace com.amazon

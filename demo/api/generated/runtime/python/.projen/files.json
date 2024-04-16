@@ -3,11 +3,10 @@
     ".gitattributes",
     ".gitignore",
     ".openapi-generator-ignore",
-    ".pdk/dynamic-files/openapitools.json",
     ".projen/deps.json",
     ".projen/files.json",
     ".projen/tasks.json",
-    "LICENSE",
+    "openapitools.json",
     "poetry.toml",
     "project.json",
     "pyproject.toml"

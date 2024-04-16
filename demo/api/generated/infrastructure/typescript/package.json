@@ -3,7 +3,6 @@
   "scripts": {
     "build": "npx projen build",
     "compile": "npx projen compile",
-    "create-openapitools.json": "npx projen create-openapitools.json",
     "default": "npx projen default",
     "generate": "npx projen generate",
     "package": "npx projen package",
@@ -15,24 +14,20 @@
     "watch": "npx projen watch"
   },
   "devDependencies": {
-    "@aws/pdk": "*",
-    "@types/aws-lambda": "^8.10.136",
-    "@types/node": "^18",
-    "aws-cdk-lib": "*",
-    "cdk-nag": "*",
-    "constructs": "*",
-    "projen": "^0.79.24",
-    "typescript": "^5.4.3"
-  },
-  "peerDependencies": {
-    "@aws/pdk": "*",
-    "aws-cdk-lib": "*",
-    "cdk-nag": "*",
-    "constructs": "*"
+    "@types/aws-lambda": "^8.10.119",
+    "@types/node": "^16",
+    "npm-check-updates": "^16",
+    "projen": "^0.73.37",
+    "typescript": "^5.2.2"
   },
   "dependencies": {
-    "api-typescript-runtime": "0.0.0"
+    "@aws/pdk": "0.22.42",
+    "api-typescript-runtime": "0.0.0",
+    "aws-cdk-lib": "^2.95.0",
+    "cdk-nag": "^2.27.147",
+    "constructs": "^10.2.70"
   },
+  "pnpm": {},
   "main": "lib/index.js",
   "license": "Apache-2.0",
   "version": "0.0.0",

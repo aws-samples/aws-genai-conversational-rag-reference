@@ -3,7 +3,6 @@
   "scripts": {
     "build": "npx projen build",
     "compile": "npx projen compile",
-    "create-openapitools.json": "npx projen create-openapitools.json",
     "default": "npx projen default",
     "generate": "npx projen generate",
     "package": "npx projen package",
@@ -15,17 +14,18 @@
     "watch": "npx projen watch"
   },
   "devDependencies": {
-    "@types/node": "^18",
-    "constructs": "^10.0.0",
-    "projen": "^0.79.24",
-    "typescript": "^5.4.3"
+    "@types/node": "^16",
+    "npm-check-updates": "^16",
+    "projen": "^0.73.37",
+    "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@aws-lambda-powertools/logger": "^1.18.1",
-    "@aws-lambda-powertools/metrics": "^1.18.1",
-    "@aws-lambda-powertools/tracer": "^1.18.1",
-    "@types/aws-lambda": "^8.10.136"
+    "@aws-lambda-powertools/logger": "^1.12.1",
+    "@aws-lambda-powertools/metrics": "^1.12.1",
+    "@aws-lambda-powertools/tracer": "^1.12.1",
+    "@types/aws-lambda": "^8.10.119"
   },
+  "pnpm": {},
   "main": "lib/index.js",
   "license": "Apache-2.0",
   "version": "0.0.0",

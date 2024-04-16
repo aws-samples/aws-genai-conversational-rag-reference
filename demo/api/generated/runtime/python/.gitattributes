@@ -3,11 +3,10 @@
 /.gitattributes linguist-generated
 /.gitignore linguist-generated
 /.openapi-generator-ignore linguist-generated
-/.pdk/dynamic-files/openapitools.json linguist-generated
 /.projen/** linguist-generated
 /.projen/deps.json linguist-generated
 /.projen/files.json linguist-generated
 /.projen/tasks.json linguist-generated
-/LICENSE linguist-generated
+/openapitools.json linguist-generated
 /project.json linguist-generated
 /pyproject.toml linguist-generated
