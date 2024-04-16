@@ -6,12 +6,12 @@
 /.npmrc linguist-generated
 /.openapi-generator-ignore linguist-generated
 /.openapi-generator-ignore-handlebars linguist-generated
-/.pdk/dynamic-files/openapitools.json linguist-generated
 /.projen/** linguist-generated
 /.projen/deps.json linguist-generated
 /.projen/files.json linguist-generated
 /.projen/tasks.json linguist-generated
 /LICENSE linguist-generated
+/openapitools.json linguist-generated
 /package.json linguist-generated
 /pnpm-lock.yaml linguist-generated
 /project.json linguist-generated

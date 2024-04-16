@@ -108,7 +108,7 @@
           "exec": "mkdir -p dist/js"
         },
         {
-          "exec": "mv $(pnpm pack) dist/js/"
+          "exec": "mv $(npm pack) dist/js/"
         },
         {
           "spawn": "eslint"
@@ -153,13 +153,16 @@
       },
       "steps": [
         {
-          "exec": "pnpm dlx npm-check-updates@16 --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@types/jest,@types/lodash,@types/uuid,aws-sdk-client-mock,eslint-config-prettier,eslint-import-resolver-typescript,eslint-plugin-header,eslint-plugin-import,eslint-plugin-prettier,jest,prettier,ts-jest,typescript,@aws-sdk/client-dynamodb,@aws-sdk/client-s3,@aws-sdk/client-sagemaker-runtime,@aws-sdk/client-secrets-manager,@aws-sdk/client-service-quotas,@aws-sdk/credential-providers,@aws-sdk/lib-dynamodb,@aws-sdk/rds-signer,@aws-sdk/types,@smithy/protocol-http,@smithy/querystring-parser,@smithy/signature-v4,@smithy/types,@aws-crypto/sha256-js,@aws-lambda-powertools/logger,@aws-lambda-powertools/metrics,@aws-lambda-powertools/parameters,api-typescript-runtime,cross-fetch,handlebars,handlebars-helpers-lite,langchain,lodash,pg-promise,safe-handlebars,uuid"
+          "exec": "pnpm update npm-check-updates"
+        },
+        {
+          "exec": "npm-check-updates --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@aws-sdk/protocol-http,@aws-sdk/querystring-parser,@aws-sdk/signature-v4,@types/jest,@types/lodash,@types/node,@types/uuid,@typescript-eslint/eslint-plugin,@typescript-eslint/parser,aws-sdk-client-mock,eslint-config-prettier,eslint-import-resolver-node,eslint-import-resolver-typescript,eslint-plugin-header,eslint-plugin-import,eslint-plugin-prettier,eslint,jest,jest-junit,npm-check-updates,prettier,projen,ts-jest,typescript,@aws-sdk/client-dynamodb,@aws-sdk/client-s3,@aws-sdk/client-sagemaker-runtime,@aws-sdk/client-secrets-manager,@aws-sdk/client-service-quotas,@aws-sdk/credential-providers,@aws-sdk/lib-dynamodb,@aws-sdk/rds-signer,@aws-sdk/types,@smithy/types,@aws-crypto/sha256-js,@aws-lambda-powertools/logger,@aws-lambda-powertools/metrics,@aws-lambda-powertools/parameters,api-typescript-runtime,cross-fetch,handlebars,handlebars-helpers-lite,lodash,pg-promise,safe-handlebars,uuid"
         },
         {
           "exec": "pnpm i --no-frozen-lockfile"
         },
         {
-          "exec": "pnpm update @types/jest @types/lodash @types/node @types/uuid @typescript-eslint/eslint-plugin @typescript-eslint/parser aws-sdk-client-mock constructs eslint-config-prettier eslint-import-resolver-typescript eslint-plugin-header eslint-plugin-import eslint-plugin-prettier eslint jest jest-junit prettier projen ts-jest typescript @aws-sdk/client-dynamodb @aws-sdk/client-s3 @aws-sdk/client-sagemaker-runtime @aws-sdk/client-secrets-manager @aws-sdk/client-service-quotas @aws-sdk/credential-providers @aws-sdk/lib-dynamodb @aws-sdk/rds-signer @aws-sdk/types @smithy/protocol-http @smithy/querystring-parser @smithy/signature-v4 @smithy/types @aws-crypto/sha256-js @aws-lambda-powertools/logger @aws-lambda-powertools/metrics @aws-lambda-powertools/parameters api-typescript-runtime cross-fetch handlebars handlebars-helpers-lite langchain lodash pg-promise safe-handlebars uuid"
+          "exec": "pnpm update @aws-sdk/protocol-http @aws-sdk/querystring-parser @aws-sdk/signature-v4 @types/jest @types/lodash @types/node @types/uuid @typescript-eslint/eslint-plugin @typescript-eslint/parser aws-sdk-client-mock eslint-config-prettier eslint-import-resolver-node eslint-import-resolver-typescript eslint-plugin-header eslint-plugin-import eslint-plugin-prettier eslint jest jest-junit npm-check-updates prettier projen ts-jest typescript @aws-sdk/client-dynamodb @aws-sdk/client-s3 @aws-sdk/client-sagemaker-runtime @aws-sdk/client-secrets-manager @aws-sdk/client-service-quotas @aws-sdk/credential-providers @aws-sdk/lib-dynamodb @aws-sdk/rds-signer @aws-sdk/types @smithy/types @aws-crypto/sha256-js @aws-lambda-powertools/logger @aws-lambda-powertools/metrics @aws-lambda-powertools/parameters api-typescript-runtime cross-fetch handlebars handlebars-helpers-lite lodash pg-promise safe-handlebars uuid"
         },
         {
           "exec": "npx projen"

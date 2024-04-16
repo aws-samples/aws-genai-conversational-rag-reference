@@ -36,6 +36,7 @@
     "jsx": "react-jsx"
   },
   "include": [
+    ".projenrc.js",
     "src/**/*.ts",
     "test/**/*.ts",
     "src"

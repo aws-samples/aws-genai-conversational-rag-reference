@@ -28,6 +28,7 @@ jspm_packages/
 *.tgz
 .yarn-integrity
 .cache
+!/.projenrc.js
 !/.npmrc
 !/test/
 !/tsconfig.json
@@ -36,11 +37,10 @@ jspm_packages/
 /lib
 /dist/
 !/.openapi-generator-ignore
-!/.pdk/dynamic-files/openapitools.json
-/openapitools.json
+!/.openapi-generator-ignore-handlebars
+!/openapitools.json
 src
 .npmignore
 README.md
 .openapi-generator
-!/.openapi-generator-ignore-handlebars
 !/project.json

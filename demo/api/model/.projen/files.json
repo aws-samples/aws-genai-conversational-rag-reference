@@ -7,7 +7,6 @@
     ".projen/tasks.json",
     "build.gradle",
     "generated/main/smithy/aws-pdk/prelude.smithy",
-    "LICENSE",
     "project.json",
     "settings.gradle",
     "smithy-build.json"

@@ -2,10 +2,12 @@
   "dependencies": [
     {
       "name": "@aws-sdk/types",
+      "version": "^3.451.0",
       "type": "build"
     },
     {
       "name": "@smithy/types",
+      "version": "^2.5.0",
       "type": "build"
     },
     {
@@ -26,7 +28,7 @@
     },
     {
       "name": "@types/node",
-      "version": "^18",
+      "version": "^16",
       "type": "build"
     },
     {
@@ -49,7 +51,7 @@
     },
     {
       "name": "aws-cdk",
-      "version": "^2.135.0",
+      "version": "^2.110.0",
       "type": "build"
     },
     {
@@ -66,6 +68,10 @@
     },
     {
       "name": "eslint-config-prettier",
+      "type": "build"
+    },
+    {
+      "name": "eslint-import-resolver-node",
       "type": "build"
     },
     {
@@ -99,12 +105,16 @@
       "type": "build"
     },
     {
+      "name": "npm-check-updates",
+      "version": "^16",
+      "type": "build"
+    },
+    {
       "name": "prettier",
       "type": "build"
     },
     {
       "name": "projen",
-      "version": "^0.79.24",
       "type": "build"
     },
     {
@@ -125,12 +135,12 @@
     },
     {
       "name": "@aws-cdk/aws-cognito-identitypool-alpha",
-      "version": "^2.135.0-alpha.0",
+      "version": "^2.110.0-alpha.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-lambda-python-alpha",
-      "version": "^2.135.0-alpha.0",
+      "version": "^2.110.0-alpha.0",
       "type": "runtime"
     },
     {
@@ -147,46 +157,69 @@
     },
     {
       "name": "@aws-sdk/client-codebuild",
+      "version": "^3.451.0",
       "type": "runtime"
     },
     {
       "name": "@aws-sdk/client-dynamodb",
+      "version": "^3.451.0",
       "type": "runtime"
     },
     {
       "name": "@aws-sdk/client-s3",
+      "version": "^3.451.0",
       "type": "runtime"
     },
     {
       "name": "@aws-sdk/client-sagemaker-runtime",
+      "version": "^3.451.0",
       "type": "runtime"
     },
     {
       "name": "@aws-sdk/client-secrets-manager",
+      "version": "^3.451.0",
       "type": "runtime"
     },
     {
       "name": "@aws-sdk/client-service-quotas",
+      "version": "^3.451.0",
       "type": "runtime"
     },
     {
       "name": "@aws-sdk/client-sfn",
+      "version": "^3.451.0",
       "type": "runtime"
     },
     {
       "name": "@aws-sdk/credential-providers",
+      "version": "^3.451.0",
       "type": "runtime"
     },
     {
       "name": "@aws-sdk/lib-dynamodb",
+      "version": "^3.451.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/protocol-http",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/querystring-parser",
       "type": "runtime"
     },
     {
       "name": "@aws-sdk/rds-signer",
+      "version": "^3.451.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/signature-v4",
       "type": "runtime"
     },
     {
       "name": "@aws-sdk/types",
+      "version": "^3.451.0",
       "type": "runtime"
     },
     {
@@ -199,7 +232,7 @@
     },
     {
       "name": "@aws/pdk",
-      "version": "^0.23.29",
+      "version": "^0.22.42",
       "type": "runtime"
     },
     {
@@ -219,19 +252,8 @@
       "type": "runtime"
     },
     {
-      "name": "@smithy/protocol-http",
-      "type": "runtime"
-    },
-    {
-      "name": "@smithy/querystring-parser",
-      "type": "runtime"
-    },
-    {
-      "name": "@smithy/signature-v4",
-      "type": "runtime"
-    },
-    {
       "name": "@smithy/types",
+      "version": "^2.5.0",
       "type": "runtime"
     },
     {
@@ -248,7 +270,7 @@
     },
     {
       "name": "aws-cdk-lib",
-      "version": "^2.135.0",
+      "version": "^2.110.0",
       "type": "runtime"
     },
     {

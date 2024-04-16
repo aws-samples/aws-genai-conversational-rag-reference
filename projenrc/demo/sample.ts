@@ -33,10 +33,7 @@ export class Sample {
     this.project.package.addField('files', ['lib', 'src', 'generated/assets/**/*']);
     this.project.gitignore.exclude('generated');
     const generateTask = this.project.addTask('generate', {
-      steps: [
-        { exec: 'pip3 install -r scripts/requirements.txt --break-system-packages' },
-        { exec: 'python ./scripts/generate.py' },
-      ],
+      steps: [{ exec: 'pip3 install -r scripts/requirements.txt' }, { exec: 'python ./scripts/generate.py' }],
     });
     this.project.preCompileTask.prependSpawn(generateTask);
     NxProject.ensure(this.project).setTarget('generate', {

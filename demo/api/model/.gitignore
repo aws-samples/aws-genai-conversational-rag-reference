@@ -16,4 +16,3 @@ build
 smithy-output
 .api.json
 !/project.json
-!/LICENSE

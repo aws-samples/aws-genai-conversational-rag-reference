@@ -1,34 +1,21 @@
 {
   "dependencies": [
     {
-      "name": "@aws/pdk",
-      "type": "build"
-    },
-    {
       "name": "@types/aws-lambda",
       "type": "build"
     },
     {
       "name": "@types/node",
-      "version": "^18",
+      "version": "^16",
       "type": "build"
     },
     {
-      "name": "aws-cdk-lib",
-      "type": "build"
-    },
-    {
-      "name": "cdk-nag",
-      "type": "build"
-    },
-    {
-      "name": "constructs",
-      "version": "^10.0.0",
+      "name": "npm-check-updates",
+      "version": "^16",
       "type": "build"
     },
     {
       "name": "projen",
-      "version": "^0.79.24",
       "type": "build"
     },
     {
@@ -37,23 +24,22 @@
     },
     {
       "name": "@aws/pdk",
-      "type": "peer"
-    },
-    {
-      "name": "aws-cdk-lib",
-      "type": "peer"
-    },
-    {
-      "name": "cdk-nag",
-      "type": "peer"
-    },
-    {
-      "name": "constructs",
-      "type": "peer"
+      "type": "runtime"
     },
     {
       "name": "api-typescript-runtime",
-      "version": "0.0.0",
+      "type": "runtime"
+    },
+    {
+      "name": "aws-cdk-lib",
+      "type": "runtime"
+    },
+    {
+      "name": "cdk-nag",
+      "type": "runtime"
+    },
+    {
+      "name": "constructs",
       "type": "runtime"
     }
   ],

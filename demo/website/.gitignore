@@ -30,7 +30,7 @@ jspm_packages/
 .cache
 public/runtime-config.json
 public/api.json
-public/*/api.json
+!/.projenrc.js
 !/.prettierignore
 !/.prettierrc.json
 !/.npmrc
