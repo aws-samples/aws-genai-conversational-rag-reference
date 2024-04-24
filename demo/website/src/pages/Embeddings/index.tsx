@@ -7,6 +7,7 @@ import {
   Container,
   Form,
   FormField,
+  SelectProps,
   SpaceBetween,
   Spinner,
   TextContent,
@@ -18,10 +19,13 @@ import { faker } from '@faker-js/faker';
 import { useEmbedDocuments } from 'api-typescript-react-query-hooks';
 import { useState } from 'react';
 import { useImmer } from 'use-immer';
+import { EmbeddingModelSelector } from '../../components/chat/dev-settings/ChatConfigForm/components/EmbeddingModelSelector';
 
 export const EmbeddingsTool: React.FC = () => {
   const [sentences, updateSentences] = useImmer<string[]>(['text']);
   const [duration, setDuration] = useState<number>();
+  const [selectedLanguage, setSelectedLanguage] = useState<SelectProps.Option | null>(null);
+
   const caller = useEmbedDocuments();
   const sampleCount = 20;
 
@@ -31,6 +35,7 @@ export const EmbeddingsTool: React.FC = () => {
     await caller.mutateAsync({
       embedDocumentsRequestContent: {
         texts: sentences,
+        modelRefKey: selectedLanguage?.value,
       },
     });
     setDuration((Date.now() - _start) / 1000);
@@ -82,29 +87,39 @@ export const EmbeddingsTool: React.FC = () => {
               </SpaceBetween>
             }
           >
-            <FormField label="Input Text" description="Enter the text to embed" stretch>
-              <div
-                style={{
-                  maxHeight: '25vh',
-                  overflow: 'auto',
-                  paddingRight: 60,
-                }}
-              >
-                <SpaceBetween direction="vertical" size="m">
-                  {sentences.map((s, i) => (
-                    <Textarea
-                      key={i}
-                      value={s}
-                      onChange={({ detail }) =>
-                        updateSentences((draft) => {
-                          draft[i] = detail.value;
-                        })
-                      }
-                    />
-                  ))}
-                </SpaceBetween>
-              </div>
-            </FormField>
+            <SpaceBetween direction="vertical" size="s">
+              <FormField label="Input Text" description="Enter the text to embed" stretch>
+                <div
+                  style={{
+                    maxHeight: '25vh',
+                    overflow: 'auto',
+                    paddingRight: 60,
+                  }}
+                >
+                  <SpaceBetween direction="vertical" size="m">
+                    {sentences.map((s, i) => (
+                      <Textarea
+                        key={i}
+                        value={s}
+                        onChange={({ detail }) =>
+                          updateSentences((draft) => {
+                            draft[i] = detail.value;
+                          })
+                        }
+                      />
+                    ))}
+                  </SpaceBetween>
+                </div>
+              </FormField>
+              <FormField label="Embedding Model" description="Select the embedding model for vector embeddings">
+                <EmbeddingModelSelector
+                  value={selectedLanguage?.value}
+                  onChange={(detail) => {
+                    setSelectedLanguage(detail.selectedOption);
+                  }}
+                />
+              </FormField>
+            </SpaceBetween>
           </Form>
         </Container>
 

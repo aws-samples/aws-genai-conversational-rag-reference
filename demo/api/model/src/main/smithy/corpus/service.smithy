@@ -12,6 +12,7 @@ service CorpusService {
       SimilaritySearch
       EmbedDocuments
       EmbedQuery
+      EmbeddingModelInventory
     ]
 }
 
@@ -32,6 +33,22 @@ structure Document {
     score: Float
 }
 
+structure EmbeddingModel {
+    @required
+    uuid: String
+
+    @required
+    modelId: String
+
+    @required
+    dimensions: Integer
+
+    @required
+    default: Boolean
+
+    modelRefKey: String
+}
+
 list Documents {
   member: Document
 }
@@ -46,6 +63,10 @@ list Vector {
 
 list Vectors {
   member: Vector
+}
+
+list EmbeddingModels {
+  member: EmbeddingModel
 }
 
 @readonly
@@ -63,6 +84,8 @@ operation SimilaritySearch {
       filter: Any
       // Distance strategy to use for similar search
       distanceStrategy: DistanceStrategy
+      // Embedding model reference key
+      modelRefKey: String
     }
     output:= {
       @required
@@ -77,6 +100,8 @@ operation EmbedDocuments {
     input:= {
       @required
       texts: Texts
+      // Embedding model reference key
+      modelRefKey: String
     }
     output:= {
       @required
@@ -93,12 +118,25 @@ operation EmbedQuery {
     input:= {
       @required
       text: String
+      // Embedding model reference key
+      modelRefKey: String
     }
     output:= {
       @required
       embedding: Vector
       @required
       model: String
+    }
+    errors: [ServerError, ClientError]
+}
+
+@readonly
+@http(method: "GET", uri: "/corpus/embedding/model-inventory")
+operation EmbeddingModelInventory {
+    input:= {}
+    output:= {
+      @required
+      models: EmbeddingModels
     }
     errors: [ServerError, ClientError]
 }

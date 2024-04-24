@@ -2,24 +2,40 @@
 PDX-License-Identifier: Apache-2.0 */
 import { PGVectorStore, PGVectorStoreOptions } from '@aws/galileo-sdk/lib/vectorstores';
 import { RDSConnConfig, getRDSConnConfig } from '@aws/galileo-sdk/lib/vectorstores/pgvector/rds';
-import { normalizePostgresTableName } from '@aws/galileo-sdk/lib/vectorstores/pgvector/utils';
 import { Embeddings } from 'langchain/embeddings/base';
 import { VectorStore } from 'langchain/vectorstores/base';
 import { ENV } from '../env';
 
 let __RDS_CONN__: RDSConnConfig;
+const __VECTOR_STORE_CACHE__ = new Map<string, VectorStore>();
+
+export interface VectorStoreFactoryProps {
+  // embeddingTableName {string} The name of the table to store embeddings in
+  readonly embeddingTableName: string;
+
+  // vectorSize {number} The dimensions of vector store
+  readonly vectorSize: number;
+
+  // embeddings {Embeddings} The embeddings instance to create vectors
+  readonly embeddings: Embeddings;
+
+  // config [{object}] Instance config
+  readonly config?: Partial<PGVectorStoreOptions>;
+}
 
 /**
  * Create VectorStore instance
- * @param embeddings {Embeddings} The embeddings instance to create vectors
- * @param config [{object}] Instance config
- * @param initialize {boolean} If true, will ensure extension/tables/etc are created within the store as expected by consumers
- * @returns
+ * @param vectorStoreFactoryProps {VectorStoreFactoryProps} Properties to create vector store instance
+ * @returns {VectorStore} VectorStore instance
  */
-export const vectorStoreFactory = async (
-  embeddings: Embeddings,
-  config?: Partial<PGVectorStoreOptions>,
-): Promise<VectorStore> => {
+export const vectorStoreFactory = async (vectorStoreFactoryProps: VectorStoreFactoryProps): Promise<VectorStore> => {
+  const { embeddingTableName, vectorSize, embeddings, config } = vectorStoreFactoryProps;
+
+  const cacheKey = JSON.stringify(vectorStoreFactoryProps);
+  if (__VECTOR_STORE_CACHE__.has(cacheKey)) {
+    __VECTOR_STORE_CACHE__.get(cacheKey);
+  }
+
   if (__RDS_CONN__ == null) {
     __RDS_CONN__ = await getRDSConnConfig({
       secretId: ENV.RDS_PGVECTOR_STORE_SECRET,
@@ -33,17 +49,15 @@ export const vectorStoreFactory = async (
     ENV.RDS_PGVECTOR_TLS_ENABLED ? 'verify-full' : 'prefer',
   );
 
-  const vectorSize = Number(ENV.VECTOR_SIZE);
-
-  const tableName = normalizePostgresTableName(ENV.EMBEDDING_TABLENAME);
-
   const store = new PGVectorStore({
     dbConfig,
     embeddings,
-    tableName,
+    tableName: embeddingTableName,
     vectorSize,
     ...config,
   });
+
+  __VECTOR_STORE_CACHE__.set(cacheKey, store);
 
   return store;
 };

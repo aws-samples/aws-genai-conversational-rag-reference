@@ -90,6 +90,7 @@ Class | Method | HTTP request | Description
 *DefaultApi* | [**delete_chat_message**](docs/DefaultApi.md#delete_chat_message) | **DELETE** /chat/{chatId}/message/{messageId} | 
 *DefaultApi* | [**embed_documents**](docs/DefaultApi.md#embed_documents) | **POST** /corpus/embedding/embed-documents | 
 *DefaultApi* | [**embed_query**](docs/DefaultApi.md#embed_query) | **POST** /corpus/embedding/embed-query | 
+*DefaultApi* | [**embedding_model_inventory**](docs/DefaultApi.md#embedding_model_inventory) | **GET** /corpus/embedding/model-inventory | 
 *DefaultApi* | [**l_lm_inventory**](docs/DefaultApi.md#l_lm_inventory) | **GET** /llm/inventory | 
 *DefaultApi* | [**list_chat_message_sources**](docs/DefaultApi.md#list_chat_message_sources) | **GET** /chat/{chatId}/message/{messageId}/source | 
 *DefaultApi* | [**list_chat_messages**](docs/DefaultApi.md#list_chat_messages) | **GET** /chat/{chatId} | 
@@ -122,6 +123,8 @@ Class | Method | HTTP request | Description
  - [EmbedDocumentsResponseContent](docs/EmbedDocumentsResponseContent.md)
  - [EmbedQueryRequestContent](docs/EmbedQueryRequestContent.md)
  - [EmbedQueryResponseContent](docs/EmbedQueryResponseContent.md)
+ - [EmbeddingModel](docs/EmbeddingModel.md)
+ - [EmbeddingModelInventoryResponseContent](docs/EmbeddingModelInventoryResponseContent.md)
  - [LLMInventoryResponseContent](docs/LLMInventoryResponseContent.md)
  - [ListChatMessageSourcesResponseContent](docs/ListChatMessageSourcesResponseContent.md)
  - [ListChatMessagesResponseContent](docs/ListChatMessagesResponseContent.md)

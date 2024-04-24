@@ -3,12 +3,14 @@ PDX-License-Identifier: Apache-2.0 */
 import { Input } from '@cloudscape-design/components';
 import FormField from '@cloudscape-design/components/form-field';
 import SpaceBetween from '@cloudscape-design/components/space-between';
+
 import { isEmpty } from 'lodash';
 import { FC } from 'react';
 import { useIsAdmin } from '../../../../../Auth';
 import { useChatEngineConfigState } from '../../../../../providers/ChatEngineConfig';
 import CodeEditor from '../../../../code-editor';
 import { toCodeEditorJson } from '../../utils';
+import { EmbeddingModelSelector } from '../components/EmbeddingModelSelector';
 
 export const SearchSettings: FC = () => {
   const isAdmin = useIsAdmin();
@@ -16,6 +18,12 @@ export const SearchSettings: FC = () => {
 
   return (
     <SpaceBetween direction="vertical" size="s">
+      <FormField label="Embedding Model" description="Select the embedding model for vector embeddings">
+        <EmbeddingModelSelector
+          value={search?.modelRefKey}
+          onChange={(detail) => setSearch((_draft) => ({ ..._draft, modelRefKey: detail.selectedOption.value }))}
+        />
+      </FormField>
       <FormField label="Limit" description="Max number of messages to include in context">
         <Input
           type="number"

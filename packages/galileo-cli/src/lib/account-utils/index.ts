@@ -142,8 +142,8 @@ export namespace accountUtils {
     return stepfunctions.listStateMachines(credentials);
   };
 
-  export const triggerWorkflow = async (credentials: CredentialsParams, arn: string) => {
-    return stepfunctions.triggerWorkflow(credentials, arn);
+  export const triggerWorkflow = async (credentials: CredentialsParams, arn: string, input?: string) => {
+    return stepfunctions.triggerWorkflow(credentials, arn, input);
   };
 }
 

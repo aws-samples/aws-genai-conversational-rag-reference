@@ -14,6 +14,7 @@ export interface DocumentUploadCommandFlags extends BaseDocumentCommandFlags {
   bucketName?: string;
   uploadKeyPrefix?: string;
   metadataFile?: string;
+  language?: string;
 }
 
 const baseFlags: FlagInput<BaseDocumentCommandFlags> = {
@@ -38,7 +39,9 @@ export const documentUploadCommandFlags: FlagInput<DocumentUploadCommandFlags> =
   metadataFile: Flags.string({
     description: 'The file path pointing to your metadata.json',
   }),
-
+  language: Flags.string({
+    description: 'The language of your documents',
+  }),
   skipConfirmations: Flags.boolean({
     aliases: ['yes', 'non-interactive'],
     description: 'Non-interactive mode. (You need to supply all other flags).',

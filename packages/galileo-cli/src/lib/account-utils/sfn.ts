@@ -42,7 +42,7 @@ export namespace stepfunctions {
     return sfns;
   };
 
-  export const triggerWorkflow = async (credentials: CredentialsParams, arn: string) => {
+  export const triggerWorkflow = async (credentials: CredentialsParams, arn: string, input?: string) => {
     const client = new SFNClient({
       credentials: fromIni({
         profile: credentials.profile,
@@ -53,6 +53,7 @@ export namespace stepfunctions {
     const result = await client.send(
       new StartExecutionCommand({
         stateMachineArn: arn,
+        input,
       }),
     );
 

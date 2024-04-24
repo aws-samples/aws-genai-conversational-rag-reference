@@ -17,6 +17,7 @@ export interface SearchRetrieverInput extends Omit<RemoteLangChainRetrieverParam
   readonly fetch?: typeof fetch;
   // TODO: implement score threshold
   readonly scoreThreshold?: number;
+  readonly modelRefKey?: string;
 }
 
 export class SearchRetriever extends RemoteLangChainRetriever {
@@ -24,6 +25,7 @@ export class SearchRetriever extends RemoteLangChainRetriever {
   readonly filter?: Record<string, unknown>;
   readonly fetch: typeof fetch;
   readonly scoreThreshold?: number;
+  readonly modelRefKey?: string;
 
   constructor(input: SearchRetrieverInput) {
     super({
@@ -38,6 +40,7 @@ export class SearchRetriever extends RemoteLangChainRetriever {
     this.filter = input.filter;
     this.fetch = input.fetch ?? fetch;
     this.scoreThreshold = input.scoreThreshold;
+    this.modelRefKey = input.modelRefKey;
   }
 
   createJsonBody(query: string): RemoteRetrieverValues {
@@ -47,6 +50,10 @@ export class SearchRetriever extends RemoteLangChainRetriever {
 
     if (this.filter) {
       values.filter = this.filter;
+    }
+
+    if (this.modelRefKey) {
+      values.modelRefKey = this.modelRefKey;
     }
     return values;
   }

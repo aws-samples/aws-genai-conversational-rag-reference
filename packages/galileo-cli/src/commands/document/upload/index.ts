@@ -4,6 +4,7 @@ PDX-License-Identifier: Apache-2.0 */
 import { Command } from '@oclif/core';
 import chalk from 'chalk';
 import prompts from 'prompts';
+import { helpers } from '../../../internals';
 import accountUtils from '../../../lib/account-utils';
 import context from '../../../lib/context';
 import { loadDocumentMetadata } from '../../../lib/document';
@@ -39,6 +40,16 @@ export default class DocumentUploadCommand extends Command {
         ],
         { onCancel: this.onPromptCancel },
       ),
+    );
+
+    const { modelRefKey } = context.cachedAnswers(
+      await prompts([
+        {
+          type: 'text',
+          name: 'modelRefKey',
+          message: 'Enter the model reference key for the embedding model',
+        },
+      ]),
     );
 
     const { filePath: loaderOrMetaFilePath } = context.cachedAnswers(
@@ -132,7 +143,19 @@ export default class DocumentUploadCommand extends Command {
     const { sfn } = context.cachedAnswers(await prompts(galileoPrompts.sfnPicker(stepFunctions)));
 
     context.ui.newSpinner().start('Triggering embedding workflow');
-    const executionArn = await accountUtils.triggerWorkflow({ profile, region }, sfn);
+    const executionArn = await accountUtils.triggerWorkflow(
+      { profile, region },
+      sfn,
+      JSON.stringify({
+        InputBucket: {
+          Bucket: uploadBucket,
+          Prefix: uploadKeyPrefix,
+        },
+        Environment: {
+          EMBEDDING_MODEL_REF_KEY: modelRefKey,
+        },
+      }),
+    );
     context.ui.spinner.succeed();
 
     console.log(

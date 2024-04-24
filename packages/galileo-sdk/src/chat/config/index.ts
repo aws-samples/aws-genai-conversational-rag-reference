@@ -54,7 +54,7 @@ function extractPrivilegedKeys(obj: any, allowed: string[], prefix?: string): st
 
 export const UNPRIVILEGED_KEYS = {
   MODEL: ['uuid'],
-  SEARCH: ['filter', 'limit', 'scoreThreshold'],
+  SEARCH: ['filter', 'limit', 'scoreThreshold', 'modelRefKey'],
 };
 
 export function extractPrivilegedChatEngineConfigKeys(config: Partial<ChatEngineConfig>): string[] {

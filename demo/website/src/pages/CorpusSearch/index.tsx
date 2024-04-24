@@ -10,6 +10,7 @@ import {
   FormField,
   Input,
   SegmentedControl,
+  SelectProps,
   SpaceBetween,
   Spinner,
   Textarea,
@@ -19,6 +20,7 @@ import Header from '@cloudscape-design/components/header';
 import { DistanceStrategy, useSimilaritySearch } from 'api-typescript-react-query-hooks';
 import { useCallback, useState } from 'react';
 import { SourceDocument } from '../../components/chat/components/SourceDocument';
+import { EmbeddingModelSelector } from '../../components/chat/dev-settings/ChatConfigForm/components/EmbeddingModelSelector';
 import CodeEditor from '../../components/code-editor';
 
 export const CorpusSearch: React.FC = () => {
@@ -27,6 +29,7 @@ export const CorpusSearch: React.FC = () => {
   const [filter, setFilter] = useState<object>({});
   const [duration, setDuration] = useState<number>();
   const [distanceStrategy, setDistanceStrategy] = useState<DistanceStrategy>('l2');
+  const [selectedLanguage, setSelectedLanguage] = useState<SelectProps.Option | null>(null);
   const search = useSimilaritySearch({
     onSuccess: () => {
       setDuration;
@@ -43,6 +46,7 @@ export const CorpusSearch: React.FC = () => {
         filter,
         distanceStrategy,
         k: count,
+        modelRefKey: selectedLanguage?.value,
       },
     });
     setDuration((Date.now() - _start) / 1000);
@@ -73,6 +77,14 @@ export const CorpusSearch: React.FC = () => {
 
             <ExpandableSection headerText="Options" headerDescription="Adjust number of documents and filters">
               <SpaceBetween direction="vertical" size="m">
+                <FormField label="Embedding Model" description="Select the embedding model for vector embeddings">
+                  <EmbeddingModelSelector
+                    value={selectedLanguage?.value}
+                    onChange={(detail) => {
+                      setSelectedLanguage(detail.selectedOption);
+                    }}
+                  />
+                </FormField>
                 <FormField
                   label="Number of Documents"
                   description="Enter the text used to search for similar documents"

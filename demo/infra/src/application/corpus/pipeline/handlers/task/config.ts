@@ -30,7 +30,7 @@ async function lambdaHandler(state: State): Promise<Partial<ProcessingJobConfig>
 
   const cache = new IndexingCache({
     tableName: ENV.INDEXING_CACHE_TABLE,
-    model: ENV.EMBEDDING_TABLENAME,
+    model: state.Environment.EMBEDDING_TABLENAME,
     bucketName: state.InputBucket.Bucket,
     baseLocalPath: state.LocalPath,
   });

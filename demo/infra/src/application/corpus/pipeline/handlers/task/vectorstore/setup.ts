@@ -13,8 +13,14 @@ const logger = new Logger();
 async function lambdaHandler(event: State): Promise<State> {
   logger.info({ message: 'corpus-logic env', env: ENV });
 
+  const environment = event.Environment;
+
   logger.info('Initializing vector store...');
-  await initializeVectorStore(event.VectorStoreManagement?.PurgeData);
+  await initializeVectorStore(
+    environment.EMBEDDING_TABLENAME,
+    parseInt(environment.EMBEDDING_MODEL_VECTOR_SIZE),
+    event.VectorStoreManagement?.PurgeData,
+  );
   logger.info('Vector store successfully initialized');
 
   // pass-through payload;

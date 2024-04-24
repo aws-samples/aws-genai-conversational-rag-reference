@@ -155,6 +155,10 @@ export class IndexingPipeline extends Construct {
           resources: ['*'],
         }),
       ],
+      environment: {
+        ...vectorStore.environment,
+        ...additionalEnvironment,
+      },
     });
 
     const startTask = new tasks.LambdaInvoke(this, 'StartTask', {
