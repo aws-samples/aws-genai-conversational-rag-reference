@@ -41,11 +41,12 @@ structure EmbeddingModel {
     modelId: String
 
     @required
-    dimensions: Integer
+    dimension: Integer
 
     @required
     default: Boolean
 
+    @required
     modelRefKey: String
 }
 

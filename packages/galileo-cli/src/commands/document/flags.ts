@@ -14,7 +14,7 @@ export interface DocumentUploadCommandFlags extends BaseDocumentCommandFlags {
   bucketName?: string;
   uploadKeyPrefix?: string;
   metadataFile?: string;
-  language?: string;
+  modelRefKey?: string;
 }
 
 const baseFlags: FlagInput<BaseDocumentCommandFlags> = {
@@ -39,8 +39,8 @@ export const documentUploadCommandFlags: FlagInput<DocumentUploadCommandFlags> =
   metadataFile: Flags.string({
     description: 'The file path pointing to your metadata.json',
   }),
-  language: Flags.string({
-    description: 'The language of your documents',
+  modelRefKey: Flags.string({
+    description: 'The model you want to use for embedding your documents',
   }),
   skipConfirmations: Flags.boolean({
     aliases: ['yes', 'non-interactive'],

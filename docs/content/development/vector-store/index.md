@@ -84,7 +84,40 @@ You can also manually add files to the S3 bucket provided with metadata, and the
 
 ### Embeddings
 
-Currently only a single embedding model can be configured at a time, however we are in the process of supporting multiple embedding models. Embedding is handled by a SageMaker Endpoint that supports multiple models with custom script, and via configuration you can deploy multiple models for direct testing, and the application will use the default (or first) model defined for runtime.
+This project supports multiple embedding models through the CLI or the `demo/infra/config.json` file. Each embedding model is uniquely identified by a model reference key (a.b.a modelRefKey), which is a human-readable phrase composed of ASCII characters and digits.
+
+In the following example, two embedding models are configured in the `demo/infra/config.json` file. One model utilizes the `intfloat/multilingual-e5-base` model, while the other employs the `sentence-transformers/all-mpnet-base-v2` model.
+
+```json
+  <trimmed>
+  "rag": {
+    "managedEmbeddings": {
+      "instanceType": "ml.g4dn.xlarge",
+      "embeddingsModels": [
+        {
+          "uuid": "multilingual-e5-base",
+          "modelId": "intfloat/multilingual-e5-base",
+          "dimensions": 768,
+          "modelRefKey": "English",
+          "default": true
+        },
+        {
+          "uuid": "all-mpnet-base-v2",
+          "modelId": "sentence-transformers/all-mpnet-base-v2",
+          "dimensions": 768,
+          "modelRefKey": "Vietnamese"
+        }
+      ],
+      "autoscaling": {
+        "maxCapacity": 5
+      }
+    },
+  },
+  <trimmed>
+```
+
+Embedding is handled by a SageMaker Endpoint that supports multiple models with a custom script. Through configuration, you can deploy multiple models for direct testing, and the application will use the specified model for runtime when the `modelRefKey` is provided in the embeddings request. If the `modelRefKey` is not provided, the default (or first) model will be used to serve the embeddings request.
+
 
 > Supports all [AutoModels](https://huggingface.co/transformers/v3.0.2/model_doc/auto.html) from transformers package.
 
@@ -92,9 +125,13 @@ Currently only a single embedding model can be configured at a time, however we 
 - `packages/galileo-cdk/src/ai/llms/models/managed-embeddings/custom.asset/code/inference.py`
 - `demo/infra/src/application/corpus`
 
-#### How to change embedding model?
+#### How to change embedding model for Chat?
 
-Using the CLI (or `config.json`) you can enter any [AutoModels](https://huggingface.co/transformers/v3.0.2/model_doc/auto.html) supported model, and respective vector size. The `config.json` support multiple embedding models, however at this time only the default (or first) model will be used during runtime, while other models will get loaded into the SageMaker endpoint for direct testing against the endpoint.
+In the `Chat settings` panel, navigate to the `Semantic Search` tab. From the `Embedding Model` dropdown list, select the desired embedding model.
+
+#### How to change embedding model for indexing pipeline?
+
+When submitting documents to indexing pipeline, you need to provide `modelRefKey` which is used to indicate which embedding model to use.
 
 #### How to change document chunking?
 

@@ -387,7 +387,10 @@ namespace galileoPrompts {
     };
   }
 
-  export async function ragEmbeddingModel(initial?: IEmbeddingModelInfo): Promise<IEmbeddingModelInfo> {
+  export async function ragEmbeddingModel(
+    embeddingModels: IEmbeddingModelInfo[],
+    initial?: IEmbeddingModelInfo,
+  ): Promise<IEmbeddingModelInfo> {
     const { modelId, dimensions, modelRefKey } = await prompts(
       [
         {
@@ -417,6 +420,19 @@ namespace galileoPrompts {
               'An unique identifier for the embedding model, recommend to use natural language types as reference key',
           }),
           initial: initial?.modelRefKey,
+          // make sure the value is not empty and it is unique
+          validate: async (value: string) => {
+            if (value && value.trim().length > 0) {
+              const existing = embeddingModels.find((x) => x.modelRefKey === value.trim());
+              if (existing) {
+                return 'Model reference key is already used';
+              }
+              return true;
+            } else {
+              return 'Model reference key is required';
+            }
+          },
+          min: 1,
         },
       ],
       context.promptsOptions,
@@ -425,7 +441,7 @@ namespace galileoPrompts {
       uuid: last((modelId as String).split('/'))!,
       modelId,
       dimensions,
-      modelRefKey,
+      modelRefKey: modelRefKey.trim(),
     };
   }
 
@@ -441,13 +457,15 @@ namespace galileoPrompts {
             description: 'Enter the number of embedding models to use for embeddings',
           }),
           initial: initial?.length ?? 1,
+          min: 1,
+          max: 10,
         },
       ],
       context.promptsOptions,
     );
 
     for (let i = 0; i < embeddingModelCount; i++) {
-      const embeddingModel = await ragEmbeddingModel(initial?.[i]);
+      const embeddingModel = await ragEmbeddingModel(embeddingModels, initial?.[i]);
       embeddingModels.push(embeddingModel);
     }
 
@@ -476,6 +494,7 @@ namespace galileoPrompts {
           embeddingModels[defaultModelIndex],
           embeddingModels[0],
         ];
+        embeddingModels[0].default = true;
       }
     }
 
@@ -703,6 +722,15 @@ namespace galileoPrompts {
       name: 'uploadKeyPrefix',
       message: 'Set the S3 upload key prefix',
       initial: initialVal || context.cache.getItem('uploadKeyPrefix'),
+    };
+  };
+
+  export const modelRefKeyPrompt = (initialVal?: string): PromptObject => {
+    return {
+      type: 'text',
+      name: 'modelRefKey',
+      message: 'Set the embedding model',
+      initial: initialVal || context.cache.getItem('modelRefKey'),
     };
   };
 

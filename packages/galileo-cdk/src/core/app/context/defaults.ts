@@ -43,6 +43,7 @@ export const DEFAULT_APPLICATION_CONFIG: ApplicationConfig = {
           uuid: 'all-mpnet-base-v2',
           modelId: 'sentence-transformers/all-mpnet-base-v2',
           dimensions: 768,
+          modelRefKey: 'all-mpnet-base-v2',
           default: true,
         },
         // {

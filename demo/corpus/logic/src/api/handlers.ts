@@ -31,6 +31,10 @@ export const similaritySearch = similaritySearchHandler(...interceptors, async (
   }
 
   const embeddingModel = findEmbeddingModelByRefKey(modelRefKey);
+  if (!embeddingModel) {
+    throw new Error(`InvalidPayload: no embedding model found for ref key ${modelRefKey}.`);
+  }
+
   const vectorStore = await vectorStoreFactory({
     embeddingTableName: getPostgresTableName(embeddingModel),
     vectorSize: embeddingModel.dimensions,
@@ -74,6 +78,9 @@ export const embedDocuments = embedDocumentsHandler(...interceptors, async ({ in
   const { texts, modelRefKey } = input.body;
 
   const embeddingModel = findEmbeddingModelByRefKey(modelRefKey);
+  if (!embeddingModel) {
+    throw new Error(`InvalidPayload: no embedding model found for ref key ${modelRefKey}.`);
+  }
 
   const embeddings = await getEmbeddingsByModelId(embeddingModel.modelId).embedDocuments(texts);
 
@@ -94,6 +101,9 @@ export const embedQuery = embedQueryHandler(...interceptors, async ({ input }) =
   }
 
   const embeddingModel = findEmbeddingModelByRefKey(modelRefKey);
+  if (!embeddingModel) {
+    throw new Error(`InvalidPayload: no embedding model found for ref key ${modelRefKey}.`);
+  }
 
   const embedding = await getEmbeddingsByModelId(embeddingModel.modelId).embedQuery(text);
 
@@ -110,7 +120,15 @@ export const embeddingModelInventory = embeddingModelInventoryHandler(...interce
   return {
     statusCode: 200,
     body: {
-      models: ENV.EMBEDDINGS_SAGEMAKER_MODELS as EmbeddingModel[],
+      models: ENV.EMBEDDINGS_SAGEMAKER_MODELS.map(
+        (x) =>
+          ({
+            modelId: x.modelId,
+            modelRefKey: x.modelRefKey,
+            uuid: x.uuid,
+            dimension: x.dimensions,
+          } as EmbeddingModel),
+      ),
     },
   };
 });

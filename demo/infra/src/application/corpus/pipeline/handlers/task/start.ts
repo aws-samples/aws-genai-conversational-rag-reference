@@ -28,6 +28,10 @@ async function lambdaHandler(state: State): Promise<State> {
   const modelRefKey = environment.EMBEDDING_MODEL_REF_KEY;
   const embeddingModel = findEmbeddingModelByRefKey(modelRefKey);
 
+  if (!embeddingModel) {
+    throw new Error(`No embedding model found for ref key ${modelRefKey}`);
+  }
+
   // Add additional environment variables required by the following tasks
   environment.EMBEDDING_TABLENAME = getPostgresTableName(embeddingModel);
   environment.EMBEDDING_MODEL_ID = embeddingModel.modelId;

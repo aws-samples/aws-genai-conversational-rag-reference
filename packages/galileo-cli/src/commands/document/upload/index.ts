@@ -4,7 +4,6 @@ PDX-License-Identifier: Apache-2.0 */
 import { Command } from '@oclif/core';
 import chalk from 'chalk';
 import prompts from 'prompts';
-import { helpers } from '../../../internals';
 import accountUtils from '../../../lib/account-utils';
 import context from '../../../lib/context';
 import { loadDocumentMetadata } from '../../../lib/document';
@@ -48,6 +47,9 @@ export default class DocumentUploadCommand extends Command {
           type: 'text',
           name: 'modelRefKey',
           message: 'Enter the model reference key for the embedding model',
+          min: 1,
+          validate: (value: string) => (value && value.trim().length > 0) || 'Model reference key is required',
+          initial: flags.modelRefKey,
         },
       ]),
     );
@@ -152,7 +154,7 @@ export default class DocumentUploadCommand extends Command {
           Prefix: uploadKeyPrefix,
         },
         Environment: {
-          EMBEDDING_MODEL_REF_KEY: modelRefKey,
+          EMBEDDING_MODEL_REF_KEY: modelRefKey.trim(),
         },
       }),
     );

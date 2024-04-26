@@ -29,7 +29,7 @@ export const CorpusSearch: React.FC = () => {
   const [filter, setFilter] = useState<object>({});
   const [duration, setDuration] = useState<number>();
   const [distanceStrategy, setDistanceStrategy] = useState<DistanceStrategy>('l2');
-  const [selectedLanguage, setSelectedLanguage] = useState<SelectProps.Option | null>(null);
+  const [selectedModel, setSelectedModel] = useState<SelectProps.Option | null>(null);
   const search = useSimilaritySearch({
     onSuccess: () => {
       setDuration;
@@ -46,7 +46,7 @@ export const CorpusSearch: React.FC = () => {
         filter,
         distanceStrategy,
         k: count,
-        modelRefKey: selectedLanguage?.value,
+        modelRefKey: selectedModel?.value,
       },
     });
     setDuration((Date.now() - _start) / 1000);
@@ -79,9 +79,9 @@ export const CorpusSearch: React.FC = () => {
               <SpaceBetween direction="vertical" size="m">
                 <FormField label="Embedding Model" description="Select the embedding model for vector embeddings">
                   <EmbeddingModelSelector
-                    value={selectedLanguage?.value}
+                    value={selectedModel?.value}
                     onChange={(detail) => {
-                      setSelectedLanguage(detail.selectedOption);
+                      setSelectedModel(detail.selectedOption);
                     }}
                   />
                 </FormField>
