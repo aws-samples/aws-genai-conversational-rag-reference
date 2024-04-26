@@ -725,15 +725,6 @@ namespace galileoPrompts {
     };
   };
 
-  export const modelRefKeyPrompt = (initialVal?: string): PromptObject => {
-    return {
-      type: 'text',
-      name: 'modelRefKey',
-      message: 'Set the embedding model',
-      initial: initialVal || context.cache.getItem('modelRefKey'),
-    };
-  };
-
   export const inferenceEngineLambdaUrl = async (): Promise<string> => {
     const result = await prompts({
       type: 'text',
