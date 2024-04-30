@@ -56,13 +56,13 @@ wrapt = "*"
 
 [[package]]
 name = "botocore"
-version = "1.34.92"
+version = "1.34.94"
 description = "Low-level, data-driven core of boto 3."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "botocore-1.34.92-py3-none-any.whl", hash = "sha256:4211a22a1f6c6935e70cbb84c2cd93b29f9723eaf5036d59748dd104f389a681"},
-    {file = "botocore-1.34.92.tar.gz", hash = "sha256:d1ca4886271f184445ec737cd2e752498648cca383887c5a37b2e01c8ab94039"},
+    {file = "botocore-1.34.94-py3-none-any.whl", hash = "sha256:f00a79002e0cb9d6895ecd0919c506402850177d7b6c4d2634fa2da362d95bcb"},
+    {file = "botocore-1.34.94.tar.gz", hash = "sha256:99b11be9a28f9051af4c96fa121e9c3f22a86d499abd773c9e868b2a38961bae"},
 ]
 
 [package.dependencies]
