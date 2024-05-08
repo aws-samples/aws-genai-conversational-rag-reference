@@ -45,6 +45,8 @@ structure ChatEngineSearchConfig {
   pageContentKey: String
   // The key in the JSON response to get the metadata from
   metadataKey: String
+  // Embedding model reference key
+  modelRefKey: String
 }
 
 // Memory (History) config for chat engine

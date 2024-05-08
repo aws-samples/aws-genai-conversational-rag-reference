@@ -147,6 +147,9 @@ export class PresentationStack extends NestedStack {
         embedQuery: {
           integration: corpusApiIntegration,
         },
+        embeddingModelInventory: {
+          integration: corpusApiIntegration,
+        },
         ...props.apiIntegrations,
       },
     });

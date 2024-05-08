@@ -88,7 +88,12 @@ export interface IEmbeddingModelInfo extends IBaseModelInfo {
   /**
    * Indicates if this is the default model
    */
-  readonly default?: boolean;
+  default?: boolean;
+
+  /**
+   * Reference key such as natural language type that model supports
+   */
+  readonly modelRefKey: string;
 }
 
 export function isManagedDefaultFramework(framework?: IModelFramework): framework is ISageMakerEndpointModelFramework {

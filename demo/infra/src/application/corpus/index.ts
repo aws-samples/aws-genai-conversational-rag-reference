@@ -5,7 +5,6 @@ import { SecureBucket } from '@aws/galileo-cdk/lib/common';
 import { RDSVectorStore } from '@aws/galileo-cdk/lib/data';
 import { sortRagEmbeddingModels } from '@aws/galileo-cdk/src/core/app/context/utils';
 import { IEmbeddingModelInfo } from '@aws/galileo-sdk/lib/models';
-import { normalizePostgresTableName } from '@aws/galileo-sdk/lib/vectorstores/pgvector/utils';
 import { INTERCEPTOR_IAM_ACTIONS } from 'api-typescript-interceptors';
 import { OperationLookup } from 'api-typescript-runtime';
 import { Duration, Size } from 'aws-cdk-lib';
@@ -79,7 +78,6 @@ export class CorpusStack extends MonitoredNestedStack {
 
     // make the default the first model, if no default the first is considered default
     const sortedEmbeddingModels = sortRagEmbeddingModels(props.embeddingModels);
-    const defaultEmbeddingModel = sortedEmbeddingModels[0];
 
     this.vectorStore = new RDSVectorStore(this, 'VectorStore', {
       vpc: props.vpc,
@@ -105,13 +103,8 @@ export class CorpusStack extends MonitoredNestedStack {
 
     // Environment vars for dockers (lambda + processing)
     const embeddingEnv: Record<string, string> = {
-      EMBEDDINGS_SAGEMAKER_MODEL: defaultEmbeddingModel.modelId,
+      EMBEDDINGS_SAGEMAKER_MODELS: JSON.stringify(sortedEmbeddingModels),
       EMBEDDINGS_SAGEMAKER_ENDPOINT: embeddingsModel.endpoint.attrEndpointName,
-      VECTOR_SIZE: defaultEmbeddingModel.dimensions.toString(),
-      // later list will be "workspace", but matching initial naming to prevent data loss
-      EMBEDDING_TABLENAME: normalizePostgresTableName(
-        `${defaultEmbeddingModel.uuid}_${defaultEmbeddingModel.dimensions}`,
-      ),
     } as const;
 
     const dockerImageCode = DockerImageCode.fromImageAsset(props.dockerImagePath, {

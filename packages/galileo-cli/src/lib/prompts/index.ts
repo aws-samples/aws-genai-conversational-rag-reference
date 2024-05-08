@@ -388,10 +388,10 @@ namespace galileoPrompts {
   }
 
   export async function ragEmbeddingModel(
+    embeddingModels: IEmbeddingModelInfo[],
     initial?: IEmbeddingModelInfo,
-    isDefault: boolean = false,
   ): Promise<IEmbeddingModelInfo> {
-    const { modelId, dimensions } = await prompts(
+    const { modelId, dimensions, modelRefKey } = await prompts(
       [
         {
           type: 'text',
@@ -412,22 +412,98 @@ namespace galileoPrompts {
           }),
           initial: initial?.dimensions,
         },
+        {
+          type: 'text',
+          name: 'modelRefKey',
+          message: helpers.textPromptMessage('Model reference key', {
+            description:
+              'An unique identifier for the embedding model, recommend to use natural language types as reference key',
+          }),
+          initial: initial?.modelRefKey,
+          // make sure the value is not empty and it is unique
+          validate: async (value: string) => {
+            if (value && value.trim().length > 0) {
+              const existing = embeddingModels.find((x) => x.modelRefKey === value.trim());
+              if (existing) {
+                return 'Model reference key is already used';
+              }
+              return true;
+            } else {
+              return 'Model reference key is required';
+            }
+          },
+          min: 1,
+        },
       ],
       context.promptsOptions,
     );
-
     return {
       uuid: last((modelId as String).split('/'))!,
       modelId,
       dimensions,
-      default: isDefault === true ? true : undefined,
+      modelRefKey: modelRefKey.trim(),
     };
   }
 
+  export async function ragEmbeddingModelsConfig(initial?: IEmbeddingModelInfo[]): Promise<IEmbeddingModelInfo[]> {
+    const embeddingModels: IEmbeddingModelInfo[] = [];
+
+    let { embeddingModelCount } = await prompts(
+      [
+        {
+          type: 'number',
+          name: 'embeddingModelCount',
+          message: helpers.textPromptMessage('Number of embedding models', {
+            description: 'Enter the number of embedding models to use for embeddings',
+          }),
+          initial: initial?.length ?? 1,
+          min: 1,
+          max: 10,
+        },
+      ],
+      context.promptsOptions,
+    );
+
+    for (let i = 0; i < embeddingModelCount; i++) {
+      const embeddingModel = await ragEmbeddingModel(embeddingModels, initial?.[i]);
+      embeddingModels.push(embeddingModel);
+    }
+
+    if (embeddingModelCount > 1) {
+      let { defaultModelRefKey } = await prompts(
+        [
+          {
+            type: 'select',
+            name: 'defaultModelRefKey',
+            message: 'Choose the default embedding model',
+            hint: 'This will be the default embedding model used in vector embeddings when no particular model is chosen.',
+            choices: embeddingModels.map((x) => ({
+              title: `${x.modelId} (${x.modelRefKey})`,
+              value: x.modelRefKey,
+            })),
+            initial: 0,
+          },
+        ],
+        context.promptsOptions,
+      );
+
+      const defaultModelIndex = embeddingModels.findIndex((model) => model.modelRefKey === defaultModelRefKey);
+      if (defaultModelIndex !== -1) {
+        // move the default model to the first position
+        [embeddingModels[0], embeddingModels[defaultModelIndex]] = [
+          embeddingModels[defaultModelIndex],
+          embeddingModels[0],
+        ];
+        embeddingModels[0].default = true;
+      }
+    }
+
+    return embeddingModels;
+  }
+
   export async function ragManagedEmbeddings(): Promise<ApplicationConfig['rag']['managedEmbeddings']> {
-    const embeddingModel = await ragEmbeddingModel(
-      sortRagEmbeddingModels(context.appConfig.rag.managedEmbeddings.embeddingsModels)[0],
-      true,
+    const embeddingModels = await ragEmbeddingModelsConfig(
+      sortRagEmbeddingModels(context.appConfig.rag.managedEmbeddings.embeddingsModels),
     );
 
     let { instanceType } = await prompts(
@@ -464,7 +540,7 @@ namespace galileoPrompts {
 
     return {
       instanceType,
-      embeddingsModels: [embeddingModel],
+      embeddingsModels: embeddingModels,
       ...(maxCapacity > 1
         ? {
             autoscaling: {

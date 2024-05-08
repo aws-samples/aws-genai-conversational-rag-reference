@@ -128,11 +128,10 @@ export function convertBucketInventoryToManifest(
   inventory: BucketInventory,
   include?: Set<string>,
 ): BucketInventoryManifestFile {
-  const prefix = (inventory.prefix ?? '').replace(/^\\/, '');
-
   const contents = include == null ? inventory.contents : inventory.contents.filter((v) => include.has(v.Key));
 
-  return [{ prefix: `s3://${inventory.bucket}/${prefix}` }, ...contents.map((v) => v.Key)];
+  // the bucket prefix is included in each individual object in the contents which are returned from ListObjectsV2Command
+  return [{ prefix: `s3://${inventory.bucket}/` }, ...contents.map((v) => v.Key)];
 }
 
 export async function saveBucketInventoryManifest(

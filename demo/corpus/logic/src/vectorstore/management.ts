@@ -10,11 +10,15 @@ import { ENV } from '../env';
  * - Add pgvector extension
  * - Create table(s)
  */
-export async function initializeVectorStore(truncate: boolean = false) {
+export async function initializeVectorStore(embeddingTableName: string, vectorSize: number, truncate: boolean = false) {
   // We don't need embeddings to initialize so just use fake
   const embeddings = new FakeEmbeddings();
 
-  const vectorStore = await vectorStoreFactory(embeddings);
+  const vectorStore = await vectorStoreFactory({
+    embeddings,
+    embeddingTableName,
+    vectorSize,
+  });
 
   if (vectorStore instanceof PGVectorStore) {
     await vectorStore.db.task('initialize-vector-store', async (task) => {
@@ -34,11 +38,20 @@ export async function initializeVectorStore(truncate: boolean = false) {
  *  Will use default vector store strategy if undefined
  * @param dropOthers {boolean} - Whether to drop of the index strategies.
  */
-export async function indexVectorStore(distanceStrategy?: DistanceStrategy | DistanceStrategy[], dropOthers?: boolean) {
+export async function indexVectorStore(
+  embeddingTableName: string,
+  vectorSize: number,
+  distanceStrategy?: DistanceStrategy | DistanceStrategy[],
+  dropOthers?: boolean,
+) {
   // We don't need embeddings to initialize so just use fake
   const embeddings = new FakeEmbeddings();
 
-  const vectorStore = await vectorStoreFactory(embeddings);
+  const vectorStore = await vectorStoreFactory({
+    embeddings,
+    embeddingTableName,
+    vectorSize,
+  });
 
   if (vectorStore instanceof PGVectorStore) {
     if (distanceStrategy && !Array.isArray(distanceStrategy)) {

@@ -28,7 +28,7 @@ export const getInputsToIndex = measure('getInputsToIndex')(async (): Promise<In
 
 async function beforeAll(): Promise<void> {
   logger.debug('Before all called');
-  await resolveVectorStore();
+  await resolveVectorStore(ENV.EMBEDDING_TABLENAME, ENV.EMBEDDING_MODEL_ID, ENV.EMBEDDING_MODEL_VECTOR_SIZE);
 }
 
 async function afterAll(): Promise<void> {

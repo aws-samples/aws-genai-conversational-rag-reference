@@ -55,7 +55,11 @@ export async function entityToDocuments(entity: IndexEntity): Promise<Document[]
 
 export async function indexEntities(entitiesToIndex: IndexEntity[], cache: IndexingCache, reporter: WorkerReporter) {
   logger.debug({ message: `Indexing ${entitiesToIndex.length} entities`, count: entitiesToIndex.length });
-  const vectorStore = await resolveVectorStore();
+  const vectorStore = await resolveVectorStore(
+    ENV.EMBEDDING_TABLENAME,
+    ENV.EMBEDDING_MODEL_ID,
+    ENV.EMBEDDING_MODEL_VECTOR_SIZE,
+  );
 
   // delete all entities from store before indexing to perform document updates processing
   if (vectorStore instanceof PGVectorStore) {

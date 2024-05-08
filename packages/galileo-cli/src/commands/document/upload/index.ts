@@ -41,6 +41,19 @@ export default class DocumentUploadCommand extends Command {
       ),
     );
 
+    const { modelRefKey } = context.cachedAnswers(
+      await prompts([
+        {
+          type: 'text',
+          name: 'modelRefKey',
+          message: 'Enter the model reference key for the embedding model',
+          min: 1,
+          validate: (value: string) => (value && value.trim().length > 0) || 'Model reference key is required',
+          initial: flags.modelRefKey,
+        },
+      ]),
+    );
+
     const { filePath: loaderOrMetaFilePath } = context.cachedAnswers(
       await prompts(
         [
@@ -132,7 +145,19 @@ export default class DocumentUploadCommand extends Command {
     const { sfn } = context.cachedAnswers(await prompts(galileoPrompts.sfnPicker(stepFunctions)));
 
     context.ui.newSpinner().start('Triggering embedding workflow');
-    const executionArn = await accountUtils.triggerWorkflow({ profile, region }, sfn);
+    const executionArn = await accountUtils.triggerWorkflow(
+      { profile, region },
+      sfn,
+      JSON.stringify({
+        InputBucket: {
+          Bucket: uploadBucket,
+          Prefix: uploadKeyPrefix,
+        },
+        Environment: {
+          EMBEDDING_MODEL_REF_KEY: modelRefKey.trim(),
+        },
+      }),
+    );
     context.ui.spinner.succeed();
 
     console.log(

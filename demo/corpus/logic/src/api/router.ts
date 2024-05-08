@@ -31,6 +31,11 @@ export const handler = middy()
         path: OperationLookup.embedQuery.path,
         handler: middy().handler(handlers.embedQuery),
       },
+      {
+        method: OperationLookup.embeddingModelInventory.method as any,
+        path: OperationLookup.embeddingModelInventory.path,
+        handler: middy().handler(handlers.embeddingModelInventory),
+      },
     ]),
   )
   .use(logMetrics(metrics));

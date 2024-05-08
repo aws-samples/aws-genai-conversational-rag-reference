@@ -13,19 +13,19 @@ import { metrics } from '../metrics';
 const logger = getLogger('embeddings');
 
 export type Vector = number[];
-
 export class SageMakerEndpointEmbeddings extends Embeddings {
   readonly client: SageMakerRuntimeClient;
-
+  readonly embeddingModelId: string;
   readonly maxSentences: number = 100;
 
-  constructor(params: AsyncCallerParams) {
+  constructor(params: AsyncCallerParams, embeddingModelId: string) {
     super(params);
 
     this.client = new SageMakerRuntimeClient({
       retryMode: 'adaptive',
       maxAttempts: 15,
     });
+    this.embeddingModelId = embeddingModelId;
   }
 
   protected async _embedText(input: string[]): Promise<Vector[]> {
@@ -39,7 +39,7 @@ export class SageMakerEndpointEmbeddings extends Embeddings {
         new InvokeEndpointCommand({
           EndpointName: ENV.EMBEDDINGS_SAGEMAKER_ENDPOINT,
           ContentType: 'application/json',
-          Body: JSON.stringify({ type: 'embeddings', model: ENV.EMBEDDINGS_SAGEMAKER_MODEL, input: chunk }),
+          Body: JSON.stringify({ type: 'embeddings', model: this.embeddingModelId, input: chunk }),
         }),
       );
       metrics.addMetric(

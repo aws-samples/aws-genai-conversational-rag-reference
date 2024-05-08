@@ -3,7 +3,8 @@ PDX-License-Identifier: Apache-2.0 */
 // @ts-ignore
 import type {} from '@types/jest';
 import { logger } from '@aws/galileo-sdk/lib/common';
-import { normalizePostgresTableName } from '@aws/galileo-sdk/lib/vectorstores/pgvector/utils';
+import { IEmbeddingModelInfo } from '@aws/galileo-sdk/lib/models';
+import { getPostgresTableName } from '@aws/galileo-sdk/lib/vectorstores/pgvector/utils';
 import { HeadObjectCommand, HeadObjectCommandOutput, S3Client } from '@aws-sdk/client-s3';
 import {
   BatchGetCommand,
@@ -29,10 +30,22 @@ const PROCESSING_INPUT_LOCAL_PATH = '/tmp/mock/ml/input';
 const EMBEDDING_TABLENAME = 'MockEmbeddingTable';
 const INDEXING_CACHE_TABLE = 'MockIndexingCache';
 const INDEXING_BUCKET = 'mock-bucket';
-const EMBEDDINGS_SAGEMAKER_MODEL = 'mock-model';
+const EMBEDDINGS_SAGEMAKER_MODELS: IEmbeddingModelInfo[] = [
+  {
+    uuid: 'mock-model-1',
+    modelId: 'mock-model-1',
+    modelRefKey: 'english',
+    dimensions: 768,
+  },
+  {
+    uuid: 'mock-model-2',
+    modelId: 'mock-model-2',
+    modelRefKey: 'spanish',
+    dimensions: 1024,
+  },
+];
 const EMBEDDINGS_SAGEMAKER_ENDPOINT = 'mock-endpoint-name';
-const VECTOR_SIZE = '768';
-const MODEL = normalizePostgresTableName(`${EMBEDDINGS_SAGEMAKER_MODEL}_${VECTOR_SIZE}`);
+const MODEL = getPostgresTableName(EMBEDDINGS_SAGEMAKER_MODELS[0]);
 
 jest.mock('../src/embedding', () => ({
   SageMakerEndpointEmbeddings: FakeEmbeddings,
@@ -51,10 +64,9 @@ describe('indexing', () => {
     process.env.EMBEDDING_TABLENAME = EMBEDDING_TABLENAME;
     process.env.INDEXING_CACHE_TABLE = INDEXING_CACHE_TABLE;
     process.env.INDEXING_BUCKET = INDEXING_BUCKET;
-    process.env.EMBEDDINGS_SAGEMAKER_MODEL = EMBEDDINGS_SAGEMAKER_MODEL;
+    process.env.EMBEDDINGS_SAGEMAKER_MODELS = JSON.stringify(EMBEDDINGS_SAGEMAKER_MODELS);
     process.env.EMBEDDINGS_SAGEMAKER_ENDPOINT = EMBEDDINGS_SAGEMAKER_ENDPOINT;
     process.env.EMBEDDING_TABLENAME = MODEL;
-    process.env.VECTOR_SIZE = VECTOR_SIZE;
 
     jest.spyOn(require('../src/indexing/utils'), 'globDir').mockImplementation(async () => {
       return Object.keys(inputFiles);
