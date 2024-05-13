@@ -3,16 +3,23 @@ PDX-License-Identifier: Apache-2.0 */
 import { isDevStage } from '@aws/galileo-cdk/lib/common';
 import { INTERCEPTOR_IAM_ACTIONS } from 'api-typescript-interceptors';
 import { CfnOutput, Duration, Size } from 'aws-cdk-lib';
-import { UserPool } from 'aws-cdk-lib/aws-cognito';
 import { ITable } from 'aws-cdk-lib/aws-dynamodb';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import { Alias, FunctionUrl, FunctionUrlAuthType, InvokeMode, Runtime, Tracing } from 'aws-cdk-lib/aws-lambda';
+import {
+  Alias,
+  FunctionUrl,
+  FunctionUrlAuthType,
+  IFunction,
+  InvokeMode,
+  Runtime,
+  Tracing,
+} from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { ISecret } from 'aws-cdk-lib/aws-secretsmanager';
 import { NagSuppressions } from 'cdk-nag';
 import { Construct } from 'constructs';
-import { ILambdaEnvironment } from './handler/env';
+import { ILambdaEnvironment } from './handler/shared/env';
 
 export interface InferenceEngineProps {
   readonly searchUrl: string;
@@ -21,10 +28,12 @@ export interface InferenceEngineProps {
   readonly foundationModelCrossAccountRoleArn?: string;
   readonly chatMessageTable: ITable;
   readonly chatMessageTableGsiIndexName: string;
+  readonly wsConnectionsTable: ITable;
   readonly chatDomain: string;
   readonly vpc: ec2.IVpc;
   readonly adminGroups?: string[];
-  readonly userPool: UserPool;
+  readonly userPoolId: string;
+  readonly userPoolArn: string;
   readonly userPoolClientId: string;
   readonly enableAutoScaling?: boolean;
 }
@@ -37,6 +46,8 @@ export interface IInferenceEngine {
 export class InferenceEngine extends Construct implements IInferenceEngine {
   readonly lambda: NodejsFunction;
   readonly lambdaBufferedFunctionUrl: FunctionUrl;
+  readonly wsLambda: IFunction;
+
   readonly role: iam.Role;
   // TODO: add support for streaming url once python is supported - https://docs.aws.amazon.com/lambda/latest/dg/configuration-response-streaming.html
 
@@ -65,7 +76,7 @@ export class InferenceEngine extends Construct implements IInferenceEngine {
               sid: 'ApiInterceptors',
               effect: iam.Effect.ALLOW,
               actions: [...INTERCEPTOR_IAM_ACTIONS],
-              resources: [props.userPool.userPoolArn],
+              resources: [props.userPoolArn],
             }),
           ],
         }),
@@ -122,6 +133,18 @@ export class InferenceEngine extends Construct implements IInferenceEngine {
       true,
     );
 
+    const lambdaEnv = {
+      USER_POOL_CLIENT_ID: props.userPoolClientId,
+      USER_POOL_ID: props.userPoolId,
+      SEARCH_URL: props.searchUrl,
+      FOUNDATION_MODEL_INVENTORY_SECRET: props.foundationModelInventorySecret.secretName,
+      FOUNDATION_MODEL_CROSS_ACCOUNT_ROLE_ARN: props?.foundationModelCrossAccountRoleArn,
+      CHAT_MESSAGE_TABLE_NAME: props.chatMessageTable.tableName,
+      CHAT_MESSAGE_TABLE_GSI_INDEX_NAME: props.chatMessageTableGsiIndexName,
+      ADMIN_GROUPS: JSON.stringify(props.adminGroups || []),
+      DOMAIN: props.chatDomain,
+    } as ILambdaEnvironment;
+
     this.lambda = new NodejsFunction(this, 'InferenceLambda', {
       description: 'Chat agent handler ',
       timeout: Duration.minutes(5), // API gateway timeout for request?? TODO: if we use streaming?
@@ -129,28 +152,38 @@ export class InferenceEngine extends Construct implements IInferenceEngine {
       ephemeralStorageSize: Size.gibibytes(1),
       tracing: Tracing.ACTIVE,
       handler: 'handler',
-      entry: require.resolve('./handler/index'),
-      // Must use NodeJs 18 to get @aws-sdk v3
-      runtime: Runtime.NODEJS_18_X,
+      entry: require.resolve('./handler/rest-handler/index'),
+      runtime: Runtime.NODEJS_20_X,
       reservedConcurrentExecutions: 50,
       // TODO: need to make sure this path works during compile
-      environment: {
-        USER_POOL_CLIENT_ID: props.userPoolClientId,
-        USER_POOL_ID: props.userPool.userPoolId,
-        SEARCH_URL: props.searchUrl,
-        FOUNDATION_MODEL_INVENTORY_SECRET: props.foundationModelInventorySecret.secretName,
-        FOUNDATION_MODEL_CROSS_ACCOUNT_ROLE_ARN: props.foundationModelCrossAccountRoleArn,
-        CHAT_MESSAGE_TABLE_NAME: props.chatMessageTable.tableName,
-        CHAT_MESSAGE_TABLE_GSI_INDEX_NAME: props.chatMessageTableGsiIndexName,
-        ADMIN_GROUPS: JSON.stringify(props.adminGroups || []),
-        DOMAIN: props.chatDomain,
-      } as ILambdaEnvironment,
+      environment: lambdaEnv,
       vpc: props.vpc,
       vpcSubnets: {
         subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
       },
       role: this.role,
     });
+
+    this.wsLambda = new NodejsFunction(this, 'InferenceLambdaWS', {
+      description: 'Chat agent handler - WS',
+      timeout: Duration.minutes(5), // API gateway timeout for request?? TODO: if we use streaming?
+      memorySize: 512, // TODO: [COST] right size (currently about Max Memory Used: 207 MB)
+      ephemeralStorageSize: Size.gibibytes(1),
+      tracing: Tracing.ACTIVE,
+      handler: 'handler',
+      entry: require.resolve('./handler/ws-handler/index'),
+      runtime: Runtime.NODEJS_20_X,
+      environment: {
+        ...lambdaEnv,
+        WSCONNECTIONS_TABLENAME: props.wsConnectionsTable.tableName,
+      },
+      vpc: props.vpc,
+      vpcSubnets: {
+        subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
+      },
+      role: this.role,
+    });
+    props.wsConnectionsTable.grantReadData(this.wsLambda);
 
     let alias: Alias | undefined;
     if (props.enableAutoScaling) {

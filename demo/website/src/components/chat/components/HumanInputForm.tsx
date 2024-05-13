@@ -4,30 +4,62 @@ import { Badge } from '@cloudscape-design/components';
 import Button from '@cloudscape-design/components/button';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import { Chat } from 'api-typescript-react-query-hooks';
-import { useCallback, useState } from 'react';
-import { useCreateChatMessageMutation } from '../../../hooks/chats';
+import { nanoid } from 'nanoid';
+import { useCallback, useEffect, useState } from 'react';
+import { useDefaultApiWebSocketClient, useOnUpdateInferenceStatus } from 'ws-api-typescript-websocket-hooks';
+import { useCreateChatMessageMutation, useUseStreaming } from '../../../hooks';
 import { useChatEngineConfig } from '../../../providers/ChatEngineConfig';
 
 export default function HumanInputForm(props: { chat: Chat; onSuccess?: () => void }) {
   const [options] = useChatEngineConfig();
-  const [currentMessage, setCurrentMessage] = useState('');
+  const [currentHumanMessage, setCurrentHumanMessage] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const onSuccess = useCallback(() => {
     props.onSuccess && props.onSuccess();
   }, [props.onSuccess]);
 
+  const useStreaming = useUseStreaming();
   const createChatMessage = useCreateChatMessageMutation(props.chat.chatId, onSuccess);
+  const wsClient = useDefaultApiWebSocketClient();
+
+  useEffect(() => {
+    if (!useStreaming) {
+      setIsLoading(createChatMessage.isLoading);
+    }
+  }, [useStreaming, createChatMessage.isLoading]);
+
+  useOnUpdateInferenceStatus((input) => {
+    if (useStreaming) {
+      if (input.chatId === props.chat.chatId && input.operation === 'HandleSendMessage') {
+        if (input.status === 'SUCCESS') {
+          setIsLoading(false);
+        }
+      }
+    }
+    console.log('onUpdateInferenceStatus -- HumanInputForm', input);
+  }, []);
 
   async function sendMessage() {
-    await createChatMessage.mutateAsync({
-      chatId: props.chat.chatId,
-      // @ts-ignore - incorrect
-      createChatMessageRequestContent: {
-        question: currentMessage,
+    if (useStreaming) {
+      setIsLoading(true);
+      await wsClient.sendChatMessage({
+        chatId: props.chat.chatId,
+        question: currentHumanMessage,
+        tmpMessageId: nanoid(32),
         options,
-      },
-    });
-    setCurrentMessage('');
+      });
+    } else {
+      await createChatMessage.mutateAsync({
+        chatId: props.chat.chatId,
+        // @ts-ignore - incorrect
+        createChatMessageRequestContent: {
+          question: currentHumanMessage,
+          options,
+        },
+      });
+    }
+    setCurrentHumanMessage('');
   }
 
   return (
@@ -44,11 +76,11 @@ export default function HumanInputForm(props: { chat: Chat; onSuccess?: () => vo
       >
         <div style={{ flex: 1 }}>
           <textarea
-            value={currentMessage}
-            onChange={({ target }) => setCurrentMessage(target.value)}
-            disabled={createChatMessage.isLoading}
+            value={currentHumanMessage}
+            onChange={({ target }) => setCurrentHumanMessage(target.value)}
+            disabled={isLoading}
             onKeyUp={
-              currentMessage.length
+              currentHumanMessage.length
                 ? ({ ctrlKey, key }) => {
                     if (ctrlKey && key === 'Enter') {
                       sendMessage().catch(console.error);
@@ -79,10 +111,10 @@ export default function HumanInputForm(props: { chat: Chat; onSuccess?: () => vo
               fullWidth={true}
               variant="primary"
               onClick={sendMessage}
-              loading={createChatMessage.isLoading}
-              disabled={!currentMessage.length}
+              loading={isLoading}
+              disabled={!currentHumanMessage.length}
             >
-              Send
+              {isLoading ? 'Processing question...' : 'Send'}
             </Button>
             <div style={{ opacity: 0.3, transform: 'scale(0.75)', width: 80 }}>
               <Badge>⌃</Badge> + <Badge>⏎</Badge>

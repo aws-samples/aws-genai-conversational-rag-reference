@@ -84,8 +84,9 @@ export async function createAIChatMessage(
   chatId: string,
   content: string,
   sources: Document[],
+  chatMessageId?: string,
 ): Promise<CreateAIChatMessageResponse> {
-  const newChatMessageId = uuidv4();
+  const newChatMessageId = chatMessageId ?? uuidv4();
 
   const timestamp = Date.now();
   const keys = getChatMessageKey(userId, newChatMessageId);

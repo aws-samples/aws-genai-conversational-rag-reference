@@ -25,6 +25,8 @@ export interface IProcessEnv {
    * Otherwise, the default lambda execution role will used.
    */
   FOUNDATION_MODEL_CROSS_ACCOUNT_ROLE_ARN?: string;
+
+  WSCONNECTIONS_TABLENAME?: string;
 }
 
 export type ILambdaEnvironment = IProcessEnv & { [key: string]: string };

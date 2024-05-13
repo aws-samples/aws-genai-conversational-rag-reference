@@ -21,10 +21,8 @@ export const DEMO_APPLICATION_NAME = 'Galileo';
 
 /** Managed Dependency Versions */
 export const VERSIONS = {
-  AWS_SDK: '3.451.0',
-  CDK: '2.110.0',
+  CDK: '2.137.0',
   CONSTRUCTS: '10.3.0',
-  PDK: '0.22.42',
+  PDK: '0.23.33',
   LANGCHAIN: '0.0.194', // Not semver yet so need to pin version
-  SMITHY_TYPES: '2.5.0',
 } as const;

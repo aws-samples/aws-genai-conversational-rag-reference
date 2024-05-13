@@ -1,10 +1,8 @@
 {
   "recommendations": [
-    "arcanis.vscode-zipfs",
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
     "smithy.smithy-vscode-extension",
     "vscjava.vscode-gradle",
-    "ms-python.mypy-type-checker"
   ]
 }

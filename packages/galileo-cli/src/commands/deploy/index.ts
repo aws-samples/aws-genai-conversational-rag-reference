@@ -108,7 +108,6 @@ export default class DeployCommand extends Command {
     }
 
     const modelRegion = context.appConfig.llms.region || appRegion;
-
     const regionsToBootstrap = new Set<string>();
     for (const _region of new Set<string>([appRegion, modelRegion])) {
       const bootstapInfo = await accountUtils.retrieveCdkBootstrapInfo({
@@ -119,32 +118,6 @@ export default class DeployCommand extends Command {
       if (bootstapInfo == null) {
         regionsToBootstrap.add(_region);
       }
-    }
-
-    if (regionsToBootstrap.size > 0) {
-      if (!flags.skipConfirmations) {
-        const { bootstrapRegions } = context.cachedAnswers(
-          await prompts(
-            galileoPrompts.confirmBootstrapRegions({
-              regions: Array.from(regionsToBootstrap),
-              account,
-            }),
-          ),
-        );
-
-        if (!bootstrapRegions) {
-          console.error(
-            chalk.redBright('Account must be bootstrapped in all regions to be used, before deployment. Quitting...'),
-          );
-          this.exit();
-        }
-      }
-
-      await this.executeCdkBootstrap({
-        account,
-        profile,
-        regionsToBootstrap,
-      });
     }
 
     context.deployStacks.push(`Dev/${context.appConfig.app.name}`);
@@ -170,7 +143,37 @@ export default class DeployCommand extends Command {
         )
       ).confirmed
     ) {
+      // build the project
       this.executeBuild(flags.build);
+
+      // check if bootstrapping needed
+      if (regionsToBootstrap.size > 0) {
+        if (!flags.skipConfirmations) {
+          const { bootstrapRegions } = context.cachedAnswers(
+            await prompts(
+              galileoPrompts.confirmBootstrapRegions({
+                regions: Array.from(regionsToBootstrap),
+                account,
+              }),
+            ),
+          );
+
+          if (!bootstrapRegions) {
+            console.error(
+              chalk.redBright('Account must be bootstrapped in all regions to be used, before deployment. Quitting...'),
+            );
+            this.exit();
+          }
+        }
+
+        await this.executeCdkBootstrap({
+          account,
+          profile,
+          regionsToBootstrap,
+        });
+      }
+
+      // deploy into the cloud
       this.executeCdkDeploy(cmdDeploy, flags.skipConfirmations);
       if (flags.saveExec) {
         context.saveExecTasks();

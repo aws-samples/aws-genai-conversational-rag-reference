@@ -167,6 +167,8 @@ export default function ExportChat(props: { chat: Chat }) {
                   position="right"
                   size="medium"
                   triggerType="custom"
+                  header="LLM info"
+                  dismissButton={true}
                   content={
                     <>
                       <i>LLM info</i>/<i>Model kwargs</i> are only available in recent chats

@@ -4,6 +4,9 @@ import { BufferWindowMemory, BufferWindowMemoryInput, getInputValue, BaseMemory 
 import { DDBChatMessage, DDBMessageSource } from './dynamodb/lib/index.js';
 import { CreateAIChatMessageResponse, CreateHumanChatMessageResponse } from './dynamodb/lib/messages.js';
 import { DynamoDBChatMessageHistory } from './dynamodb/message-history.js';
+import { getLogger } from '../common/index.js';
+
+const logger = getLogger('chat/memory');
 
 export interface MemoryContext {
   readonly input: DDBChatMessage;
@@ -12,7 +15,7 @@ export interface MemoryContext {
 
 type SaveContext = Parameters<BaseMemory['saveContext']>;
 type InputValues = SaveContext[0];
-type OutputValues = SaveContext[0];
+type OutputValues = SaveContext[1];
 
 const getValue = (values: InputValues | OutputValues, key?: string) => {
   if (key !== undefined) {
@@ -68,6 +71,8 @@ export class ChatEngineHistory extends BufferWindowMemory {
   }
 
   async saveContext(inputValues: InputValues, outputValues: OutputValues): Promise<void> {
+    logger.debug('saving context and adding turns', { inputValues, outputValues });
+
     const human: CreateHumanChatMessageResponse = await this.chatHistory.addUserMessage(getInputValue(inputValues));
     const ai: CreateAIChatMessageResponse = await this.chatHistory.addAIChatMessage(
       getOutputValue(outputValues, 'text'),

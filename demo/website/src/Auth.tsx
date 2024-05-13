@@ -19,6 +19,7 @@ import Config from './config.json';
 
 export interface RuntimeContext {
   readonly apiUrl: string;
+  readonly wsApiUrl: string;
   readonly region: string;
   readonly userPoolId: string;
   readonly userPoolWebClientId: string;

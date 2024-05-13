@@ -64,10 +64,12 @@ export function startPerfMetric(metricName: string, options?: PerformanceMetricO
   const start = performance.now();
 
   return () => {
+    const duration = performance.now() - start;
     performance.measure(metricName, {
       detail: options,
-      duration: performance.now() - start,
+      duration,
     });
+    return duration;
   };
 }
 

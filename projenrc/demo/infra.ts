@@ -43,11 +43,11 @@ export class Infra {
       deps: [
         `@aws-cdk/aws-cognito-identitypool-alpha@^${VERSIONS.CDK}-alpha.0`,
         `@aws-cdk/aws-lambda-python-alpha@^${VERSIONS.CDK}-alpha.0`,
-        `@aws-sdk/client-codebuild@^${VERSIONS.AWS_SDK}`,
-        `@aws-sdk/client-dynamodb@^${VERSIONS.AWS_SDK}`,
-        `@aws-sdk/client-service-quotas@^${VERSIONS.AWS_SDK}`,
-        `@aws-sdk/client-sfn@^${VERSIONS.AWS_SDK}`,
-        `@aws-sdk/lib-dynamodb@^${VERSIONS.AWS_SDK}`,
+        '@aws-sdk/client-codebuild',
+        '@aws-sdk/client-dynamodb',
+        '@aws-sdk/client-service-quotas',
+        '@aws-sdk/client-sfn',
+        '@aws-sdk/lib-dynamodb',
         `@aws/pdk@^${VERSIONS.PDK}`,
         '@aws-lambda-powertools/logger',
         '@aws-lambda-powertools/metrics',
@@ -56,6 +56,8 @@ export class Infra {
         '@middy/error-logger',
         '@middy/http-router',
         '@middy/input-output-logger',
+        'aws-lambda',
+        'aws-jwt-verify',
         'case',
         'cdk-monitoring-constructs',
         'cdk-nag',
@@ -69,25 +71,32 @@ export class Infra {
         api.apiInterceptorsTs.package.packageName,
         api.project.infrastructure.typescript!.package.packageName,
         api.project.runtime.typescript!.package.packageName,
+
+        // wsApi
+        api.wsApiProject.infrastructure.typescript!.package.packageName,
+        api.wsApiProject.runtime.typescript!.package.packageName,
+        api.wsApiProject.handlers.typescript!.package.packageName,
+
         // For lambdas to reuse logic in step function
         corpus.logic.package.packageName,
         ...extractPeerDeps(corpus.logic),
         galileoSdk.package.packageName,
         ...extractPeerDeps(galileoSdk),
         galileoCdkLib.package.packageName,
+        
         // Remove this if not using sample dataset
         sample.project.package.packageName,
+        
         website.project.package.packageName,
       ],
       devDeps: [
-        `@aws-sdk/types@^${VERSIONS.AWS_SDK}`,
-        `@smithy/types@^${VERSIONS.SMITHY_TYPES}`,
+        '@aws-sdk/types',
+        '@smithy/types',
         '@types/aws-lambda',
         '@types/fs-extra',
         '@types/lodash',
         '@types/readline-sync',
         '@types/uuid',
-        'aws-lambda',
         'aws-sdk',
         'tsconfig-paths',
       ],

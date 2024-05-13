@@ -3,7 +3,12 @@ PDX-License-Identifier: Apache-2.0 */
 import { UserIdentity } from '@aws/pdk/identity';
 import { PDKNag } from '@aws/pdk/pdk-nag';
 import { CfnOutput, Stack } from 'aws-cdk-lib';
-import { CfnUserPoolGroup, CfnUserPoolUser, CfnUserPoolUserToGroupAttachment, UserPool } from 'aws-cdk-lib/aws-cognito';
+import {
+  CfnUserPoolGroup,
+  CfnUserPoolUser,
+  CfnUserPoolUserToGroupAttachment,
+  IUserPool,
+} from 'aws-cdk-lib/aws-cognito';
 import { IRole } from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 
@@ -13,9 +18,11 @@ export interface CognitoUserProps {
 }
 
 export interface IIdentityLayer {
+  readonly adminGroupName: string;
   readonly authenticatedUserRole: IRole;
   readonly identityPoolId: string;
   readonly userPoolId: string;
+  readonly userPoolArn: string;
   readonly userPoolWebClientId: string;
 }
 
@@ -68,6 +75,7 @@ export class IdentityLayer extends Construct implements IIdentityLayer {
         userPoolId: this.userPoolId,
         username: adminUser.username!,
       });
+      adminUserAttachment.addDependency(this.adminGroup);
       adminUserAttachment.addDependency(adminUser);
     }
 
@@ -84,11 +92,15 @@ export class IdentityLayer extends Construct implements IIdentityLayer {
     return this.userIdentity.identityPool.identityPoolId;
   }
 
+  get userPoolArn(): string {
+    return this.userIdentity.userPool.userPoolArn;
+  }
+
   get userPoolId(): string {
     return this.userIdentity.userPool.userPoolId;
   }
 
-  get userPool(): UserPool {
+  get userPool(): IUserPool {
     return this.userIdentity.userPool;
   }
 

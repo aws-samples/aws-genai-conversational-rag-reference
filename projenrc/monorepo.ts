@@ -147,6 +147,18 @@ export class MonorepoProject extends MonorepoTsProject {
 
     // patch release:mainline workflow by restoring poetry.locks to prevent git diff
     this.tasks.tryFind('unbump')?.exec("git ls-files -m | grep 'poetry.lock' | xargs git restore || exit 0;");
+
+    // TODO: temporarily this fixes versionbump-related issues
+    // https://github.com/projen/projen/releases/tag/v0.81.0 introduced breaking changes
+    this.package.addPackageResolutions('projen@0.80.20');
+
+    // TODO: adjust @aws-lambda-powertools v2 breaking changes
+    // now fixing to 1.x
+    this.package.addPackageResolutions(
+      '@aws-lambda-powertools/logger@1.18.1',
+      '@aws-lambda-powertools/metrics@1.18.1',
+      '@aws-lambda-powertools/tracer@1.18.1',
+    );
   }
 
   getVersionedDeps(project: Project): Set<string> {
@@ -223,8 +235,8 @@ export class MonorepoProject extends MonorepoTsProject {
         ...subprojects.filter((p) => Eslint.of(p) != null).map((p) => './' + path.relative(this.outdir, p.outdir)),
       ],
       'editor.codeActionsOnSave': {
-        'source.fixAll': true,
-        'source.organizeImports': false,
+        'source.fixAll': 'explicit',
+        'source.organizeImports': 'never',
       },
     });
   }
@@ -249,6 +261,7 @@ export class MonorepoProject extends MonorepoTsProject {
       project.eslint.addRules({ 'import/no-cycle': 'error' });
 
       if (prettierOptions) {
+        project.eslint.addPlugins('prettier');
         project.eslint.addOverride({
           files: ['**/*.ts', '**/*.tsx'],
           rules: {
@@ -340,10 +353,13 @@ export class MonorepoProject extends MonorepoTsProject {
     this.recurseProjects(this, this.configureJest.bind(this));
     this.recurseProjects(this, this.configJsii.bind(this));
 
-    this.configUpgradeDependencies();
     this.configureVscode();
 
     super.synth();
+  }
+
+  postSynthesize(): void {
+    this.configUpgradeDependencies();
   }
 
   renderWorkflowSetup(_options?: javascript.RenderWorkflowSetupOptions | undefined): JobStep[] {

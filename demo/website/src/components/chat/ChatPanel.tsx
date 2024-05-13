@@ -1,6 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { SpaceBetween } from '@cloudscape-design/components';
+import { SpaceBetween, StatusIndicator } from '@cloudscape-design/components';
 import Header from '@cloudscape-design/components/header';
 import { Chat } from 'api-typescript-react-query-hooks';
 import { useCallback, useRef } from 'react';
@@ -8,6 +8,7 @@ import DeleteChatButton from './components/DeleteChatButton';
 import ExportChat from './components/ExportChat';
 import HumanInputForm from './components/HumanInputForm';
 import { ConversationView } from './ConversationView';
+import { useInprogressMessages } from '../../hooks';
 import { useUpdateChatMutation } from '../../hooks/chats';
 import InlineEditor from '../InlineEditor';
 
@@ -24,6 +25,9 @@ type SessionChatProps = {
 export default function ChatPanel(props: SessionChatProps) {
   const conversationRef = useRef<HTMLDivElement>(null);
   const updateChat = useUpdateChatMutation();
+  const inprogressMessages = useInprogressMessages(props.chat.chatId);
+
+  const lastInprogressMessage = inprogressMessages?.statusUpdates[inprogressMessages?.statusUpdates.length - 1];
 
   const onMessageSuccess = useCallback(async () => {
     // scroll to new message when created
@@ -86,6 +90,30 @@ export default function ChatPanel(props: SessionChatProps) {
         }}
       >
         <HumanInputForm chat={props.chat} onSuccess={onMessageSuccess} />
+        <SpaceBetween direction="horizontal" size="m">
+          {
+            inprogressMessages != null && lastInprogressMessage && (
+              <>
+                Current status:{' '}
+                <StatusIndicator
+                  key={`${lastInprogressMessage.messageId}`}
+                  type={lastInprogressMessage.status === 'SUCCESS' ? 'success' : 'in-progress'}
+                >
+                  {lastInprogressMessage.operation}
+                </StatusIndicator>
+              </>
+            )
+            // TODO: create a progress bar where these updates are bullets that show status
+            // inprogressMessages.statusUpdates.map((update, idx) => (
+            //   <StatusIndicator
+            //     key={`${update.messageId}-${idx}`}
+            //     type={update.status === 'SUCCESS' ? 'success' : 'in-progress'}
+            //   >
+            //     {update.operation}
+            //   </StatusIndicator>
+            // ))
+          }
+        </SpaceBetween>
       </div>
     </div>
   );

@@ -84,54 +84,40 @@ export class Application extends Stack {
     this.corpusEtlStateMachineArn = corpus.pipelineStateMachineArn;
     this.corpusProcessedBucketArn = corpus.processedDataBucket.bucketArn;
 
-    const inferenceEngineStack = new InferenceEngineStack(this, 'InferenceEngine', {
-      vpc,
-      chatMessageTable: appData.datastore,
-      chatMessageTableGsiIndexName: appData.gsiIndexName,
-      chatDomain: config.chat.domain,
-      searchUrl: corpus.similaritySearchUrl,
-      foundationModelInventorySecret: foundationModelInventorySecret,
-      foundationModelPolicyStatements: foundationModelStack.invokeModelsPolicyStatements,
-      // Arn is from other account provided in context, not local deployment
-      // Useful for developer account access to deployed models in their developer accounts without deploying models
-      // Only available in Dev stage and is optional
-      foundationModelCrossAccountRoleArn,
-      adminGroups: [identity.adminGroupName],
-      userPoolClientId: identity.userPoolWebClientId,
-      userPool: identity.userPool,
-      enableAutoScaling: true,
-    });
-    const inferenceEngine = inferenceEngineStack.engine;
-
-    // Allow inference engine to invoke search url
-    corpus.apiUrl.grantInvokeUrl(inferenceEngine.lambda);
-    // Allow authenticated users to invoked the inference lambda function url
-    inferenceEngine.grantInvokeFunctionUrls(identity.authenticatedUserRole);
-
     const presentation = new PresentationStack(this, 'Presentation', {
-      vpc,
-      // app data
-      datastore: appData.datastore,
-      datastoreIndex: appData.gsiIndexName,
-      // identity
-      authenticatedUserRole: identity.authenticatedUserRole,
-      identityPoolId: identity.identityPoolId,
-      userPoolWebClientId: identity.userPoolWebClientId,
-      userPoolId: identity.userPoolId,
-      // website
-      geoRestriction: config.website?.geoRestriction,
-      websiteContentPath,
-      // lambdas
-      createChatMessageFn: inferenceEngine.lambda,
-      corpusApiFn: corpus.apiLambda,
-      // runtime config
+      appData,
+      config,
+      corpus: {
+        corpusApiFn: corpus.apiLambda,
+        searchUrl: corpus.similaritySearchUrl,
+      },
+
+      enableInferenceEngineAutoscaling: true,
+      foundationModels: {
+        inventorySecret: foundationModelInventorySecret,
+        policyStatements: foundationModelStack.invokeModelsPolicyStatements,
+        crossAccountRoleArn: foundationModelCrossAccountRoleArn,
+      },
+      identity,
       runtimeConfigs: {
         // Indicate in the UI if potential data sovereignty risk caused from cross-region inference
         dataSovereigntyRisk: foundationModelStack.isCrossRegion,
-        inferenceBufferedFunctionUrl: inferenceEngine.inferenceBufferedUrl,
       },
-      foundationModelInventorySecret,
+      vpc,
+      websiteProps: {
+        geoRestriction: config.website?.geoRestriction,
+        websiteContentPath,
+      },
     });
+
+    const inferenceEngine = presentation.engine;
+
+    // Allow inference engine to invoke search url
+    corpus.apiUrl.grantInvokeUrl(inferenceEngine.lambda);
+    corpus.apiUrl.grantInvokeUrl(inferenceEngine.wsLambda);
+
+    // Allow authenticated users to invoked the inference lambda function url
+    inferenceEngine.grantInvokeFunctionUrls(identity.authenticatedUserRole);
 
     // Only add tooling for development stage
     if ((config.tooling?.pgadmin || config.tooling?.sagemakerStudio) && isDevStage(this)) {

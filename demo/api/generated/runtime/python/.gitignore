@@ -82,9 +82,11 @@ dmypy.json
 .pytype/
 cython_debug/
 !/.openapi-generator-ignore
-!/openapitools.json
+!/.pdk/dynamic-files/openapitools.json
+/openapitools.json
 api_python_runtime
 docs
 .openapi-generator
 !/project.json
 !README.md
+!/LICENSE

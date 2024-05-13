@@ -5,7 +5,7 @@ import { MonorepoTsProject, NodePackageUtils } from '@aws/pdk/monorepo';
 import { Stability } from 'projen/lib/cdk';
 import { TypeScriptModuleResolution, TypescriptConfigOptions } from 'projen/lib/javascript';
 import { TypeScriptAppProject } from 'projen/lib/typescript';
-import { DEFAULT_RELEASE_BRANCH, PROJECT_AUTHOR, VERSIONS } from '../constants';
+import { DEFAULT_RELEASE_BRANCH, PROJECT_AUTHOR } from '../constants';
 
 const CLI_NAME = 'galileo-cli';
 
@@ -40,18 +40,18 @@ export class GalileoCli extends TypeScriptAppProject {
       defaultReleaseBranch: DEFAULT_RELEASE_BRANCH,
       deps: [
         '@aws-crypto/sha256-js',
-        `@aws-sdk/client-cognito-identity-provider@^${VERSIONS.AWS_SDK}`,
-        `@aws-sdk/client-s3@^${VERSIONS.AWS_SDK}`,
-        `@aws-sdk/client-sfn@^${VERSIONS.AWS_SDK}`,
-        `@aws-sdk/client-ssm@^${VERSIONS.AWS_SDK}`,
-        `@aws-sdk/client-sts@^${VERSIONS.AWS_SDK}`,
-        `@aws-sdk/credential-providers@^${VERSIONS.AWS_SDK}`,
-        `@aws-sdk/lib-storage@^${VERSIONS.AWS_SDK}`,
-        '@aws-sdk/protocol-http',
-        '@aws-sdk/querystring-parser',
-        '@aws-sdk/signature-v4',
-        `@aws-sdk/types@^${VERSIONS.AWS_SDK}`,
-        `@smithy/property-provider`,
+        '@aws-sdk/client-cognito-identity-provider',
+        '@aws-sdk/client-s3',
+        '@aws-sdk/client-sfn',
+        '@aws-sdk/client-ssm',
+        '@aws-sdk/client-sts',
+        '@aws-sdk/credential-providers',
+        '@aws-sdk/lib-storage',
+        '@aws-sdk/types',
+        '@smithy/property-provider',
+        '@smithy/protocol-http',
+        '@smithy/querystring-parser',
+        '@smithy/signature-v4',
         '@oclif/core',
         '@oclif/errors',
         'async',
@@ -74,7 +74,7 @@ export class GalileoCli extends TypeScriptAppProject {
         // ...
       ],
       devDeps: [
-        `@aws-sdk/types@^${VERSIONS.AWS_SDK}`,
+        '@aws-sdk/types',
         '@oclif/test',
         '@types/async',
         '@types/chalk',

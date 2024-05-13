@@ -1,10 +1,10 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import { Sha256 } from '@aws-crypto/sha256-js';
-import { HttpRequest } from '@aws-sdk/protocol-http';
-import { parseQueryString } from '@aws-sdk/querystring-parser';
-import { SignatureV4 } from '@aws-sdk/signature-v4';
 import type { Provider, AwsCredentialIdentity, HeaderBag } from '@aws-sdk/types';
+import { HttpRequest } from '@smithy/protocol-http';
+import { parseQueryString } from '@smithy/querystring-parser';
+import { SignatureV4 } from '@smithy/signature-v4';
 
 type SignedFetcherInit = {
   service: string;

@@ -3,30 +3,53 @@ PDX-License-Identifier: Apache-2.0 */
 import { createSignedFetcher } from '@aws/galileo-sdk/lib/auth/aws-sigv4';
 import {
   ChatEngine,
-  ChatEngineConfig,
   assertNonPrivilegedChatEngineConfig,
   mergeUnresolvedChatEngineConfig,
 } from '@aws/galileo-sdk/lib/chat';
+import { ChatEngineCallbacks } from '@aws/galileo-sdk/lib/chat/callback';
 import { createMetrics, startPerfMetric } from '@aws/galileo-sdk/lib/common/metrics';
+import { Logger } from '@aws-lambda-powertools/logger';
 import { fromNodeProviderChain } from '@aws-sdk/credential-providers';
-import {
-  interceptors,
-  corsInterceptor,
-  IInterceptorContext,
-  CallingIdentity,
-  ApiResponse,
-} from 'api-typescript-interceptors';
-import { CreateChatMessageResponseContent, createChatMessageHandler } from 'api-typescript-runtime';
 import { cloneDeepWith, isUndefined, omitBy } from 'lodash';
-import applicationChatEngineConfigJson from './chat-engine-config.json'; // HACK: temporary way to support updating app level config at deploy time
 import { ENV } from './env';
+import { ChatEngineConfig } from './types';
+import applicationChatEngineConfigJson from '../chat-engine-config.json'; // HACK: temporary way to support updating app level config at deploy time
 
-const ADMIN_GROUPS: string[] = JSON.parse(ENV.ADMIN_GROUPS);
+interface CreateMessageParams {
+  readonly logger: Logger;
 
-// Cors is handled by the Lambda Function URL, so need to remove to prevent duplicates
-const INTERCEPTORS = interceptors.filter((v) => v != corsInterceptor) as unknown as typeof interceptors;
+  // calling identity related data
+  readonly userId: string;
+  readonly idToken?: string;
+  readonly isAdmin: boolean;
 
-export const handler = createChatMessageHandler(...INTERCEPTORS, async ({ input, interceptorContext }) => {
+  // chat data
+  readonly chatId: string;
+  readonly question: string;
+
+  // chat config
+  readonly userConfigParam?: ChatEngineConfig;
+
+  readonly engineCallbacks?: ChatEngineCallbacks;
+  readonly useStreaming: boolean;
+}
+
+export const createMessage = async (params: CreateMessageParams) => {
+  const {
+    logger,
+
+    userId,
+    idToken,
+    isAdmin,
+
+    chatId,
+    question,
+    userConfigParam,
+
+    engineCallbacks,
+    useStreaming,
+  } = params;
+
   const [metrics, logMetrics] = createMetrics({
     serviceName: 'InferenceEngine',
   });
@@ -34,15 +57,6 @@ export const handler = createChatMessageHandler(...INTERCEPTORS, async ({ input,
 
   try {
     const $$PreQuery = startPerfMetric('PreQuery');
-    const { callingIdentity, logger } = interceptorContext as IInterceptorContext;
-    logger.debug({ message: 'Calling identity', callingIdentity });
-    const userId = callingIdentity.identityId;
-    const _isAdmin = isAdmin(callingIdentity);
-
-    _isAdmin && logger.info(`Administrator user request: ${userId}; groups: ${callingIdentity.groups?.join(',')}`);
-
-    const question = input.body.question;
-    const chatId = input.requestParameters.chatId;
     metrics.addMetadata('chatId', chatId);
 
     const verbose = logger.getLevelName() === 'DEBUG';
@@ -50,10 +64,10 @@ export const handler = createChatMessageHandler(...INTERCEPTORS, async ({ input,
     // User request time config
     // [WARNING] User ChatEngineConfig from TypeSafeAPI automatically adds "undefined" for all
     // optional keys that are missing, this breaks spread over defaults.
-    const userConfig = compactClone(input.body.options || {});
+    const userConfig = compactClone(userConfigParam || {});
     // [SECURITY]: check for "privileged" options, and restrict to only admins (search url, custom models, etc.)
     // make sure config does not allow privileged properties to non-admins (such as custom models/roles)
-    !_isAdmin && assertNonPrivilegedChatEngineConfig(userConfig as any);
+    !isAdmin && assertNonPrivilegedChatEngineConfig(userConfig as any);
 
     // TODO: fetch "application" config for chat once implemented
     const applicationConfig: Partial<ChatEngineConfig> = applicationChatEngineConfigJson;
@@ -67,9 +81,7 @@ export const handler = createChatMessageHandler(...INTERCEPTORS, async ({ input,
     };
 
     const configs: ChatEngineConfig[] = [systemConfig, applicationConfig, userConfig];
-
     const config = mergeUnresolvedChatEngineConfig(...configs);
-
     logger.debug({ message: 'Resolved ChatEngineConfig', config, configs });
 
     const searchUrl = config.search?.url || ENV.SEARCH_URL;
@@ -77,7 +89,7 @@ export const handler = createChatMessageHandler(...INTERCEPTORS, async ({ input,
       service: searchUrl.includes('lambda-url') ? 'lambda' : 'execute-api',
       credentials: fromNodeProviderChain(),
       region: process.env.AWS_REGION! || process.env.AWS_DEFAULT_REGION!,
-      idToken: callingIdentity.idToken,
+      idToken,
     });
 
     const engine = await ChatEngine.from({
@@ -92,7 +104,10 @@ export const handler = createChatMessageHandler(...INTERCEPTORS, async ({ input,
       chatHistoryTable: ENV.CHAT_MESSAGE_TABLE_NAME,
       chatHistoryTableIndexName: ENV.CHAT_MESSAGE_TABLE_GSI_INDEX_NAME,
       verbose,
-      returnTraceData: _isAdmin,
+      returnTraceData: isAdmin,
+
+      engineCallbacks,
+      useStreaming,
     });
     $$PreQuery();
 
@@ -104,7 +119,7 @@ export const handler = createChatMessageHandler(...INTERCEPTORS, async ({ input,
       logger.info('Chain successfully executed query');
       logger.debug({ message: 'ChatEngine query result', result });
 
-      const traceData = _isAdmin
+      const traceData = isAdmin
         ? {
             ...result.traceData,
             config,
@@ -112,7 +127,7 @@ export const handler = createChatMessageHandler(...INTERCEPTORS, async ({ input,
           }
         : undefined;
 
-      return ApiResponse.success({
+      return {
         question: {
           ...result.turn.human,
           text: result.question,
@@ -123,22 +138,18 @@ export const handler = createChatMessageHandler(...INTERCEPTORS, async ({ input,
         },
         sources: result.turn.sources,
         traceData,
-      } as CreateChatMessageResponseContent);
+      };
     } catch (error) {
       logger.error('Failed to execute query', error as Error);
 
-      return ApiResponse.temporaryFailure({
+      return {
         errorMessage: String(error),
-      });
+      };
     }
   } finally {
     logMetrics();
   }
-});
-
-export function isAdmin(callingIdentity: CallingIdentity): boolean {
-  return callingIdentity.groups != null && callingIdentity.groups.filter((v) => ADMIN_GROUPS.includes(v)).length > 0;
-}
+};
 
 /**
  * Deep clone that removes all undefined properties from objects.

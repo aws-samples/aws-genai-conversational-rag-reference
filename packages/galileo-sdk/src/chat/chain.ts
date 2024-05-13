@@ -6,6 +6,7 @@ import { BaseChain, ChainInputs, LLMChain, QAChainParams, StuffDocumentsChain } 
 import { PromptTemplate } from 'langchain/prompts';
 import { ChainValues } from 'langchain/schema';
 import { BaseRetriever } from 'langchain/schema/retriever';
+import { ChainLLMCallStatus, ChainOperation, ChatEngineCallbacks, UpdateStatusCallbackOptions } from './callback.js';
 import { ResolvedLLMChainConfig } from './config/index.js';
 import { getLogger } from '../common/index.js';
 import { startPerfMetric } from '../common/metrics/index.js';
@@ -33,6 +34,8 @@ export interface ChatEngineChainInput extends ChainInputs {
    */
   condenseQuestionChain: LLMChain;
   returnSourceDocuments?: boolean;
+  engineCallbacks?: ChatEngineCallbacks;
+  useStreaming?: boolean;
   inputKey?: string;
 }
 
@@ -98,6 +101,11 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
         outputKey: 'classification',
         // classify chain must return parsable JSON
         outputParser: new PojoOutputParser<any>(),
+        callbacks: [
+          {
+            handleLLMStart: () => {},
+          },
+        ],
       });
 
     const condenseQuestionChain = new LLMChain({
@@ -116,9 +124,7 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
   }
 
   inputKey = 'question';
-
   classificationKey = 'classification';
-
   chatHistoryKey = 'chat_history';
 
   get inputKeys() {
@@ -134,15 +140,14 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
   }
 
   retriever: BaseRetriever;
-
   classifyChain?: LLMChain;
-
   qaChain: BaseChain;
-
   condenseQuestionChain: LLMChain;
 
   returnSourceDocuments = false;
 
+  engineCallbacks?: ChatEngineCallbacks | undefined;
+  useStreaming?: boolean;
   protected _traceData?: any;
 
   constructor(fields: ChatEngineChainInput) {
@@ -153,6 +158,9 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
     this.condenseQuestionChain = fields.condenseQuestionChain;
     this.inputKey = fields.inputKey ?? this.inputKey;
     this.returnSourceDocuments = fields.returnSourceDocuments ?? this.returnSourceDocuments;
+
+    this.engineCallbacks = fields.engineCallbacks;
+    this.useStreaming = fields.useStreaming ?? false;
   }
 
   /** @ignore */
@@ -172,9 +180,25 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
       const $$ClassifyChainExecutionTime = startPerfMetric('Chain.CLASSIFY.ExecutionTime', {
         highResolution: true,
       });
+      this.updateStatusCallback({
+        operation: ChainOperation.CLASSIFY,
+        status: ChainLLMCallStatus.STARTING,
+        payload: {
+          message: `Calling classify chain with question "${question}"`,
+        },
+      });
       classification = (await this.classifyChain.call({ question }))[this.classificationKey];
-      $$ClassifyChainExecutionTime();
-      logger.debug('Result from classify chain: ', { classification });
+      const chainExecTime = $$ClassifyChainExecutionTime();
+
+      this.updateStatusCallback({
+        operation: ChainOperation.CLASSIFY,
+        status: ChainLLMCallStatus.SUCCESS,
+        payload: {
+          message: `Classify chain execution finished`,
+          executionTime: chainExecTime,
+        },
+      });
+      logger.debug('Result from classify chain: ', { classification, chainExecTime });
     }
 
     let newQuestion = classification?.question || question;
@@ -189,12 +213,27 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
       const $$QuestionGeneratorExecutionTime = startPerfMetric('Chain.CONDENSE_QUESTION.ExecutionTime', {
         highResolution: true,
       });
+      this.updateStatusCallback({
+        operation: ChainOperation.CONDENSE_QUESTION,
+        status: ChainLLMCallStatus.STARTING,
+        payload: {
+          message: `Calling condense question chain with ${chatHistory.length} history items`,
+        },
+      });
       const result = await this.condenseQuestionChain.call(
         condenseQuestionInput,
         runManager?.getChild('question_generator'),
       );
-      $$QuestionGeneratorExecutionTime();
-      logger.debug('Chain:condenseQuestionChain:output', { output: result });
+      const questionGeneratorExecTime = $$QuestionGeneratorExecutionTime();
+      this.updateStatusCallback({
+        operation: ChainOperation.CONDENSE_QUESTION,
+        status: ChainLLMCallStatus.SUCCESS,
+        payload: {
+          message: `Condense question chain execution finished`,
+          executionTime: questionGeneratorExecTime,
+        },
+      });
+      logger.debug('Chain:condenseQuestionChain:output', { output: result, questionGeneratorExecTime });
 
       const keys = Object.keys(result);
       if (keys.length === 1) {
@@ -204,12 +243,28 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
         throw new Error('Return from llm chain has multiple values, only single values supported.');
       }
     }
+
     logger.debug('Chain:retriever:getRelevantDocuments:query', { query: newQuestion });
     const $$GetRelevantDocumentsExecutionTime = startPerfMetric('Chain.DocumentRetrieval.ExecutionTime', {
       highResolution: true,
     });
+    this.updateStatusCallback({
+      operation: ChainOperation.DOCUMENT_RETRIEVE,
+      status: ChainLLMCallStatus.STARTING,
+      payload: {
+        message: `Calling document retrieve step with question "${newQuestion}"`,
+      },
+    });
     const docs = await this.retriever.getRelevantDocuments(newQuestion, runManager?.getChild('retriever'));
-    $$GetRelevantDocumentsExecutionTime();
+    const docRetrievalExecTime = $$GetRelevantDocumentsExecutionTime();
+    this.updateStatusCallback({
+      operation: ChainOperation.DOCUMENT_RETRIEVE,
+      status: ChainLLMCallStatus.SUCCESS,
+      payload: {
+        message: `Document retrieval finished`,
+        executionTime: docRetrievalExecTime,
+      },
+    });
 
     const inputs = {
       ...classification,
@@ -218,13 +273,50 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
       question: newQuestion,
     };
 
-    logger.debug('Chain:condenseQuestionChain:input', { input: inputs });
+    logger.debug('Chain:qaChain:input', { input: inputs });
     const $$CombineDocumentsExecutionTime = startPerfMetric('Chain.QA.ExecutionTime', {
       highResolution: true,
     });
-    const result = await this.qaChain.call(inputs, runManager?.getChild('combine_documents'));
-    $$CombineDocumentsExecutionTime();
-    logger.debug('Chain:condenseQuestionChain:output', { output: result });
+    this.updateStatusCallback({
+      operation: ChainOperation.QA,
+      status: ChainLLMCallStatus.STARTING,
+      payload: {
+        message: `Calling QA chain with ${inputs.input_documents.length} documents`,
+      },
+    });
+
+    let streamedResult: string = '';
+    let result;
+    if (this.useStreaming) {
+      const combineDocsRunManager = runManager?.getChild('combine_documents');
+      logger.debug('Chain:qaChain:streaming', { useStreaming: this.useStreaming, combineDocsRunManager });
+
+      // * this may need to be replaced depending on the actual model used to enable streaming
+      //   * seems that generic approach will result in only one chunk (the whole response) instead of incremental response
+      //   * this is with langchain@0.0.194 -- there were huge changes since so this issue may be solved - needs to be tested
+      //   * you'll need to look into how you instantiate `this.qaChain`
+      const stream = await this.qaChain.stream(inputs, combineDocsRunManager);
+
+      for await (const chunk of stream) {
+        streamedResult += chunk.text;
+        this.streamCallback(chunk.text);
+      }
+
+      result = { text: streamedResult };
+    } else {
+      result = await this.qaChain.call(inputs, runManager?.getChild('combine_documents'));
+    }
+
+    const qaChainExecTime = $$CombineDocumentsExecutionTime();
+    this.updateStatusCallback({
+      operation: ChainOperation.QA,
+      status: ChainLLMCallStatus.SUCCESS,
+      payload: {
+        message: `QA chain execution finished`,
+        executionTime: qaChainExecTime,
+      },
+    });
+    logger.debug('Chain:qaChain:output', { output: result });
 
     this._traceData = {
       originalQuestion: question,
@@ -257,11 +349,29 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
   _chainType(): string {
     return 'conversational_retrieval_chain';
   }
+
+  private updateStatusCallback(options: UpdateStatusCallbackOptions): void {
+    if (this.engineCallbacks != null) {
+      this.engineCallbacks.updateStatus(options);
+    }
+  }
+
+  private streamCallback(newChunk: string): void {
+    if (this.engineCallbacks != null) {
+      this.engineCallbacks.streamChunks([newChunk]);
+    }
+  }
 }
 
-export function loadQAStuffChain(config: ResolvedLLMChainConfig, verbose: boolean = false) {
+export function loadQAStuffChain(
+  config: ResolvedLLMChainConfig,
+  verbose: boolean = false,
+  useStreaming: boolean = false,
+) {
   const { llm, prompt } = config;
-  const llmChain = new LLMChain({ prompt, llm, verbose });
+
+  // TODO: review if streaming section is valid
+  const llmChain = new LLMChain({ prompt, llm, verbose, llmKwargs: { metadata: { streaming: useStreaming } } });
   const chain = new CustomStuffDocumentsChain({ llmChain, verbose });
   return chain;
 }

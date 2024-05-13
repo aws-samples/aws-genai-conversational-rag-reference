@@ -12,9 +12,10 @@
     "lib": [
       "dom",
       "dom.iterable",
+      "ES2019",
       "esnext"
     ],
-    "module": "commonjs",
+    "module": "CommonJS",
     "noEmitOnError": false,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
@@ -27,7 +28,7 @@
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "stripInternal": true,
-    "target": "es5",
+    "target": "ES2019",
     "allowJs": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,

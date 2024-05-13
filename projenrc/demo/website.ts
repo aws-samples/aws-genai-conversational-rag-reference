@@ -2,7 +2,7 @@ import { CloudscapeReactTsWebsiteProject } from '@aws/pdk/cloudscape-react-ts-we
 import { MonorepoTsProject, NxProject } from '@aws/pdk/monorepo';
 import * as path from 'node:path';
 import { TextFile, javascript } from 'projen';
-import { TypeScriptModuleResolution } from 'projen/lib/javascript';
+import { TypeScriptJsxMode, TypeScriptModuleResolution } from 'projen/lib/javascript';
 import { DEFAULT_RELEASE_BRANCH, VERSIONS } from '../constants';
 import { GalileoSdk } from '../framework';
 import { withStorybook } from '../helpers/withStorybook';
@@ -49,7 +49,6 @@ export class Website {
         'react-markdown',
         'use-immer',
         'usehooks-ts',
-        api.project.library.typescriptReactQueryHooks!.package.packageName,
         galileoSdk.package.packageName,
       ],
       devDeps: [
@@ -65,15 +64,27 @@ export class Website {
         'process',
         'react-test-renderer',
         'stream-browserify',
+        'vm-browserify',
       ],
+      tsconfig: {
+        compilerOptions: {
+          lib: ['dom', 'dom.iterable', 'ES2019', 'esnext'],
+          skipLibCheck: true,
+          target: 'ES2019',
+          module: 'CommonJS',
+          moduleResolution: TypeScriptModuleResolution.NODE,
+          jsx: TypeScriptJsxMode.REACT_JSX,
+        },
+      },
       tsconfigDev: {
         compilerOptions: {
           noUnusedLocals: false,
           noUnusedParameters: false,
-          moduleResolution: TypeScriptModuleResolution.NODE,
         },
       },
       rewire: {},
+      typeSafeApis: [api.project],
+      typeSafeWebSocketApis: [api.wsApiProject],
     });
     this.project.tsconfig?.addInclude('src/**/*.tsx');
     this.project.addGitIgnore('public/api.html');

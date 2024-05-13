@@ -10,6 +10,7 @@ import { ApiProvider } from './providers/ApiProvider';
 import { AppLayoutProvider } from './providers/AppLayoutProvider';
 import ChatEngineConfigProvider from './providers/ChatEngineConfig';
 import { FlagsProvider } from './providers/FlagsProvider';
+import { WsApiProvider } from './providers/WebSocketApiProvider';
 import reportWebVitals from './reportWebVitals';
 import './styles.css';
 
@@ -28,11 +29,13 @@ createRoot(document.getElementById('root')!).render(
         <Auth>
           <FlagsProvider>
             <ApiProvider>
-              <AppLayoutProvider>
-                <ChatEngineConfigProvider>
-                  <App />
-                </ChatEngineConfigProvider>
-              </AppLayoutProvider>
+              <WsApiProvider>
+                <AppLayoutProvider>
+                  <ChatEngineConfigProvider>
+                    <App />
+                  </ChatEngineConfigProvider>
+                </AppLayoutProvider>
+              </WsApiProvider>
             </ApiProvider>
           </FlagsProvider>
         </Auth>

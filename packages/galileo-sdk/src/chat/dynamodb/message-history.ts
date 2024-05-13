@@ -119,7 +119,7 @@ export class DynamoDBChatMessageHistory extends BaseListChatMessageHistory {
           sources || [],
         );
 
-        logger.debug({ message: 'Successfully stored chat message', response });
+        logger.debug({ message: 'Successfully stored AI chat message', response });
 
         return response;
       } else if (message instanceof HumanMessage) {
@@ -131,7 +131,7 @@ export class DynamoDBChatMessageHistory extends BaseListChatMessageHistory {
           message.content as string,
         );
 
-        logger.debug({ message: 'Successfully stored chat message', response });
+        logger.debug({ message: 'Successfully stored Human chat message', response });
 
         return response;
       }

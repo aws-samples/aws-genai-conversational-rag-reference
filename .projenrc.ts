@@ -93,7 +93,7 @@ monorepo.setScript(
     'packages/galileo-cli/bin/.cache',
     'demo/infra/cdk.context.json',
     'demo/overrides',
-    '.local'
+    '.local',
   ]
     .map((v) => `-e ${v}`)
     .join(' ')}`,

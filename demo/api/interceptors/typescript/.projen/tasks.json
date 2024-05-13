@@ -88,7 +88,7 @@
           "exec": "mkdir -p dist/js"
         },
         {
-          "exec": "mv $(npm pack) dist/js/"
+          "exec": "mv $(pnpm pack) dist/js/"
         },
         {
           "spawn": "eslint"
@@ -133,16 +133,13 @@
       },
       "steps": [
         {
-          "exec": "pnpm update npm-check-updates"
-        },
-        {
-          "exec": "npm-check-updates --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@aws-sdk/types,@types/aws-lambda,@types/jest,@types/node-fetch,@types/node,@typescript-eslint/eslint-plugin,@typescript-eslint/parser,aws-lambda,aws-sdk-client-mock,eslint-config-prettier,eslint-import-resolver-node,eslint-import-resolver-typescript,eslint-plugin-header,eslint-plugin-import,eslint-plugin-prettier,eslint,jest,jest-junit,mock-jwks,npm-check-updates,prettier,projen,ts-jest,typescript,@aws-lambda-powertools/logger,@aws-lambda-powertools/tracer,@aws-sdk/client-cognito-identity-provider,api-typescript-runtime,jose,nanoid,node-cache,node-fetch"
+          "exec": "pnpm dlx npm-check-updates@16 --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@aws-sdk/types,@types/aws-lambda,@types/jest,@types/node-fetch,aws-lambda,aws-sdk-client-mock,eslint-config-prettier,eslint-import-resolver-typescript,eslint-plugin-header,eslint-plugin-import,eslint-plugin-prettier,jest,mock-jwks,prettier,ts-jest,typescript,@aws-lambda-powertools/logger,@aws-lambda-powertools/tracer,@aws-sdk/client-cognito-identity-provider,api-typescript-runtime,jose,nanoid,node-cache,node-fetch"
         },
         {
           "exec": "pnpm i --no-frozen-lockfile"
         },
         {
-          "exec": "pnpm update @aws-sdk/types @types/aws-lambda @types/jest @types/node-fetch @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser aws-lambda aws-sdk-client-mock eslint-config-prettier eslint-import-resolver-node eslint-import-resolver-typescript eslint-plugin-header eslint-plugin-import eslint-plugin-prettier eslint jest jest-junit mock-jwks npm-check-updates prettier projen ts-jest typescript @aws-lambda-powertools/logger @aws-lambda-powertools/tracer @aws-sdk/client-cognito-identity-provider api-typescript-runtime jose nanoid node-cache node-fetch"
+          "exec": "pnpm update @aws-sdk/types @types/aws-lambda @types/jest @types/node-fetch @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser aws-lambda aws-sdk-client-mock constructs eslint-config-prettier eslint-import-resolver-typescript eslint-plugin-header eslint-plugin-import eslint-plugin-prettier eslint jest jest-junit mock-jwks prettier projen ts-jest typescript @aws-lambda-powertools/logger @aws-lambda-powertools/tracer @aws-sdk/client-cognito-identity-provider api-typescript-runtime jose nanoid node-cache node-fetch"
         },
         {
           "exec": "npx projen"

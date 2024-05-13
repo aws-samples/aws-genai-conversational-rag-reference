@@ -72,6 +72,13 @@
         "cwd": "demo/api/generated/documentation/html2"
       }
     },
+    "create-openapitools.json": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm dlx projen create-openapitools.json",
+        "cwd": "demo/api/generated/documentation/html2"
+      }
+    },
     "generate": {
       "executor": "nx:run-commands",
       "options": {
