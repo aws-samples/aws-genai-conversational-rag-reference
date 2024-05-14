@@ -2,7 +2,7 @@
 PDX-License-Identifier: Apache-2.0 */
 // @ts-ignore - .test files are ignored
 import type {} from '@types/jest';
-import { AIMessage, HumanMessage, SystemMessage } from 'langchain/schema';
+import { AIMessage, HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { FALCON_ADAPTER } from './falcon';
 import { resolvePromptTemplateByChainType } from '../../../prompt/templates/store/resolver.js';
 import { ChainType } from '../../../schema';

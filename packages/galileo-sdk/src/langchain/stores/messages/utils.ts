@@ -8,7 +8,7 @@ import {
   HumanMessage,
   StoredMessage,
   SystemMessage,
-} from 'langchain/schema';
+} from '@langchain/core/messages';
 
 interface StoredMessageV1 {
   type: string;

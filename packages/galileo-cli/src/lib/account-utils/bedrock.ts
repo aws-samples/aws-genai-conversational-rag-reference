@@ -61,7 +61,6 @@ export async function listBedrockModels({
 export async function listBedrockTextModels(options: Required<CredentialsParams>): Promise<BedrockModelSummary[]> {
   const models = await listBedrockModels(options);
   return models.filter((v) => {
-    const modalities = new Set<string>([...v.inputModalities, ...v.outputModalities]);
-    return modalities.size === 1 && modalities.has(BedrockModality.TEXT);
+    return v.inputModalities.includes(BedrockModality.TEXT) && v.outputModalities.includes(BedrockModality.TEXT);
   });
 }

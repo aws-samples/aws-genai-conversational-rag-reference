@@ -25,6 +25,8 @@ export const VERSIONS = {
   CDK: '2.110.0',
   CONSTRUCTS: '10.3.0',
   PDK: '0.22.42',
-  LANGCHAIN: '0.0.194', // Not semver yet so need to pin version
+  LANGCHAIN: '0.1.36',
+  LANGCHAIN_CORE: '0.1.62',
+  LANGCHAIN_COMMUNITY: '0.0.55',
   SMITHY_TYPES: '2.5.0',
 } as const;

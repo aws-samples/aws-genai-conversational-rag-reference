@@ -47,7 +47,9 @@ export class Corpus {
         '@aws-lambda-powertools/logger',
         '@aws-lambda-powertools/metrics',
         '@aws-lambda-powertools/parameters',
-        `langchain@${VERSIONS.LANGCHAIN}`, // not semver so need to pin
+        `langchain@${VERSIONS.LANGCHAIN}`, 
+        `@langchain/core@${VERSIONS.LANGCHAIN_CORE}`, 
+        `@langchain/community@${VERSIONS.LANGCHAIN_COMMUNITY}`,
         '@middy/core',
         '@middy/error-logger',
         '@middy/http-router',

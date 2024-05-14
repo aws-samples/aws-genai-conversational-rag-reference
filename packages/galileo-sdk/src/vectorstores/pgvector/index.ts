@@ -1,9 +1,9 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import { randomUUID } from 'node:crypto';
-import { Document } from 'langchain/document';
+import { Document } from '@langchain/core/documents';
+import { VectorStore } from '@langchain/core/vectorstores';
 import { Embeddings } from 'langchain/embeddings/base';
-import { VectorStore } from 'langchain/vectorstores/base';
 import pg from 'pg-promise';
 
 import { RDSConnConfig } from './rds.js';

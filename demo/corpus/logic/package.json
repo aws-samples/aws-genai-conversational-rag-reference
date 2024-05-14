@@ -70,6 +70,8 @@
     "@aws-lambda-powertools/metrics": "^1.12.1",
     "@aws-lambda-powertools/parameters": "^1.12.1",
     "@aws/galileo-sdk": "0.0.0",
+    "@langchain/community": "0.0.55",
+    "@langchain/core": "0.1.62",
     "@middy/core": "^4.6.1",
     "@middy/error-logger": "^4.6.1",
     "@middy/http-router": "^4.6.1",
@@ -79,7 +81,7 @@
     "async": "^3.2.4",
     "dotenv": "^10.0.0",
     "fast-glob": "^3.3.1",
-    "langchain": "0.0.194",
+    "langchain": "0.1.36",
     "lodash": "^4.17.21",
     "node-fetch": "^2"
   },

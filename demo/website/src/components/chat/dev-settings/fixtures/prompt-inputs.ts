@@ -1,8 +1,8 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 
-import { Document } from 'langchain/document';
-import { AIMessage, BaseMessage, HumanMessage } from 'langchain/schema';
+import { Document } from '@langchain/core/documents';
+import { AIMessage, BaseMessage, HumanMessage } from '@langchain/core/messages';
 import '@aws/galileo-sdk/lib/langchain/patch';
 
 export const CONTEXT_DOCUMENTS = [

@@ -1,6 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { VectorStore } from 'langchain/vectorstores/base';
+import { VectorStore } from '@langchain/core/vectorstores';
 import { getEmbeddingsByModelId } from '../embedding/util';
 import { vectorStoreFactory } from '../vectorstore';
 

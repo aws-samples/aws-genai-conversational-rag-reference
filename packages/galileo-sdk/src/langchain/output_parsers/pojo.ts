@@ -1,7 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 
-import { BaseOutputParser, OutputParserException } from 'langchain/schema/output_parser';
+import { BaseOutputParser, OutputParserException } from '@langchain/core/output_parsers';
 
 export class PojoOutputParser<T extends any = any> extends BaseOutputParser<T> {
   static lc_name() {

@@ -1,8 +1,8 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
 import '../langchain/patch.js';
+import { BaseRetriever } from '@langchain/core/retrievers';
 import { BaseLanguageModel } from 'langchain/base_language';
-import { BaseRetriever } from 'langchain/schema/retriever';
 import { ChatEngineChain, ChatEngineChainFromInput } from './chain.js';
 import { ChatEngineConfig, resolveChatEngineConfig } from './config/index.js';
 import { DynamoDBChatMessageHistory } from './dynamodb/message-history.js';

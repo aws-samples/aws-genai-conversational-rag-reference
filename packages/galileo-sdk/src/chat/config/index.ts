@@ -1,5 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { PromptTemplate } from '@langchain/core/prompts';
 import type {
   ChatEngineConfig,
   ChatEngineChainConfig,
@@ -8,7 +9,6 @@ import type {
   ChatEngineMemoryConfig,
 } from 'api-typescript-runtime';
 import { BaseLanguageModel } from 'langchain/base_language';
-import { PromptTemplate } from 'langchain/prompts';
 import { difference } from 'lodash';
 import { ChainType } from '../../schema/index.js';
 import { mergeConfig } from '../../utils/merge.js';

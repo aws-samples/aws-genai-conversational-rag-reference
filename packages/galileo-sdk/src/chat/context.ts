@@ -1,9 +1,9 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { BedrockChat } from '@langchain/community/chat_models/bedrock';
+import { SageMakerEndpoint } from '@langchain/community/llms/sagemaker_endpoint';
+import { PromptTemplate } from '@langchain/core/prompts';
 import { BaseLanguageModel } from 'langchain/base_language';
-import { Bedrock } from 'langchain/llms/bedrock';
-import { SageMakerEndpoint } from 'langchain/llms/sagemaker_endpoint';
-import { PromptTemplate } from 'langchain/prompts';
 import { merge } from 'lodash';
 import { getLogger } from '../common/index.js';
 import { ModelAdapter } from '../models/adapter.js';
@@ -97,7 +97,7 @@ export class ChatEngineContext {
       };
       logger.debug('Resolved bedrock kwargs', { modelKwargs });
 
-      llm = new Bedrock({
+      llm = new BedrockChat({
         verbose: options?.verbose,
         // Support cross-account endpoint if enabled and provided in env
         // Otherwise default to execution role credentials

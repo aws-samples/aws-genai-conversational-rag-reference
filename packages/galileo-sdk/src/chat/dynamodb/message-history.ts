@@ -3,8 +3,9 @@ PDX-License-Identifier: Apache-2.0 */
 import { DynamoDBClient, DynamoDBClientConfig } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 
-import { Document } from 'langchain/document';
-import { BaseMessage, BaseListChatMessageHistory, HumanMessage, AIMessage, StoredMessage } from 'langchain/schema';
+import { BaseListChatMessageHistory } from '@langchain/core/chat_history';
+import { Document } from '@langchain/core/documents';
+import { BaseMessage, HumanMessage, AIMessage, StoredMessage } from '@langchain/core/messages';
 import * as lib from './lib/index.js';
 import { getLogger } from '../../common/index.js';
 import { mapStoredMessagesToChatMessages } from '../../langchain/stores/messages/utils.js';

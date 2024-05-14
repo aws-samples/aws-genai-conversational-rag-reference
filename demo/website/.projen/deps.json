@@ -225,6 +225,11 @@
       "type": "runtime"
     },
     {
+      "name": "@langchain/core",
+      "version": "0.1.62",
+      "type": "runtime"
+    },
+    {
       "name": "@tanstack/react-query",
       "type": "runtime"
     },
@@ -263,11 +268,6 @@
     },
     {
       "name": "jwt-decode",
-      "type": "runtime"
-    },
-    {
-      "name": "langchain",
-      "version": "0.0.194",
       "type": "runtime"
     },
     {

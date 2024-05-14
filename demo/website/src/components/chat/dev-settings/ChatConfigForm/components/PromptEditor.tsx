@@ -152,7 +152,7 @@ export const PromptEditor: FC<PromptEditorProps> = (props) => {
         ) : (
           <CodeEditor
             ref={editorRef as any}
-            value={value}
+            value={typeof value === 'string' ? value : ''}
             onDelayedChange={({ detail }) => onChange(detail.value)}
             completions={completions}
             language="handlebars"

@@ -1,7 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { PromptTemplateInput } from 'langchain/prompts';
-import { InputValues } from 'langchain/schema';
+import { PromptTemplateInput } from '@langchain/core/prompts';
+import { InputValues } from '@langchain/core/utils/types';
 import type { Handlebars } from 'safe-handlebars/dist/handlebars.js';
 
 // Extract the keys of required properties

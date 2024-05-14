@@ -1,9 +1,9 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { comparison as comparisonHelpers, string as stringHelpers, math as mathHelpers } from 'handlebars-helpers-lite';
 import '../langchain/patch.js';
-import { PromptTemplate } from 'langchain/prompts';
-import { InputValues, PartialValues } from 'langchain/schema';
+import { PromptTemplate } from '@langchain/core/prompts';
+import { InputValues, PartialValues } from '@langchain/core/utils/types';
+import { comparison as comparisonHelpers, string as stringHelpers, math as mathHelpers } from 'handlebars-helpers-lite';
 import { merge } from 'lodash';
 import { Handlebars } from 'safe-handlebars/dist/handlebars.js';
 import { allowUnsafeEval } from 'safe-handlebars/dist/utils.js';
@@ -110,6 +110,10 @@ export class HandlebarsPromptTemplate<
    * for the UX experience for now.
    */
   flatten(): string {
+    if (typeof this.template !== 'string') {
+      return '';
+    }
+
     if (this.templatePartials == null) {
       return this.template;
     }
@@ -131,6 +135,7 @@ export class HandlebarsPromptTemplate<
         template = template.replace(searchValue, replacement);
       }
     }
+
     return template;
   }
 }

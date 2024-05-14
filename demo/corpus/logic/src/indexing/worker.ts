@@ -4,7 +4,7 @@ import fs from 'node:fs/promises';
 import { getLogger } from '@aws/galileo-sdk/lib/common';
 import { PGVectorStore } from '@aws/galileo-sdk/lib/vectorstores';
 import { MetricUnits } from '@aws-lambda-powertools/metrics';
-import { Document } from 'langchain/document';
+import { Document } from '@langchain/core/documents';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { IndexEntity, IndexingCache } from './datastore';
 import { chunkArray } from './utils';

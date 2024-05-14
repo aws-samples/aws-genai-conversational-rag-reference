@@ -6,7 +6,7 @@ import { DEFAULT_MAX_NEW_TOKENS } from '../../constants.js';
 import type { Kwargs } from '../../types.js';
 
 // https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-templates-and-examples.html#qa-with-context
-export const CLAUDE_V2_ADAPTER: IModelAdapter = {
+export const CLAUDE_ADAPTER: IModelAdapter = {
   prompt: {
     chat: {
       base: {
@@ -54,7 +54,7 @@ Assistant: `,
   },
 };
 
-export const CLAUDE_V2_KWARGS: Kwargs = {
+export const CLAUDE_KWARGS: Kwargs = {
   temperature: 0,
   max_tokens_to_sample: DEFAULT_MAX_NEW_TOKENS,
   stop_sequences: ['\n\nHuman:'],

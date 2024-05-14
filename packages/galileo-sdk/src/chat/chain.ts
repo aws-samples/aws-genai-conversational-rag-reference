@@ -1,11 +1,11 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { PromptTemplate } from '@langchain/core/prompts';
+import { BaseRetriever } from '@langchain/core/retrievers';
+import { ChainValues } from '@langchain/core/utils/types';
 import { BaseLanguageModel } from 'langchain/base_language';
 import { CallbackManagerForChainRun } from 'langchain/callbacks';
 import { BaseChain, ChainInputs, LLMChain, QAChainParams, StuffDocumentsChain } from 'langchain/chains';
-import { PromptTemplate } from 'langchain/prompts';
-import { ChainValues } from 'langchain/schema';
-import { BaseRetriever } from 'langchain/schema/retriever';
 import { ResolvedLLMChainConfig } from './config/index.js';
 import { getLogger } from '../common/index.js';
 import { startPerfMetric } from '../common/metrics/index.js';
@@ -222,7 +222,7 @@ export class ChatEngineChain extends BaseChain implements ChatEngineChainInput {
     const $$CombineDocumentsExecutionTime = startPerfMetric('Chain.QA.ExecutionTime', {
       highResolution: true,
     });
-    const result = await this.qaChain.call(inputs, runManager?.getChild('combine_documents'));
+    const result = await this.qaChain.invoke(inputs, runManager?.getChild('combine_documents'));
     $$CombineDocumentsExecutionTime();
     logger.debug('Chain:condenseQuestionChain:output', { output: result });
 

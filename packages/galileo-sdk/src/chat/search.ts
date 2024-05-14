@@ -1,7 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { Document } from '@langchain/core/documents';
 import { fetch } from 'cross-fetch';
-import { Document } from 'langchain/document';
 import {
   RemoteLangChainRetrieverParams,
   RemoteLangChainRetriever,

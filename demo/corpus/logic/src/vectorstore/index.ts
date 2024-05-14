@@ -2,8 +2,8 @@
 PDX-License-Identifier: Apache-2.0 */
 import { PGVectorStore, PGVectorStoreOptions } from '@aws/galileo-sdk/lib/vectorstores';
 import { RDSConnConfig, getRDSConnConfig } from '@aws/galileo-sdk/lib/vectorstores/pgvector/rds';
-import { Embeddings } from 'langchain/embeddings/base';
-import { VectorStore } from 'langchain/vectorstores/base';
+import { Embeddings } from '@langchain/core/embeddings';
+import { VectorStore } from '@langchain/core/vectorstores';
 import { ENV } from '../env';
 
 let __RDS_CONN__: RDSConnConfig;

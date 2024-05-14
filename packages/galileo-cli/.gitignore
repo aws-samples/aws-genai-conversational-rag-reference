@@ -44,4 +44,5 @@ junit.xml
 /dist/
 !/.eslintrc.json
 examples/**/generated/**
+pnpm/
 !/project.json

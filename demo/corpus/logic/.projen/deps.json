@@ -190,6 +190,16 @@
       "type": "runtime"
     },
     {
+      "name": "@langchain/community",
+      "version": "0.0.55",
+      "type": "runtime"
+    },
+    {
+      "name": "@langchain/core",
+      "version": "0.1.62",
+      "type": "runtime"
+    },
+    {
       "name": "@middy/core",
       "type": "runtime"
     },
@@ -227,7 +237,7 @@
     },
     {
       "name": "langchain",
-      "version": "0.0.194",
+      "version": "0.1.36",
       "type": "runtime"
     },
     {

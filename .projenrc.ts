@@ -24,6 +24,7 @@ const monorepo = new MonorepoProject({
     'node-localstorage',
     'prompts',
     'tsconfig-paths',
+    '@pnpm/logger'
   ],
   tsconfig: {
     compilerOptions: {

@@ -41,7 +41,7 @@ export class Website {
         'dayjs',
         'immer',
         'jwt-decode',
-        `langchain@${VERSIONS.LANGCHAIN}`, // not semver so need to pin
+        `@langchain/core@${VERSIONS.LANGCHAIN_CORE}`, 
         'lodash',
         'nanoid',
         'react-collapsed',

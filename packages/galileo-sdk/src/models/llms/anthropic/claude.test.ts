@@ -2,15 +2,15 @@
 PDX-License-Identifier: Apache-2.0 */
 // @ts-ignore - .test files are ignored
 import type {} from '@types/jest';
-import { AIMessage, HumanMessage, SystemMessage } from 'langchain/schema';
-import { CLAUDE_V2_ADAPTER } from './claude';
+import { AIMessage, HumanMessage, SystemMessage } from '@langchain/core/messages';
+import { CLAUDE_ADAPTER } from './claude';
 import { resolvePromptTemplateByChainType } from '../../../prompt/templates/store/resolver.js';
 import { ChainType } from '../../../schema';
 import { ModelAdapter } from '../../adapter';
 
 describe('models/llms/anthropic/claude', () => {
   describe('adapter', () => {
-    const adapter = new ModelAdapter(CLAUDE_V2_ADAPTER);
+    const adapter = new ModelAdapter(CLAUDE_ADAPTER);
 
     test('should render qa prompt', async () => {
       const template = await resolvePromptTemplateByChainType(ChainType.QA, adapter.prompt?.chat?.QA);

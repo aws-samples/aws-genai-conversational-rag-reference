@@ -1,7 +1,7 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
+import { AIMessage, BaseMessage, HumanMessage, SystemMessage } from '@langchain/core/messages';
 import type Handlebars from 'handlebars';
-import { AIMessage, BaseMessage, HumanMessage, SystemMessage } from 'langchain/schema';
 import { HandlebarsTemplatePartials } from '../../types.js';
 
 export interface BaseChatTemplatePartials extends HandlebarsTemplatePartials {

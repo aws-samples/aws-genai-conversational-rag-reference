@@ -9,7 +9,7 @@ import {
   QueryCommand,
   QueryCommandInput,
 } from '@aws-sdk/lib-dynamodb';
-import { Document } from 'langchain/document';
+import { Document } from '@langchain/core/documents';
 import { v4 as uuidv4 } from 'uuid';
 import { listChatMessageSources } from './sources.js';
 import {

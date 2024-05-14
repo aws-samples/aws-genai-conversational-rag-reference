@@ -23,7 +23,9 @@ export class GalileoSdk extends EsmTypescriptProject {
         'pg-promise',
         'safe-handlebars',
         'uuid',
-        `langchain@${VERSIONS.LANGCHAIN}`, // not semver so need to pin
+        `langchain@${VERSIONS.LANGCHAIN}`,
+        `@langchain/core@${VERSIONS.LANGCHAIN_CORE}`,
+        `@langchain/community@${VERSIONS.LANGCHAIN_COMMUNITY}`,
       ],
       depsToTransform: ['safe-handlebars'],
       devDeps: ['@types/uuid', '@types/lodash', 'aws-sdk-client-mock'],

@@ -18,6 +18,10 @@
       "type": "build"
     },
     {
+      "name": "@pnpm/logger",
+      "type": "build"
+    },
+    {
       "name": "@types/clear",
       "type": "build"
     },

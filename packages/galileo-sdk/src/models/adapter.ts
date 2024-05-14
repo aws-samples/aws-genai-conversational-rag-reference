@@ -1,6 +1,6 @@
 /*! Copyright [Amazon.com](http://amazon.com/), Inc. or its affiliates. All Rights Reserved.
 PDX-License-Identifier: Apache-2.0 */
-import { BaseSageMakerContentHandler } from 'langchain/llms/sagemaker_endpoint';
+import { BaseSageMakerContentHandler } from '@langchain/community/llms/sagemaker_endpoint';
 import { set, get, isEmpty } from 'lodash';
 import { BaseChatTemplatePartials } from '../prompt/templates/chat/base.js';
 import { ChatTemplateTypedRuntimeRecord, PromptTemplateStore } from '../prompt/templates/store/registry.js';
