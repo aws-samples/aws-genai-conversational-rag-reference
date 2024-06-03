@@ -1,8 +1,6 @@
 # Developer Guide
 
 --8<-- "wip.md"
---8<-- "news-feed.md"
---8<-- "aws-genai-llm-chatbot/mention.md"
 
 This codebase is polyglot monorepo managed by [AWS PDK Monoreop](https://aws.github.io/aws-pdk/developer_guides/nx-monorepo/index.html) which utilizes the following technologies under the hood:
 

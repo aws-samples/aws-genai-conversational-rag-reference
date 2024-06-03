@@ -1,8 +1,6 @@
 ---
 nav:
   - Overview: index.md
-  - Mental Model: model
-  - How it Works: how
-  - Getting Started: quick-start
+  - Mental model: model
+  - How it works: how
   - Security: security
-  - Contributing: contributing

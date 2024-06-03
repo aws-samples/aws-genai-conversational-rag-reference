@@ -1,30 +1,26 @@
 # Overview
 
 --8<-- "wip.md"
---8<-- "news-feed.md"
---8<-- "disclaimer/third-party-model.md"
---8<-- "disclaimer/prompt-engineering-template.md"
---8<-- "aws-genai-llm-chatbot/mention.md"
 
-## Introduction
+Galileo Generative AI Reference Sample is a reference implementation of a deployable 3-tier retrieval augmented generative (RAG) application that aims to meet the needs of developers as they seek to rapidly experiment with, deploy, and launch GenAI powered products and services that utilise RAG. It is implemented in a number of languages, using AWS Cloud Development Kit ([CDK](https://aws.amazon.com/cdk/)) to define the infrastructure it deploys.
 
-Galileo is a reference implementation of a deployable 3-tier retrieval augmented generative (RAG) application that aims to meet the needs of developers as they seek to rapidly experiment with, deploy, and launch GenAI powered products and services that utilise RAG. It is implemented in a number of languages, using CDK to define the infrastructure it deploys. It can be optionally deployed with a sample dataset of US Supreme Court decision documents, providing content users can interact with immediately.
+(Optional) To provide your users interaction with sample data, you can deploy Galileo with a sample dataset of US Supreme Court decision documents.
 
 ## User Experience
 
-The screenshot below shows the default web interface, showing an active chat session, session management features (rename, delete, etc.), as well as the chat developer settings panel (collapsed).
+Once you deploy the reference sample (Galileo), the default web interface, displays an active chat session, session management features (rename, delete, etc.), as well as the chat developer settings panel (collapsed).
 
 ![User Experience](galileo-chat.png)
 
 ## Architecture
 
-This simplified architecture diagram shows the key service components utilised to implemented each of the three tiers described described in the [mental model](./model/index.md).
+This architecture diagram shows the key service components used to implement each of the three tiers described described in the [mental model](./model/index.md).
 
 ![Architecture](../assets/images/galileo-arch.png)
 
 ## Tooling
 
-**Meeting development teams where they are... between notebooks and application code.**
+**Meeting development teams where they are - between notebooks and application code.**
 
 New LLMs are being released frequently, which is why Galileo focuses on model agnostic integration and supporting developers to try out the latest LLMs against the full application with zero code.
 
