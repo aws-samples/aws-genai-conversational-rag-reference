@@ -1,22 +1,20 @@
-# Getting started
-
-This topic describes how to install and configure the Galileo Generative AI Reference Sample.
+# Getting Started
 
 ## Prerequisites
 
-*Development environment:*
+*Development Environment:*
 
 |   Tool                |   Version   |    Recommendation            |
 | --------------------- | ----------- | ---------------------------- |
-| pnpm                  | >=8, but <9      | <https://pnpm.io/installation> |
+| pnpm                  | >=8 <9      | <https://pnpm.io/installation> |
 | NodeJS                | >=18        | Use Node Version Manager ([nvm](https://github.com/nvm-sh/nvm)) |
-| Python                | >=3.10, but <4   | Use Python Version Manager ([pyenv](https://github.com/pyenv/pyenv)) |
-| Poetry                | >=1.5, but <2    | <https://python-poetry.org/docs/> |
+| Python                | >=3.10,<4   | Use Python Version Manager ([pyenv](https://github.com/pyenv/pyenv)) |
+| Poetry                | >=1.5,<2    | <https://python-poetry.org/docs/> |
 | AWS CLI               | v2          | <https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html> |
 | Docker[^1] | v20+     | <https://docs.docker.com/desktop/> |
 | JDK                   | v17+        | [Amazon Corretto 17](https://docs.aws.amazon.com/corretto/latest/corretto-17-ug/downloads-list.html) |
 
-[^1]: Docker virtual disk space should have at least 30GB of free space. If you see `no space left on device` error during the build, to free up spac, run `docker system prune -f` and/or increase the virtual disk size.
+[^1]: Docker virtual disk space should have at least 30GB of free space. If you see `no space left on device` error during build, free up space by running `docker system prune -f` and/or increasing the virtual disk size.
 
 ### AWS Service Quotas
 
@@ -92,7 +90,7 @@ pnpm exec cdk deploy --app cdk.out --require-approval never Dev/Galileo-SampleDa
 
 ## What is deployed?
 
-![Galileo High-level Architecture](../assets/images/galileo-arch.png)
+![Galileo High-level Architecture](../../assets/images/galileo-arch.png)
 
 ---
 

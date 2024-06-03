@@ -3,8 +3,8 @@ site_description: Galileo Generative AI Reference Sample
 repo_name: aws-genai-conversational-rag-reference
 repo_url: https://github.com/aws-samples/aws-genai-conversational-rag-reference/
 site_url: https://aws-samples.github.io/aws-genai-conversational-rag-reference/
-copyright: Copyright &copy; 2024 Amazon Web Services, Inc.
-use_directory_urls: false
+copyright: Copyright &copy; 2023 Amazon Web Services, Inc.
+use_directory_urls: true
 docs_dir: content
 extra_css:
   - assets/stylesheets/extra.css
@@ -26,11 +26,9 @@ theme:
     logo: fontawesome/brands/aws
     repo: fontawesome/brands/github
   favicon: assets/images/favicon.png
-  custom_dir: content/overrides
   palette:
     scheme: default
   features:
-    - content.code.copy
     - toc.follow
     - navigation.indexes
     - navigation.instant
@@ -48,7 +46,6 @@ markdown_extensions:
   - admonition
   - tables
   - footnotes
-  - md_in_html
   - pymdownx.details
   - pymdownx.highlight
   - pymdownx.inlinehilite
@@ -56,15 +53,6 @@ markdown_extensions:
   - pymdownx.caret
   - pymdownx.keys
   - pymdownx.mark
-  - pymdownx.snippets:
-      base_path: content/_
-  - pymdownx.tabbed:
-      alternate_style: true
-  - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
-  - pymdownx.arithmatex:
-      generic: true
   - pymdownx.tilde
   - toc:
       toc_depth: 4
@@ -74,12 +62,28 @@ markdown_extensions:
       provider: github
       user: aws
       repo: pdk
-
+  - pymdownx.snippets:
+      base_path:
+        - !relative $config_dir
+        - !relative $docs_dir
+        - !relative $docs_dir/_
+      auto_append:
+        - _/abbreviations.md
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.arithmatex:
+      generic: true
 plugins:
   - awesome-pages:
       filename: .pages.yml
   - git-revision-date
   - search
+  - redirects:
+      redirect_maps:
+        "index.md": "overview/index.md"
   - glightbox
 
 extra_javascript:
