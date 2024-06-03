@@ -90,7 +90,7 @@ pnpm exec cdk deploy --app cdk.out --require-approval never Dev/Galileo-SampleDa
 
 ## What is deployed?
 
-![Galileo High-level Architecture](../../assets/images/galileo-arch.png)
+![Galileo High-level Architecture](../assets/images/galileo-arch.png)
 
 ---
 
