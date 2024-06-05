@@ -1,5 +1,6 @@
 ---
 nav:
+  - Home: index.md
   - Overview: overview
   - Getting started: getting-started
   - User Guide: user-guide

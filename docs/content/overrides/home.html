@@ -15,6 +15,12 @@
   }
 }
 
+/* Remove spacing, as we cannot hide it completely */
+.md-main__inner {
+      margin: 0;
+      height: 70%;
+}
+
 /* Hide main content for now */
 .md-content {
   display: none;
@@ -24,6 +30,7 @@
 @media screen and (min-width: 60em) {
   .md-sidebar--secondary {
     display: none;
+    margin: 0;
   }
 }
 
@@ -55,15 +62,15 @@
 }
 .tx-hero h1 {
   font-weight: 600;
-  font-size: 38px;
-  line-height: 46px;
+  font-size: 36px;
+  line-height: 40px;
   color: rgb(38, 38, 38);
 }
 .tx-hero p {
   color: rgb(92, 92, 92);
   font-weight: 400;
-  font-size: 20px;
-  line-height: 32px;
+  font-size: 18px;
+  line-height: 30px;
 }
 .tx-hero__image {
   max-width: 1000px;
@@ -98,7 +105,7 @@
   position: relative;
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: 20px;
+  margin-bottom: 2px;
   padding: 0px 40px;
   max-width: 1280px;
 }
@@ -215,7 +222,7 @@
   text-decoration: none;
   transition: none;
   background: none;
-  padding-bottom: 20px;
+  padding: 10px;
   max-width: fit-content;
 }
 
@@ -272,7 +279,7 @@
   margin-top: 0;
   margin-bottom: 0;
   color: rgb(92, 92, 92);
-  font-size: 0.80rem;
+  font-size: 16px;
   font-weight: 300;
   line-height: normal;
 }
@@ -335,6 +342,7 @@
       <!-- Architecture as building blocks -->
       <div class="section">
         <div class="component-wrapper" style="display: block;">
+
           <!-- Overview -->
           <div class="responsive-grid">
             <a class="card-wrapper" href="overview/index.html">
@@ -421,7 +429,6 @@
               </div>
             </a>
           
-
             <!-- Release notes -->
             <a class="card-wrapper" href="https://github.com/aws-samples/aws-genai-conversational-rag-reference/releases">
               <div class="card">
@@ -438,16 +445,12 @@
                 </div>
               </div>
             </a>
-
             
         </div>
       </div>
     </div>
   </div>
 {% endblock %}
-
-<!-- Content -->
-{% block content %}{% endblock %}
 
 <!-- Application footer -->
 {% block footer %}
