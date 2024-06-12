@@ -1,1 +1,3 @@
-Amazon Bedrock users need to request access to models before they are available for use. You need to request access to models in Amazon Bedrock. To request access to additional models, select the Model access link in the left side navigation panel in the Amazon Bedrock console. See the [Bedrock Model access](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html) user guide for more details.
+Before using the models, you will need to request access to specific models via Amazon Bedrock.
+
+To request access to additional models, select the **Model access** link from the left side navigation panel in the Amazon Bedrock console. For detailed instructions, refer to the [Bedrock Model access](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html) user guide.

@@ -57,7 +57,9 @@ markdown_extensions:
   - pymdownx.keys
   - pymdownx.mark
   - pymdownx.snippets:
-      base_path: content/_
+      base_path: 
+        - content/_
+        - content/
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.emoji:

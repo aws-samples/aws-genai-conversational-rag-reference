@@ -1,0 +1,7 @@
+---
+  nav:
+    - Getting started: index.md
+    - Prerequisites: prerequisites.md
+    - Deploy Galileo: deploying-galileo.md
+    - Validate and review the deployment: validate-deployment.md
+    - Set up Cloud9 as Galileo development environment: cloud9-ide.md
