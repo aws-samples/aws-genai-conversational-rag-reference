@@ -18,7 +18,7 @@ include = [ "api_python_runtime", "api_python_runtime/**/*.py" ]
   python-dateutil = "~2.8.2"
   python = "^3.10"
   typing_extensions = "^4.7.1"
-  urllib3 = ">=1.25.4,<1.27"
+  urllib3 = ">=1.25.4,<2.6"
 
     [tool.poetry.dependencies.aws-lambda-powertools]
     extras = [ "tracer", "aws-sdk" ]
