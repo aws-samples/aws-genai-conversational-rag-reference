@@ -85,7 +85,7 @@
     "handlebars-helpers-lite": "^0.2.1",
     "langchain": "0.1.36",
     "lodash": "^4.17.21",
-    "pg-promise": "^11.5.4",
+    "pg-promise": "^11.5.5",
     "safe-handlebars": "^1.0.1",
     "uuid": "^9.0.0"
   },
